@@ -327,7 +327,7 @@ export default {
       artworkSession: {}, // Thông tin artwork từ session
 
       roomStatusInterval: null, // Interval để check trạng thái phòng
-      refreshInterval: 2000, // Thời gian refresh (ms) - có thể chỉnh: 3000 = 3 giây
+      refreshInterval: 5000, // Thời gian refresh (ms) - có thể chỉnh: 3000 = 3 giây
 
       // === COUNTDOWN CONFIG ===
       COUNTDOWN_DURATION_MINUTES: 3, // Thời gian countdown ban đầu (phút) - Có thể đổi: 15, 20, 30, v.v.

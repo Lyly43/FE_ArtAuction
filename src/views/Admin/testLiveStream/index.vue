@@ -148,7 +148,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -159,7 +158,7 @@ import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 export default {
   data() {
     return {
-      roomID: "ACR-52210299420800",
+      roomID: "ACR-388508263204300",
 
       user: {},
 

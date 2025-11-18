@@ -606,10 +606,11 @@ export default {
             // Reset form
             this.resetForm();
 
+
             // Redirect về home sau 2 giây
-            setTimeout(() => {
-              this.$router.push('/');
-            }, 2000);
+            // setTimeout(() => {
+            //   this.$router.push('/');
+            // }, 2000);
           }
         })
         .catch((err) => {
