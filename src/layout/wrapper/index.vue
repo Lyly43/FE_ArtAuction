@@ -3,7 +3,6 @@
     <!-- Sidebar  -->
     <MenuAdmin></MenuAdmin>
 
-
     <!-- Page Content  -->
     <div id="content-page" class="content-page">
       <div class="container-fluid">
@@ -19,8 +18,8 @@ import BotAdmin from "../components/admin/BotAdmin.vue";
 import MenuAdmin from "../components/admin/MenuAdmin.vue";
 import ScrollToTop from "../../components/ScrollToTop.vue";
 
-import $ from 'jquery'
-window.jQuery = window.$ = $
+import $ from "jquery";
+window.jQuery = window.$ = $;
 
 import "../../assets/js/jquery.min.js";
 import "../../assets/js/customizer.js";
@@ -34,10 +33,9 @@ export default {
   components: {
     MenuAdmin,
     BotAdmin,
-    ScrollToTop
-  }
-}
-
+    ScrollToTop,
+  },
+};
 </script>
 <style>
 @import "../../assets/css/custom-purple-theme.css";
@@ -47,8 +45,7 @@ export default {
 @import "../../assets/css/style.css";
 @import "../../assets/css/floatingbutton.css";
 @import "../../assets/css/fixes.css";
+@import "../../assets/css/style-admin.css";
 
 /* @import "../../assets/css/bootstrap.min.css"; */
-
-
 </style>
