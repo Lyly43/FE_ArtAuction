@@ -3,7 +3,7 @@
     <div class="header-wrapper">
       <MenuClient></MenuClient>
     </div>
-    <div class="page-wrapper mb-5">
+    <div class="page-wrapper">
       <div class="page-content">
         <router-view></router-view>
       </div>

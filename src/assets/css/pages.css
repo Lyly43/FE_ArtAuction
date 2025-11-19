@@ -442,6 +442,117 @@
    CSS CHO HOME Client - Home/index.vue
    =========================================== */
 
+.featured-art-card .artwork-overlay {
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.featured-art-card .artwork-overlay.overlay-bottom {
+  transform: translateY(12px);
+}
+
+.featured-art-card:hover .artwork-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.featured-art-card {
+  height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.featured-art-image-wrapper {
+  height: 100%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: height 0.4s ease;
+}
+
+.featured-art-card:hover .featured-art-image-wrapper {
+  height: 230px;
+}
+
+.featured-art-card .featured-art-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.35s ease;
+}
+
+.featured-art-card:hover .featured-art-image {
+  filter: brightness(0.55) saturate(0.9);
+}
+
+.featured-art-card .artwork-info {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-top: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.4s ease;
+}
+
+.featured-art-card:hover .artwork-info {
+  max-height: 140px;
+  opacity: 1;
+  margin-top: 18px;
+}
+
+.bg-success-light-home {
+  background-color: #dff5f3;
+}
+.text-success-light-home {
+  color: #dff5f3;
+}
+#carouselExampleIndicators .carousel-inner,
+#carouselExampleIndicators .carousel-item {
+  min-height: 280px;
+  background-color: #0f584f;
+}
+
+#carouselExampleIndicators .carousel-item img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.auction-card {
+  border-radius: 18px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  transform-origin: center;
+  transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1),
+    box-shadow 0.45s cubic-bezier(0.19, 1, 0.22, 1), background 0.3s ease;
+}
+
+.auction-card:hover {
+  transform: translateY(-14px) scale(1.03);
+  box-shadow: 0 20px 35px rgba(4, 74, 66, 0.35) !important;
+}
+
+.auction-card .img-auction {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.65s ease;
+}
+
+.auction-card:hover .img-auction {
+  transform: scale(1.04);
+}
+
+.auction-card .badge {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+}
+
+.auction-card .card-body {
+  transition: box-shadow 0.3s ease;
+}
 /* .tag-btn {
   width: 120px;
   height: 36px;
