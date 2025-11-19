@@ -1,85 +1,260 @@
 <template>
-
-  <div class="container mt-3">
-    <!-- ========== Thanh search + filter + tag ========== -->
-    <div class="row section1 mb-4">
-      <!-- Search + filter -->
-      <div class="col-lg-8 col-md-6 col-sm-12 d-flex gap-4">
-        <div class="search-bar flex-grow-1">
-          <div class="position-relative search-bar-box">
-            <input type="text" class="form-control search-control ps-5" placeholder="Type to search..." />
-            <span class="position-absolute top-50 search-show translate-middle-y"><i
-                class="fa-solid fa-magnifying-glass px-3"></i></span>
-            <span class="position-absolute top-50 search-close translate-middle-y">
-              <!-- <i class="fa-solid fa-circle-xmark"></i> -->
-            </span>
-          </div>
-        </div>
-        <button class="btn btn-outline-success d-flex align-items-center justify-content-center">
-          <i class="fa-solid fa-filter"></i>
-        </button>
-      </div>
-      <!-- Tag -->
-      <div class="col-lg-4 col-md-6 col-sm-12">
+  <!-- ========== Carousel ========== -->
+  <div class="row bg-success py-5 mb-4">
+    <div class="col-lg-12">
+      <div class="container">
         <div class="row">
-          <div class="col-lg-4 col-md-6 col-sm-4 ">
-            <button class="btn btn-outline-success w-100">Landscape</button>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-4 ">
-            <button class="btn btn-outline-success w-100">Portrait</button>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-4 ">
-            <button class="btn btn-outline-success w-100">Folk</button>
+          <div class="col-lg-6 text-light d-flex flex-column justify-content-center gap-5">
+            <div class="">
+              <h1 class=" fw-bold">Welcome back, <span class="text-success-light-home fs-1 fw-bold"> {{ user.name
+              }}</span> !</h1>
+              <p>Discover extraordinary artworks and place your bids on masterpieces</p>
+            </div>
+            <div class="d-flex align-items-center gap-5">
+              <div class="stat">
+                <div class="d-flex align-items-center gap-3 fs-4 mb-2">
+                  <i class="fa-solid fa-gavel"></i>
+                  <p class="fw-bold number m-0">247</p>
+                </div>
+                <div class="label">Live Auctions</div>
+              </div>
 
+              <div class="stat">
+                <div class="d-flex align-items-center gap-3 fs-4 mb-2">
+                  <i class="fa-solid fa-image"></i>
+                  <p class="fw-bold number m-0">1.2K</p>
+                </div>
+                <div class="label">Available Artworks</div>
+              </div>
+
+              <div class="stat">
+                <div class="d-flex align-items-center gap-3 fs-4 mb-2">
+                  <i class="fa-solid fa-users"></i>
+                  <p class="fw-bold number m-0">5.8K</p>
+                </div>
+                <div class="label">Active Bidders</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div id="carouselExampleIndicators"
+              class="carousel slide carousel-fade border border-4 border-light shadow-lg rounded-4 overflow-hidden"
+              data-bs-ride="carousel" data-bs-interval="2000">
+              <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
+                  aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                  aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                  aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"
+                  aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4"
+                  aria-label="Slide 3"></button>
+              </div>
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img src="https://i.pinimg.com/736x/88/cd/21/88cd216810a2be6669f35bea9c98293c.jpg"
+                    class="d-block w-100" style="height: 350px;" alt="...">
+                </div>
+                <div class="carousel-item">
+                  <img src="https://i.pinimg.com/1200x/36/19/09/36190987c6cd3c29ec4f1ac202decbf1.jpg"
+                    class="d-block w-100" style="height: 350px;" alt="...">
+                </div>
+                <div class="carousel-item">
+                  <img src="https://i.pinimg.com/736x/c5/8d/17/c58d170aa6f5dd02eae800c604e94c69.jpg"
+                    class="d-block w-100" style="height: 350px;" alt="...">
+                </div>
+                <div class="carousel-item">
+                  <img src="https://i.pinimg.com/1200x/77/e5/c5/77e5c5b3543c4312a06d8279aa0add6a.jpg"
+                    class="d-block w-100" style="height: 350px;" alt="...">
+                </div>
+                <div class="carousel-item">
+                  <img src="https://i.pinimg.com/1200x/ca/b4/30/cab4302b07b4c54695c3affacfcf63e3.jpg"
+                    class="d-block w-100" style="height: 350px;" alt="...">
+                </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ========== Carousel ========== -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <div id="carouselExampleIndicators" class="carousel slide">
-          <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
-              aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
-              aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
-              aria-label="Slide 3"></button>
-          </div>
-          <div class="carousel-inner rounded-3 overflow-hidden">
-            <div class="carousel-item active">
-              <img src="https://i.pinimg.com/1200x/1b/08/af/1b08af4eab12bd921dc3541ccf6a10b1.jpg" class="d-block w-100"
-                style="height: 350px;" alt="..." loading="lazy">
-            </div>
-            <div class="carousel-item">
-              <img src="https://i.pinimg.com/736x/0a/20/fc/0a20fcc7bfacc5a20151f9e791e6b0f8.jpg" class="d-block w-100"
-                style="height: 350px;" alt="..." loading="lazy">
-            </div>
-            <div class="carousel-item">
-              <img src="https://i.pinimg.com/736x/00/a4/eb/00a4eb0eca9d3ac72ff6ca2e7421e825.jpg" class="d-block w-100"
-                style="height: 350px;" alt="..." loading="lazy">
-            </div>
-          </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-        </div>
-        <!-- <img src="/src/assets/img/3.png" alt="banner" class="img-fluid w-100 rounded" style="height: 300px" /> -->
-      </div>
     </div>
-
-    <!-- ========== Tác phẩm nổi bật ========== -->
+  </div>
+  <!-- ========== Các cuộc đấu đang diễn ra ========== -->
+  <div class="container py-5">
     <div class="row">
-      <h5 class="fw-bold mb-3 text-success">Featured Artwork</h5>
+      <div class="col-12 text-center mb-4">
+        <h3 class="fw-bold mb-2 text-success">Featured Auctions</h3>
+        <p>Join the most exciting live auctions happening right now</p>
+      </div>
+
+      <template v-for="auction in hotAuctions.filter(x => x.status === 1).slice(0, 4)" :key="auction.id">
+        <!-- Card đấu giá -->
+        <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex">
+          <div class="card p-0 overflow-hidden auction-card">
+            <div class="p-0 position-relative">
+              <img :src="auction.imageAuctionRoom" class="img-auction" alt="" loading="lazy">
+              <div class="">
+                <span class="badge position-absolute top-0 start-0 m-3 bg-danger px-3">LIVE</span>
+              </div>
+              <span class="badge position-absolute top-0 end-0 m-3 bg-success px-3">12:35</span>
+              <span class="badge position-absolute bottom-0 end-0 m-3 bg-success">{{ auction.viewCount }} bidders</span>
+            </div>
+            <!-- Nội dung card -->
+            <div class="card-body d-flex flex-column gap-3">
+              <div class="d-flex flex-column gap-2">
+                <p class="fw-bold m-0 text-success fs-5"> {{ auction.roomName }} </p>
+                <p class="m-0 text-muted small"> {{ auction.id }} </p>
+                <div class="d-flex gap-2 align-items-center justify-content-between">
+                  <span class="m-0">Category</span>
+                  <span class="m-0"> {{ auction.type }} </span>
+                </div>
+                <p class="m-0 small description-clamp"> {{ auction.description }} </p>
+              </div>
+              <div class="mt-auto">
+                <div class="">
+                  <router-link :to="`/client/auction-room/${auction.id}`" class="w-100">
+                    <button class="btn btn-success w-100">Join AuctAuction</button>
+                  </router-link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <div class="col-12 text-center mt-3">
+        <button class="btn btn-outline-success px-5 fs-5">Discover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Browse by Category ========== -->
+  <div class="row bg-success-light-home py-5">
+    <div class="col-lg-12">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-center mb-4">
+            <h3 class="fw-bold mb-2 text-success">Browse by Category</h3>
+            <p>Explore diverse art collections</p>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="card auction-card">
+              <div class="card-body text-center">
+                <div class="d-flex mb-3">
+                  <div class="mx-auto p-3 bg-light rounded-circle">
+                    <i class="fa-solid fa-palette text-success fs-2"></i>
+                  </div>
+                </div>
+
+                <p class="fw-bold fs-6 mb-1">Paintings</p>
+                <span class="text-muted small m-0">342 items</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="card auction-card">
+              <div class="card-body text-center">
+                <div class="d-flex mb-3">
+                  <div class="mx-auto p-3 bg-light rounded-circle">
+                    <i class="fa-solid fa-brush text-success fs-2"></i>
+                  </div>
+                </div>
+
+                <p class="fw-bold fs-6 mb-1">Sculptures</p>
+                <span class="text-muted small m-0">156 items</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="card auction-card">
+              <div class="card-body text-center">
+                <div class="d-flex mb-3">
+                  <div class="mx-auto p-3 bg-light rounded-circle">
+                    <i class="fa-solid fa-camera text-success fs-2"></i>
+                  </div>
+                </div>
+
+                <p class="fw-bold fs-6 mb-1">Photography</p>
+                <span class="text-muted small m-0">289 items</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="card auction-card">
+              <div class="card-body text-center">
+                <div class="d-flex mb-3">
+                  <div class="mx-auto p-3 bg-light rounded-circle">
+                    <i class="fa-solid fa-laptop text-success fs-2"></i>
+                  </div>
+                </div>
+
+                <p class="fw-bold fs-6 mb-1">Digital Art</p>
+                <span class="text-muted small m-0">421 items</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="card auction-card">
+              <div class="card-body text-center">
+                <div class="d-flex mb-3">
+                  <div class="mx-auto p-3 bg-light rounded-circle">
+                    <i class="fa-solid fa-layer-group text-success fs-2"></i>
+                  </div>
+                </div>
+
+                <p class="fw-bold fs-6 mb-1">Mixed Media</p>
+                <span class="text-muted small m-0">198 items</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="card auction-card">
+              <div class="card-body text-center">
+                <div class="d-flex mb-3">
+                  <div class="mx-auto p-3 bg-light rounded-circle">
+                    <i class="fa-solid fa-print text-success fs-2"></i>
+                  </div>
+                </div>
+
+                <p class="fw-bold fs-6 mb-1">Prints</p>
+                <span class="text-muted small m-0">267 items</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Tác phẩm nổi bật ========== -->
+  <div class="container">
+    <div class="row my-5">
+      <div class="col-12 text-center mb-4">
+        <h3 class="fw-bold mb-2 text-success">Featured Artwork</h3>
+        <p>Explore standout creations handpicked from our curated collection</p>
+      </div>
 
       <!-- Loading state -->
       <!-- <div v-if="loading" class="col-12 text-center py-5">
@@ -96,9 +271,51 @@
           {{ error }}
         </div>
       </div> -->
-
+      <!-- bg-opacity-75 -->
+      <!-- style="background: rgba(0, 0, 0, 0.5); border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem;" -->
       <!-- Content -->
-      <template v-for="item in featuredList" :key="item.id">
+      <div class="col-lg-12">
+        <div class="row">
+          <template v-for="item in featuredList.slice(0, 4)" :key="item.id">
+            <div class="col-12 col-md-6 col-lg-3 mb-4 d-flex">
+              <div class="card auction-card w-100">
+                <div class="card-body p-2 position-relative featured-art-card">
+                  <div class="featured-art-image-wrapper position-relative ">
+                    <img :src="item.avtArtwork" alt="thumb" class="w-100 rounded-2 featured-art-image" loading="lazy" />
+                    <div class="position-absolute top-0 start-0 w-100 p-2 artwork-overlay overlay-top">
+                      <div class="bg-dark bg-opacity-75 text-white rounded-3 p-2">
+                        <p class="m-0 fw-bold">
+                          {{ item.title }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="position-absolute bottom-0 start-0 w-100 p-2 artwork-overlay overlay-bottom">
+                      <div class="bg-dark bg-opacity-75 text-white rounded-3 p-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <p class="m-0 small fw-bold text-white">
+                            {{ item.ownerName }}
+                          </p>
+                          <span class="m-0 small bg-success text-white p-1 px-3 rounded-2">
+                            {{ item.paintingGenre }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="artwork-info d-flex">
+                    <p class="m-0 small text-muted">
+                      {{ item.description }}
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+      <!-- <template v-for="item in featuredList" :key="item.id">
         <div class="col-12 col-md-6 col-lg-4 mb-4 d-flex">
           <div class="card w-100 p-0">
             <div class="card-body">
@@ -128,81 +345,67 @@
                     {{ item.description }}
                   </p>
 
-                  <!-- <button class="btn btn-outline-success mt-auto">View Details</button> -->
                 </div>
               </div>
             </div>
 
           </div>
         </div>
-      </template>
+      </template> -->
 
     </div>
+  </div>
 
-    <!-- Danh sách buổi đấu giá  -->
-    <div class="row">
-      <h5 class="fw-bold mb-3 text-success">Hot Auction Room</h5>
 
-      <template v-for="auction in hotAuctions" :key="auction.id">
-        <!-- Card đấu giá -->
-        <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex">
-          <div class="card p-0 overflow-hidden">
-            <div class="p-0 position-relative">
-              <img :src="auction.imageAuctionRoom" class="img-auction" alt="" loading="lazy">
-
-              <div class="">
-                <span v-if="auction.status === 1"
-                  class="badge position-absolute top-0 start-0 m-3 bg-danger px-3">LIVE</span>
-                <span v-else-if="auction.status === 2"
-                  class="badge position-absolute top-0 start-0 m-3 bg-warning px-3 text-dark">In a few mins</span>
+  <!-- ========== Các cuộc đấu giá sắp tới ========== -->
+  <div class="row">
+    <div class="col-12">
+      <div class="container">
+        <div class="row pt-4 mb-5">
+          <!-- Upcoming Auctions -->
+          <div class="col-12 text-center mb-4">
+            <h3 class="fw-bold mb-2 text-success">Upcoming Auctions</h3>
+            <p>Mark your calendar for these exciting events</p>
+          </div>
+          <template v-for="auction in hotAuctions.filter(x => x.status === 2).slice(0, 4)" :key="auction.id">
+            <!-- Card đấu giá -->
+            <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex">
+              <div class="card p-0 overflow-hidden auction-card">
+                <div class="p-0 position-relative">
+                  <img :src="auction.imageAuctionRoom" class="img-auction" alt="" loading="lazy">
+                  <div class="">
+                    <span class="badge position-absolute top-0 start-0 m-3 bg-warning px-3 text-dark">In a few
+                      mins</span>
+                  </div>
+                </div>
+                <!-- Nội dung card -->
+                <div class="card-body d-flex flex-column gap-3">
+                  <div class="d-flex flex-column gap-2">
+                    <p class="fw-bold m-0 text-success fs-5"> {{ auction.roomName }} </p>
+                    <p class="m-0 text-muted small"> {{ auction.id }} </p>
+                    <div class="d-flex gap-2 align-items-center justify-content-between">
+                      <span class="m-0">Category</span>
+                      <span class="m-0"> {{ auction.type }} </span>
+                    </div>
+                    <p class="m-0 small description-clamp"> {{ auction.description }} </p>
+                  </div>
+                  <div class="mt-auto">
+                    <div class="">
+                      <router-link to="" class="w-100">
+                        <button class="btn btn-outline-warning w-100">Reserve Spot</button>
+                      </router-link>
+                    </div>
+                  </div>
+                </div>
               </div>
-
-              <span v-if="auction.status === 1"
-                class="badge position-absolute top-0 end-0 m-3 bg-success px-3">12:35</span>
-              <span v-if="auction.status === 1" class="badge position-absolute bottom-0 end-0 m-3 bg-success">{{
-                auction.viewCount }}
-                bidders</span>
             </div>
-            <!-- Nội dung card -->
-            <div class="card-body d-flex flex-column gap-3">
-              <div class="d-flex flex-column gap-2">
-                <p class="fw-bold m-0 text-success fs-5"> {{ auction.roomName }} </p>
-                <p class="m-0 text-muted small"> {{ auction.id }} </p>
-                <div class="d-flex gap-2 align-items-center justify-content-between">
-                  <span class="m-0">Category</span>
-                  <span class="m-0"> {{ auction.type }} </span>
-                </div>
-                <p class="m-0 small description-clamp"> {{ auction.description }} </p>
-              </div>
-              <div class="mt-auto">
-                <div class="" v-if="auction.status === 1">
-                  <router-link :to="`/client/auction-room/${auction.id}`" class="w-100">
-                    <button class="btn btn-success w-100">Join AuctAuction</button>
-                  </router-link>
-                </div>
-
-                <div class="" v-else-if="auction.status === 2">
-                  <router-link to="" class="w-100">
-                    <button class="btn btn-outline-warning w-100">Reserve Spot</button>
-                  </router-link>
-                </div>
-                <!-- <button class="btn btn-success">Join AuctAuction</button> -->
-              </div>
-
-            </div>
+          </template>
+          <div class="col-12 text-center mt-3">
+            <button class="btn btn-outline-success px-5 fs-5">Discover</button>
           </div>
         </div>
-      </template>
-
-
-
-
-
-
-
-
+      </div>
     </div>
-
   </div>
 </template>
 
@@ -213,6 +416,7 @@ export default {
   // name: "ClientHome",
   data() {
     return {
+      user: {},
       featuredList: [],
       loading: false,
       error: null,
@@ -221,8 +425,12 @@ export default {
   },
 
   mounted() {
+    this.user = {
+      name: localStorage.getItem("name_kh"),
+    };
     this.fetchFeatured();
     this.fetchSixRoomFeatured();
+
   },
 
   methods: {
@@ -271,6 +479,4 @@ export default {
 
 
 
-<style scoped>
-
-</style>
+<style></style>
