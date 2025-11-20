@@ -30,15 +30,17 @@
             </router-link>
           </li>
           <li class="nav-item">
+            <router-link to="/client/register-artwork" class="nav-link py-0"
+              :class="{ active: $route.path === '/client/register-artwork' }">
+              Launch
+            </router-link>
+          </li>
+          <li class="nav-item">
             <router-link to="/about-us" class="nav-link py-0" :class="{ active: $route.path === '/about-us' }">
               About us
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link to="/help" class="nav-link py-0" :class="{ active: $route.path === '/help' }">
-              Help
-            </router-link>
-          </li>
+
         </ul>
 
 
@@ -126,13 +128,6 @@
                   </router-link>
                 </li>
                 <li>
-                  <router-link to="/client/register-artwork"
-                    class="dropdown-item d-flex align-items-center gap-3 py-2 px-4 mt-2 mb-1">
-                    <i class="bi bi-brush fa-xl me-2"></i>
-                    <p class="m-0">Register Artwork</p>
-                  </router-link>
-                </li>
-                <li>
                   <router-link to="/client/payment"
                     class="dropdown-item d-flex align-items-center gap-3 py-2 px-4 mt-2 mb-1">
                     <i class="bi bi-credit-card fa-xl me-2"></i>
@@ -140,8 +135,7 @@
                   </router-link>
                 </li>
                 <li>
-                  <router-link to=""
-                    class="dropdown-item d-flex align-items-center gap-3 py-2 px-4 mt-2 mb-1">
+                  <router-link to="" class="dropdown-item d-flex align-items-center gap-3 py-2 px-4 mt-2 mb-1">
                     <i class="bi bi-gear fa-xl me-2"></i>
                     <p class="m-0">Setting</p>
                   </router-link>
@@ -170,7 +164,6 @@
         </div>
       </div>
     </nav>
-
   </div>
   <!-- Logout Confirm Modal moved to body using Teleport to avoid stacking context issues -->
   <teleport to="body">
@@ -193,8 +186,6 @@
       </div>
     </div>
   </teleport>
-
-
 
 </template>
 <script>
@@ -223,7 +214,7 @@ export default {
       check: localStorage.getItem("check_kh"),
       avt: localStorage.getItem("avatar_kh"),
     };
-    console.log("menu",this.user);
+    console.log("menu", this.user);
 
     window.addEventListener('avatar-updated', this.handleAvatarUpdate);
   },
