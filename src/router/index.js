@@ -187,16 +187,16 @@ const routes = [
     component: () => import("../views/Admin/Artworks/index.vue"),
     meta: { layout: "default" },
   },
-  // {
-  //   path: "/admin/management-auction",
+  {
+    path: "/admin/management-auction",
 
-  //   component: () => import("../views/Admin/AuctionRoom/index.vue"),
-  //   meta: { layout: "default" },
-  // },
+    component: () => import("../views/Admin/AuctionRoom/index.vue"),
+    meta: { layout: "default" },
+  },
   {
     path: "/admin/login",
-    name: "login",
-    component: () => import("../views/Admin/Login/index.vue"),
+    // name: "login",
+    component: () => import("../views/Admin/Login_admin/index.vue"),
     meta: { layout: "blank" },
   },
   {
@@ -211,18 +211,18 @@ const routes = [
     component: () => import("../views/Admin/Notification/index.vue"),
     meta: { layout: "default" },
   },
-  // {
-  //   path: "/admin/management-statistical",
+  {
+    path: "/admin/management-statistical",
 
-  //   component: () => import("../views/Admin/Statistical/index.vue"),
-  //   meta: { layout: "default" },
-  // },
-  // {
-  //   path: "/admin/management-admin",
+    component: () => import("../views/Admin/Statistical/index.vue"),
+    meta: { layout: "default" },
+  },
+  {
+    path: "/admin/management-admin",
 
-  //   component: () => import("../views/Admin/Admin-Management/index.vue"),
-  //   meta: { layout: "default" },
-  // },
+    component: () => import("../views/Admin/Admin-Management/index.vue"),
+    meta: { layout: "default" },
+  },
   {
     path: "/admin/management-setting",
     name: "admin-settings",
@@ -265,12 +265,12 @@ const routes = [
       },
     ],
   },
-  // {
-  //   path: "/admin/add-auction-room",
-  //   name: "add-auction-room",
-  //   component: () => import("../views/Admin/Add-auctionRoom/index.vue"),
-  //   meta: { layout: "default" },
-  // },
+  {
+    path: "/admin/add-auction-room",
+    name: "add-auction-room",
+    component: () => import("../views/Admin/Add-auctionRoom/index.vue"),
+    meta: { layout: "default" },
+  },
   {
     path: "/admin/artwork-detail",
     name: "artwork-detail",

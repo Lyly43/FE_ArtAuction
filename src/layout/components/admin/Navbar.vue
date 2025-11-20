@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar bg-white px-4 py-2">
+  <nav class="navbar bg-white px-4 py-2 ">
     <div class="container-fluid">
       <div class="row align-items-center w-100">
         <!-- Col trái: Search box -->
