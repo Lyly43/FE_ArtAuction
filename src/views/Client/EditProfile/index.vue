@@ -1,90 +1,139 @@
 <template>
-  <div class="container">
-
+  <div class="container mb-5">
     <div class="row">
-      <div class="col-3 ">
+      <div class="col-8">
         <div class="card">
-          <div class="card-body d-flex align-items-center justify-content-center flex-column gap-3">
-            <img v-bind:src="thong_tin.avt" class="rounded-circle border border-3 border-success" alt="avt"
-              style="width: 150px; aspect-ratio: 1/1;" />
+          <div class="card-body ">
+            <div class="row">
+              <div class="col-4 d-flex align-items-center flex-column gap-3">
+                <img v-bind:src="thong_tin.avt" class="rounded-circle border border-3 border-success" alt="avt"
+                  style="width: 150px; aspect-ratio: 1/1;" />
+                <p class="m-0">{{ thong_tin.email }}</p>
 
-            <p class="m-0">{{ thong_tin.email }}</p>
+                <!-- nút đổi avt -->
+                <button class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center gap-2 "
+                  @click="triggerFileInput" :disabled="uploadingAvatar">
+                  <div v-if="uploadingAvatar" class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <i v-else class="fa-solid fa-rotate"></i>
+                  <p class="m-0 p-0">{{ uploadingAvatar ? 'Processing image...' : 'Change Avatar' }}</p>
+                </button>
 
-            <!-- nút đổi avt -->
-            <button class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center gap-2 "
-              @click="triggerFileInput" :disabled="uploadingAvatar">
-              <div v-if="uploadingAvatar" class="spinner-border spinner-border-sm" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <!-- input file ẩn -->
+                <input type="file" ref="file" style="display: none" accept="image/*" @change="handleFileChange" />
+                <button type="button" class="btn btn-success w-100" data-bs-toggle="modal"
+                  data-bs-target="#exampleModal">Change Password</button>
               </div>
-              <i v-else class="fa-solid fa-rotate"></i>
-              <p class="m-0 p-0">{{ uploadingAvatar ? 'Đang xử lý ảnh...' : 'Change Avatar' }}</p>
-            </button>
+              <div class="col-8">
+                <div class="row">
+                  <div class="mb-4 col-lg-12">
+                    <label class="mb-2 text-success">Full name</label>
+                    <input type="text" class="form-control" v-model="thong_tin.username" />
+                  </div>
 
-            <!-- input file ẩn -->
-            <input type="file" ref="file" style="display: none" accept="image/*" @change="handleFileChange" />
-            <button type="button" class="btn btn-success w-100" data-bs-toggle="modal"
-              data-bs-target="#exampleModal">Change Password</button>
+                  <div class="mb-4 col-lg-6">
+                    <label class="mb-2 text-success">Gender</label>
+                    <select v-model="thong_tin.gender" class="form-select" id="gender">
+                      <option disabled value="">-- Choose Gender --</option>
+                      <option v-for="option in genderOptions" :key="option.value" :value="option.value">
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="mb-4 col-lg-6">
+                    <label class="mb-2 text-success">Date of Birth</label>
+                    <input type="date" class="form-control" v-model="thong_tin.dateOfBirth" />
+                  </div>
+
+                  <div class="mb-4 col-lg-12">
+                    <label class="mb-2 text-success">Contact Number</label>
+                    <input type="text" class="form-control" v-model="thong_tin.phonenumber" />
+                  </div>
+
+                  <div class="mb-4 col-lg-12">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <label class="mb-2 text-success">Identification</label>
+                      <small v-if="isKycVerified" class="text-success text-muted">ID card number has been
+                        verified.</small>
+                    </div>
+                    <input type="text" class="form-control" v-model="thong_tin.cccd" :disabled="isKycVerified">
+                  </div>
+
+
+
+                  <div class="mb-4 col-lg-12">
+                    <label class="mb-2 text-success">Address</label>
+                    <input type="text" class="form-control" v-model="thong_tin.address" />
+                  </div>
+
+                  <div class="col-lg-12 d-flex justify-content-end gap-3">
+                    <button type="button" class="btn btn-success w-md-100 w-md-auto px-5" @click="updateProfile()"
+                      :disabled="loading">
+                      <span v-if="loading">Saving...</span>
+                      <span class="fs-6" v-else>Save changes</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
 
           </div>
         </div>
-
       </div>
 
-      <div class="col-9">
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <div class="mb-3 col-lg-12">
-                <label class="m-1">Full name</label>
-                <input type="text" class="form-control" v-model="thong_tin.username" />
+      <div class="col-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex flex-column gap-3">
+            <div class="d-flex flex-column gap-2">
+              <div class="d-flex align-items-center justify-content-between gap-2">
+                <h5 class="m-0 fw-bold text-success">Identity Verification</h5>
+                <span class="badge px-3 py-2" :class="kycStatusBadge.class">
+                  {{ kycStatusBadge.label }}
+                </span>
               </div>
+              <small class="text-muted">Upload ID cards and a selfie to verify your identity</small>
+            </div>
 
-              <div class="mb-3 col-lg-6">
-                <label class="m-1">Contact Number</label>
-                <input type="text" class="form-control" v-model="thong_tin.phonenumber" />
-              </div>
 
-              <div class="mb-3 col-lg-6">
-                <label class="m-1">Identification</label>
-                <input type="text" class="form-control" v-model="thong_tin.cccd">
-              </div>
+            <div class="alert alert-warning py-2 px-3" v-if="kycMessage">
+              <i class="fa-solid fa-info-circle me-2"></i>{{ kycMessage }}
+            </div>
 
-              <div class="mb-3 col-lg-6">
-                <label class="m-1">Gender</label>
-                <select v-model="thong_tin.gender" class="form-select" id="gender">
-                  <option disabled value="">-- Choose Gender --</option>
-                  <option v-for="option in genderOptions" :key="option.value" :value="option.value">
-                    {{ option.label }}
-                  </option>
-                </select>
-              </div>
-              <div class="mb-3 col-lg-6">
-                <label class="m-1">Date of Birth</label>
-                <input type="date" class="form-control" v-model="thong_tin.dateOfBirth" />
-              </div>
-              <div class="mb-3 col-lg-12">
-                <label class="m-1">Address</label>
-                <input type="text" class="form-control" v-model="thong_tin.address" />
+            <div class="kyc-upload" :class="{ 'disabled-upload': isKycVerified }" v-for="section in kycSections"
+              :key="section.key">
+              <label class="form-label fw-semibold d-flex align-items-center gap-2">
+                <i :class="section.icon"></i> {{ section.label }}
+                <span class="text-danger">*</span>
+              </label>
+              <div class="upload-dropzone" :class="{ 'has-file': kycFiles[section.key].preview }">
+                <input type="file" accept="image/*" class="form-control" :id="`kyc-${section.key}`"
+                  @change="handleKycFileChange(section.key, $event)" :disabled="isKycVerified" />
+                <div v-if="!kycFiles[section.key].preview" class="text-center text-muted small">
+                  <p class="m-0">Drag or click to choose an image (JPG/PNG, &lt; 5MB)</p>
+                </div>
+                <div v-else class="preview-wrapper">
+                  <img :src="kycFiles[section.key].preview" alt="preview" class="img-fluid rounded">
+                  <button class="btn btn-link text-danger p-0" @click="removeKycFile(section.key)"
+                    :disabled="isKycVerified">
+                    <i class="fa-solid fa-trash me-2"></i>Remove image
+                  </button>
+                </div>
               </div>
             </div>
-            <div class="row mt-2">
-              <div class="col-lg-12 d-flex justify-content-end gap-3">
-                <button type="button" class="btn btn-success w-md-100 w-md-auto" @click="updateProfile()"
-                  :disabled="loading">
-                  <span v-if="loading">Saving...</span>
-                  <span class="fs-6" v-else>Save changes</span>
-                </button>
-              </div>
-            </div>
+
+            <button class="btn btn-success w-100 mt-auto" :disabled="isKycVerified || !canSubmitKyc || isSubmittingKyc"
+              @click="submitKycVerification">
+              <span v-if="isSubmittingKyc">
+                <span class="spinner-border spinner-border-sm me-2"></span>Submitting...
+              </span>
+              <span v-else>Submit KYC Verification</span>
+            </button>
           </div>
         </div>
-
-
-
-
       </div>
     </div>
-
 
   </div>
 
@@ -103,36 +152,33 @@
         <div class="modal-body">
           <div class="row mb-2">
             <div class="col-lg-4">
-              <label for="">Mật khẩu cũ</label>
+              <label>Current password</label>
             </div>
             <div class="col-lg-8">
-              <!-- <input v-model="doi_mat_khau.old_password" type="password" placeholder="Nhập mật khẩu cũ" class="form-control"> -->
-              <input placeholder="Nhập mật khẩu cũ" class="form-control">
+              <input placeholder="Enter current password" class="form-control">
             </div>
           </div>
 
           <div class="row mb-2">
             <div class="col-lg-4">
-              <label for="">Mật khẩu mới</label>
+              <label>New password</label>
             </div>
             <div class="col-lg-8">
-              <input type="password" placeholder="Nhập mật khẩu mới" class="form-control">
-              <!-- <input v-model="doi_mat_khau.new_password" type="password" placeholder="Nhập mật khẩu mới" class="form-control"> -->
+              <input type="password" placeholder="Enter new password" class="form-control">
             </div>
           </div>
           <div class="row mb-2">
             <div class="col-lg-4">
-              <label for="">Nhập lại Mật khẩu mới </label>
+              <label>Confirm new password</label>
             </div>
             <div class="col-lg-8">
-              <input type="password" placeholder="Nhập lại mật khẩu mới" class="form-control">
-              <!-- <input v-model="doi_mat_khau.re_password" type="password" placeholder="Nhập lại mật khẩu mới" class="form-control"> -->
+              <input type="password" placeholder="Re-enter new password" class="form-control">
             </div>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" >Save changes</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
           <!-- <button type="button" class="btn btn-primary" @click="doiMatKhau()">Save changes</button> -->
         </div>
       </div>
@@ -165,12 +211,41 @@ export default {
       uploadingAvatar: false,
       error: null,
       avtPreview: "",
+      kycStatus: 0,
+      kycMessage: '',
+      isSubmittingKyc: false,
+      kycSections: [
+        { key: 'cccdFront', label: 'ID card - front side', icon: 'fa-regular fa-id-card' },
+        { key: 'cccdBack', label: 'ID card - back side', icon: 'fa-regular fa-id-card' },
+        { key: 'selfie', label: 'Selfie with ID card', icon: 'fa-solid fa-user-check' }
+      ],
+      kycFiles: {
+        cccdFront: { file: null, preview: '' },
+        cccdBack: { file: null, preview: '' },
+        selfie: { file: null, preview: '' }
+      },
       genderOptions: [
         { value: 0, label: "Male" },
         { value: 1, label: "Female" },
         { value: 2, label: "Other" },
       ],
     };
+  },
+
+  computed: {
+    kycStatusBadge() {
+      const status = Number(this.kycStatus);
+      if (status === 1) return { label: 'Verified', class: 'bg-success text-white' };
+      if (status === 2) return { label: 'Pending review', class: 'bg-warning text-dark' };
+      if (status === -1) return { label: 'Rejected', class: 'bg-danger text-white' };
+      return { label: 'Not verified', class: 'bg-secondary text-white' };
+    },
+    isKycVerified() {
+      return Number(this.kycStatus) === 1;
+    },
+    canSubmitKyc() {
+      return Object.values(this.kycFiles).every(item => !!item.file);
+    }
   },
 
   mounted() {
@@ -190,12 +265,12 @@ export default {
         })
         .then((res) => {
           this.thong_tin = res.data;
-          console.log(this.thong_tin);
-
+          this.kycStatus = res.data?.kycStatus ?? 0;
+          this.kycMessage = res.data?.kycNote || '';
         })
         .catch((err) => {
           console.error(err);
-          this.$toast.error("Không thể tải thông tin người dùng!");
+          this.$toast.error("Unable to load user information!");
         });
     },
 
@@ -218,22 +293,21 @@ export default {
       if (file) {
         // Kiểm tra xem có phải là ảnh không
         if (!file.type.startsWith('image/')) {
-          this.$toast.error('Vui lòng chọn file ảnh!');
+          this.$toast.error('Please select an image file!');
           return;
         }
 
-        this.uploadingAvatar = true; // Bắt đầu loading
-        this.avtPreview = URL.createObjectURL(file); // hiển thị preview
+        this.uploadingAvatar = true;
+        this.avtPreview = URL.createObjectURL(file);
 
-        // Compress ảnh trước khi upload
         try {
           const compressedFile = await this.compressImage(file);
-          await this.uploadAvatar(compressedFile); // gọi API upload với ảnh đã compress
+          await this.uploadAvatar(compressedFile);
         } catch (error) {
-          console.error('Lỗi compress ảnh:', error);
-          this.$toast.error('Có lỗi khi xử lý ảnh!');
+          console.error('Image compression error:', error);
+          this.$toast.error('Failed to process image!');
         } finally {
-          this.uploadingAvatar = false; // Kết thúc loading
+          this.uploadingAvatar = false;
         }
       }
     },
@@ -361,7 +435,7 @@ export default {
           },
         });
 
-        console.log("Upload thành công:", res.data);
+        console.log("Avatar upload success:", res.data);
 
         // Cập nhật avatar mới vào thong_tin
         this.thong_tin.avt = res.data.avt || res.data;
@@ -378,11 +452,11 @@ export default {
           detail: { avatar: this.thong_tin.avt }
         }));
 
-        this.$toast.success("Cập nhật avatar thành công!");
+        this.$toast.success("Avatar updated successfully!");
       } catch (err) {
         console.error("Upload avatar error:", err);
-        this.$toast.error("Upload avatar thất bại!");
-        throw err; // Throw để catch ở handleFileChange
+        this.$toast.error("Failed to upload avatar!");
+        throw err;
       }
     },
 
@@ -399,18 +473,18 @@ export default {
           },
         })
         .then((res) => {
-          if(res.data.status){
+          if (res.data.status) {
             this.loadUserData();
-            this.$toast.success("Cập nhật thông tin thành công!");
+            this.$toast.success("Profile updated successfully!");
             console.log("Update response:", res.data.data);
-          }else{
-            this.$toast.error(res.data.message);
+          } else {
+            this.$toast.error(res.data.message || "Update failed!");
           }
 
         })
         .catch((err) => {
-          this.error = "Cập nhật thất bại!";
-          this.$toast.error("Cập nhật thông tin thất bại!");
+          this.error = "Update failed!";
+          this.$toast.error("Unable to update profile!");
           console.log("Update error:", err);
         })
         .finally(() => {
@@ -426,10 +500,69 @@ export default {
           this.banks = res.data.data;
         })
         .catch((err) => {
-          console.error("Lỗi lấy danh sách ngân hàng:", err);
-          this.$toast.error("Không thể tải danh sách ngân hàng!");
+          console.error("Failed to load banks:", err);
+          this.$toast.error("Unable to load bank list!");
         });
     },
+
+    handleKycFileChange(key, event) {
+      if (this.isKycVerified) return;
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        this.$toast.error('Please choose an image file (JPG, PNG...)');
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        this.$toast.error('Each image must be under 5MB');
+        return;
+      }
+
+      const preview = URL.createObjectURL(file);
+      if (this.kycFiles[key].preview) {
+        URL.revokeObjectURL(this.kycFiles[key].preview);
+      }
+      this.kycFiles[key] = { file, preview };
+    },
+
+    removeKycFile(key) {
+      if (this.isKycVerified) return;
+      if (this.kycFiles[key].preview) {
+        URL.revokeObjectURL(this.kycFiles[key].preview);
+      }
+      this.kycFiles[key] = { file: null, preview: '' };
+    },
+
+    submitKycVerification() {
+      if (this.isKycVerified || !this.canSubmitKyc || this.isSubmittingKyc) return;
+      this.isSubmittingKyc = true;
+
+      const formData = new FormData();
+      formData.append("cccdFront", this.kycFiles.cccdFront.file);
+      formData.append("cccdBack", this.kycFiles.cccdBack.file);
+      formData.append("selfie", this.kycFiles.selfie.file);
+
+      axios
+        .post("http://localhost:8081/api/user/kyc/verify", formData, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token")
+          }
+        })
+        .then((res) => {
+          this.$toast.success(res.data?.message || "KYC request submitted. Please wait for review.");
+          this.kycStatus = res.data?.status || "pending";
+          this.kycMessage = res.data?.note || "Your documents are under review.";
+        })
+        .catch((err) => {
+          console.error("KYC error:", err);
+          this.$toast.error("KYC submission failed. Please try again.");
+        })
+        .finally(() => {
+          this.isSubmittingKyc = false;
+        });
+    }
   },
 
 
@@ -444,12 +577,6 @@ export default {
   box-shadow: 0 0 30px rgba(0, 123, 255, 0.2);
 }
 
-/* .info,
-.button {
-  border: 1px solid #044a42 !important;
-  transition: all 0.3s ease;
-} */
-
 .button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
@@ -461,12 +588,32 @@ export default {
   transform: translateY(-1px);
 }
 
-/* .form-control {
-  background-color: transparent !important;
-  border: 1px solid #cad0db;
-} */
+.kyc-upload {
+  border: 1px dashed rgba(4, 74, 66, 0.3);
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: rgba(4, 74, 66, 0.02);
+  transition: border-color 0.2s ease;
+}
 
-/* span {
-  font-size: 10px;
-} */
+.kyc-upload:hover {
+  border-color: rgba(4, 74, 66, 0.6);
+}
+
+.preview-wrapper img {
+  margin: 10px 20px 0 0;
+  border-radius: 10px;
+  border: 1px solid rgba(4, 74, 66, 0.1);
+  max-height: 200px;
+  object-fit: contain;
+}
+
+.preview-wrapper button {
+  font-size: 0.85rem;
+}
+
+.kyc-upload.disabled-upload {
+  opacity: 0.6;
+  pointer-events: none;
+}
 </style>
