@@ -52,5 +52,30 @@
 }
 
 /*---------------------------------------------------------------------
-                               Add auction room
+                               Schedule
 -----------------------------------------------------------------------*/
+.cell-hover:hover {
+  background-color: #f8f9fa !important;
+}
+.cell-hover:hover .add-icon {
+  opacity: 1 !important;
+}
+.add-icon {
+  transition: opacity 0.2s;
+}
+.event-badge {
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.event-badge:hover {
+  transform: scale(1.02);
+  z-index: 10;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #dee2e6;
+  border-radius: 4px;
+}
