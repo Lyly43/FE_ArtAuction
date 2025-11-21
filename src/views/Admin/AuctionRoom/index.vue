@@ -1,124 +1,223 @@
 <template>
-  <div class="container">
-    <h4 class="fw-bold text-primary">Auction room management</h4>
-    <p class="text-body-secondary">Manage all auction rooms in the system</p>
-    <div class="row mb-4">
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+  <div class="container-fluid py-4 bg-light-subtle min-vh-100">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+      <div class="mb-3 mb-md-0">
+        <h4 class="fw-bold text-primary mb-1">Auction Room Management</h4>
+        <p class="text-body-secondary mb-0">Overview and control of all auction sessions</p>
+      </div>
+      <div>
+        <router-link
+          to="/admin/add-auction-room"
+          class="btn btn-primary shadow-sm rounded-pill px-4"
+        >
+          <i class="fa-solid fa-plus me-2"></i> Create Room
+        </router-link>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Total users</h6>
-              <i class="fa-solid fa-shield text-primary"></i>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Total Users</h6>
+                <h3 class="fw-bold mb-0">1,222</h3>
+              </div>
+              <div
+                class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-shield fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">1222</p>
-            <small class="text-success">+12% over last month</small>
+            <small class="text-success fw-medium"
+              ><i class="fa-solid fa-arrow-trend-up me-1"></i>+12% vs last month</small
+            >
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Verified</h6>
-              <i class="fa-solid fa-circle-check text-success"></i>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Verified</h6>
+                <h3 class="fw-bold mb-0">100</h3>
+              </div>
+              <div
+                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-circle-check fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">100</p>
-            <small class="text-body-secondary">80% of the total</small>
+            <small class="text-body-secondary">80% of total users</small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Seller</h6>
-              <i class="fa-solid fa-users"></i>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Sellers</h6>
+                <h3 class="fw-bold mb-0">1,222</h3>
+              </div>
+              <div
+                class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-store fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">1222</p>
-            <small class="text-body-secondary">12% of the total</small>
+            <small class="text-body-secondary">12% of total users</small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Locked</h6>
-              <i class="fa-solid fa-ban text-danger"></i>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Locked</h6>
+                <h3 class="fw-bold mb-0">12</h3>
+              </div>
+              <div
+                class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-ban fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">1222</p>
-            <small class="text-danger">Policy violation</small>
+            <small class="text-danger fw-medium">Policy violation</small>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- search -->
-    <div class="row align-items-stretch">
-      <div class="col-12 col-lg-7 mb-4">
-        <div class="input-group">
-          <span class="input-group-text" id="basic-addon1">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </span>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Search auction room"
-            aria-label="Username"
-            aria-describedby="basic-addon1"
-          />
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <div class="row justify-content-between align-items-center">
+          <div class="col-12 col-md-6 col-lg-5">
+            <div class="input-group bg-light rounded-pill px-2 border-0">
+              <span class="input-group-text bg-transparent border-0 text-secondary">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control bg-transparent border-0 shadow-none"
+                placeholder="Search for report..."
+              />
+            </div>
+          </div>
+
+          <div class="col-auto">
+            <button class="btn btn-outline-primary px-3">
+              <i class="fa-solid fa-filter me-2"></i>Filter
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="col-12 col-lg-5 d-flex justify-content-lg-end gap-2 gap-md-4 gap-lg-5 mb-4">
-        <button
-          class="btn btn-outline-primary d-flex align-items-center justify-content-center py-1"
-        >
-          <i class="fa-solid fa-filter"></i>
-        </button>
-        <!-- <button type="button" class="btn btn-primary shadow" @click="goToAddAuctionRoom">
-          <i class="fa-solid fa-plus me-3"></i>Tạo phòng
-        </button> -->
-        <router-link to="/admin/add-auction-room" class="btn btn-primary shadow"
-          ><i class="fa-solid fa-plus me-3"></i>Create a room</router-link
-        >
       </div>
     </div>
 
-    <!-- auction-room -->
-    <div class="auction-room">
-      <div class="card mb-4" v-for="room in auctionRooms" :key="room.id">
-        <div class="card-body">
-          <div class="row">
-            <div class="d-flex align-items-center justify-content-between">
-              <h5 class="fw-bold">{{ room.name }}</h5>
-              <p class="border rounded-3 p-1 fw-bold" :class="getStatusClass(room.status)">
-                {{ room.status }}
-              </p>
+    <!-- <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12 col-md-8">
+            <div class="input-group bg-light rounded-pill px-2 border-0">
+              <span class="input-group-text bg-transparent border-0 text-secondary">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control bg-transparent border-0 shadow-none"
+                placeholder="Search by notification content..."
+              />
             </div>
-            <p>{{ room.type }} - {{ room.artworkName }}</p>
           </div>
-          <hr />
-          <div class="col-11">
-            <div class="row">
-              <div class="col-12 col-md-6 col-lg-3">
-                <smal class="text-body-secondary">Start time</smal>
-                <p>{{ room.startTime }}</p>
-              </div>
-              <div class="col-12 col-md-6 col-lg-3">
-                <smal class="text-body-secondary">Number of participants</smal>
-                <div><i class="fa-solid fa-users me-4"></i>{{ room.participants }}</div>
+          <div class="col-12 col-md-4">
+            <select
+              class="form-select rounded-pill border-0 bg-light shadow-none"
+              aria-label="Filter select"
+            >
+              <option selected>All Status</option>
+              <option value="1">Sent</option>
+              <option value="2">Failed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <div class="row no-scrollbar g-4 overflow-y-auto" style="max-height: 400px">
+      <div class="col-12" v-for="room in auctionRooms" :key="room.id">
+        <div
+          class="card border-0 shadow-sm hover-lift transition-base h-100"
+          :class="getBorderClass(room.status)"
+          @click="handleRoomClick(room.id)"
+          style="cursor: pointer"
+        >
+          <div class="card-body p-4">
+            <div class="row align-items-center">
+              <div class="col-12 col-lg-4 mb-3 mb-lg-0 border-end-lg">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h5 class="fw-bold text-primary mb-0 text-truncate">{{ room.name }}</h5>
+                  <span
+                    class="badge rounded-pill px-3 py-2 fw-normal"
+                    :class="getStatusClass(room.status)"
+                  >
+                    {{ room.status }}
+                  </span>
+                </div>
+                <p class="mb-1 text-dark fw-medium">
+                  <i class="fa-solid fa-palette me-2 text-secondary"></i>{{ room.artworkName }}
+                </p>
+                <small class="text-muted"
+                  ><i class="fa-solid fa-tag me-2"></i>{{ room.type }}</small
+                >
               </div>
 
-              <div class="col-12 col-md-6 col-lg-3">
-                <smal class="text-body-secondary">Starting price</smal>
-                <p>{{ formatCurrency(room.currentPrice) }}</p>
-              </div>
-              <div class="col-12 col-md-6 col-lg-3">
-                <smal class="text-body-secondary">Current price</smal>
-                <p>{{ formatCurrency(room.startPrice) }}</p>
+              <div class="col-12 col-lg-8">
+                <div class="row g-3">
+                  <div class="col-6 col-md-3">
+                    <span class="text-secondary text-uppercase small fw-bold d-block mb-1"
+                      >Start Time</span
+                    >
+                    <span class="fw-medium text-dark fs-6">{{ room.startTime }}</span>
+                  </div>
+
+                  <div class="col-6 col-md-3">
+                    <span class="text-secondary text-uppercase small fw-bold d-block mb-1"
+                      >Participants</span
+                    >
+                    <div class="d-flex align-items-center">
+                      <i class="fa-solid fa-users text-info me-2"></i>
+                      <span class="fw-bold text-dark">{{ room.participants }}</span>
+                    </div>
+                  </div>
+
+                  <div class="col-6 col-md-3">
+                    <span class="text-secondary text-uppercase small fw-bold d-block mb-1"
+                      >Current Price</span
+                    >
+                    <span class="fw-bold text-primary fs-5">{{
+                      formatCurrency(room.currentPrice)
+                    }}</span>
+                  </div>
+
+                  <div class="col-6 col-md-3">
+                    <span class="text-secondary text-uppercase small fw-bold d-block mb-1"
+                      >Start Price</span
+                    >
+                    <span class="fw-medium text-body-secondary">{{
+                      formatCurrency(room.startPrice)
+                    }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -127,6 +226,7 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data() {
@@ -148,7 +248,7 @@ export default {
           name: "Abstract Modern Art",
           status: "In progress",
           type: "Oil painting",
-          artworkName: "Phong cảnh mùa thu",
+          artworkName: "Trừu tượng số 5",
           startTime: "08:00 - 25/10/2023",
           participants: 150,
           startPrice: 5000000,
@@ -159,18 +259,17 @@ export default {
           name: "Vintage Portrait Collection",
           status: "Ended",
           type: "Oil painting",
-          artworkName: "Phong cảnh mùa thu",
+          artworkName: "Chân dung thiếu nữ",
           startTime: "10:00 - 15/10/2023",
           participants: 45,
           startPrice: 300000,
-          currentPrice: 300000, // Giá cuối cùng
+          currentPrice: 300000,
         },
       ],
     };
   },
 
   methods: {
-    //Định dạng tiền tệ VND
     formatCurrency(value) {
       if (!value) return "0đ";
       return new Intl.NumberFormat("vi-VN", {
@@ -179,20 +278,53 @@ export default {
       }).format(value);
     },
 
-    //Lấy class màu sắc dựa trên trạng thái
+    // CSS Class cho Badge trạng thái
     getStatusClass(status) {
       switch (status) {
         case "Coming soon":
-          return "text-warning border-warning";
+          return "bg-warning-subtle text-warning-emphasis border border-warning-subtle";
         case "In progress":
-          return "text-danger border-danger"; // Màu đỏ cho đang diễn ra
+          return "bg-danger-subtle text-danger border border-danger-subtle";
         case "Ended":
-          return "text-secondary border-secondary"; // Màu xám cho đã kết thúc
+          return "bg-secondary-subtle text-secondary border border-secondary-subtle";
         default:
-          return "text-dark border-dark";
+          return "bg-light text-dark border";
+      }
+    },
+
+    // CSS Class tạo viền màu bên trái cho Card
+    getBorderClass(status) {
+      switch (status) {
+        case "Coming soon":
+          return "border-start border-4 border-warning";
+        case "In progress":
+          return "border-start border-4 border-danger";
+        case "Ended":
+          return "border-start border-4 border-secondary";
+        default:
+          return "";
       }
     },
   },
 };
 </script>
-<style></style>
+
+<style scoped>
+/* Custom CSS nhỏ cho hiệu ứng hover */
+.transition-base {
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+  background-color: #f8f9fa; /* Đổi màu nền nhẹ khi hover */
+}
+
+/* Tạo vạch ngăn cách giữa cột thông tin trên màn hình lớn */
+@media (min-width: 992px) {
+  .border-end-lg {
+    border-right: 1px solid #dee2e6;
+  }
+}
+</style>

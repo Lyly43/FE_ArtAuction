@@ -29,12 +29,12 @@ const routes = [
     component: () => import("../views/Khachhang/AboutUs/index.vue"),
     meta: { layout: "client" },
   },
-  {
-    path: "/help",
-    name: "help",
-    component: () => import("../views/Khachhang/Help/index.vue"),
-    meta: { layout: "client" },
-  },
+  // {
+  //   path: "/help",
+  //   name: "help",
+  //   component: () => import("../views/Khachhang/Help/index.vue"),
+  //   meta: { layout: "client" },
+  // },
 
   // sau login - phải checkUser
   {
@@ -132,12 +132,12 @@ const routes = [
     meta: { layout: "default" },
     // beforeEnter: checkUser,
   },
-  {
-    path: "/admin/management-employees",
-    // name: 'auction-room',
-    component: () => import("../views/Admin/Employees/index.vue"),
-    meta: { layout: "default" },
-  },
+  // {
+  //   path: "/admin/management-employees",
+  //   // name: 'auction-room',
+  //   component: () => import("../views/Admin/Employees/index.vue"),
+  //   meta: { layout: "default" },
+  // },
   {
     path: "/admin/management-users",
     // name: 'auction-room',
@@ -275,6 +275,12 @@ const routes = [
     path: "/admin/artwork-detail",
     name: "artwork-detail",
     component: () => import("../views/Admin/ArtworkDetail/index.vue"),
+    meta: { layout: "default" },
+  },
+  {
+    path: "/admin/sent-notification",
+    // name: "artwork-detail",
+    component: () => import("../views/Admin/Sent_Notification/index.vue"),
     meta: { layout: "default" },
   },
 ];

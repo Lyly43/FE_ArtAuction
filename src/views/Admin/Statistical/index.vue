@@ -1,80 +1,118 @@
 <template>
-  <div class="container">
-    <h4 class="text-primary fw-bold">Analysis & Reporting</h4>
-    <p class="text-body-secondary">System performance statistics and analysis</p>
-    <div class="row mb-4 d-flex align-items-center justify-content-between">
-      <div class="col-12 col-md-3">
-        <div class="card" style="width: 18rem">
+  <div class="container-fluid py-4 bg-light-subtle min-vh-100">
+    <div class="mb-4">
+      <h4 class="text-primary fw-bold mb-1">Analysis & Reporting</h4>
+      <p class="text-body-secondary mb-0">System performance statistics and analysis</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">New User</h6>
-              <i class="fa-solid fa-users text-primary"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">New User</h6>
+                <h3 class="fw-bold mb-0">120</h3>
+              </div>
+              <div
+                class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-users fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">120</p>
-            <small class="text-body-secondary">This month</small>
+            <small class="text-body-secondary">
+              <span class="text-success fw-medium"><i class="fa-solid fa-arrow-up"></i> 12%</span>
+              vs last month
+            </small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Revenue</h6>
-              <i class="fa-solid fa-chart-line text-success"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Revenue</h6>
+                <h3 class="fw-bold mb-0">100</h3>
+              </div>
+              <div
+                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-chart-line fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">100</p>
-            <small class="text-body-secondary">This month</small>
+            <small class="text-body-secondary">
+              <span class="text-success fw-medium"><i class="fa-solid fa-arrow-up"></i> 5%</span> vs
+              last month
+            </small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Auction room</h6>
-              <i class="fa-solid fa-hourglass-start text-danger"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Auction Room</h6>
+                <h3 class="fw-bold mb-0">10</h3>
+              </div>
+              <div
+                class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-hourglass-start fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">10</p>
-            <small class="text-body-secondary">This month</small>
+            <small class="text-body-secondary">Active rooms this month</small>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Charts  -->
-    <div class="row">
+    <div class="row g-3">
       <div class="col-12 col-lg-6">
-        <div class="frame border border-2 border-secondary p-3 bg-light mt-3">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <h5>Revenue chart (million VND)</h5>
-            <i class="fa-solid fa-chart-simple"></i>
+        <div class="card border-0 shadow-sm h-100">
+          <div
+            class="card-header bg-white border-0 pt-3 pb-0 d-flex justify-content-between align-items-center"
+          >
+            <h5 class="card-title fw-bold text-primary mb-0">Revenue Chart</h5>
+            <span class="badge bg-secondary-subtle text-primary">Million VND</span>
           </div>
-          <div class="card" style="width: 100%">
-            <canvas id="revenueChart"></canvas>
+          <div class="card-body">
+            <div style="position: relative; height: 300px; width: 100%">
+              <canvas id="revenueChart"></canvas>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-lg-6">
-        <div class="frame border border-2 border-secondary p-3 bg-light mt-3">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <h5>Painting genre</h5>
-            <i class="fa-solid fa-image"></i>
+        <div class="card border-0 shadow-sm h-100">
+          <div
+            class="card-header bg-white border-0 pt-3 pb-0 d-flex justify-content-between align-items-center"
+          >
+            <h5 class="card-title fw-bold text-success mb-0">Painting Genre</h5>
+            <i class="fa-solid fa-image text-secondary"></i>
           </div>
-          <div class="card" style="width: 100%">
-            <canvas id="userChart"></canvas>
+          <div class="card-body">
+            <div style="position: relative; height: 300px; width: 100%">
+              <canvas id="userChart"></canvas>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
-import { onMounted } from "vue";
 import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
+
 export default {
   data() {
     return {
@@ -84,56 +122,81 @@ export default {
   },
 
   mounted() {
-    // Biểu đồ doanh thu
+    // --- Biểu đồ doanh thu ---
     const revenueChartCtx = document.getElementById("revenueChart");
-    this.revenueChartCtx = new Chart(revenueChartCtx, {
+    // Lưu vào biến this.revenueChart để có thể destroy sau này
+    this.revenueChart = new Chart(revenueChartCtx, {
       type: "line",
       data: {
-        labels: ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"], // trục x
+        labels: ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"],
         datasets: [
           {
-            lable: "Doanh thu (triệu đồng)",
-            data: [10, 25, 20, 40, 60, 80],
+            label: "Doanh thu (triệu đồng)", // Đã sửa lỗi chính tả: lable -> label
+            data: [10, 25, 20, 40, 60, 80, 85, 90, 75, 60, 95, 100], // Đã thêm dữ liệu mẫu cho đủ 12 tháng
             borderColor: "#0d6efd",
-            backgroundColor: "rgba(13,110,253,0.2)",
+            backgroundColor: "rgba(13,110,253,0.1)",
             tension: 0.4,
             fill: true,
-          },
-        ],
-      },
-      options: {
-        responsive: true, // chart sẽ tự điều chỉnh kích thước khi container thay đổi
-        plugins: { legend: { display: false } }, //ẩn legend.
-        scales: { y: { beginAtZero: true } }, //trục y bắt đầu từ 0.
-      },
-    });
-
-    // Biểu đồ tỷ lệ loại
-    const userCtx = document.getElementById("userChart");
-    this.userChart = new Chart(userCtx, {
-      type: "bar",
-      data: {
-        labels: [
-          "Tranh sơn dầu",
-          "Tranh phong cảnh",
-          "Tranh ký họa",
-          "Tranh trừu tượng",
-          "Tranh chân dung",
-        ],
-        datasets: [
-          {
-            data: [100, 150, 200, 250, 220, 300],
-            label: "Tranh",
-            backgroundColor: "rgba(25, 135, 84, 0.6)",
-            borderColor: "#198754",
-            borderWidth: 1,
+            pointBackgroundColor: "#ffffff",
+            pointBorderColor: "#0d6efd",
+            pointBorderWidth: 2,
           },
         ],
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false, // Quan trọng để chart fill theo div cha
+        plugins: {
+          legend: { display: true, position: "top" }, // Hiển thị legend cho rõ
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { borderDash: [2, 4], color: "#e9ecef" }, // Grid nét đứt cho đẹp
+          },
+          x: {
+            grid: { display: false },
+          },
+        },
+      },
+    });
+
+    // --- Biểu đồ tỷ lệ loại ---
+    const userCtx = document.getElementById("userChart");
+    this.userChart = new Chart(userCtx, {
+      type: "bar",
+      data: {
+        labels: ["Sơn dầu", "Phong cảnh", "Ký họa", "Trừu tượng", "Chân dung"],
+        datasets: [
+          {
+            label: "Số lượng",
+            data: [100, 150, 200, 250, 220],
+            backgroundColor: [
+              "rgba(25, 135, 84, 0.7)",
+              "rgba(13, 110, 253, 0.7)",
+              "rgba(255, 193, 7, 0.7)",
+              "rgba(220, 53, 69, 0.7)",
+              "rgba(13, 202, 240, 0.7)",
+            ],
+            borderColor: "transparent",
+            borderRadius: 4, // Bo góc cột
+            barPercentage: 0.6,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
         plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true } },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { borderDash: [2, 4], color: "#e9ecef" },
+          },
+          x: {
+            grid: { display: false },
+          },
+        },
       },
     });
   },
@@ -145,8 +208,3 @@ export default {
   },
 };
 </script>
-<style>
-.frame {
-  height: 400px;
-}
-</style>

@@ -1,229 +1,295 @@
 <template>
-  <div class="container py-3">
-    <!-- <h4 class="text-primary">🎬 Admin Livestream</h4> -->
+  <div class="container-fluid py-4 bg-light-subtle min-vh-100">
+    <div class="mb-4">
+      <h4 class="fw-bold text-primary mb-1">Dashboard</h4>
+      <p class="text-body-secondary mb-0">Overview of the painting auction system</p>
+    </div>
 
-    <!-- Card tạo phòng mới -->
-    <!-- <div class="row mb-4">
-      <div class="col-md-6">
-        <div class="card">
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <h5 class="card-title text-primary">🎥 Tạo phòng livestream mới</h5>
-            <p class="card-text">Tạo một phòng auction mới và bắt đầu livestream</p>
-            <button class="btn btn-success btn-lg" :disabled="creatingRoom" @click="createNewRoom">
-              <span v-if="creatingRoom" class="spinner-border spinner-border-sm me-2"></span>
-              {{ creatingRoom ? "Đang tạo..." : "Tạo phòng mới" }}
-            </button>
-            <div v-if="newRoomId" class="mt-2">
-              <small class="text-muted"
-                >Room ID: <strong>{{ newRoomId }}</strong></small
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Total users</h6>
+                <h3 class="fw-bold mb-0">120</h3>
+              </div>
+              <div
+                class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
               >
+                <i class="fa-solid fa-users fs-5"></i>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-    <!-- Phần livestream cũ -->
-    <!-- <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">📺 Livestream hiện tại</h5>
-        <div class="d-flex gap-2 mb-3">
-          <input v-model="roomId" class="form-control" placeholder="Room ID" style="max-width:240px" />
-          <button class="btn btn-primary" :disabled="started" @click="start">Start</button>
-          <button class="btn btn-secondary" :disabled="!started" @click="shareScreen">Share Screen</button>
-          <button class="btn btn-danger" :disabled="!started" @click="stop">Stop</button>
-        </div>
-
-        <video ref="localVideo" autoplay playsinline muted
-               style="width:100%;border-radius:8px;border:1px solid #ddd"></video>
-        <p class="mt-2 text-muted">Status: {{ started ? 'Broadcasting' : 'Idle' }}</p>
-      </div>
-    </div> -->
-
-    <h4 class="fw-bold text-primary">Dashboard</h4>
-    <p class="text-body-secondary">Overview of the painting auction system</p>
-    <div class="row mb-4 d-flex align-items-center justify-content-between">
-      <div class="col-12 col-md-3">
-        <div class="card" style="width: 18rem">
-          <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Total users</h6>
-              <i class="fa-solid fa-users text-primary"></i>
-            </div>
-            <p class="card-text fw-bold fs-5 mb-2">120</p>
-            <small class="text-success">+12.5% ​​over last month</small>
+            <small class="text-success fw-medium">
+              <i class="fa-solid fa-arrow-trend-up me-1"></i>+12.5% over last month
+            </small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Artwork</h6>
-              <i class="fa-solid fa-image"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Artwork</h6>
+                <h3 class="fw-bold mb-0">100</h3>
+              </div>
+              <div
+                class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-image fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">100</p>
-            <small class="text-success">+12.5% ​​over last month</small>
+            <small class="text-success fw-medium">
+              <i class="fa-solid fa-arrow-trend-up me-1"></i>+12.5% over last month
+            </small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Phòng đấu giá</h6>
-
-              <i class="fa-solid fa-hammer"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Auction Rooms</h6>
+                <h3 class="fw-bold mb-0">10</h3>
+              </div>
+              <div
+                class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-hammer fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">10</p>
             <small class="text-body-secondary">23 rooms are in operation</small>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="row mb-4 d-flex align-items-center justify-content-between">
-      <div class="col-12 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Bidding</h6>
-              <i class="fa-solid fa-chart-line text-success"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Bidding</h6>
+                <h3 class="fw-bold mb-0">120</h3>
+              </div>
+              <div
+                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-chart-line fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">120</p>
-            <small class="text-success">+12.5% ​​over last month</small>
+            <small class="text-success fw-medium">
+              <i class="fa-solid fa-arrow-trend-up me-1"></i>+12.5% over last month
+            </small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Revenue</h6>
-              <i class="fa-solid fa-dollar-sign text-warning"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Revenue</h6>
+                <h3 class="fw-bold mb-0">100</h3>
+              </div>
+              <div
+                class="bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-dollar-sign fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">100</p>
-            <small class="text-success">+12.5% ​​over last month</small>
+            <small class="text-success fw-medium">
+              <i class="fa-solid fa-arrow-trend-up me-1"></i>+12.5% over last month
+            </small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Active</h6>
-              <i class="fa-solid fa-user-check text-success"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Active Users</h6>
+                <h3 class="fw-bold mb-0">10</h3>
+              </div>
+              <div
+                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-user-check fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">10</p>
-            <small class="text-body-secondary">10 people are active</small>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row mb-4 d-flex align-items-center justify-content-between">
-      <!-- Phòng đấu giá gần đây -->
-      <div class="col-12 col-lg-6">
-        <div class="border border-1 border-secondary p-3 bg-light h-100 rounded-2">
-          <h5>Nearby auction rooms</h5>
-          <div class="table-responsive mt-4">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr class="bg-secondary">
-                  <th scope="col">Auction room name</th>
-                  <th scope="col">Artwork</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Current price</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Tranh sơn dầu</td>
-                  <td>Tranh phong cảnh mùa thu</td>
-                  <td><small class="text-danger shadow">In progress</small></td>
-                  <td>10.000đ</td>
-                </tr>
-
-                <tr>
-                  <td>Tranh sơn dầu</td>
-                  <td>Tranh phong cảnh mùa thu</td>
-                  <td><small class="text-warning shadow">Coming soon</small></td>
-                  <td>10.000đ</td>
-                </tr>
-
-                <tr>
-                  <td>Tranh sơn dầu</td>
-                  <td>Tranh phong cảnh mùa thu</td>
-                  <td><small class="text-body-secondary shadow">End</small></td>
-                  <td>10.000đ</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Người dùng mới -->
-      <div class="col-12 col-lg-6">
-        <div class="border border-1 border-secondary p-3 bg-light h-100 rounded-2">
-          <h5>New User</h5>
-          <div class="table-responsive mt-4">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr class="bg-secondary">
-                  <th scope="col">Username</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Registration date</th>
-                  <th scope="col">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Nguyễn Thị A</td>
-                  <td>a@gmail.com</td>
-                  <td>2025-10-22</td>
-                  <td><small class="text-success shadow">Approved</small></td>
-                </tr>
-
-                <tr>
-                  <td>Nguyễn Thị A</td>
-                  <td>a@gmail.com</td>
-                  <td>2025-10-22</td>
-                  <td><small class="text-body-secondary shadow">Pending approval</small></td>
-                </tr>
-              </tbody>
-            </table>
+            <small class="text-body-secondary">10 people are active now</small>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Tác phẩm được quan tâm gần đây nhất -->
-    <div class="border border-1 border-secondary p-3 bg-light mt-3 rounded-2">
-      <h5>Most recently viewed works</h5>
-      <div class="table-responsive mt-4">
-        <table class="table table-hover align-middle">
-          <thead class="table-light fw-bold">
-            <tr class="bg-secondary fw-bold">
-              <th scope="col">Artwork</th>
-              <th scope="col">Type</th>
-              <th scope="col">Author</th>
-              <th scope="col">Highest price</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>AAAAAA</td>
-              <td>Tranh sơn dầu</td>
-              <td>Nguyễn Văn A</td>
-              <td>200.000.000đ</td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-xl-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white border-0 pt-3">
+            <h5 class="text-primary fw-bold mb-0">Nearby auction rooms</h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive text-nowrap overflow-y-auto">
+              <table class="table table-hover align-middle text-nowrap mb-0 w-100">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col" class="ps-3 py-3 fw-bold align-middle">Auction room name</th>
+                    <th scope="col" class="py-3 fw-bold align-middle">Artwork</th>
+                    <th scope="col" class="py-3 fw-bold align-middle">Status</th>
+                    <th scope="col" class="py-3 fw-bold align-middle">Current price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="ps-3 fw-medium align-middle">Tranh sơn dầu</td>
+                    <td class="align-middle">Tranh phong cảnh mùa thu</td>
+                    <td class="align-middle">
+                      <button
+                        class="btn badge bg-danger-subtle text-danger rounded-pill border border-danger-subtle"
+                      >
+                        In progress
+                      </button>
+                    </td>
+                    <td class="fw-bold text-dark align-middle">10.000đ</td>
+                  </tr>
+                  <tr>
+                    <td class="ps-3 fw-medium align-middle">Tranh sơn dầu</td>
+                    <td class="align-middle">Tranh phong cảnh mùa thu</td>
+                    <td class="align-middle">
+                      <button
+                        class="btn badge bg-warning-subtle text-warning-emphasis rounded-pill border border-warning-subtle"
+                      >
+                        Coming soon
+                      </button>
+                    </td>
+                    <td class="fw-bold text-dark align-middle">10.000đ</td>
+                  </tr>
+                  <tr>
+                    <td class="ps-3 fw-medium align-middle">Tranh sơn dầu</td>
+                    <td class="align-middle">Tranh phong cảnh mùa thu</td>
+                    <td class="align-middle">
+                      <button
+                        class="btn badge bg-secondary-subtle text-secondary rounded-pill border border-secondary-subtle"
+                      >
+                        End
+                      </button>
+                    </td>
+                    <td class="fw-bold text-dark align-middle">10.000đ</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white border-0 pt-3">
+            <h5 class="text-primary fw-bold mb-0">New Users</h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive text-nowrap overflow-y-auto">
+              <table class="table table-hover align-middle text-nowrap mb-0 w-100">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col" class="ps-3 py-3 fw-bold align-middle">Username</th>
+                    <th scope="col" class="py-3 fw-bold align-middle">Email</th>
+                    <th scope="col" class="py-3 fw-bold align-middle">Registration date</th>
+                    <th scope="col" class="py-3 fw-bold align-middle">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="ps-3">
+                      <div class="d-flex align-items-center gap-2">
+                        <div
+                          class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                          style="width: 32px; height: 32px"
+                        >
+                          N
+                        </div>
+                        <span class="fw-medium">Nguyễn Thị A</span>
+                      </div>
+                    </td>
+                    <td class="text-muted">a@gmail.com</td>
+                    <td>2025-10-22</td>
+                    <td>
+                      <button
+                        class="btn badge bg-success-subtle text-success rounded-pill border border-success-subtle"
+                      >
+                        Approved
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="ps-3">
+                      <div class="d-flex align-items-center gap-2">
+                        <div
+                          class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                          style="width: 32px; height: 32px"
+                        >
+                          N
+                        </div>
+                        <span class="fw-medium">Nguyễn Thị A</span>
+                      </div>
+                    </td>
+                    <td class="text-muted">a@gmail.com</td>
+                    <td>2025-10-22</td>
+                    <td>
+                      <button
+                        class="btn badge bg-warning-subtle text-warning-emphasis rounded-pill border border-warning-subtle"
+                      >
+                        Pending
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 pt-3">
+        <h5 class="text-primary fw-bold mb-0">Most recently viewed works</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive text-nowrap overflow-y-auto">
+          <table class="table table-hover align-middle text-nowrap mb-0 w-100">
+            <thead class="table-light">
+              <tr>
+                <th scope="col" class="ps-3 py-3 fw-bold align-middle">Artwork</th>
+                <th scope="col" class="py-3 fw-bold align-middle">Type</th>
+                <th scope="col" class="py-3 fw-bold align-middle">Author</th>
+                <th scope="col" class="py-3 fw-bold align-middle">Highest price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="ps-3 fw-bold align-middle text-primary">AAAAAA</td>
+                <td class="align-middle">Tranh sơn dầu</td>
+                <td class="align-middle">Nguyễn Văn A</td>
+                <td class="text-success fw-bold align-middle">200.000.000đ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -260,7 +326,9 @@ export default {
         // Tạo peer + lấy camera/mic
         this.pc = new RTCPeerConnection(this.rtcConfig);
         this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        this.$refs.localVideo.srcObject = this.localStream;
+        // Note: Code video element logic should be handled if you uncomment the template part
+        // this.$refs.localVideo.srcObject = this.localStream;
+
         this.localStream.getTracks().forEach((t) => this.pc.addTrack(t, this.localStream));
 
         // ICE
@@ -339,7 +407,7 @@ export default {
       } catch {}
       this.screenStream = null;
 
-      if (this.$refs.localVideo) this.$refs.localVideo.srcObject = null;
+      // if (this.$refs.localVideo) this.$refs.localVideo.srcObject = null;
     },
   },
   beforeUnmount() {

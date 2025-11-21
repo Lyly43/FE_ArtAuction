@@ -2,22 +2,10 @@
                                Management-user, artwork, report, invoice,
 -----------------------------------------------------------------------*/
 .table-responsive {
-  overflow-x: auto;
-  white-space: nowrap; /* tránh xuống dòng trong ô */
-  scrollbar-width: none; /* ẩn thanh cuộn trên Firefox */
+  scrollbar-width: none;
   height: 370px;
-  overflow-y: auto;
-}
-.table th,
-.table td {
-  vertical-align: middle;
-  white-space: nowrap; /* cột tự giãn, không ép xuống dòng */
-  align-items: center;
 }
 
-.table {
-  min-width: 100%; /* chiếm đủ chiều ngang container */
-}
 .img {
   width: 80px;
   height: 70px;
@@ -46,41 +34,15 @@
 /*---------------------------------------------------------------------
                                Auction room
 -----------------------------------------------------------------------*/
-.auction-room {
-  height: 370px;
-  overflow-y: auto;
+.no-scrollbar {
   scrollbar-width: none;
 }
-
 /*---------------------------------------------------------------------
                                login
 -----------------------------------------------------------------------*/
-.login-page {
-  background: linear-gradient(135deg, #60779c, #778fb3);
+.bg-gradient-grey-blue {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
-.form-login {
-  padding: 150px 300px;
-}
-
-.login-page::after,
-.login-page::before {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  width: 400px;
-  height: 400px;
-  z-index: 0;
-}
-.login-page::before {
-  top: -100px;
-  left: -100px;
-}
-.login-page::after {
-  bottom: -100px;
-  right: -100px;
-}
-
 /*---------------------------------------------------------------------
                                Add auction room
 -----------------------------------------------------------------------*/
