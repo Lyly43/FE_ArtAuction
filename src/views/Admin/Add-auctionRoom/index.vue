@@ -452,7 +452,7 @@
       </div>
 
       <div class="d-flex gap-2 mt-4 justify-content-end">
-        <button class="btn btn-light text-danger fw-bold shadow-sm px-4">Hủy bỏ</button>
+        <button class="btn btn-danger text-light fw-bold shadow-sm px-4">Hủy bỏ</button>
         <button class="btn btn-primary fw-bold shadow-sm px-4" @click="submitForm">
           <i class="fa-solid fa-check me-2"></i>Hoàn tất
         </button>

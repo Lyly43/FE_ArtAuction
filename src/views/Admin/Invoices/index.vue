@@ -107,9 +107,9 @@
             <button class="btn btn-outline-primary">
               <i class="fa-solid fa-filter me-2"></i>Filter
             </button>
-            <button class="btn btn-primary ms-2">
+            <!-- <button class="btn btn-primary ms-2">
               <i class="fa-solid fa-plus me-2"></i>Create Invoice
-            </button>
+            </button> -->
           </div>
         </div>
 

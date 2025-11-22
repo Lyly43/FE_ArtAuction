@@ -5,10 +5,7 @@
         <h4 class="fw-bold text-primary mb-1">Auction Room Management</h4>
         <p class="text-body-secondary mb-0">Manage all auction rooms notifications</p>
       </div>
-      <router-link
-        to="/admin/sent-notification"
-        class="btn btn-primary shadow-sm rounded-pill px-4"
-      >
+      <router-link to="/admin/sent-notification" class="btn btn-primary shadow-sm px-4">
         <i class="fa-solid fa-paper-plane"></i> Create Notification
       </router-link>
     </div>
