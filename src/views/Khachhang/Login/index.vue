@@ -15,7 +15,7 @@
     <!-- Nội dung chính -->
     <div class="container container-acc">
       <div class="row d-flex justify-content-around  align-items-center w-100">
-        <div class="col-lg-5 col-md-4  col-sm-12 d-flex flex-column  d-none d-md-inline">
+        <div class="col-lg-5 col-md-4  col-sm-12 d-flex flex-column d-none d-md-inline" data-aos="fade-right" data-aos-duration="800">
           <div class="d-flex gap-3 align-items-center mb-auto">
             <img src="../../../assets/img/Logo_AA.png" class="logoLogin" alt="">
             <h3 class="fw-bold m-0"><span class="text-success fw-bold ">Art</span>Auction</h3>
@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="col-lg-5 col-md-8 col-sm-12">
-          <div class="card card-acc">
+          <div class="card card-acc" data-aos="fade-left" data-aos-duration="800">
             <div class="card-body p-5 ">
               <!-- form -->
               <div class=" d-flex flex-column gap-2">

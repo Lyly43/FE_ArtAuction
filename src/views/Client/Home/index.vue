@@ -4,7 +4,8 @@
     <div class="col-lg-12">
       <div class="container">
         <div class="row">
-          <div class="col-lg-6 text-light d-flex flex-column justify-content-center gap-5">
+          <div data-aos="fade-right" data-aos-duration="800"
+            class="col-lg-6 text-light d-flex flex-column justify-content-center gap-5">
             <div class="">
               <h1 class=" fw-bold">Welcome back, <span class="text-success-light-home fs-1 fw-bold"> {{ user.name
               }}</span> !</h1>
@@ -18,7 +19,6 @@
                 </div>
                 <div class="label">Live Auctions</div>
               </div>
-
               <div class="stat">
                 <div class="d-flex align-items-center gap-3 fs-4 mb-2">
                   <i class="fa-solid fa-image"></i>
@@ -26,7 +26,6 @@
                 </div>
                 <div class="label">Available Artworks</div>
               </div>
-
               <div class="stat">
                 <div class="d-flex align-items-center gap-3 fs-4 mb-2">
                   <i class="fa-solid fa-users"></i>
@@ -36,7 +35,7 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-6">
+          <div data-aos="fade-left" data-aos-duration="800" class="col-lg-6">
             <div id="carouselExampleIndicators"
               class="carousel slide carousel-fade border border-4 border-light shadow-lg rounded-4 overflow-hidden"
               data-bs-ride="carousel" data-bs-interval="2000">
@@ -88,51 +87,54 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
   <!-- ========== Các cuộc đấu đang diễn ra ========== -->
   <div class="container py-5">
     <div class="row">
-      <div class="col-12 text-center mb-4">
+      <div class="col-12 text-center mb-4" data-aos="fade-up" data-aos-duration="800">
         <h3 class="fw-bold mb-2 text-success">Featured Auctions</h3>
         <p>Join the most exciting live auctions happening right now</p>
       </div>
-
-      <template v-for="auction in hotAuctions.filter(x => x.status === 1).slice(0, 4)" :key="auction.id">
-        <!-- Card đấu giá -->
-        <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex">
-          <div class="card p-0 overflow-hidden auction-card">
-            <div class="p-0 position-relative">
-              <img :src="auction.imageAuctionRoom" class="img-auction" alt="" loading="lazy">
-              <div class="">
-                <span class="badge position-absolute top-0 start-0 m-3 bg-danger px-3">LIVE</span>
-              </div>
-              <span class="badge position-absolute top-0 end-0 m-3 bg-success px-3">12:35</span>
-              <span class="badge position-absolute bottom-0 end-0 m-3 bg-success">{{ auction.viewCount }} bidders</span>
-            </div>
-            <!-- Nội dung card -->
-            <div class="card-body d-flex flex-column gap-3">
-              <div class="d-flex flex-column gap-2">
-                <p class="fw-bold m-0 text-success fs-5"> {{ auction.roomName }} </p>
-                <p class="m-0 text-muted small"> {{ auction.id }} </p>
-                <div class="d-flex gap-2 align-items-center justify-content-between">
-                  <span class="m-0">Category</span>
-                  <span class="m-0"> {{ auction.type }} </span>
+      <div class="col-12">
+        <div class="row">
+          <template v-for="(auction, index) in hotAuctions.filter(x => x.status === 1).slice(0, 4)" :key="auction.id">
+            <!-- Card đấu giá -->
+            <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex" data-aos="fade-up" :data-aos-delay="index * 100" data-aos-duration="600">
+              <div class="card p-0 overflow-hidden auction-card">
+                <div class="p-0 position-relative">
+                  <img :src="auction.imageAuctionRoom" class="img-auction" alt="" loading="lazy">
+                  <div class="">
+                    <span class="badge position-absolute top-0 start-0 m-3 bg-danger px-3">LIVE</span>
+                  </div>
+                  <span class="badge position-absolute top-0 end-0 m-3 bg-success px-3">12:35</span>
+                  <span class="badge position-absolute bottom-0 end-0 m-3 bg-success">{{ auction.viewCount }}
+                    bidders</span>
                 </div>
-                <p class="m-0 small description-clamp"> {{ auction.description }} </p>
-              </div>
-              <div class="mt-auto">
-                <div class="">
-                  <router-link :to="`/client/auction-room/${auction.id}`" class="w-100">
-                    <button class="btn btn-success w-100">Join AuctAuction</button>
-                  </router-link>
+                <!-- Nội dung card -->
+                <div class="card-body d-flex flex-column gap-3">
+                  <div class="d-flex flex-column gap-2">
+                    <p class="fw-bold m-0 text-success fs-5"> {{ auction.roomName }} </p>
+                    <p class="m-0 text-muted small"> {{ auction.id }} </p>
+                    <div class="d-flex gap-2 align-items-center justify-content-between">
+                      <span class="m-0">Category</span>
+                      <span class="m-0"> {{ auction.type }} </span>
+                    </div>
+                    <p class="m-0 small description-clamp"> {{ auction.description }} </p>
+                  </div>
+                  <div class="mt-auto">
+                    <div class="">
+                      <router-link :to="`/client/auction-room/${auction.id}`" class="w-100">
+                        <button class="btn btn-success w-100">Join AuctAuction</button>
+                      </router-link>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </template>
         </div>
-      </template>
+      </div>
       <div class="col-12 text-center mt-3">
         <button class="btn btn-outline-success px-5 fs-5">Discover</button>
       </div>
@@ -144,106 +146,99 @@
     <div class="col-lg-12">
       <div class="container">
         <div class="row">
-          <div class="col-12 text-center mb-4">
+          <div class="col-12 text-center mb-4" data-aos="fade-up" data-aos-duration="800">
             <h3 class="fw-bold mb-2 text-success">Browse by Category</h3>
             <p>Explore diverse art collections</p>
           </div>
-
-          <div class="col-lg-2 col-md-4 col-6">
-            <div class="card auction-card">
-              <div class="card-body text-center">
-                <div class="d-flex mb-3">
-                  <div class="mx-auto p-3 bg-light rounded-circle">
-                    <i class="fa-solid fa-palette text-success fs-2"></i>
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="0" data-aos-duration="600">
+                <div class="card auction-card">
+                  <div class="card-body text-center">
+                    <div class="d-flex mb-3">
+                      <div class="mx-auto p-3 bg-light rounded-circle">
+                        <i class="fa-solid fa-palette text-success fs-2"></i>
+                      </div>
+                    </div>
+                    <p class="fw-bold fs-6 mb-1">Paintings</p>
+                    <span class="text-muted small m-0">342 items</span>
                   </div>
                 </div>
-
-                <p class="fw-bold fs-6 mb-1">Paintings</p>
-                <span class="text-muted small m-0">342 items</span>
               </div>
-            </div>
-          </div>
 
-          <div class="col-lg-2 col-md-4 col-6">
-            <div class="card auction-card">
-              <div class="card-body text-center">
-                <div class="d-flex mb-3">
-                  <div class="mx-auto p-3 bg-light rounded-circle">
-                    <i class="fa-solid fa-brush text-success fs-2"></i>
+              <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="100" data-aos-duration="600">
+                <div class="card auction-card">
+                  <div class="card-body text-center">
+                    <div class="d-flex mb-3">
+                      <div class="mx-auto p-3 bg-light rounded-circle">
+                        <i class="fa-solid fa-brush text-success fs-2"></i>
+                      </div>
+                    </div>
+                    <p class="fw-bold fs-6 mb-1">Sculptures</p>
+                    <span class="text-muted small m-0">156 items</span>
                   </div>
                 </div>
-
-                <p class="fw-bold fs-6 mb-1">Sculptures</p>
-                <span class="text-muted small m-0">156 items</span>
               </div>
-            </div>
-          </div>
 
-          <div class="col-lg-2 col-md-4 col-6">
-            <div class="card auction-card">
-              <div class="card-body text-center">
-                <div class="d-flex mb-3">
-                  <div class="mx-auto p-3 bg-light rounded-circle">
-                    <i class="fa-solid fa-camera text-success fs-2"></i>
+              <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="200" data-aos-duration="600">
+                <div class="card auction-card">
+                  <div class="card-body text-center">
+                    <div class="d-flex mb-3">
+                      <div class="mx-auto p-3 bg-light rounded-circle">
+                        <i class="fa-solid fa-camera text-success fs-2"></i>
+                      </div>
+                    </div>
+                    <p class="fw-bold fs-6 mb-1">Photography</p>
+                    <span class="text-muted small m-0">289 items</span>
                   </div>
                 </div>
-
-                <p class="fw-bold fs-6 mb-1">Photography</p>
-                <span class="text-muted small m-0">289 items</span>
               </div>
-            </div>
-          </div>
 
-          <div class="col-lg-2 col-md-4 col-6">
-            <div class="card auction-card">
-              <div class="card-body text-center">
-                <div class="d-flex mb-3">
-                  <div class="mx-auto p-3 bg-light rounded-circle">
-                    <i class="fa-solid fa-laptop text-success fs-2"></i>
+              <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="300" data-aos-duration="600">
+                <div class="card auction-card">
+                  <div class="card-body text-center">
+                    <div class="d-flex mb-3">
+                      <div class="mx-auto p-3 bg-light rounded-circle">
+                        <i class="fa-solid fa-laptop text-success fs-2"></i>
+                      </div>
+                    </div>
+                    <p class="fw-bold fs-6 mb-1">Digital Art</p>
+                    <span class="text-muted small m-0">421 items</span>
                   </div>
                 </div>
-
-                <p class="fw-bold fs-6 mb-1">Digital Art</p>
-                <span class="text-muted small m-0">421 items</span>
               </div>
-            </div>
-          </div>
 
-          <div class="col-lg-2 col-md-4 col-6">
-            <div class="card auction-card">
-              <div class="card-body text-center">
-                <div class="d-flex mb-3">
-                  <div class="mx-auto p-3 bg-light rounded-circle">
-                    <i class="fa-solid fa-layer-group text-success fs-2"></i>
+              <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="400" data-aos-duration="600">
+                <div class="card auction-card">
+                  <div class="card-body text-center">
+                    <div class="d-flex mb-3">
+                      <div class="mx-auto p-3 bg-light rounded-circle">
+                        <i class="fa-solid fa-layer-group text-success fs-2"></i>
+                      </div>
+                    </div>
+                    <p class="fw-bold fs-6 mb-1">Mixed Media</p>
+                    <span class="text-muted small m-0">198 items</span>
                   </div>
                 </div>
-
-                <p class="fw-bold fs-6 mb-1">Mixed Media</p>
-                <span class="text-muted small m-0">198 items</span>
               </div>
-            </div>
-          </div>
 
-          <div class="col-lg-2 col-md-4 col-6">
-            <div class="card auction-card">
-              <div class="card-body text-center">
-                <div class="d-flex mb-3">
-                  <div class="mx-auto p-3 bg-light rounded-circle">
-                    <i class="fa-solid fa-print text-success fs-2"></i>
+              <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="500" data-aos-duration="600">
+                <div class="card auction-card">
+                  <div class="card-body text-center">
+                    <div class="d-flex mb-3">
+                      <div class="mx-auto p-3 bg-light rounded-circle">
+                        <i class="fa-solid fa-print text-success fs-2"></i>
+                      </div>
+                    </div>
+                    <p class="fw-bold fs-6 mb-1">Prints</p>
+                    <span class="text-muted small m-0">267 items</span>
                   </div>
                 </div>
-
-                <p class="fw-bold fs-6 mb-1">Prints</p>
-                <span class="text-muted small m-0">267 items</span>
               </div>
+
             </div>
           </div>
-
         </div>
-
-
-
-
       </div>
     </div>
   </div>
@@ -251,7 +246,7 @@
   <!-- ========== Tác phẩm nổi bật ========== -->
   <div class="container">
     <div class="row my-5">
-      <div class="col-12 text-center mb-4">
+      <div class="col-12 text-center mb-4" data-aos="fade-up" data-aos-duration="800">
         <h3 class="fw-bold mb-2 text-success">Featured Artwork</h3>
         <p>Explore standout creations handpicked from our curated collection</p>
       </div>
@@ -276,8 +271,8 @@
       <!-- Content -->
       <div class="col-lg-12">
         <div class="row">
-          <template v-for="item in featuredList.slice(0, 4)" :key="item.id">
-            <div class="col-12 col-md-6 col-lg-3 mb-4 d-flex">
+          <template v-for="(item, index) in featuredList.slice(0, 4)" :key="item.id">
+            <div class="col-12 col-md-6 col-lg-3 mb-4 d-flex" data-aos="fade-up" :data-aos-delay="index * 100" data-aos-duration="600">
               <div class="card auction-card w-100">
                 <div class="card-body p-2 position-relative featured-art-card">
                   <div class="featured-art-image-wrapper position-relative ">
@@ -356,20 +351,19 @@
     </div>
   </div>
 
-
   <!-- ========== Các cuộc đấu giá sắp tới ========== -->
   <div class="row">
     <div class="col-12">
       <div class="container">
         <div class="row pt-4 mb-5">
           <!-- Upcoming Auctions -->
-          <div class="col-12 text-center mb-4">
+          <div class="col-12 text-center mb-4" data-aos="fade-up" data-aos-duration="800">
             <h3 class="fw-bold mb-2 text-success">Upcoming Auctions</h3>
             <p>Mark your calendar for these exciting events</p>
           </div>
-          <template v-for="auction in hotAuctions.filter(x => x.status === 2).slice(0, 4)" :key="auction.id">
+          <template v-for="(auction, index) in hotAuctions.filter(x => x.status === 2).slice(0, 4)" :key="auction.id">
             <!-- Card đấu giá -->
-            <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex">
+            <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex" data-aos="fade-up" :data-aos-delay="index * 100" data-aos-duration="600">
               <div class="card p-0 overflow-hidden auction-card">
                 <div class="p-0 position-relative">
                   <img :src="auction.imageAuctionRoom" class="img-auction" alt="" loading="lazy">
@@ -430,7 +424,6 @@ export default {
     };
     this.fetchFeatured();
     this.fetchSixRoomFeatured();
-
   },
 
   methods: {
@@ -461,22 +454,14 @@ export default {
         .get("http://localhost:8081/api/auctionroom/featuredAuctionRoom")
         .then((res) => {
           this.hotAuctions = res.data.filter(room => room.status !== 0);
-
           console.log("room home", this.hotAuctions);
-
-
         })
         .catch((err) => {
           this.error = err.message;
         });
     },
-
   },
-
-
 };
 </script>
-
-
 
 <style></style>
