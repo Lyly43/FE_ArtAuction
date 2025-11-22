@@ -127,7 +127,7 @@
             </thead>
             <tbody>
               <tr v-for="user in users" :key="user.id">
-                <td class="text-center text-secondary fw-medium">#{{ user.id }}</td>
+                <td class="text-center text-secondary fw-medium align-middle">#{{ user.id }}</td>
                 <td class="align-middle">
                   <div class="d-flex align-items-center">
                     <div
