@@ -5,12 +5,6 @@
 
     <!-- Page Content  -->
 
-    <!-- Navbar -->
-    <header id="top-navbar" class="top-navbar">
-      <div class="container">
-        <Navbar />
-      </div>
-    </header>
     <div id="content-page" class="content-page">
       <div class="container-fluid">
         <router-view></router-view>
@@ -24,7 +18,6 @@
 import BotAdmin from "../components/admin/BotAdmin.vue";
 import MenuAdmin from "../components/admin/MenuAdmin.vue";
 import ScrollToTop from "../../components/ScrollToTop.vue";
-import Navbar from "../components/admin/Navbar.vue";
 
 import $ from "jquery";
 window.jQuery = window.$ = $;
@@ -42,7 +35,6 @@ export default {
     MenuAdmin,
     BotAdmin,
     ScrollToTop,
-    Navbar,
   },
 };
 </script>

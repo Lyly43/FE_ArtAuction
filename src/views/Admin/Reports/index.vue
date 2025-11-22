@@ -1,155 +1,217 @@
 <template>
-  <div class="container">
-    <h4 class="text-primary fw-bold">Report Management</h4>
-    <p class="text-body-secondary">Handle violation reports and complaints from users</p>
-    <div class="row mb-4">
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+  <div class="container-fluid py-4 bg-light-subtle min-vh-100">
+    <div class="mb-4">
+      <h4 class="text-primary fw-bold mb-1">Report Management</h4>
+      <p class="text-body-secondary mb-0">Handle violation reports and complaints from users</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">General report</h6>
-              <i class="fa-solid fa-file-lines text-primary"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">General report</h6>
+                <h3 class="card-text fw-bold mb-0">120</h3>
+              </div>
+              <div
+                class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-file-lines fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">120</p>
-            <small class="text-success">+12 new reports</small>
+            <small class="text-success fw-medium">
+              <i class="fa-solid fa-arrow-up me-1"></i>+12 new reports
+            </small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Pending processing</h6>
-              <i class="fa-solid fa-clock text-warning"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Pending</h6>
+                <h3 class="card-text fw-bold mb-0">100</h3>
+              </div>
+              <div
+                class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-clock fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">100</p>
-            <small class="text-danger">Need to consider</small>
+            <small class="text-danger fw-medium">Need to consider</small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">In progress</h6>
-              <i class="fa-solid fa-hourglass-start"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">In progress</h6>
+                <h3 class="card-text fw-bold mb-0">10</h3>
+              </div>
+              <div
+                class="bg-info-subtle text-info-emphasis rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-hourglass-start fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">10</p>
-            <small class="text-warning">Processing</small>
+            <small class="text-body-secondary">Processing</small>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Resolved</h6>
-              <i class="fa-solid fa-circle-check text-success"></i>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Resolved</h6>
+                <h3 class="card-text fw-bold mb-0">12</h3>
+              </div>
+              <div
+                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-circle-check fs-5"></i>
+              </div>
             </div>
-            <p class="card-text fw-bold fs-5 mb-2">12</p>
             <small class="text-body-secondary">12% of the total</small>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- search -->
-    <div class="row align-items-stretch">
-      <div class="col-12 col-lg-7 mb-4">
-        <div class="input-group">
-          <span class="input-group-text" id="basic-addon1">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </span>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Search for report..."
-            aria-label="Username"
-            aria-describedby="basic-addon1"
-          />
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="input-group bg-light rounded-pill px-2 border-0">
+              <span class="input-group-text bg-transparent border-0 text-secondary">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control bg-transparent border-0 shadow-none"
+                placeholder="Search for report..."
+              />
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-8 text-md-end">
+            <button class="btn btn-outline-primary">
+              <i class="fa-solid fa-filter me-2"></i>Filter
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive text-nowrap overflow-y-auto">
+          <table class="table table-hover align-middle text-nowrap mb-0 w-100">
+            <thead class="table-light">
+              <tr class="align-middle">
+                <th scope="col" class="py-3 ps-3 fw-bold">Annunciator</th>
+                <th scope="col" class="py-3 fw-bold">Object type</th>
+                <th scope="col" class="py-3 fw-bold">Object Name</th>
+                <th scope="col" class="py-3 fw-bold" style="max-width: 300px">Content</th>
+                <th scope="col" class="py-3 fw-bold">Created at</th>
+                <th scope="col" class="py-3 fw-bold">Status</th>
+                <th scope="col" class="py-3 fw-bold text-center">
+                  <i class="fa-solid fa-ellipsis"></i>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in reports" :key="item.id">
+                <td class="ps-3 align-middle">
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                      style="width: 32px; height: 32px; font-size: 0.8rem"
+                    >
+                      {{ item.reporter.charAt(0) }}
+                    </div>
+                    <span class="fw-medium">{{ item.reporter }}</span>
+                  </div>
+                </td>
+
+                <td class="align-middle">
+                  <span class="badge bg-light text-dark border fw-normal rounded-pill">
+                    {{ item.objectType }}
+                  </span>
+                </td>
+
+                <td class="fw-medium text-primary align-middle">{{ item.objectName }}</td>
+
+                <td
+                  class="text-truncate align-middle"
+                  style="max-width: 250px"
+                  :title="item.content"
+                >
+                  {{ item.content }}
+                </td>
+
+                <td class="small text-body-secondary align-middle">{{ item.createdAt }}</td>
+
+                <td class="align-middle">
+                  <button
+                    class="btn badge rounded-pill border fw-normal px-3 py-2"
+                    :class="getStatusClass(item.status)"
+                  >
+                    {{ item.status }}
+                  </button>
+                </td>
+
+                <td class="text-center align-middle">
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-sm btn-light rounded-circle"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      style="width: 32px; height: 32px"
+                    >
+                      <i class="fa-solid fa-ellipsis-vertical text-secondary"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                      <li>
+                        <button class="dropdown-item">
+                          <i class="fa-solid fa-eye me-2 text-primary"></i>See details
+                        </button>
+                      </li>
+                      <li>
+                        <button class="dropdown-item">
+                          <i class="fa-solid fa-arrow-up-right-from-square me-2 text-info"></i>View
+                          accused
+                        </button>
+                      </li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li>
+                        <button class="dropdown-item">
+                          <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i>Warning
+                        </button>
+                      </li>
+                      <li>
+                        <button class="dropdown-item text-danger">
+                          <i class="fa-solid fa-ban me-2"></i>Block
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <div class="col-12 col-lg-5 d-flex justify-content-lg-end gap-2 gap-md-4 gap-lg-5 mb-4">
-        <button
-          class="btn btn-outline-primary d-flex align-items-center justify-content-center py-1"
-        >
-          <i class="fa-solid fa-filter"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- table  -->
-    <div class="table-responsive border border-2 border-outline-success rounded-3 p-3">
-      <table class="table table-hover align-middle">
-        <thead class="table-light">
-          <tr class="bg-secondary">
-            <th scope="col">Annunciator</th>
-            <th scope="col">Object type</th>
-            <th>Object Name</th>
-            <th scope="col">Content</th>
-            <th scope="col">Created at</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in reports" :key="item.id">
-            <td>{{ item.reporter }}</td>
-            <td>{{ item.objectType }}</td>
-            <td>{{ item.objectName }}</td>
-            <td>{{ item.content }}</td>
-            <td>{{ item.createdAt }}</td>
-            <td>
-              <div
-                class="status border rounded-3 p-1 text-success text-center d-inline-block"
-                :class="getStatusClass(item.status)"
-              >
-                {{ item.status }}
-              </div>
-            </td>
-            <td>
-              <div class="dropdown">
-                <i
-                  class="fa-solid fa-ellipsis-vertical"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                ></i>
-                <ul class="dropdown-menu">
-                  <li>
-                    <button class="dropdown-item">
-                      <i class="fa-solid fa-eye me-2 text-primary"></i>See details
-                    </button>
-                  </li>
-                  <li>
-                    <button class="dropdown-item">
-                      <i class="fa-solid fa-arrow-up-right-from-square me-2 text-info"></i>View the
-                      accused
-                    </button>
-                  </li>
-                  <li><hr class="dropdown-divider" /></li>
-                  <li>
-                    <button class="dropdown-item">
-                      <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i>Warning
-                    </button>
-                  </li>
-                  <li>
-                    <button class="dropdown-item">
-                      <i class="fa-solid fa-ban text-danger me-2"></i>Block
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data() {
@@ -174,7 +236,7 @@ export default {
           status: "Resolved",
         },
         {
-          id: 2,
+          id: 3, // Sửa lại ID bị trùng (id 2 -> id 3)
           reporter: "Lê Văn C",
           objectType: "Artwork",
           objectName: "Tranh Mùa Thu",
@@ -186,31 +248,19 @@ export default {
     };
   },
   methods: {
-    // Lấy màu trạng thái
+    // Lấy màu trạng thái - Cập nhật style cho Badge Pill
     getStatusClass(status) {
       switch (status) {
         case "Pending":
-          return "bg-warning-subtle text-warning-emphasis border-warning";
+          return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
         case "Resolved":
-          return "bg-success-subtle text-success border-success";
+          return "bg-success-subtle text-success border-success-subtle";
         case "Rejected":
-          return "bg-danger-subtle text-danger border-danger";
+          return "bg-danger-subtle text-danger border-danger-subtle";
         default:
-          return "bg-light text-dark";
+          return "bg-light text-dark border-light";
       }
     },
-
-    // viewDetails(item) {
-    //   alert(`Xem chi tiết báo cáo về: ${item.objectName}`);
-    // },
-
-    // blockUser(item) {
-    //   if (confirm(`Bạn có chắc muốn KHÓA tài khoản ${item.objectName}?`)) {
-    //     alert("Đã khóa tài khoản!");
-    //     item.status = "Resolved";
-    //   }
-    // },
   },
 };
 </script>
-<style></style>

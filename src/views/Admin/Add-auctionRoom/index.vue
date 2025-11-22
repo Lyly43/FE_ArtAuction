@@ -1,518 +1,463 @@
 <template>
-  <div class="container">
-    <div class="card mb-3">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div
-            class="icon-box me-3 d-flex align-items-center justify-content-center bg-secondary bg-opacity-10 rounded-3"
-          >
-            <i class="fa-solid fa-pager text-primary"></i>
-          </div>
-          <div class="">
-            <h5 class="card-title fw-bold">Thông tin cơ bản</h5>
-            <p class="card-subtitle mb-2 text-body-secondary">
-              Thiết lập thông tin cơ bản về phòng đấu giá
-            </p>
-          </div>
-        </div>
-        <hr />
-        <div class="row mb-3">
-          <div class="col-12 col-lg-6 mb-3">
-            <label for="roomName" class="form-label">Tên phòng đấu giá</label>
-            <div class="input-group flex-nowrap">
-              <input
-                type="text"
-                class="form-control bg-secondary bg-opacity-10"
-                placeholder=""
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-              />
+  <div class="container py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+      <div class="mb-3 mb-md-0">
+        <h4 class="fw-bold text-primary mb-1">Tạo Phòng Đấu Giá Mới</h4>
+        <p class="text-body-secondary mb-0">Thiết lập thông tin, lịch trình và cấu hình hiển thị</p>
+      </div>
+      <!-- <div class="d-flex gap-2">
+        <button class="btn btn-light text-danger fw-bold shadow-sm px-4">Hủy bỏ</button>
+        <button class="btn btn-primary fw-bold shadow-sm px-4" @click="submitForm">
+          <i class="fa-solid fa-check me-2"></i>Hoàn tất
+        </button>
+      </div> -->
+    </div>
+
+    <form @submit.prevent="submitForm">
+      <div class="card border-0 shadow-sm mb-4 rounded-3">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-4">
+            <div
+              class="bg-secondary-subtle bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3"
+              style="width: 48px; height: 48px"
+            >
+              <i class="fa-solid fa-pager fs-5"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0">Thông tin cơ bản</h5>
+              <small class="text-muted">Thiết lập thông tin chung cho phòng đấu giá</small>
             </div>
           </div>
 
-          <div class="col-12 col-lg-6">
-            <label for="typeOfArtwork" class="form-label">Loại tác phẩm</label>
-            <div class="input-group flex-nowrap">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-bold small text-secondary text-uppercase"
+                >Tên phòng đấu giá</label
+              >
               <input
                 type="text"
-                class="form-control bg-secondary bg-opacity-10"
-                placeholder=""
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
+                class="form-control bg-light border-0"
+                placeholder="Nhập tên phòng..."
               />
             </div>
-          </div>
-        </div>
-
-        <label for="description" class="form-label">Short description</label>
-        <div class="input-group">
-          <textarea
-            class="form-control bg-secondary bg-opacity-10 mb-3"
-            aria-label="With textarea"
-          ></textarea>
-        </div>
-
-        <div class="col-6">
-          <label for="typeOfArtwork" class="form-label">Admin phụ trách</label>
-          <div class="input-group flex-nowrap">
-            <input
-              type="text"
-              class="form-control bg-secondary bg-opacity-10"
-              placeholder=""
-              aria-label="Username"
-              aria-describedby="addon-wrapping"
-            />
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-bold small text-secondary text-uppercase"
+                >Loại tác phẩm chủ đạo</label
+              >
+              <input
+                type="text"
+                class="form-control bg-light border-0"
+                placeholder="VD: Tranh sơn dầu..."
+              />
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold small text-secondary text-uppercase"
+                >Mô tả ngắn</label
+              >
+              <textarea
+                class="form-control bg-light border-0"
+                rows="2"
+                placeholder="Mô tả chi tiết..."
+              ></textarea>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-bold small text-secondary text-uppercase"
+                >Admin phụ trách</label
+              >
+              <input
+                type="text"
+                class="form-control bg-light border-0"
+                placeholder="Tên người quản lý..."
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Chọn tác phẩm đấu giá -->
-    <div class="card mb-3">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div
-            class="icon-box me-3 d-flex align-items-center justify-content-center bg-secondary bg-opacity-10 rounded-3"
-          >
-            <i class="fa-solid fa-images text-primary"></i>
-          </div>
-          <div class="">
-            <h5 class="card-title fw-bold">Chọn tác phẩm đấu giá</h5>
-            <p class="card-subtitle mb-2 text-body-secondary mb-3">
-              Tìm kiếm và chọn các tác phẩm theo thể loại
-            </p>
-          </div>
-        </div>
-
-        <hr />
-        <div class="row mb-3">
-          <div class="col-12 col-lg-6 mb-3">
-            <label for="roomName" class="form-label">Lọc theo thể loại</label>
+      <div class="card border-0 shadow-sm mb-4 rounded-3">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-4">
+            <div
+              class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center me-3"
+              style="width: 48px; height: 48px"
+            >
+              <i class="fa-solid fa-images fs-5"></i>
+            </div>
             <div>
-              <select
-                v-model="selectedCategory"
-                id="options"
-                name="options"
-                class="py-2 w-100 rounded-2 bg-secondary bg-opacity-10 border"
+              <h5 class="fw-bold mb-0">Chọn tác phẩm đấu giá</h5>
+              <small class="text-muted">Lọc theo thể loại và thêm vào danh sách</small>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-bold small text-secondary text-uppercase"
+                >Lọc theo thể loại</label
               >
-                <option value="">-- Chọn thể loại --</option>
-                <option value="option1">Tranh sơn dầu</option>
-                <option value="option2">Tranh chân dung</option>
+              <select v-model="selectedCategory" class="form-select bg-light border-0">
+                <option value="">-- Chọn thể loại để hiển thị tranh --</option>
+                <option value="son-dau">Tranh sơn dầu</option>
+                <option value="chan-dung">Tranh chân dung</option>
               </select>
             </div>
-          </div>
-
-          <div class="col-12 col-lg-6">
-            <label for="typeOfArtwork" class="form-label">Tìm kiếm tác phẩm</label>
-            <div class="input-group flex-nowrap">
-              <input
-                type="text"
-                class="form-control bg-secondary bg-opacity-10"
-                placeholder=""
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- Danh sách tác phẩm -->
-        <div class="mb-3">
-          <p>Danh sách tác phẩm</p>
-          <div class="border border-2 border-outline-primary bg-secondary bg-opacity-10 p-3">
-            <div class="row">
-              <div class="col-12 col-lg-6 mb-3">
-                <div class="card p-2">
-                  <div class="row d-flex align-items-center">
-                    <div class="col-4">
-                      <img
-                        src="/src/assets/img/4.png"
-                        alt="Artwork"
-                        class="img-fluid rounded"
-                        style="max-height: 100px; object-fit: cover"
-                      />
-                    </div>
-                    <div class="col-8 d-flex flex-column gap-1">
-                      <small class="fw-bold">ID: 111</small>
-                      <p class="fw-bold mb-0">Sắc màu đại dương</p>
-                      <small>Tác giả: Nguyễn Văn B</small>
-                      <small>Kích thước: 30 * 30cm</small>
-                      <small class="text-danger">Sơn dầu</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-12 col-lg-6">
-                <div class="card p-2">
-                  <div class="row d-flex align-items-center">
-                    <div class="col-4">
-                      <img
-                        src="/src/assets/img/4.png"
-                        alt="Artwork"
-                        class="img-fluid rounded"
-                        style="max-height: 100px; object-fit: cover"
-                      />
-                    </div>
-                    <div class="col-8 d-flex flex-column gap-1">
-                      <small class="fw-bold">ID: 111</small>
-                      <p class="fw-bold mb-0">Sắc màu đại dương</p>
-                      <small>Tác giả: Nguyễn Văn B</small>
-                      <small>Kích thước: 30 * 30cm</small>
-                      <small class="text-danger">Sơn dầu</small>
-                    </div>
-                  </div>
-                </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-bold small text-secondary text-uppercase"
+                >Tìm kiếm nhanh</label
+              >
+              <div class="input-group border-0">
+                <span class="input-group-text bg-light border-0 text-secondary"
+                  ><i class="fa-solid fa-magnifying-glass"></i
+                ></span>
+                <input
+                  type="text"
+                  class="form-control bg-light border-0 shadow-none"
+                  placeholder="Nhập tên tranh..."
+                />
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- tác phẩm đã chọn - thiết lập giá -->
-        <div class="mb-3">
-          <p>Tác phẩm đã chọn <span>(1)</span> - thiết lập giá</p>
-          <div class="border border-2 border-outline-primary bg-secondary bg-opacity-10 p-3">
-            <div class="card w-100 mb-3 shadow-sm border-0">
-              <div class="card-body">
-                <!-- Hàng chứa ảnh và thông tin -->
-                <div class="row g-3 align-items-center">
-                  <!-- Ảnh -->
-                  <div class="col-12 col-md-3 text-center">
+          <div v-if="selectedCategory">
+            <p class="fw-bold text-primary mb-2 small text-uppercase">
+              <i class="fa-solid fa-list me-2"></i>Danh sách tác phẩm có sẵn
+            </p>
+
+            <div class="row g-3" v-if="filteredArtworks.length > 0">
+              <div class="col-12 col-md-6" v-for="art in filteredArtworks" :key="art.id">
+                <div class="card border h-100" style="cursor: pointer" @click="addToSchedule(art)">
+                  <div class="card-body p-2 d-flex align-items-start">
                     <img
-                      src="/src/assets/img/4.png"
-                      alt="Artwork"
-                      class="img-fluid rounded"
-                      style="max-height: 150px; object-fit: cover"
+                      :src="art.img"
+                      class="rounded me-3 border bg-light"
+                      style="width: 80px; height: 80px; object-fit: cover"
                     />
-                  </div>
 
-                  <!-- Thông tin -->
-                  <div class="col-12 col-md-8">
-                    <div class="d-flex flex-column gap-1">
-                      <small class="fw-bold">ID: 111</small>
-                      <p class="fw-bold mb-0">Sắc màu đại dương</p>
-                      <small>Tác giả: Nguyễn Văn B</small>
-                      <small>Kích thước: 30 × 30cm</small>
-                      <small class="text-danger">Sơn dầu</small>
-                      <small class="text-body-secondary">Giá khởi điểm: 50.000đ</small>
+                    <div class="flex-grow-1">
+                      <div class="d-flex justify-content-between">
+                        <h6
+                          class="fw-bold mb-0 text-dark text-truncate"
+                          style="max-width: 200px"
+                          :title="art.name"
+                        >
+                          {{ art.name }}
+                        </h6>
+                        <small class="badge bg-light text-secondary border">ID: {{ art.id }}</small>
+                      </div>
+                      <small class="text-muted d-block mb-2">{{ art.author }}</small>
+
+                      <div class="d-flex gap-1 flex-wrap">
+                        <span
+                          class="badge bg-secondary-subtle text-primary border border-secondary-subtle fw-normal"
+                          style="font-size: 0.7rem"
+                        >
+                          <i class="fa-solid fa-ruler-combined me-1"></i>{{ art.size }}
+                        </span>
+                        <span
+                          class="badge bg-secondary-subtle text-secondary border border-secondary-subtle fw-normal"
+                          style="font-size: 0.7rem"
+                        >
+                          {{ art.type }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="ms-2">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-primary rounded-circle p-2 d-flex align-items-center justify-content-center"
+                        style="width: 32px; height: 32px"
+                      >
+                        <i class="fa-solid fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else class="text-center text-muted py-3 bg-light rounded small">
+              Không có tác phẩm nào phù hợp hoặc đã được chọn hết.
+            </div>
+          </div>
+
+          <div v-else class="text-center py-4 bg-light rounded border border-dashed">
+            <i class="fa-solid fa-filter text-secondary fs-3 mb-2"></i>
+            <p class="text-muted mb-0">Vui lòng chọn <b>Thể loại</b> để xem danh sách tranh.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm mb-4 rounded-3" v-if="scheduleList.length > 0">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <div class="d-flex align-items-center">
+              <div
+                class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center me-3"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-hourglass-half fs-5"></i>
+              </div>
+              <div>
+                <h5 class="fw-bold mb-0">Lịch trình & Cấu hình giá</h5>
+                <small class="text-muted"
+                  >Sắp xếp thứ tự và đặt giá cho {{ scheduleList.length }} tác phẩm</small
+                >
+              </div>
+            </div>
+            <span class="badge bg-secondary-subtle text-primary fs-6 px-3 py-2 rounded-pill">
+              <i class="fa-regular fa-clock me-1"></i> Tổng: {{ totalDuration }} phút
+            </span>
+          </div>
+
+          <div class="d-flex flex-column gap-3">
+            <div
+              class="card border border-secondary-subtle bg-light-subtle"
+              v-for="(item, index) in scheduleList"
+              :key="item.id"
+            >
+              <div class="card-body p-3">
+                <div class="row align-items-center g-3">
+                  <div class="col-12 col-lg-5 d-flex align-items-center gap-3">
+                    <div
+                      class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm"
+                      style="width: 28px; height: 28px; flex-shrink: 0"
+                    >
+                      {{ index + 1 }}
+                    </div>
+                    <img
+                      :src="item.img"
+                      class="rounded border bg-white"
+                      style="width: 60px; height: 60px; object-fit: cover"
+                    />
+                    <div class="flex-grow-1">
+                      <div class="d-flex align-items-center gap-2 mb-1">
+                        <h6 class="fw-bold mb-0 text-dark text-truncate" style="max-width: 150px">
+                          {{ item.name }}
+                        </h6>
+                        <span
+                          class="badge bg-white text-secondary border"
+                          style="font-size: 0.65rem"
+                          >ID: {{ item.id }}</span
+                        >
+                      </div>
+                      <small class="text-muted d-block">{{ item.author }}</small>
+                      <div class="d-flex gap-1 mt-1">
+                        <span
+                          class="badge bg-white text-secondary border fw-normal"
+                          style="font-size: 0.65rem"
+                          >{{ item.size }}</span
+                        >
+                        <span
+                          class="badge bg-white text-secondary border fw-normal"
+                          style="font-size: 0.65rem"
+                          >{{ item.type }}</span
+                        >
+                      </div>
                     </div>
                   </div>
 
-                  <!-- Nút xóa -->
-                  <div class="col-12 col-md-1 text-end">
-                    <i class="fa-solid fa-xmark text-danger fs-5" role="button"></i>
+                  <div class="col-12 col-lg-5">
+                    <div class="row g-2">
+                      <div class="col-4">
+                        <label class="form-label x-small fw-bold text-secondary mb-0"
+                          >GIÁ KHỞI ĐIỂM</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control form-control-sm border-0 shadow-none"
+                          placeholder="50.000đ"
+                          v-model="item.startPrice"
+                        />
+                      </div>
+                      <div class="col-4">
+                        <label class="form-label x-small fw-bold text-secondary mb-0"
+                          >BƯỚC GIÁ</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control form-control-sm border-0 shadow-none"
+                          placeholder="10.000đ"
+                          v-model="item.stepPrice"
+                        />
+                      </div>
+                      <div class="col-4">
+                        <label class="form-label x-small fw-bold text-secondary mb-0"
+                          >THỜI LƯỢNG (P)</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control form-control-sm border-0 shadow-none"
+                          placeholder="15"
+                          v-model="item.duration"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="col-12 col-lg-2 text-end d-flex justify-content-end align-items-center gap-1"
+                  >
+                    <div class="btn-group shadow-sm" role="group">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-white bg-white border"
+                        @click="moveItem(index, -1)"
+                        :disabled="index === 0"
+                      >
+                        <i class="fa-solid fa-arrow-up"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-white bg-white border"
+                        @click="moveItem(index, 1)"
+                        :disabled="index === scheduleList.length - 1"
+                      >
+                        <i class="fa-solid fa-arrow-down"></i>
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger border-0 ms-2 rounded-circle"
+                      @click="removeFromSchedule(index)"
+                    >
+                      <i class="fa-solid fa-xmark fs-5"></i>
+                    </button>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                <hr />
+      <div class="row g-4">
+        <div class="col-12 col-lg-6">
+          <div class="card border-0 shadow-sm h-100 rounded-3">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-3">
+                <div
+                  class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center me-3"
+                  style="width: 48px; height: 48px"
+                >
+                  <i class="fa-solid fa-clock fs-5"></i>
+                </div>
+                <h5 class="fw-bold mb-0">Cấu hình thời gian</h5>
+              </div>
 
-                <!-- Hàng nhập thời gian và bước giá -->
-                <div class="row g-3">
-                  <div class="col-12 col-lg-6">
-                    <label for="duration" class="form-label">Thời gian dự kiến (phút)</label>
-                    <input
-                      type="number"
-                      id="duration"
-                      class="form-control bg-secondary bg-opacity-10"
-                      placeholder="Nhập số phút..."
-                    />
-                  </div>
-
-                  <div class="col-12 col-lg-6">
-                    <label for="minStep" class="form-label">Bước giá tối thiểu (VNĐ)</label>
-                    <input
-                      type="text"
-                      id="minStep"
-                      class="form-control bg-secondary bg-opacity-10"
-                      placeholder="Nhập bước giá..."
-                    />
-                  </div>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label class="form-label fw-bold small text-secondary text-uppercase"
+                    >Bắt đầu lúc</label
+                  >
+                  <input type="datetime-local" class="form-control bg-light border-0" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label fw-bold small text-secondary text-uppercase"
+                    >Kết thúc dự kiến</label
+                  >
+                  <input type="datetime-local" class="form-control bg-light border-0" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label fw-bold small text-secondary text-uppercase"
+                    >Tự động gia hạn (s)</label
+                  >
+                  <input type="number" class="form-control bg-light border-0" placeholder="30" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label fw-bold small text-secondary text-uppercase"
+                    >Trạng thái khởi tạo</label
+                  >
+                  <select class="form-select bg-light border-0">
+                    <option value="schedule">Lên lịch (Scheduled)</option>
+                    <option value="draft">Bản nháp (Draft)</option>
+                  </select>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Tổng thời gian dự kiến -->
-        <div class="alert alert-primary bg-opacity-10 border-0 d-flex align-items-start">
-          <div class="me-3">
-            <i class="fa-regular fa-clock text-primary fs-4"></i>
-          </div>
-          <div>
-            <h6 class="fw-semibold text-primary mb-1">Tổng thời gian dự kiến</h6>
-            <h4 class="fw-bold text-primary mb-1">15 phút</h4>
-            <small class="text-muted"
-              >Thời gian thực tế có thể thay đổi tùy theo tình hình đấu giá</small
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sắp xếp theo thứ tự phiên đấu giá -->
-    <div class="card w-100 mb-3">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div
-            class="icon-box me-3 d-flex align-items-center justify-content-center bg-danger bg-opacity-10 rounded-3"
-          >
-            <i class="fa-solid fa-hourglass-half text-danger"></i>
-          </div>
-          <div class="">
-            <h5 class="card-title fw-bold">Lịch trình đấu giá</h5>
-            <p class="card-subtitle mb-2 text-body-secondary">
-              Lên lịch thời gian bắt đầu và kết thúc cho phòng đấu giá
-            </p>
-          </div>
-        </div>
-        <hr />
-
-        <div class="card mb-3 border-0 alert alert-primary">
-          <div class="card-body d-flex align-items-center">
-            <img
-              src="/src/assets/img/hoasen.png"
-              alt="Tranh"
-              class="rounded me-3"
-              style="width: 80px; height: 80px; object-fit: cover"
-            />
-
-            <div class="flex-grow-1">
-              <div class="d-flex align-items-center mb-1">
-                <span class="badge bg-primary me-2 rounded-circle" style="width: 24px; height: 24px"
-                  >1</span
+        <div class="col-12 col-lg-6">
+          <div class="card border-0 shadow-sm h-100 rounded-3">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-3">
+                <div
+                  class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center me-3"
+                  style="width: 48px; height: 48px"
                 >
-                <h6 class="mb-0 fw-semibold">Đêm đầy sao</h6>
+                  <i class="fa-solid fa-bell fs-5"></i>
+                </div>
+                <h5 class="fw-bold mb-0">Tài chính & Thông báo</h5>
               </div>
-              <p class="mb-1 text-muted small">Tác giả: Nguyễn Văn A</p>
-              <p class="mb-0 text-primary fw-bold">Giá khởi điểm: 50.000đ</p>
-            </div>
-          </div>
-        </div>
 
-        <div class="card mb-3 border-0 alert alert-primary">
-          <div class="card-body d-flex align-items-center">
-            <img
-              src="/src/assets/img/hoasen.png"
-              alt="Tranh"
-              class="rounded me-3"
-              style="width: 80px; height: 80px; object-fit: cover"
-            />
+              <div class="row g-3 mb-4">
+                <div class="col-6">
+                  <label class="form-label fw-bold small text-secondary text-uppercase"
+                    >Tiền cọc (VNĐ)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control bg-light border-0"
+                    placeholder="VD: 200.000"
+                  />
+                </div>
+                <div class="col-6">
+                  <label class="form-label fw-bold small text-secondary text-uppercase"
+                    >Hạn thanh toán (ngày)</label
+                  >
+                  <input type="number" class="form-control bg-light border-0" value="3" />
+                </div>
+              </div>
 
-            <div class="flex-grow-1">
-              <div class="d-flex align-items-center mb-1">
-                <span class="badge bg-primary me-2 rounded-circle" style="width: 24px; height: 24px"
-                  >2</span
+              <hr class="text-secondary opacity-25" />
+
+              <div class="mb-3">
+                <label class="form-label fw-bold small text-secondary text-uppercase"
+                  >Thông báo trước (Phút)</label
                 >
-                <h6 class="mb-0 fw-semibold">Đêm đầy sao</h6>
+                <input type="number" class="form-control bg-light border-0" placeholder="VD: 15" />
               </div>
-              <p class="mb-1 text-muted small">Tác giả: Nguyễn Văn A</p>
-              <p class="mb-0 text-primary fw-bold">Giá khởi điểm: 50.000đ</p>
+
+              <div class="list-group">
+                <label
+                  class="list-group-item list-group-item-action border-0 rounded px-2 d-flex justify-content-between align-items-center mb-1"
+                >
+                  <div>
+                    <p class="mb-0 fw-medium">Thông báo khi kết thúc</p>
+                    <small class="text-muted" style="font-size: 0.75rem"
+                      >Gửi thông báo cho người thắng cuộc</small
+                    >
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" checked />
+                  </div>
+                </label>
+
+                <label
+                  class="list-group-item list-group-item-action border-0 rounded px-2 d-flex justify-content-between align-items-center"
+                >
+                  <div>
+                    <p class="mb-0 fw-medium">Hiển thị công khai ngay</p>
+                    <small class="text-muted" style="font-size: 0.75rem"
+                      >Người dùng có thể thấy phòng này</small
+                    >
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" checked />
+                  </div>
+                </label>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Cấu hình thời gian -->
-    <div class="card w-100 mb-3">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div
-            class="icon-box me-3 d-flex align-items-center justify-content-center bg-warning bg-opacity-10 rounded-3"
-          >
-            <i class="fa-solid fa-alarm-clock text-warning"></i>
-          </div>
-          <div class="">
-            <h5 class="card-title fw-bold">Cấu hình thời gian</h5>
-            <p class="card-subtitle mb-2 text-body-secondary">
-              Lên lịch thời gian bắt đầu và kết thúc cho phòng đấu giá
-            </p>
-          </div>
-        </div>
-        <hr />
-        <div class="row mb-3">
-          <div class="col-12 col-lg-6 mb-3">
-            <label for="roomName" class="form-label">Thời gian bắt đầu</label>
-            <div class="input-group flex-nowrap">
-              <input
-                type="datetime-local"
-                class="form-control bg-secondary bg-opacity-10"
-                placeholder=""
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-              />
-            </div>
-          </div>
-
-          <div class="col-12 col-lg-6">
-            <label for="typeOfArtwork" class="form-label">Thời gian kết thúc dự kiến</label>
-            <div class="input-group flex-nowrap">
-              <input
-                type="datetime-local"
-                class="form-control bg-secondary bg-opacity-10"
-                placeholder=""
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-12 col-lg-6 mb-3">
-            <label for="roomName" class="form-label">Thời gian tự động gia hạn (s)</label>
-            <div class="input-group flex-nowrap">
-              <input
-                type="number"
-                class="form-control bg-secondary bg-opacity-10"
-                placeholder=""
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-              />
-            </div>
-            <small class="text-body-secondary">VD: +30s khi có bid cuối trong 30s cuối</small>
-          </div>
-
-          <div class="col-12 col-lg-6">
-            <label for="status" class="form-label">Trạng thái khởi tạo</label>
-            <select
-              id="status"
-              name="status"
-              class="form-select bg-secondary bg-opacity-10 border-0 rounded-3 py-2"
-            >
-              <option value="schedule">Scheduled</option>
-              <option value="draft">Draft</option>
-            </select>
-          </div>
-        </div>
+      <div class="d-flex gap-2 mt-4 justify-content-end">
+        <button class="btn btn-danger text-light fw-bold shadow-sm px-4">Hủy bỏ</button>
+        <button class="btn btn-primary fw-bold shadow-sm px-4" @click="submitForm">
+          <i class="fa-solid fa-check me-2"></i>Hoàn tất
+        </button>
       </div>
-    </div>
-
-    <!-- Cấu hình tài chính -->
-    <div class="card w-100 mb-3">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div
-            class="icon-box me-3 d-flex align-items-center justify-content-center bg-success bg-opacity-10 rounded-3"
-          >
-            <i class="fa-solid fa-dollar-sign text-success"></i>
-          </div>
-          <div class="">
-            <h5 class="card-title fw-bold">Thiết lập tiền cọc và thanh toán</h5>
-            <p class="card-subtitle mb-2 text-body-secondary">
-              Thiết lập thông tin cơ bản về phòng đấu giá
-            </p>
-          </div>
-        </div>
-        <hr />
-        <div class="row mb-3">
-          <div class="col-12 col-lg-6 mb-3">
-            <label for="roomName" class="form-label">Tiền đặt cọc (VNĐ)</label>
-            <div class="input-group flex-nowrap">
-              <input
-                type="text"
-                class="form-control bg-secondary bg-opacity-10"
-                placeholder=""
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-              />
-            </div>
-          </div>
-
-          <div class="col-12 col-lg-6">
-            <label for="typeOfArtwork" class="form-label"
-              >Thời hạn thanh toán sau khi thắng (ngày)</label
-            >
-            <div class="input-group flex-nowrap">
-              <input
-                type="number"
-                class="form-control bg-secondary bg-opacity-10"
-                placeholder=""
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cấu hình thông báo và hiển thị -->
-    <div class="card w-100 mb-3">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div
-            class="icon-box me-3 d-flex align-items-center justify-content-center bg-warning bg-opacity-10 rounded-3"
-          >
-            <i class="fa-solid fa-bell text-warning"></i>
-          </div>
-          <div class="">
-            <h5 class="card-title fw-bold">Cấu hình thông báo và hiển thị</h5>
-            <p class="card-subtitle mb-2 text-body-secondary">
-              Quản lý thông báo và quyền truy cập
-            </p>
-          </div>
-        </div>
-        <hr />
-        <div class="mb-4">
-          <label>Thông báo trước khi bắt đầu (phút)</label>
-          <div class="input-group">
-            <input
-              type="text"
-              class="form-control bg-secondary bg-opacity-10"
-              placeholder=""
-              aria-label="Username"
-              aria-describedby="basic-addon1"
-            />
-          </div>
-          <small class="text-body-secondary">Gửi thông báo cho người dùng trước khi bắt đầu</small>
-        </div>
-
-        <div
-          class="w-100 bg-secondary bg-opacity-10 px-3 py-2 border rounded-2 d-flex align-items-center justify-content-between mb-4"
-        >
-          <div>
-            <p class="mb-1">Thông báo khi kết thúc</p>
-            <small class="text-body-secondary">Gửi thông báo cho người thắng</small>
-          </div>
-          <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              role="switch"
-              id="switchCheckChecked"
-              checked
-            />
-          </div>
-        </div>
-
-        <div
-          class="w-100 bg-secondary bg-opacity-10 px-3 py-2 border rounded-2 d-flex align-items-center justify-content-between"
-        >
-          <div>
-            <p class="mb-1">Hiển thị công khai trên trang chủ</p>
-            <small class="text-body-secondary"
-              >Cho phép người dùng thấy phiên này trước khi bắt đầu</small
-            >
-          </div>
-          <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              role="switch"
-              id="switchCheckChecked"
-              checked
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- button -->
-    <div class="d-flex align-items-center justify-content-between mb-5">
-      <button type="button" class="btn btn-danger">Cancel</button>
-      <button type="button" class="btn btn-primary">Create</button>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -520,45 +465,85 @@
 export default {
   data() {
     return {
-      selectedCategory: "", // thể loại đã chọn
-      artworks: [
-        // danh sách tác phẩm theo thể loại
+      selectedCategory: "",
+
+      // CẬP NHẬT DATA: Thêm size
+      allArtworks: [
         {
           id: 111,
           name: "Sắc màu đại dương",
           author: "Nguyễn Văn B",
-          size: "30×30cm",
           type: "Tranh sơn dầu",
-          category: "option1",
+          category: "son-dau",
           img: "/src/assets/img/4.png",
+          size: "30x40 cm",
         },
         {
           id: 222,
-          name: "Chân dung thiếu nữ",
-          author: "Trần Văn C",
-          size: "50×60cm",
-          type: "Tranh chân dung",
-          category: "option2",
+          name: "Chiều tím",
+          author: "Lê Văn C",
+          type: "Tranh phong cảnh",
+          category: "phong-canh",
           img: "/src/assets/img/4.png",
+          size: "50x70 cm",
+        },
+        {
+          id: 333,
+          name: "Thiếu nữ bên hoa",
+          author: "Trần Văn D",
+          type: "Tranh chân dung",
+          category: "chan-dung",
+          img: "/src/assets/img/4.png",
+          size: "60x60 cm",
+        },
+        {
+          id: 444,
+          name: "Rừng thu",
+          author: "Phạm E",
+          type: "Tranh sơn dầu",
+          category: "son-dau",
+          img: "/src/assets/img/4.png",
+          size: "100x120 cm",
         },
       ],
-      selectedArtwork: null, // tác phẩm đã chọn
+
+      scheduleList: [],
     };
   },
-
-  // computed: {
-  //   filteredArtworks() {
-  //     if (!this.selectedCategory) return [];
-  //     return this.artworks.filter((a) => a.category === this.selectedCategory);
-  //   },
-  // },
-
-  // methods: {
-  //   selectArtwork(item) {
-  //     this.selectedArtwork = item;
-  //   },
-  // },
+  computed: {
+    filteredArtworks() {
+      if (!this.selectedCategory) return [];
+      return this.allArtworks.filter(
+        (art) =>
+          art.category === this.selectedCategory &&
+          !this.scheduleList.find((item) => item.id === art.id)
+      );
+    },
+    totalDuration() {
+      return this.scheduleList.reduce((sum, item) => sum + (parseInt(item.duration) || 0), 0);
+    },
+  },
+  methods: {
+    addToSchedule(artwork) {
+      this.scheduleList.push({ ...artwork, startPrice: "", stepPrice: "", duration: 15 });
+    },
+    removeFromSchedule(index) {
+      this.scheduleList.splice(index, 1);
+    },
+    moveItem(index, direction) {
+      const newIndex = index + direction;
+      if (newIndex >= 0 && newIndex < this.scheduleList.length) {
+        const temp = this.scheduleList[index];
+        this.scheduleList[index] = this.scheduleList[newIndex];
+        this.scheduleList[newIndex] = temp;
+      }
+    },
+    submitForm() {
+      console.log("Danh sách đấu giá:", this.scheduleList);
+      alert("Tạo phòng thành công!");
+    },
+  },
 };
 </script>
 
-<style></style>
+<style scoped></style>

@@ -1,136 +1,208 @@
 <template>
-  <div class="container">
-    <h4 class="fw-bold text-primary">Auction room management</h4>
-    <p class="text-body-secondary">Manage all auction rooms in the system</p>
-    <div class="d-flex align-items-center justify-content-lg-end mb-3">
-      <button type="button" class="btn btn-primary shadow">
-        <i class="fa-solid fa-paper-plane me-3"></i>Create new notification
-      </button>
-    </div>
-    <div class="row mb-4">
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
-          <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Tổng số thông báo</h6>
-              <i class="fa-solid fa-bell text-primary"></i>
-            </div>
-            <p class="card-text fw-bold fs-5 mb-2">1222</p>
-            <!-- <small class="text-success">+12% so với tháng trước</small> -->
-          </div>
-        </div>
+  <div class="container-fluid py-4 bg-light-subtle min-vh-100">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+      <div class="mb-3 mb-md-0">
+        <h4 class="fw-bold text-primary mb-1">Auction Room Management</h4>
+        <p class="text-body-secondary mb-0">Manage all auction rooms notifications</p>
       </div>
-
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
-          <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Đã gửi</h6>
-              <i class="fa-solid fa-circle-check text-success"></i>
-            </div>
-            <p class="card-text fw-bold fs-5 mb-2">100</p>
-            <!-- <small class="text-body-secondary">80% tổng số</small> -->
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
-          <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Thất bại</h6>
-              <i class="fa-solid fa-ban text-danger"></i>
-            </div>
-            <p class="card-text fw-bold fs-5 mb-2">12</p>
-            <!-- <small class="text-body-secondary">12% tổng số</small> -->
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="card" style="width: 18rem">
-          <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Tỉ lệ đọc</h6>
-              <i class="fa-solid fa-eye text-primary"></i>
-            </div>
-            <p class="card-text fw-bold fs-5 mb-2">80%</p>
-            <!-- <small class="text-danger">Vi phạm chính sách</small> -->
-          </div>
-        </div>
-      </div>
+      <router-link to="/admin/sent-notification" class="btn btn-primary shadow-sm px-4">
+        <i class="fa-solid fa-paper-plane"></i> Create Notification
+      </router-link>
     </div>
 
-    <!-- search -->
-    <div class="row align-items-stretch">
-      <div class="col-12 col-lg-7 mb-4">
-        <div class="input-group">
-          <span class="input-group-text" id="basic-addon1">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </span>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Search by notification"
-            aria-label="Username"
-            aria-describedby="basic-addon1"
-          />
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Total Notifications</h6>
+                <h3 class="fw-bold mb-0">1,222</h3>
+              </div>
+              <div
+                class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-bell fs-5"></i>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col-12 col-lg-5 d-flex justify-content-lg-end gap-2 gap-md-4 gap-lg-5 mb-4">
-        <select id="options" name="options" class="border rounded-3 px-4">
-          <option value="option1">Tất cả</option>
-          <option value="option2">Đã gửi</option>
-          <option value="option3">Thất bại</option>
-        </select>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Sent</h6>
+                <h3 class="fw-bold mb-0">100</h3>
+              </div>
+              <div
+                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-circle-check fs-5"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Failed</h6>
+                <h3 class="fw-bold mb-0">12</h3>
+              </div>
+              <div
+                class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-ban fs-5"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="card-subtitle text-body-secondary mb-1">Read Rate</h6>
+                <h3 class="fw-bold mb-0">80%</h3>
+              </div>
+              <div
+                class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-eye fs-5"></i>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- auction-room -->
-    <div class="auction-room">
-      <div class="card mb-4">
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12 col-md-8">
+            <div class="input-group bg-light rounded-pill px-2 border-0">
+              <span class="input-group-text bg-transparent border-0 text-secondary">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control bg-transparent border-0 shadow-none"
+                placeholder="Search by notification content..."
+              />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <select
+              class="form-select rounded-pill border-0 bg-light shadow-none"
+              aria-label="Filter select"
+            >
+              <option selected>All Status</option>
+              <option value="1">Sent</option>
+              <option value="2">Failed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex no-scrollbar flex-column gap-3 overflow-y-auto" style="max-height: 400px">
+      <div class="card border-0 shadow-sm">
         <div class="card-body">
-          <div class="row mb-3">
-            <div class="d-flex align-items-center justify-content-between">
-              <div class="d-flex align-items-center gap-5">
-                <h5 class="fw-bold">Phòng đấu giá sắp bắt đầu</h5>
-                <small class="text-light border border-primary rounded-3 p-1 fw-bold">Đã gửi</small>
-              </div>
-              <div class="d-flex align-items-center justify-content-lg-end">
-                <p class="">Người nhận: all</p>
-              </div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="d-flex align-items-center gap-3">
+              <h5 class="fw-bold mb-0">Phòng đấu giá sắp bắt đầu</h5>
+              <span
+                class="badge bg-success-subtle text-success rounded-pill border border-success-subtle"
+                >Sent</span
+              >
+            </div>
+            <div class="d-flex align-items-center text-body-secondary">
+              <i class="fa-solid fa-user-group me-2"></i>
+              <small>Receiver: <strong>All</strong></small>
             </div>
           </div>
-          <div>
-            <p>Phòng 01 sẽ bắt đầu phiên đấu giá vào lúc 10:00 ngày 26/03/2024</p>
-            <small class="text-body-secondary">25/03/2024 09:00</small>
+
+          <p class="mb-2 text-dark">
+            Phòng 01 sẽ bắt đầu phiên đấu giá vào lúc 10:00 ngày 26/03/2024
+          </p>
+
+          <div class="d-flex align-items-center text-muted small">
+            <i class="fa-regular fa-clock me-2"></i>
+            <span>25/03/2024 09:00</span>
           </div>
         </div>
       </div>
 
-      <div class="card mb-4">
+      <div class="card border-0 shadow-sm">
         <div class="card-body">
-          <div class="row mb-3">
-            <div class="d-flex align-items-center justify-content-between">
-              <div class="d-flex align-items-center gap-5">
-                <h5 class="fw-bold">Phòng đấu giá sắp bắt đầu</h5>
-                <small class="text-light border border-primary rounded-3 p-1 fw-bold">Đã gửi</small>
-              </div>
-              <div class="d-flex align-items-center justify-content-lg-end">
-                <p class="">Người nhận: all</p>
-              </div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="d-flex align-items-center gap-3">
+              <h5 class="fw-bold mb-0">Phòng đấu giá sắp bắt đầu</h5>
+              <span
+                class="badge bg-success-subtle text-success rounded-pill border border-success-subtle"
+                >Sent</span
+              >
+            </div>
+            <div class="d-flex align-items-center text-body-secondary">
+              <i class="fa-solid fa-user-group me-2"></i>
+              <small>Receiver: <strong>VIP Members</strong></small>
             </div>
           </div>
-          <div>
-            <p>Phòng VIP 01 sẽ bắt đầu phiên đấu giá vào lúc 10:00 ngày 26/03/2024</p>
-            <small class="text-body-secondary">25/03/2024 09:00</small>
+
+          <p class="mb-2 text-dark">
+            Phòng VIP 01 sẽ bắt đầu phiên đấu giá vào lúc 10:00 ngày 26/03/2024
+          </p>
+
+          <div class="d-flex align-items-center text-muted small">
+            <i class="fa-regular fa-clock me-2"></i>
+            <span>25/03/2024 09:00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="d-flex align-items-center gap-3">
+              <h5 class="fw-bold mb-0">Cảnh báo vi phạm</h5>
+              <span
+                class="badge bg-danger-subtle text-danger rounded-pill border border-danger-subtle"
+                >Failed</span
+              >
+            </div>
+            <div class="d-flex align-items-center text-body-secondary">
+              <i class="fa-solid fa-user me-2"></i>
+              <small>Receiver: <strong>User #123</strong></small>
+            </div>
+          </div>
+
+          <p class="mb-2 text-dark">Tài khoản của bạn bị tạm khóa do vi phạm chính sách.</p>
+
+          <div class="d-flex align-items-center text-muted small">
+            <i class="fa-regular fa-clock me-2"></i>
+            <span>25/03/2024 08:30</span>
+            <span class="ms-3 text-danger"
+              ><i class="fa-solid fa-circle-exclamation me-1"></i>Network Error</span
+            >
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 export default {};
 </script>
-<style></style>
