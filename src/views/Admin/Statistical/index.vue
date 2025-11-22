@@ -110,14 +110,35 @@
 </template>
 
 <script>
+<<<<<<< Updated upstream
 import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
 
+=======
+// import { onMounted } from "vue";
+// import { Chart, registerables } from "chart.js";
+
+import { Bar } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import axios from 'axios';
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+// Chart.register(...registerables);
+>>>>>>> Stashed changes
 export default {
+  name: 'BarChart',
+  components: { Bar },
+
   data() {
     return {
-      revenueChart: null,
-      userChart: null,
+      list_data: [],
+      is_view: false,
+      chartData: {
+        labels: [],
+        datasets: []
+      },
+      // revenueChart: null,
+      // userChart: null,
     };
   },
 
@@ -199,6 +220,30 @@ export default {
         },
       },
     });
+  },
+
+  methods: {
+    thongKe() {
+      axios
+        .post("http://localhost:8081/api/admin/statistics/users-registration" , this.search, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem("key_admin")
+          }
+        })
+          .then((res) => {
+            if (res.data.status) {
+              this.is_view = true;
+              this.chartData = {
+                labels: res.data.labels,
+                datasets: res.data.datasets
+              };
+              this.list_data = res.data.data;
+            } else {
+              this.$toast.error(res.data.message);
+            }
+
+          })
+    }
   },
 
   beforeUnmount() {

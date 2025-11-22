@@ -135,6 +135,7 @@
       </div>
     </div>
 
+<<<<<<< Updated upstream
     <div class="row g-3 mb-4">
       <div class="col-12 col-xl-6">
         <div class="card border-0 shadow-sm h-100">
@@ -192,6 +193,106 @@
                 </tbody>
               </table>
             </div>
+=======
+    <div class="row mb-4 d-flex align-items-center justify-content-between">
+      <!-- Phòng đấu giá gần đây -->
+      <div class="col-12 col-lg-6">
+        <div class="border border-1 border-secondary p-3 bg-light h-100 rounded-2">
+          <h5>Nearby auction rooms</h5>
+          <div class="table-responsive mt-4">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr class="bg-secondary">
+                  <th scope="col">Auction room name</th>
+                  <th scope="col">Artwork</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Current price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+                 <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+                 <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+                 <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+                 <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+                 <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+                 <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+                 <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+                 <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+                 <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+                 <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-danger shadow">In progress</small></td>
+                  <td>10.000đ</td>
+                </tr>
+
+                <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-warning shadow">Coming soon</small></td>
+                  <td>10.000đ</td>
+                </tr>
+
+                <tr>
+                  <td>Tranh sơn dầu</td>
+                  <td>Tranh phong cảnh mùa thu</td>
+                  <td><small class="text-body-secondary shadow">End</small></td>
+                  <td>10.000đ</td>
+                </tr>
+              </tbody>
+            </table>
+>>>>>>> Stashed changes
           </div>
         </div>
       </div>
