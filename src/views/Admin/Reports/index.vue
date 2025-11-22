@@ -11,7 +11,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">General report</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">General report</h6>
                 <h3 class="card-text fw-bold mb-0">120</h3>
               </div>
               <div
@@ -33,7 +33,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Pending</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Pending</h6>
                 <h3 class="card-text fw-bold mb-0">100</h3>
               </div>
               <div
@@ -53,7 +53,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">In progress</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">In progress</h6>
                 <h3 class="card-text fw-bold mb-0">10</h3>
               </div>
               <div
@@ -73,7 +73,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Resolved</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Resolved</h6>
                 <h3 class="card-text fw-bold mb-0">12</h3>
               </div>
               <div

@@ -38,6 +38,11 @@
               <i class="fa-regular fa-house"></i><span>test</span>
             </router-link>
           </li>
+          <li :class="{ active: $route.path === '/admin/management-statistical' }">
+            <router-link to="/admin/management-statistical"
+              ><i class="fa-solid fa-square-poll-vertical"></i>Statistical</router-link
+            >
+          </li>
           <li :class="{ active: $route.path.startsWith('/admin/chat') }">
             <router-link to="/admin/chat/auction-001" class="iq-waves-effect">
               <i class="fa-solid fa-comments"></i><span>Chat Support</span>
@@ -95,11 +100,7 @@
                   ><i class="fa-solid fa-bell"></i>Notification</router-link
                 >
               </li>
-              <li :class="{ active: $route.path === '/admin/management-statistical' }">
-                <router-link to="/admin/management-statistical"
-                  ><i class="fa-solid fa-square-poll-vertical"></i>Statistical</router-link
-                >
-              </li>
+
               <li :class="{ active: $route.path === '/admin/management-admin' }">
                 <router-link to="/admin/management-admin"
                   ><i class="fa-solid fa-shield-halved"></i>Admin</router-link

@@ -266,6 +266,48 @@ const routes = [
     ],
   },
   {
+    path: "/admin/management-statistical",
+    // name: "admin-settings",
+    component: () => import("../views/Admin/Statistical/index.vue"),
+    meta: { layout: "default" },
+    children: [
+      {
+        path: "",
+        redirect: "revenues",
+      },
+      {
+        path: "revenues",
+        // name: "admin-general-setting",
+        component: () => import("../views/Admin/Statistical/Revenue/index.vue"),
+      },
+      {
+        path: "users",
+        // name: "admin-payment",
+        component: () => import("../views/Admin/Statistical/User/index.vue"),
+      },
+      {
+        path: "auctions",
+        // name: "admin-notifications",
+        component: () => import("../views/Admin/Statistical/AUction/index.vue"),
+      },
+      {
+        path: "bids",
+        // name: "admin-email",
+        component: () => import("../views/Admin/Statistical/Bid/index.vue"),
+      },
+      {
+        path: "artworks",
+        // name: "admin-security",
+        component: () => import("../views/Admin/Statistical/Artwork/index.vue"),
+      },
+      {
+        path: "reports",
+        // name: "admin-database",
+        component: () => import("../views/Admin/Statistical/Report/index.vue"),
+      },
+    ],
+  },
+  {
     path: "/admin/add-auction-room",
     name: "add-auction-room",
     component: () => import("../views/Admin/Add-auctionRoom/index.vue"),

@@ -16,7 +16,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Total Notifications</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Total Notifications</h6>
                 <h3 class="fw-bold mb-0">1,222</h3>
               </div>
               <div
@@ -35,7 +35,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Sent</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Sent</h6>
                 <h3 class="fw-bold mb-0">100</h3>
               </div>
               <div
@@ -54,7 +54,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Failed</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Failed</h6>
                 <h3 class="fw-bold mb-0">12</h3>
               </div>
               <div
@@ -73,7 +73,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Read Rate</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Read Rate</h6>
                 <h3 class="fw-bold mb-0">80%</h3>
               </div>
               <div

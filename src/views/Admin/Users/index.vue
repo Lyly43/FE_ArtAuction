@@ -16,7 +16,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Total Users</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Total Users</h6>
                 <h3 class="fw-bold mb-0">1,222</h3>
               </div>
               <div class="icon-box bg-secondary-subtle text-primary rounded-3 p-2">
@@ -36,7 +36,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Verified</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Verified</h6>
                 <h3 class="fw-bold mb-0">100</h3>
               </div>
               <div class="icon-box bg-success-subtle text-success rounded-3 p-2">
@@ -53,7 +53,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Sellers</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Sellers</h6>
                 <h3 class="fw-bold mb-0">146</h3>
               </div>
               <div class="icon-box bg-info-subtle text-info rounded-3 p-2">
@@ -70,7 +70,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Locked</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Locked</h6>
                 <h3 class="fw-bold mb-0">5</h3>
               </div>
               <div class="icon-box bg-danger-subtle text-danger rounded-3 p-2">

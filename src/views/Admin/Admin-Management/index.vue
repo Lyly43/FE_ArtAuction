@@ -11,7 +11,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">General Admin</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">General Admin</h6>
                 <h3 class="fw-bold mb-0">10</h3>
               </div>
               <div
@@ -31,7 +31,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">In Operation</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">In Operation</h6>
                 <h3 class="fw-bold mb-0">5</h3>
               </div>
               <div
@@ -51,7 +51,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">New Admin (Month)</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">New Admin (Month)</h6>
                 <h3 class="fw-bold mb-0">0</h3>
               </div>
               <div
@@ -71,7 +71,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Super Admin</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Super Admin</h6>
                 <h3 class="fw-bold mb-0">2</h3>
               </div>
               <div

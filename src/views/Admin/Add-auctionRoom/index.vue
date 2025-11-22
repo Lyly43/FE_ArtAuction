@@ -2,8 +2,10 @@
   <div class="container py-4">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
       <div class="mb-3 mb-md-0">
-        <h4 class="fw-bold text-primary mb-1">Tạo Phòng Đấu Giá Mới</h4>
-        <p class="text-body-secondary mb-0">Thiết lập thông tin, lịch trình và cấu hình hiển thị</p>
+        <h4 class="fw-bold text-primary mb-1">Create new auction room</h4>
+        <p class="text-body-secondary mb-0">
+          Set up information, schedules, and display configurations
+        </p>
       </div>
       <!-- <div class="d-flex gap-2">
         <button class="btn btn-light text-danger fw-bold shadow-sm px-4">Hủy bỏ</button>
@@ -24,15 +26,15 @@
               <i class="fa-solid fa-pager fs-5"></i>
             </div>
             <div>
-              <h5 class="fw-bold mb-0">Thông tin cơ bản</h5>
-              <small class="text-muted">Thiết lập thông tin chung cho phòng đấu giá</small>
+              <h5 class="fw-bold mb-0">Basic information</h5>
+              <small class="text-muted">Set up general information for the auction room</small>
             </div>
           </div>
 
           <div class="row g-3">
             <div class="col-12 col-md-6">
               <label class="form-label fw-bold small text-secondary text-uppercase"
-                >Tên phòng đấu giá</label
+                >Auction room name</label
               >
               <input
                 type="text"
@@ -42,7 +44,7 @@
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label fw-bold small text-secondary text-uppercase"
-                >Loại tác phẩm chủ đạo</label
+                >Main genre of work</label
               >
               <input
                 type="text"
@@ -52,7 +54,7 @@
             </div>
             <div class="col-12">
               <label class="form-label fw-bold small text-secondary text-uppercase"
-                >Mô tả ngắn</label
+                >Short description</label
               >
               <textarea
                 class="form-control bg-light border-0"
@@ -62,7 +64,7 @@
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label fw-bold small text-secondary text-uppercase"
-                >Admin phụ trách</label
+                >Admin in charge</label
               >
               <input
                 type="text"
@@ -84,8 +86,8 @@
               <i class="fa-solid fa-images fs-5"></i>
             </div>
             <div>
-              <h5 class="fw-bold mb-0">Chọn tác phẩm đấu giá</h5>
-              <small class="text-muted">Lọc theo thể loại và thêm vào danh sách</small>
+              <h5 class="fw-bold mb-0">Select auction artwork</h5>
+              <small class="text-muted">Filter by category and add to list</small>
             </div>
           </div>
 
@@ -95,14 +97,16 @@
                 >Lọc theo thể loại</label
               >
               <select v-model="selectedCategory" class="form-select bg-light border-0">
-                <option value="">-- Chọn thể loại để hiển thị tranh --</option>
-                <option value="son-dau">Tranh sơn dầu</option>
-                <option value="chan-dung">Tranh chân dung</option>
+                <option value="" disabled selected hidden>
+                  -- Select category to display pictures --
+                </option>
+                <option value="son-dau">Canvas</option>
+                <option value="chan-dung">Portrait painting</option>
               </select>
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label fw-bold small text-secondary text-uppercase"
-                >Tìm kiếm nhanh</label
+                >Quick search</label
               >
               <div class="input-group border-0">
                 <span class="input-group-text bg-light border-0 text-secondary"
@@ -119,7 +123,7 @@
 
           <div v-if="selectedCategory">
             <p class="fw-bold text-primary mb-2 small text-uppercase">
-              <i class="fa-solid fa-list me-2"></i>Danh sách tác phẩm có sẵn
+              <i class="fa-solid fa-list me-2"></i>List of available works
             </p>
 
             <div class="row g-3" v-if="filteredArtworks.length > 0">
@@ -175,13 +179,15 @@
               </div>
             </div>
             <div v-else class="text-center text-muted py-3 bg-light rounded small">
-              Không có tác phẩm nào phù hợp hoặc đã được chọn hết.
+              No entries are suitable or have been taken.
             </div>
           </div>
 
           <div v-else class="text-center py-4 bg-light rounded border border-dashed">
             <i class="fa-solid fa-filter text-secondary fs-3 mb-2"></i>
-            <p class="text-muted mb-0">Vui lòng chọn <b>Thể loại</b> để xem danh sách tranh.</p>
+            <p class="text-muted mb-0">
+              Please select <b>Category</b> to see the list of pictures.
+            </p>
           </div>
         </div>
       </div>
@@ -197,14 +203,14 @@
                 <i class="fa-solid fa-hourglass-half fs-5"></i>
               </div>
               <div>
-                <h5 class="fw-bold mb-0">Lịch trình & Cấu hình giá</h5>
+                <h5 class="fw-bold mb-0">Schedule and Pricing Configuration</h5>
                 <small class="text-muted"
-                  >Sắp xếp thứ tự và đặt giá cho {{ scheduleList.length }} tác phẩm</small
+                  >Sắp xếp thứ tự và đặt giá cho {{ scheduleList.length }} work</small
                 >
               </div>
             </div>
             <span class="badge bg-secondary-subtle text-primary fs-6 px-3 py-2 rounded-pill">
-              <i class="fa-regular fa-clock me-1"></i> Tổng: {{ totalDuration }} phút
+              <i class="fa-regular fa-clock me-1"></i> Total: {{ totalDuration }} minute
             </span>
           </div>
 
@@ -259,7 +265,7 @@
                     <div class="row g-2">
                       <div class="col-4">
                         <label class="form-label x-small fw-bold text-secondary mb-0"
-                          >GIÁ KHỞI ĐIỂM</label
+                          >STARTING PRICE</label
                         >
                         <input
                           type="text"
@@ -270,7 +276,7 @@
                       </div>
                       <div class="col-4">
                         <label class="form-label x-small fw-bold text-secondary mb-0"
-                          >BƯỚC GIÁ</label
+                          >PRICE STEP</label
                         >
                         <input
                           type="text"
@@ -281,7 +287,7 @@
                       </div>
                       <div class="col-4">
                         <label class="form-label x-small fw-bold text-secondary mb-0"
-                          >THỜI LƯỢNG (P)</label
+                          >DURATION (P)</label
                         >
                         <input
                           type="number"
@@ -340,35 +346,35 @@
                 >
                   <i class="fa-solid fa-clock fs-5"></i>
                 </div>
-                <h5 class="fw-bold mb-0">Cấu hình thời gian</h5>
+                <h5 class="fw-bold mb-0">Time configuration</h5>
               </div>
 
               <div class="row g-3">
                 <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
-                    >Bắt đầu lúc</label
+                    >Start at</label
                   >
                   <input type="datetime-local" class="form-control bg-light border-0" />
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
-                    >Kết thúc dự kiến</label
+                    >Expected end</label
                   >
                   <input type="datetime-local" class="form-control bg-light border-0" />
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
-                    >Tự động gia hạn (s)</label
+                    >Automatic renewal(s)</label
                   >
                   <input type="number" class="form-control bg-light border-0" placeholder="30" />
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
-                    >Trạng thái khởi tạo</label
+                    >Initialization state</label
                   >
                   <select class="form-select bg-light border-0">
-                    <option value="schedule">Lên lịch (Scheduled)</option>
-                    <option value="draft">Bản nháp (Draft)</option>
+                    <option value="schedule">Scheduled</option>
+                    <option value="draft">Draft</option>
                   </select>
                 </div>
               </div>
@@ -386,13 +392,13 @@
                 >
                   <i class="fa-solid fa-bell fs-5"></i>
                 </div>
-                <h5 class="fw-bold mb-0">Tài chính & Thông báo</h5>
+                <h5 class="fw-bold mb-0">Finance & Announcements</h5>
               </div>
 
               <div class="row g-3 mb-4">
                 <div class="col-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
-                    >Tiền cọc (VNĐ)</label
+                    >Deposit (VND)</label
                   >
                   <input
                     type="text"
@@ -402,7 +408,7 @@
                 </div>
                 <div class="col-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
-                    >Hạn thanh toán (ngày)</label
+                    >Payment due date (days)</label
                   >
                   <input type="number" class="form-control bg-light border-0" value="3" />
                 </div>
@@ -412,7 +418,7 @@
 
               <div class="mb-3">
                 <label class="form-label fw-bold small text-secondary text-uppercase"
-                  >Thông báo trước (Phút)</label
+                  >Advance Notice (Minutes)</label
                 >
                 <input type="number" class="form-control bg-light border-0" placeholder="VD: 15" />
               </div>
@@ -422,9 +428,9 @@
                   class="list-group-item list-group-item-action border-0 rounded px-2 d-flex justify-content-between align-items-center mb-1"
                 >
                   <div>
-                    <p class="mb-0 fw-medium">Thông báo khi kết thúc</p>
+                    <p class="mb-0 fw-medium">Notice when finished</p>
                     <small class="text-muted" style="font-size: 0.75rem"
-                      >Gửi thông báo cho người thắng cuộc</small
+                      >Send notification to winner</small
                     >
                   </div>
                   <div class="form-check form-switch">
@@ -436,9 +442,9 @@
                   class="list-group-item list-group-item-action border-0 rounded px-2 d-flex justify-content-between align-items-center"
                 >
                   <div>
-                    <p class="mb-0 fw-medium">Hiển thị công khai ngay</p>
+                    <p class="mb-0 fw-medium">Show publicly now</p>
                     <small class="text-muted" style="font-size: 0.75rem"
-                      >Người dùng có thể thấy phòng này</small
+                      >Users can see this room</small
                     >
                   </div>
                   <div class="form-check form-switch">
@@ -452,9 +458,9 @@
       </div>
 
       <div class="d-flex gap-2 mt-4 justify-content-end">
-        <button class="btn btn-danger text-light fw-bold shadow-sm px-4">Hủy bỏ</button>
+        <button class="btn btn-danger text-light fw-bold shadow-sm px-4">Cancel</button>
         <button class="btn btn-primary fw-bold shadow-sm px-4" @click="submitForm">
-          <i class="fa-solid fa-check me-2"></i>Hoàn tất
+          <i class="fa-solid fa-check me-2"></i>Completed
         </button>
       </div>
     </form>
