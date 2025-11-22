@@ -6,10 +6,7 @@
         <p class="text-body-secondary mb-0">Overview and control of all auction sessions</p>
       </div>
       <div>
-        <router-link
-          to="/admin/add-auction-room"
-          class="btn btn-primary shadow-sm rounded-pill px-4"
-        >
+        <router-link to="/admin/add-auction-room" class="btn btn-primary shadow-sm px-4">
           <i class="fa-solid fa-plus me-2"></i> Create Room
         </router-link>
       </div>

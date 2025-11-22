@@ -147,7 +147,7 @@
 
                       <div class="d-flex gap-1 flex-wrap">
                         <span
-                          class="badge bg-primary-subtle text-primary border border-primary-subtle fw-normal"
+                          class="badge bg-secondary-subtle text-primary border border-secondary-subtle fw-normal"
                           style="font-size: 0.7rem"
                         >
                           <i class="fa-solid fa-ruler-combined me-1"></i>{{ art.size }}

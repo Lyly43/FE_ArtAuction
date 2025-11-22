@@ -48,15 +48,19 @@
           >
             <div class="d-flex align-items-center gap-2">
               <span class="badge bg-danger rounded-circle p-1"> </span
-              ><small class="text-secondary fw-medium">Đang diễn ra</small>
+              ><small class="text-secondary bg-danger px-2 rounded-2 text-light"
+                >Đang diễn ra</small
+              >
             </div>
             <div class="d-flex align-items-center gap-2">
               <span class="badge bg-warning text-dark rounded-circle p-1"> </span
-              ><small class="text-secondary fw-medium">Sắp tới</small>
+              ><small class="text-secondary bg-warning px-2 rounded-2 text-dark">Sắp tới</small>
             </div>
             <div class="d-flex align-items-center gap-2">
               <span class="badge bg-secondary rounded-circle p-1"> </span
-              ><small class="text-secondary fw-medium">Đã kết thúc</small>
+              ><small class="text-secondary bg-secondary px-2 rounded-2 text-light"
+                >Đã kết thúc</small
+              >
             </div>
           </div>
         </div>

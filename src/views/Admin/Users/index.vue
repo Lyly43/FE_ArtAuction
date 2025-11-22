@@ -99,7 +99,7 @@
             </div>
           </div>
           <div class="col-12 col-md-6 col-lg-8 text-md-end">
-            <button class="btn btn-outline-secondary me-2">
+            <button class="btn btn-outline-primary me-2">
               <i class="fa-solid fa-filter me-1"></i> Filter
             </button>
             <!-- <button class="btn btn-outline-secondary">
