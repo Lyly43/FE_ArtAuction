@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"; // cài vue-router: npm install vue-router@next --save
 
-// import checkAdmin from "./checkAdmin";
+import checkAdmin from "./checkAdmin";
 import checkUser from "./checkUser";
 
 const routes = [
@@ -130,7 +130,7 @@ const routes = [
     name: "ad-dashboard",
     component: () => import("../views/Admin/Dashboard/index.vue"),
     meta: { layout: "default" },
-    // beforeEnter: checkUser,
+    beforeEnter: checkAdmin,
   },
   // {
   //   path: "/admin/management-employees",

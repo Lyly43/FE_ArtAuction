@@ -16,9 +16,9 @@
         </div>
       </div>
     </div>
-    <div id="sidebar-scrollbar" class="">
-      <nav class="iq-sidebar-menu">
-        <ul id="iq-sidebar-toggle" class="iq-menu">
+    <div id="sidebar-scrollbar" class="d-flex flex-column" style="height: calc(100vh - 80px);">
+      <nav class="iq-sidebar-menu d-flex flex-column h-100">
+        <ul id="iq-sidebar-toggle" class="iq-menu flex-grow-1 overflow-auto custom-scrollbar">
           <li class="iq-menu-title">
             <i class="fa-solid fa-minus"></i>
             <span>Dashboard</span>
@@ -121,18 +121,18 @@
                 4</span></a>
           </li> -->
         </ul>
-        <div class="p-3 mt-auto">
+        <div v-if="admin.check" class="p-3 mt-auto border-top">
           <!-- cá nhân ở đây -->
           <div class="d-flex align-items-center gap-3">
             <img
-              src="../../../assets/img/user_test.jpg"
+              :src="admin.avt"
               class="img-avatar"
               alt=""
               style="width: 40px; height: 40px; border-radius: 50%"
             />
             <div class="ms-2">
-              <p class="fw-bold mb-0">john_sins (Admin)</p>
-              <p class="text-muted small mb-0">connchonam@example.com</p>
+              <p class="fw-bold mb-0">{{ admin.name }}</p>
+              <p class="text-muted small mb-0">{{ admin.email }}</p>
             </div>
           </div>
         </div>
@@ -141,6 +141,24 @@
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      admin: {},
+    };
+  },
+  mounted() {
+    this.admin = {
+      name: localStorage.getItem("name_admin"),
+      email: localStorage.getItem("email_admin"),
+      check: localStorage.getItem("check_admin"),
+      avt: localStorage.getItem("avatar_admin"),
+    };
+    console.log("menu", this.admin);
+  },
+  methods: {},
+};
 </script>
-<style></style>
+<style scoped>
+
+</style>
