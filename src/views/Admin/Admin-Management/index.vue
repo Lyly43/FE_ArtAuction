@@ -156,7 +156,7 @@
                     Active
                   </button>
                 </td>
-                <td class="text-body-secondary align-middle">10-06-2024 14:30</td>
+                <td class="small text-body-secondary align-middle">10-06-2024 14:30</td>
                 <td class="text-center align-middle">
                   <div class="dropdown">
                     <button
@@ -216,7 +216,7 @@
                     Inactive
                   </button>
                 </td>
-                <td class="text-body-secondary align-middle">09-06-2024 09:15</td>
+                <td class="small text-body-secondary align-middle">09-06-2024 09:15</td>
                 <td class="text-center align-middle">
                   <div class="dropdown">
                     <button

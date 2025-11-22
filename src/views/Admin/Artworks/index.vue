@@ -145,12 +145,13 @@
                     </div>
                   </div>
                 </td>
-                <td>{{ item.author }}</td>
-                <td>{{ item.year }}</td>
-                <td>{{ item.material }}</td>
-                <td>{{ item.size }}</td>
-                <td class="fw-medium text-dark">{{ formatCurrency(item.price) }}</td>
-                <td>
+                <td class="align-middle">{{ item.author }}</td>
+                <td class="align-middle">{{ item.year }}</td>
+                <td class="align-middle">{{ item.material }}</td>
+                <td class="align-middle">{{ item.size }}</td>
+                <td class="fw-medium text-dark align-middle">{{ formatCurrency(item.price) }}</td>
+                <td class="small text-body-secondary align-middle">{{ item.createdAt }}</td>
+                <td class="align-middle">
                   <button
                     class="btn badge rounded-pill border fw-normal px-3 py-2"
                     :class="getStatusClass(item.status)"
@@ -212,6 +213,7 @@ export default {
           size: "30*40 cm",
           price: 50000,
           status: "Approved",
+          createdAt: "10-06-2024 10:00",
         },
         {
           id: 2,
@@ -223,6 +225,7 @@ export default {
           size: "50*60 cm",
           price: 1200000,
           status: "Sold",
+          createdAt: "10-06-2024 10:00",
         },
         {
           id: 3,
@@ -234,6 +237,7 @@ export default {
           size: "20*30 cm",
           price: 0,
           status: "Pending approval",
+          createdAt: "10-06-2024 10:00",
         },
       ],
     };

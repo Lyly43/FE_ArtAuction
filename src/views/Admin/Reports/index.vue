@@ -127,8 +127,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in reports" :key="item.id" class="align-middle">
-                <td class="ps-3">
+              <tr v-for="item in reports" :key="item.id">
+                <td class="ps-3 align-middle">
                   <div class="d-flex align-items-center gap-2">
                     <div
                       class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
@@ -140,21 +140,25 @@
                   </div>
                 </td>
 
-                <td>
+                <td class="align-middle">
                   <span class="badge bg-light text-dark border fw-normal rounded-pill">
                     {{ item.objectType }}
                   </span>
                 </td>
 
-                <td class="fw-medium text-primary">{{ item.objectName }}</td>
+                <td class="fw-medium text-primary align-middle">{{ item.objectName }}</td>
 
-                <td class="text-truncate" style="max-width: 250px" :title="item.content">
+                <td
+                  class="text-truncate align-middle"
+                  style="max-width: 250px"
+                  :title="item.content"
+                >
                   {{ item.content }}
                 </td>
 
-                <td class="text-body-secondary">{{ item.createdAt }}</td>
+                <td class="small text-body-secondary align-middle">{{ item.createdAt }}</td>
 
-                <td>
+                <td class="align-middle">
                   <button
                     class="btn badge rounded-pill border fw-normal px-3 py-2"
                     :class="getStatusClass(item.status)"
@@ -163,7 +167,7 @@
                   </button>
                 </td>
 
-                <td class="text-center">
+                <td class="text-center align-middle">
                   <div class="dropdown">
                     <button
                       class="btn btn-sm btn-light rounded-circle"

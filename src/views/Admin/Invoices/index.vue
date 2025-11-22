@@ -174,7 +174,7 @@
                     {{ invoice.method }}
                   </span>
                 </td>
-                <td class="align-middle">{{ invoice.date }}</td>
+                <td class="small text-secondary align-middle">{{ invoice.date }}</td>
                 <td class="align-middle">
                   <button
                     class="btn badge rounded-pill border fw-normal px-3 py-2"

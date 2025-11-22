@@ -128,7 +128,7 @@
             <tbody>
               <tr v-for="user in users" :key="user.id">
                 <td class="text-center text-secondary fw-medium">#{{ user.id }}</td>
-                <td>
+                <td class="align-middle">
                   <div class="d-flex align-items-center">
                     <div
                       class="avatar fs-5 bg-secondary-subtle text-secondary rounded-circle me-2 d-flex align-items-center justify-content-center fw-bold flex-shrink-0 border border-2"
@@ -142,8 +142,8 @@
                     </div>
                   </div>
                 </td>
-                <td>{{ user.phone }}</td>
-                <td>
+                <td class="align-middle">{{ user.phone }}</td>
+                <td class="align-middle">
                   <span
                     class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill fw-normal"
                   >
@@ -151,11 +151,11 @@
                   </span>
                 </td>
 
-                <td>
+                <td class="align-middle">
                   {{ user.address }}
                 </td>
 
-                <td>
+                <td class="align-middle">
                   <button
                     class="btn"
                     :class="['badge rounded-pill border fw-normal', getStatusClass(user.status)]"
@@ -163,10 +163,12 @@
                     {{ user.status }}
                   </button>
                 </td>
-                <td class="text-start fw-medium text-dark">{{ formatCurrency(user.balance) }}</td>
-                <td class="small text-muted">{{ user.createdAt }}</td>
+                <td class="text-start fw-medium text-dark align-middle">
+                  {{ formatCurrency(user.balance) }}
+                </td>
+                <td class="small text-muted align-middle">{{ user.createdAt }}</td>
 
-                <td class="text-center">
+                <td class="text-center align-middle">
                   <div class="dropdown">
                     <button
                       class="btn btn-sm btn-light rounded-circle"
