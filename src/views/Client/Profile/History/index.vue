@@ -26,20 +26,47 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row mt-4 pt-2">
     <template v-for="(v, k) in list" :key="k">
       <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-        <div class="card p-0">
-          <!-- <div class="badge p-0">
-            <img src="../../../../assets/img/user_test.jpg" class="img-auction" alt="">
-            <div class="badge-live d-flex align-items-center gap-2"><i
-                class="fa-solid fa-circle fa-sm fw-bold text-white"></i>
-              <p class="m-0  fw-bold text-white">LIVE</p>
+        <div class="card p-0 overflow-hidden auction-card">
+          <div class="p-0 position-relative">
+            <img :src="v.imageAuctionRoom" class="img-auction" alt="" loading="lazy">
+            <div class="">
+              <span class="badge position-absolute top-0 start-0 m-3 bg-danger px-3">LIVE</span>
             </div>
-            <div class="badge-success1 d-flex align-items-center gap-2">12:35</div>
-            <div class="badge-success2 d-flex align-items-center gap-2">12:35</div>
+            <span class="badge position-absolute top-0 end-0 m-3 bg-success px-3">12:35</span>
+            <span class="badge position-absolute bottom-0 end-0 m-3 bg-success">{{ v.viewCount }} bidders</span>
+          </div>
+          <!-- Nội dung card -->
+          <div class="card-body d-flex flex-column gap-3">
+            <div class="d-flex flex-column gap-2">
+              <p class="fw-bold m-0 text-success fs-5"> {{ v.roomName }} </p>
+              <p class="m-0 text-muted small"> {{ v.id }} </p>
+              <div class="d-flex gap-2 align-items-center justify-content-between">
+                <span class="m-0">Category</span>
+                <span class="m-0"> {{ v.type }} </span>
+              </div>
+              <p class="m-0 small description-clamp"> {{ v.description }} </p>
+            </div>
+            <div class="mt-auto">
+              <div v-if="v.status !== 2" class="">
+                <router-link v-if="v.status == 1" :to="`/client/auction-room/${v.id}`" class="w-100">
+                  <button class="btn btn-success w-100">Join AuctAuction</button>
+                </router-link>
+                <div v-else class="w-100">
+                  <button class="btn btn-outline-danger w-100">Đã kết thúc</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          </div> -->
+
+
+
+        <!-- <div class="card p-0 auction-card">
+
           <div class="p-0 position-relative">
             <img :src="v.imageAuctionRoom" class="img-auction" alt="" loading="lazy">
             <div v-if="v.status === 1" class="badge-live d-flex align-items-center gap-2">
@@ -58,16 +85,13 @@
               <p class="m-0"> {{ v.description }} </p>
             </div>
 
-            <!-- Dòng thông tin -->
             <div class="d-flex justify-content-between mb-1">
               <div class="d-flex flex-column gap-1">
                 <p class="fw-bold m-0">Current product</p>
-                <!-- <p class="m-0">Product {{ auction.numberOfArtwork }} of 10</p> -->
               </div>
 
               <div class="d-flex flex-column gap-1 text-end">
                 <p class="fw-bold m-0">High Price</p>
-                <!-- <p class="m-0">{{ auction.artwork.currentPrice }}</p> -->
               </div>
             </div>
             <button class="btn btn-success">Join AuctAuction</button>
@@ -75,193 +99,9 @@
           </div>
 
 
-        </div>
+        </div> -->
       </div>
     </template>
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-      <div class="card p-0">
-        <div class="badge p-0">
-          <img src="../../../../assets/img/user_test.jpg" class="img-auction" alt="">
-          <div class="badge-live d-flex align-items-center gap-2"><i
-              class="fa-solid fa-circle fa-sm fw-bold text-white"></i>
-            <p class="m-0  fw-bold text-white">LIVE</p>
-          </div>
-          <div class="badge-success1 d-flex align-items-center gap-2">12:35</div>
-          <div class="badge-success2 d-flex align-items-center gap-2">12:35</div>
-
-        </div>
-
-        <div class="card-body">
-          <h5 class="fw-bold text-success">Modern Asian Expressions</h5>
-          <p class="card-text">Contemporary Asian artists redefining tradition</p>
-          <div class="d-flex justify-content-between">
-            <p class="m-0 text-secondary">Current product</p>
-            <p class="m-0 text-secondary">High Bid</p>
-          </div>
-          <div class="d-flex justify-content-between">
-            <p class="fw-bold">Product 7 of 10</p>
-            <p class="fw-bold">$12M</p>
-          </div>
-          <button class="btn btn-success w-100 fw-bold">Join ArtAuction</button>
-        </div>
-      </div>
-    </div> -->
-
-    <!-- mẫu 02 -->
-    <!-- <div class="col-lg-12 col-md-12 col-sm-12">
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="row mb-3 gap-2">
-            <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-between align-items-center">
-              <h4 class="text-success fw-bold m-0">Tên phòng đấu giá</h4>
-              <div class="alert alert-accent2 fw-bold m-0 px-5" role="alert">Won</div>
-
-            </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-between align-items-center">
-              <p class="text-secondary fw-bold m-0">Jan 15, 2025</p>
-              <p class="text-success fw-bold m-0">My Bid: $15,750</p>
-            </div>
-
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <div class=" bg-light p-3 rounded-3">
-                <div class="row">
-                  <div class="col-lg-3 col-md-6 col-sm-12 d-flex align-items-center">
-                    <img src="https://picsum.photos/200/300" class="card-img-top" style="height: 120px;" alt="...">
-                  </div>
-
-                  <div class="col-lg-9">
-                    <div class="row mt-3">
-                      <div
-                        class="col-lg-12 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4 ">
-                        <h5 class="m-0 fw-bold">Starry Night Over the Rhône</h5>
-                      </div>
-                      <div
-                        class="col-lg-12 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 ">Vincent van Gogh</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Participants
-                        </p>
-                        <p class="m-0 ">15</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Total Bids
-                        </p>
-                        <p class="m-0 ">24</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Starting Bid</p>
-                        <p class="m-0 ">$12,000</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Final Price</p>
-                        <p class="m-0 ">$15,750</p>
-                      </div>
-
-                    </div>
-
-
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-
-
-    <div class="col-lg-12 col-md-12 col-sm-12">
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="row mb-3 gap-2">
-            <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-between align-items-center">
-              <h4 class="text-success fw-bold m-0">Tên phòng đấu giá</h4>
-              <div class="alert alert-accent2 fw-bold m-0 px-5" role="alert">Won</div>
-
-            </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-between align-items-center">
-              <p class="text-secondary fw-bold m-0">Jan 15, 2025</p>
-              <p class="text-success fw-bold m-0">My Bid: $15,750</p>
-            </div>
-
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <div class=" bg-light p-3 rounded-3">
-                <div class="row">
-                  <div class="col-lg-3 col-md-6 col-sm-12 d-flex align-items-center">
-                    <img src="https://picsum.photos/200/300" class="card-img-top" style="height: 120px;" alt="...">
-
-                  </div>
-                  <div class="col-lg-9">
-                    <div class="row mt-3">
-                      <div
-                        class="col-lg-5 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4 ">
-                        <p class="m-0 fw-bold">Artwork</p>
-                        <p class="m-0 ">Starry Night Over the Rhône</p>
-                      </div>
-                      <div
-                        class="col-lg-4 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Artist</p>
-                        <p class="m-0 ">Vincent van Gogh</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Participants
-                        </p>
-                        <p class="m-0 ">15</p>
-                      </div>
-                      <div
-                        class="col-lg-5 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Starting Bid</p>
-                        <p class="m-0 ">$12,000</p>
-                      </div>
-                      <div
-                        class="col-lg-4 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Final Price</p>
-                        <p class="m-0 ">$15,750</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Total Bids
-                        </p>
-                        <p class="m-0 ">24</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </div> -->
 
   </div>
 

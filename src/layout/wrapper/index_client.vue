@@ -27,6 +27,7 @@ export default {
 }
 </script>
 <style>
+@import "../../assets/css/triangles.css";
 @import "../../assets/css/bootstrap-override.css";
 @import "../../assets/css/base.css";
 @import "../../assets/css/pages.css";

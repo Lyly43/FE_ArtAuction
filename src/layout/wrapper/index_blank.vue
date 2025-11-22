@@ -1,30 +1,39 @@
 <template>
-  <div class="wrapper">
-    <!-- <div class="header-wrapper">
-      <MenuClient></MenuClient>
-    </div> -->
+  <div class="wrapper admin-theme">
     <div class="page-wrapper">
       <div class="page-content">
         <router-view></router-view>
       </div>
     </div>
-    <!-- <BotClient></BotClient> -->
   </div>
 </template>
 <script>
-// import BotClient from "../components/client/BotClient.vue";
-// import MenuClient from "../components/client/MenuClient.vue";
+
+import "../../assets/js/jquery.min.js";
+import "../../assets/js/customizer.js";
+import "../../assets/js/popper.min.js";
+import "../../assets/js/bootstrap.min.js";
+import "../../assets/js/custom.js";
+import "../../assets/js/menu-demo.js";
+
 export default {
   name: "default-layout",
   components: {
-    // MenuClient,
-    // BotClient
   }
 }
 
 </script>
 <style>
-@import 'bootstrap/dist/css/bootstrap.min.css';
-@import 'bootstrap';
-/* @import '@fortawesome/fontawesome-free/css/all.min.css'; */
+@import "../../assets/css/custom-purple-theme.css";
+@import "../../assets/css/custom-purple-theme.css";
+
+@import "../../assets/css/responsive.css";
+@import "../../assets/css/remixicon.css";
+@import "../../assets/css/style.css";
+@import "../../assets/css/floatingbutton.css";
+@import "../../assets/css/fixes.css";
+@import "../../assets/css/style-admin.css";
+
+/* @import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap'; */
 </style>
