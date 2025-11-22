@@ -1,6 +1,4 @@
 import axios from "axios";
-import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: "bottom-right" });
 
 export default function (from, to, next) {
   axios
@@ -20,7 +18,7 @@ export default function (from, to, next) {
         localStorage.setItem("avatar_kh", res.data.avt);
       } else {
         next("/login");
-        toaster.error("Bạn cần đăng nhập trước!!!!");
+        this.$toast.error("Bạn cần đăng nhập trước!!!!");
       }
     })
     .catch((error) => {

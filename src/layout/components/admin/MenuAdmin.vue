@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <div id="sidebar-scrollbar" class="sidebar-scrollbar-wrapper">
+    <div id="sidebar-scrollbar" class="">
       <nav class="iq-sidebar-menu">
         <ul id="iq-sidebar-toggle" class="iq-menu">
           <li class="iq-menu-title">
@@ -121,18 +121,18 @@
                 4</span></a>
           </li> -->
         </ul>
-        <div v-if="admin.check" class="admin-info-footer">
+        <div class="p-3 mt-auto">
           <!-- cá nhân ở đây -->
           <div class="d-flex align-items-center gap-3">
             <img
-              :src="admin.avt"
+              src="../../../assets/img/user_test.jpg"
               class="img-avatar"
               alt=""
               style="width: 40px; height: 40px; border-radius: 50%"
             />
             <div class="ms-2">
-              <p class="fw-bold mb-0">{{ admin.name }}</p>
-              <p class="text-muted small mb-0">{{ admin.email }}</p>
+              <p class="fw-bold mb-0">john_sins (Admin)</p>
+              <p class="text-muted small mb-0">connchonam@example.com</p>
             </div>
           </div>
         </div>
@@ -141,50 +141,6 @@
   </div>
 </template>
 <script>
-export default {
-  data() {
-    return {
-      admin: {},
-    };
-  },
-  mounted() {
-    this.admin = {
-      name: localStorage.getItem("name_admin"),
-      email: localStorage.getItem("email_admin"),
-      check: localStorage.getItem("check_admin"),
-      avt: localStorage.getItem("avatar_admin"),
-    };
-    console.log("menu", this.admin);
-  },
-  methods: {},
-};
+export default {};
 </script>
-<style scoped>
-.sidebar-scrollbar-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 80px);
-  overflow: hidden;
-}
-
-.iq-sidebar-menu {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
-.iq-menu {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.admin-info-footer {
-  padding: 12px;
-  margin-top: auto;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
-  background-color: inherit;
-}
-</style>
+<style></style>

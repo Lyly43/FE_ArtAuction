@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"; // cài vue-router: npm install vue-router@next --save
 
-import checkAdmin from "./checkAdmin";
+// import checkAdmin from "./checkAdmin";
 import checkUser from "./checkUser";
 
 const routes = [
@@ -29,16 +29,12 @@ const routes = [
     component: () => import("../views/Khachhang/AboutUs/index.vue"),
     meta: { layout: "client" },
   },
-<<<<<<< Updated upstream
   // {
   //   path: "/help",
   //   name: "help",
   //   component: () => import("../views/Khachhang/Help/index.vue"),
   //   meta: { layout: "client" },
   // },
-=======
-
->>>>>>> Stashed changes
 
   // sau login - phải checkUser
   {
@@ -128,24 +124,13 @@ const routes = [
     beforeEnter: checkUser,
   },
 
-
-
-
-
   // ADMIN
-  {
-    path: "/admin/login",
-    // name: "login",
-    component: () => import("../views/Admin/Login_admin/index.vue"),
-    meta: { layout: "blank" },
-  },
-
   {
     path: "/admin/dashboard",
     name: "ad-dashboard",
     component: () => import("../views/Admin/Dashboard/index.vue"),
     meta: { layout: "default" },
-    beforeEnter: checkAdmin,
+    // beforeEnter: checkUser,
   },
   // {
   //   path: "/admin/management-employees",
@@ -208,7 +193,12 @@ const routes = [
     component: () => import("../views/Admin/AuctionRoom/index.vue"),
     meta: { layout: "default" },
   },
-
+  {
+    path: "/admin/login",
+    // name: "login",
+    component: () => import("../views/Admin/Login_admin/index.vue"),
+    meta: { layout: "blank" },
+  },
   {
     path: "/admin/management-report",
     // name: 'auction-room',
