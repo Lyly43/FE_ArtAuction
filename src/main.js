@@ -7,6 +7,9 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+
 // Lazy load Font Awesome - chỉ load khi cần
 import '@fortawesome/fontawesome-free/css/fontawesome.min.css'
 import '@fortawesome/fontawesome-free/css/solid.min.css'
@@ -37,3 +40,5 @@ app.component("blank-layout", Blank);
 app.component("client-layout", Client);
 
 app.mount('#app')
+
+AOS.init()
