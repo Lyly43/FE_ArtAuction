@@ -37,6 +37,14 @@
 .no-scrollbar {
   scrollbar-width: none;
 }
+.transition-base {
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  background-color: #f8f9fa;
+}
 /*---------------------------------------------------------------------
                                login
 -----------------------------------------------------------------------*/
@@ -49,6 +57,9 @@
 .icon-box {
   width: 40px;
   height: 40px;
+}
+.transition-base {
+  transition: all 0.2s ease-in-out;
 }
 
 /*---------------------------------------------------------------------
@@ -68,16 +79,14 @@
   cursor: pointer;
   transition: transform 0.1s;
 }
-.event-badge:hover {
-  transform: scale(1.02);
-  z-index: 10;
-}
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #dee2e6;
-  border-radius: 4px;
+/*---------------------------------------------------------------------
+                               Statistical
+-----------------------------------------------------------------------*/
+
+/* Animation chuyển trang */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
 }
 
 /* Custom scrollbar styling */

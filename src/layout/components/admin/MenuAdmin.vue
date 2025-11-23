@@ -38,6 +38,16 @@
               <i class="fa-regular fa-house"></i><span>test</span>
             </router-link>
           </li>
+          <li :class="{ active: $route.path === '/admin/management-statistical' }">
+            <router-link to="/admin/management-statistical"
+              ><i class="fa-solid fa-square-poll-vertical"></i>Statistical</router-link
+            >
+          </li>
+          <li :class="{ active: $route.path === '/admin/management-schedule' }">
+            <router-link to="/admin/management-schedule"
+              ><i class="fa-solid fa-calendar-days"></i>Schedule</router-link
+            >
+          </li>
           <li :class="{ active: $route.path.startsWith('/admin/chat') }">
             <router-link to="/admin/chat/auction-001" class="iq-waves-effect">
               <i class="fa-solid fa-comments"></i><span>Chat Support</span>
@@ -64,12 +74,6 @@
                   ><i class="fa-solid fa-user"></i>User</router-link
                 >
               </li>
-              <li :class="{ active: $route.path === '/admin/management-schedule' }">
-                <router-link to="/admin/management-schedule"
-                  ><i class="fa-solid fa-calendar-days"></i>Schedule</router-link
-                >
-              </li>
-
               <li :class="{ active: $route.path === '/admin/management-artwork' }">
                 <router-link to="/admin/management-artwork"
                   ><i class="fa-solid fa-image"></i>Artwork</router-link
@@ -95,16 +99,12 @@
                   ><i class="fa-solid fa-bell"></i>Notification</router-link
                 >
               </li>
-              <li :class="{ active: $route.path === '/admin/management-statistical' }">
-                <router-link to="/admin/management-statistical"
-                  ><i class="fa-solid fa-square-poll-vertical"></i>Statistical</router-link
-                >
-              </li>
-              <li :class="{ active: $route.path === '/admin/management-admin' }">
+
+              <!-- <li :class="{ active: $route.path === '/admin/management-admin' }">
                 <router-link to="/admin/management-admin"
                   ><i class="fa-solid fa-shield-halved"></i>Admin</router-link
                 >
-              </li>
+              </li> -->
               <li :class="{ active: $route.path === '/admin/management-setting/general-setting' }">
                 <router-link to="/admin/management-setting/general-setting"
                   ><i class="fa-solid fa-gear"></i>Setting</router-link
@@ -112,6 +112,7 @@
               </li>
             </ul>
           </li>
+          <li class="text-danger ms-3"><i class="bi bi-box-arrow-right me-3"></i>Logout</li>
           <!-- <li>
             <a href="dashboard-2.html" class="iq-waves-effect"><i class="ri-home-8-line"></i><span>Dashboard
                 3</span></a>

@@ -18,18 +18,18 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Total Users</h6>
-                <h3 class="fw-bold mb-0">1,222</h3>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Total Rooms</h6>
+                <h3 class="fw-bold mb-0">45</h3>
               </div>
               <div
                 class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
-                <i class="fa-solid fa-shield fs-5"></i>
+                <i class="fa-solid fa-layer-group fs-5"></i>
               </div>
             </div>
             <small class="text-success fw-medium"
-              ><i class="fa-solid fa-arrow-trend-up me-1"></i>+12% vs last month</small
+              ><i class="fa-solid fa-arrow-trend-up me-1"></i>+5 new rooms</small
             >
           </div>
         </div>
@@ -40,57 +40,57 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Verified</h6>
-                <h3 class="fw-bold mb-0">100</h3>
-              </div>
-              <div
-                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 48px; height: 48px"
-              >
-                <i class="fa-solid fa-circle-check fs-5"></i>
-              </div>
-            </div>
-            <small class="text-body-secondary">80% of total users</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Sellers</h6>
-                <h3 class="fw-bold mb-0">1,222</h3>
-              </div>
-              <div
-                class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 48px; height: 48px"
-              >
-                <i class="fa-solid fa-store fs-5"></i>
-              </div>
-            </div>
-            <small class="text-body-secondary">12% of total users</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <div>
-                <h6 class="card-subtitle text-body-secondary mb-1">Locked</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Live Now</h6>
                 <h3 class="fw-bold mb-0">12</h3>
               </div>
               <div
                 class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
-                <i class="fa-solid fa-ban fs-5"></i>
+                <i class="fa-solid fa-tower-broadcast fs-5"></i>
               </div>
             </div>
-            <small class="text-danger fw-medium">Policy violation</small>
+            <small class="text-body-secondary">Currently active sessions</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Upcoming</h6>
+                <h3 class="fw-bold mb-0">8</h3>
+              </div>
+              <div
+                class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-regular fa-calendar-check fs-5"></i>
+              </div>
+            </div>
+            <small class="text-body-secondary">Scheduled for today</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Finished</h6>
+                <h3 class="fw-bold mb-0">25</h3>
+              </div>
+              <div
+                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-flag-checkered fs-5"></i>
+              </div>
+            </div>
+            <small class="text-body-secondary">Completed sessions</small>
           </div>
         </div>
       </div>
@@ -121,35 +121,6 @@
       </div>
     </div>
 
-    <!-- <div class="card border-0 shadow-sm mb-4">
-      <div class="card-body">
-        <div class="row g-3">
-          <div class="col-12 col-md-8">
-            <div class="input-group bg-light rounded-pill px-2 border-0">
-              <span class="input-group-text bg-transparent border-0 text-secondary">
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </span>
-              <input
-                type="text"
-                class="form-control bg-transparent border-0 shadow-none"
-                placeholder="Search by notification content..."
-              />
-            </div>
-          </div>
-          <div class="col-12 col-md-4">
-            <select
-              class="form-select rounded-pill border-0 bg-light shadow-none"
-              aria-label="Filter select"
-            >
-              <option selected>All Status</option>
-              <option value="1">Sent</option>
-              <option value="2">Failed</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
     <div class="row no-scrollbar g-4 overflow-y-auto" style="max-height: 400px">
       <div class="col-12" v-for="room in auctionRooms" :key="room.id">
         <div
@@ -160,7 +131,7 @@
         >
           <div class="card-body p-4">
             <div class="row align-items-center">
-              <div class="col-12 col-lg-4 mb-3 mb-lg-0 border-end-lg">
+              <div class="col-12 col-lg-4 mb-3 mb-lg-0 position-relative">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                   <h5 class="fw-bold text-primary mb-0 text-truncate">{{ room.name }}</h5>
                   <span
@@ -173,9 +144,13 @@
                 <p class="mb-1 text-dark fw-medium">
                   <i class="fa-solid fa-palette me-2 text-secondary"></i>{{ room.artworkName }}
                 </p>
-                <small class="text-muted"
-                  ><i class="fa-solid fa-tag me-2"></i>{{ room.type }}</small
-                >
+                <small class="text-muted">
+                  <i class="fa-solid fa-tag me-2"></i>{{ room.type }}
+                </small>
+
+                <div
+                  class="d-none d-lg-block position-absolute top-0 end-0 h-100 border-end opacity-50"
+                ></div>
               </div>
 
               <div class="col-12 col-lg-8">
@@ -289,7 +264,6 @@ export default {
       }
     },
 
-    // CSS Class tạo viền màu bên trái cho Card
     getBorderClass(status) {
       switch (status) {
         case "Coming soon":
@@ -307,21 +281,12 @@ export default {
 </script>
 
 <style scoped>
-/* Custom CSS nhỏ cho hiệu ứng hover */
 .transition-base {
   transition: all 0.2s ease-in-out;
 }
 
 .hover-lift:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
-  background-color: #f8f9fa; /* Đổi màu nền nhẹ khi hover */
-}
-
-/* Tạo vạch ngăn cách giữa cột thông tin trên màn hình lớn */
-@media (min-width: 992px) {
-  .border-end-lg {
-    border-right: 1px solid #dee2e6;
-  }
+  background-color: #f8f9fa;
 }
 </style>

@@ -1,15 +1,15 @@
 <template>
   <div class="container-fluid py-4 bg-light-subtle min-vh-100">
     <div class="mb-4">
-      <h4 class="fw-bold text-primary mb-1">Quản lý Thông báo</h4>
-      <p class="text-body-secondary mb-0">Gửi thông báo đấu giá đến người dùng</p>
+      <h4 class="fw-bold text-primary mb-1">Notification Management</h4>
+      <p class="text-body-secondary mb-0">Send auction notice to users</p>
     </div>
 
     <form @submit.prevent="handleSubmit">
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
           <h6 class="fw-bold text-dark mb-3">
-            <i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Soạn tin nhắn
+            <i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Compose a message
           </h6>
           <div class="form-floating">
             <textarea
@@ -19,7 +19,7 @@
               style="height: 100px"
               v-model="formData.message"
             ></textarea>
-            <label for="messageContent" class="text-secondary">Soạn nội dung tin nhắn</label>
+            <label for="messageContent" class="text-secondary">Compose message content</label>
           </div>
         </div>
       </div>
@@ -27,12 +27,12 @@
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
           <h6 class="fw-bold text-dark mb-3">
-            <i class="fa-solid fa-layer-group me-2 text-info"></i>Hình thức thông báo
+            <i class="fa-solid fa-layer-group me-2 text-info"></i>Notification form
           </h6>
-          <p class="text-muted small mb-2">Chọn hình thức thông báo</p>
+          <p class="text-muted small mb-2">Select notification format</p>
           <select class="form-select bg-light border-0" v-model="formData.type">
-            <option value="email">Thông báo qua Gmail</option>
-            <option value="system">Thông báo trong Hệ thống</option>
+            <option value="email">Notification via Gmail</option>
+            <option value="system">Notification in the System</option>
           </select>
         </div>
       </div>
@@ -41,11 +41,12 @@
         <div class="card border-0 shadow-sm mb-4">
           <div class="card-body">
             <h6 class="fw-bold text-dark mb-3">
-              <i class="fa-solid fa-envelope-open-text me-2 text-primary"></i>Mục đích gửi Email
+              <i class="fa-solid fa-envelope-open-text me-2 text-primary"></i>Purpose of sending
+              Email
             </h6>
             <select class="form-select bg-light border-0" v-model="formData.emailType">
-              <option value="auction">Thông báo sắp có phòng đấu giá</option>
-              <option value="payment">Thông báo yêu cầu thanh toán</option>
+              <option value="auction">Auction room announcement coming soon</option>
+              <option value="payment">Payment request notice</option>
             </select>
           </div>
         </div>
@@ -54,10 +55,10 @@
           <div class="card border-0 shadow-sm mb-4">
             <div class="card-body">
               <h6 class="fw-bold text-dark mb-3">
-                <i class="fa-solid fa-circle-info me-2 text-warning"></i>Thông tin đấu giá
+                <i class="fa-solid fa-circle-info me-2 text-warning"></i>Auction information
               </h6>
               <div class="mb-3">
-                <label class="form-label small text-secondary">Tên Phòng Đấu giá</label>
+                <label class="form-label small text-secondary">Auction Room Name</label>
                 <input
                   type="text"
                   class="form-control bg-light border-0"
@@ -66,7 +67,7 @@
               </div>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label small text-secondary">Ngày đấu giá</label>
+                  <label class="form-label small text-secondary">Auction Day</label>
                   <input
                     type="date"
                     class="form-control bg-light border-0"
@@ -74,7 +75,7 @@
                   />
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label small text-secondary">Giờ đấu giá</label>
+                  <label class="form-label small text-secondary">Auction time</label>
                   <input
                     type="time"
                     class="form-control bg-light border-0"
@@ -88,9 +89,9 @@
           <div class="card border-0 shadow-sm mb-4">
             <div class="card-body">
               <h6 class="fw-bold text-dark mb-3">
-                <i class="fa-solid fa-calendar-days me-2 text-success"></i>Lịch trình đấu giá
+                <i class="fa-solid fa-calendar-days me-2 text-success"></i>Auction schedule
               </h6>
-              <p class="text-muted small mb-3">Các phiên đấu giá liên quan</p>
+              <p class="text-muted small mb-3">Related auctions</p>
 
               <div class="card border-0 bg-light mb-2" v-for="i in 2" :key="i">
                 <div class="card-body p-2">
@@ -115,10 +116,10 @@
                           "
                           >1</span
                         >
-                        <span class="fw-bold text-dark">Đêm đầy sao</span>
+                        <span class="fw-bold text-dark">Starry Night</span>
                       </div>
-                      <div class="small text-secondary">Tác giả: Nguyễn Văn A</div>
-                      <div class="small text-primary fw-bold">Giá khởi điểm: 50.000đ</div>
+                      <div class="small text-secondary">Author: Nguyen Van A</div>
+                      <div class="small text-primary fw-bold">Starting price: 50.000đ</div>
                     </div>
                   </div>
                 </div>
@@ -131,7 +132,7 @@
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
           <h6 class="fw-bold text-dark mb-3">
-            <i class="fa-solid fa-user-tag me-2 text-danger"></i>Người nhận thông báo
+            <i class="fa-solid fa-user-tag me-2 text-danger"></i>Notification recipient
           </h6>
 
           <div v-if="formData.type === 'email'">
@@ -142,11 +143,11 @@
                 id="sendAllEmail"
                 v-model="formData.sendToAll"
               />
-              <label class="form-check-label" for="sendAllEmail">Gửi cho tất cả người dùng</label>
+              <label class="form-check-label" for="sendAllEmail">Send to all users</label>
             </div>
 
             <div v-if="!formData.sendToAll">
-              <label class="form-label small text-secondary">Nhập Email người nhận</label>
+              <label class="form-label small text-secondary">Enter recipient email</label>
               <input
                 type="email"
                 class="form-control bg-light border-0"
@@ -155,8 +156,8 @@
               />
             </div>
             <div v-else class="alert alert-primary small py-2">
-              <i class="fa-solid fa-users me-2"></i>Thông báo sẽ được gửi tới toàn bộ danh sách
-              email trong hệ thống.
+              <i class="fa-solid fa-users me-2"></i>The notification will be sent to the entire
+              email list in the system.
             </div>
           </div>
 
@@ -168,25 +169,23 @@
                 id="sendAllSystem"
                 v-model="formData.sendToAll"
               />
-              <label class="form-check-label" for="sendAllSystem">Gửi cho tất cả người dùng</label>
+              <label class="form-check-label" for="sendAllSystem">Send to all users</label>
             </div>
 
             <div v-if="!formData.sendToAll">
-              <label class="form-label small text-secondary">Nhập ID người dùng (User ID)</label>
+              <label class="form-label small text-secondary">Enter User ID</label>
               <input
                 type="text"
                 class="form-control bg-light border-0"
                 placeholder="Ví dụ: USR-001, USR-002"
                 v-model="formData.recipientId"
               />
-              <div class="form-text">
-                Nhập ID người dùng để gửi thông báo đẩy (push notification).
-              </div>
+              <div class="form-text">Enter the user ID to send push notifications.</div>
             </div>
 
             <div v-else class="alert alert-primary small py-2">
-              <i class="fa-solid fa-rss me-2"></i>Thông báo đẩy (Push Notification) sẽ được gửi đến
-              toàn bộ thiết bị người dùng.
+              <i class="fa-solid fa-rss me-2"></i>Push Notifications will be sent to all user
+              devices.
             </div>
           </div>
         </div>
@@ -195,7 +194,7 @@
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
           <h6 class="fw-bold text-dark mb-3">
-            <i class="fa-solid fa-comment-dots me-2 text-secondary"></i>Tin nhắn tùy chỉnh
+            <i class="fa-solid fa-comment-dots me-2 text-secondary"></i>Custom messages
           </h6>
           <div class="form-floating">
             <textarea
@@ -205,7 +204,9 @@
               style="height: 100px"
               v-model="formData.customNote"
             ></textarea>
-            <label for="customNote" class="text-secondary">Thêm tin nhắn riêng vào thông báo</label>
+            <label for="customNote" class="text-secondary"
+              >Add private message to notification</label
+            >
           </div>
         </div>
       </div>
@@ -215,7 +216,7 @@
         class="btn btn-primary w-100 py-2 fw-bold text-uppercase shadow-sm"
         style="background-color: #6f42c1; border-color: #6f42c1"
       >
-        <i class="fa-solid fa-paper-plane me-2"></i> Gửi Thông Báo
+        <i class="fa-solid fa-paper-plane me-2"></i> Send
       </button>
     </form>
   </div>
