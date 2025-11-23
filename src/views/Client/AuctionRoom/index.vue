@@ -369,9 +369,15 @@ export default {
       selectedQuickBid: null, // Nút đặt giá nhanh được chọn
 
       // === COUNTDOWN TIMER ===
-      countdownSeconds: 0, // Số giây còn lại
+      countdownSeconds: 0, // Số giây còn lại (từ WebSocket)
       countdownInterval: null, // Interval cho countdown
       lastBidPrice: 0, // Giá bid cuối cùng để detect bid mới
+      sessionEndTime: null, // Thời gian kết thúc session từ WebSocket
+
+      // === AUCTION WEBSOCKET ===
+      auctionSocket: null,
+      auctionRoomSubscription: null,
+      auctionBidsSubscription: null,
     }
   },
 
@@ -383,6 +389,9 @@ export default {
     this.connectSocket();
 
     this.loadArtworkBySession();
+
+    // Kết nối WebSocket cho auction countdown
+    this.connectAuctionWebSocket();
 
     const url = new URL(window.location.href);
     const params = Object.fromEntries(url.searchParams.entries());
@@ -416,6 +425,9 @@ export default {
     if (this.socket) {
       this.socket.deactivate();
     }
+
+    // Cleanup auction WebSocket
+    this.disconnectAuctionWebSocket();
   },
   watch: {
     // Tự động scroll xuống khi có tin nhắn mới
@@ -447,56 +459,60 @@ export default {
 
     // === COUNTDOWN METHODS ===
 
-    // Khởi tạo countdown từ thời gian tạo session + COUNTDOWN_DURATION_MINUTES
+    // Khởi tạo countdown từ WebSocket hoặc session data
     initializeCountdown() {
-      // Ưu tiên dùng startTime (thời điểm bắt đầu đấu giá), sau đó mới đến createdAt
+      // Ưu tiên dùng endedAt từ session (nếu có)
+      if (this.artworkSession.endedAt) {
+        this.sessionEndTime = new Date(this.artworkSession.endedAt);
+        this.updateCountdownFromEndTime();
+        this.startCountdownInterval();
+        console.log('✅ Countdown initialized from endedAt:', this.countdownSeconds, 'seconds');
+        return;
+      }
+
+      // Fallback: Dùng startTime + durationSeconds
       const timeField = this.artworkSession.startTime ||
                         this.artworkSession.start_time ||
                         this.artworkSession.createdAt ||
                         this.artworkSession.created_at;
 
       if (!timeField) {
-        console.warn('⚠️ Không tìm thấy trường startTime hoặc createdAt trong session!');
+        console.warn('⚠️ Không tìm thấy trường startTime hoặc endedAt trong session!');
         console.log('Session object:', this.artworkSession);
-        console.log(`➡️ Sử dụng countdown mặc định ${this.COUNTDOWN_DURATION_MINUTES} phút từ bây giờ`);
-
-        // Fallback: Bắt đầu countdown từ bây giờ
-        this.countdownSeconds = this.COUNTDOWN_DURATION_MINUTES * 60;
-        this.lastBidPrice = this.artworkSession.currentPrice || 0;
-        this.startCountdownInterval();
+        // Không khởi tạo countdown, đợi WebSocket
         return;
       }
 
+      // Tính endTime từ startTime + durationSeconds
+      const durationSeconds = this.artworkSession.durationSeconds || (this.COUNTDOWN_DURATION_MINUTES * 60);
       const startTime = new Date(timeField).getTime();
-      const endTime = startTime + (this.COUNTDOWN_DURATION_MINUTES * 60 * 1000); // milliseconds
-      const now = Date.now();
-      const remainingMs = endTime - now;
+      const endTime = startTime + (durationSeconds * 1000); // milliseconds
 
-      this.countdownSeconds = Math.max(0, Math.floor(remainingMs / 1000));
+      this.sessionEndTime = new Date(endTime);
+      this.updateCountdownFromEndTime();
       this.lastBidPrice = this.artworkSession.currentPrice || 0;
 
       console.log('✅ Countdown initialized:', this.countdownSeconds, 'seconds');
       console.log('Start time:', new Date(timeField).toLocaleString('vi-VN'));
-      console.log(`End time (start + ${this.COUNTDOWN_DURATION_MINUTES}min):`, new Date(endTime).toLocaleString('vi-VN'));
-      console.log('Current time:', new Date(now).toLocaleString('vi-VN'));
+      console.log(`End time:`, this.sessionEndTime.toLocaleString('vi-VN'));
 
-      // Bắt đầu countdown interval - luôn chạy
+      // Bắt đầu countdown interval
       this.startCountdownInterval();
     },
 
-    // Kéo dài countdown (khi có bid mới: nếu còn dưới TIME_EXTENSION_THRESHOLD_MINUTES thì cộng thêm TIME_EXTENSION_AMOUNT_MINUTES)
-    extendCountdown() {
-      const thresholdSeconds = this.TIME_EXTENSION_THRESHOLD_MINUTES * 60;
-      const extensionSeconds = this.TIME_EXTENSION_AMOUNT_MINUTES * 60;
+    updateCountdownFromEndTime() {
+      if (!this.sessionEndTime) return;
 
-      if (this.countdownSeconds < thresholdSeconds) {
-        // Nếu còn dưới ngưỡng, cộng thêm thời gian
-        this.countdownSeconds += extensionSeconds;
-        console.log(`⏱️ Countdown extended by ${this.TIME_EXTENSION_AMOUNT_MINUTES} minute(s). New time: ${this.countdownSeconds} seconds`);
-        this.$toast?.info?.(`⏱️ Thời gian đấu giá đã được kéo dài thêm ${this.TIME_EXTENSION_AMOUNT_MINUTES} phút!`);
-      } else {
-        console.log(`⏱️ Countdown > ${this.TIME_EXTENSION_THRESHOLD_MINUTES} minutes (${this.countdownSeconds}s), no extension needed`);
-      }
+      const now = new Date();
+      const endTime = new Date(this.sessionEndTime);
+      const remainingMs = endTime.getTime() - now.getTime();
+      this.countdownSeconds = Math.max(0, Math.floor(remainingMs / 1000));
+    },
+
+    // Kéo dài countdown - Giờ được xử lý bởi WebSocket từ server
+    extendCountdown() {
+      // Method này giữ lại để tương thích, nhưng logic extend được xử lý bởi WebSocket
+      console.log('⏱️ Countdown extension handled by WebSocket');
     },
 
     // Tính lại countdown theo thời gian thực từ server
@@ -515,23 +531,25 @@ export default {
 
       console.log('🚀 Starting countdown interval...');
 
-      // Tạo interval mới
+      // Tạo interval mới - cập nhật từ sessionEndTime
       this.countdownInterval = setInterval(() => {
-        if (this.countdownSeconds > 0) {
-          this.countdownSeconds--;
+        if (this.sessionEndTime) {
+          this.updateCountdownFromEndTime();
+
           // Log mỗi 10 giây để theo dõi
-          if (this.countdownSeconds % 10 === 0) {
+          if (this.countdownSeconds > 0 && this.countdownSeconds % 10 === 0) {
             console.log('⏱️ Countdown:', this.countdownSeconds, 'seconds remaining');
           }
-        } else {
-          // Hết thời gian
-          clearInterval(this.countdownInterval);
-          this.countdownInterval = null;
-          console.log('⏰ Hết thời gian đấu giá!');
-          this.$toast?.warning?.('⏰ Hết thời gian đấu giá!');
 
-          // Tự động gọi API dừng session
-          this.stopSession();
+          // Hết thời gian
+          if (this.countdownSeconds <= 0) {
+            this.stopCountdownInterval();
+            console.log('⏰ Hết thời gian đấu giá!');
+            this.$toast?.warning?.('⏰ Hết thời gian đấu giá!');
+          }
+        } else {
+          // Không có sessionEndTime, dừng interval
+          this.stopCountdownInterval();
         }
       }, 1000); // Cập nhật mỗi giây
     },
@@ -607,7 +625,11 @@ export default {
     },
     loadArtworkBySession() {
       axios
-        .get("http://localhost:8081/api/stream/room/" + this.roomID + "/sessions/current-or-next")
+        .get("http://localhost:8081/api/stream/room/" + this.roomID + "/sessions/current-or-next", {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem("token")
+          }
+        })
         .then((res) => {
           this.artworkSession = res.data;
           console.log('📦 Artwork session loaded:', this.artworkSession);
@@ -615,6 +637,11 @@ export default {
           // Khởi tạo countdown sau khi load session thành công
           this.$nextTick(() => {
             this.initializeCountdown();
+
+            // Subscribe to bids cho session này nếu WebSocket đã kết nối
+            if (this.auctionSocket && this.auctionSocket.connected && res.data.id) {
+              this.subscribeToSessionBids(res.data.id);
+            }
           });
         })
         .catch((err) => {
@@ -924,6 +951,156 @@ export default {
       }, (err) => {
         console.error('STOMP error:', err);
       });
+    },
+
+    // === AUCTION WEBSOCKET FOR COUNTDOWN ===
+    connectAuctionWebSocket() {
+      console.log('🔌 Connecting to auction WebSocket for countdown...');
+      this.auctionSocket = new ChatSocket("http://localhost:8081", localStorage.getItem('token'));
+
+      this.auctionSocket.connect(() => {
+        console.log('✅ Auction WebSocket connected');
+
+        // Subscribe to auction room events
+        this.auctionRoomSubscription = this.auctionSocket.subscribeAuctionRoom(this.roomID, (message) => {
+          this.handleAuctionRoomEvent(message);
+        });
+
+        // Load current session để lấy countdown ban đầu
+        this.loadCurrentSessionForCountdown();
+      }, (err) => {
+        console.error('❌ Auction WebSocket error:', err);
+      });
+    },
+
+    disconnectAuctionWebSocket() {
+      if (this.auctionRoomSubscription) {
+        this.auctionRoomSubscription.unsubscribe();
+        this.auctionRoomSubscription = null;
+      }
+      if (this.auctionBidsSubscription) {
+        this.auctionBidsSubscription.unsubscribe();
+        this.auctionBidsSubscription = null;
+      }
+      if (this.auctionSocket) {
+        this.auctionSocket.deactivate();
+        this.auctionSocket = null;
+      }
+    },
+
+    handleAuctionRoomEvent(message) {
+      console.log('📨 Auction room event received:', message);
+
+      if (message.eventType === 'SESSION_STARTED') {
+        console.log('✅ Session started:', message);
+
+        // Cập nhật artworkSession
+        if (message.sessionId) {
+          this.loadArtworkBySession();
+        }
+
+        // Cập nhật countdown từ endTime
+        if (message.endTime) {
+          this.sessionEndTime = new Date(message.endTime);
+          this.updateCountdownFromEndTime();
+          this.startCountdownInterval();
+        }
+
+        // Subscribe to bids for this session
+        if (message.sessionId) {
+          this.subscribeToSessionBids(message.sessionId);
+        }
+      } else if (message.eventType === 'SESSION_ENDED') {
+        console.log('⏰ Session ended:', message);
+        this.stopCountdownInterval();
+        this.countdownSeconds = 0;
+        this.sessionEndTime = null;
+
+        // Unsubscribe from bids
+        if (this.auctionBidsSubscription) {
+          this.auctionBidsSubscription.unsubscribe();
+          this.auctionBidsSubscription = null;
+        }
+
+        // Load session tiếp theo nếu có
+        this.$nextTick(() => {
+          this.loadArtworkBySession();
+        });
+      }
+    },
+
+    subscribeToSessionBids(sessionId) {
+      // Unsubscribe old subscription if exists
+      if (this.auctionBidsSubscription) {
+        this.auctionBidsSubscription.unsubscribe();
+      }
+
+      // Subscribe to new session bids
+      this.auctionBidsSubscription = this.auctionSocket.subscribeAuctionBids(sessionId, (message) => {
+        this.handleBidEvent(message);
+      });
+    },
+
+    handleBidEvent(message) {
+      console.log('💰 Bid event received:', message);
+
+      if (message.eventType === 'BID_ACCEPTED') {
+        // Cập nhật countdown từ remainingSeconds hoặc endTime
+        if (message.remainingSeconds !== undefined) {
+          this.countdownSeconds = message.remainingSeconds;
+          // Cập nhật sessionEndTime từ remainingSeconds
+          const now = new Date();
+          this.sessionEndTime = new Date(now.getTime() + (message.remainingSeconds * 1000));
+        } else if (message.endTime) {
+          this.sessionEndTime = new Date(message.endTime);
+          this.updateCountdownFromEndTime();
+        }
+
+        // Cập nhật currentPrice nếu có
+        if (message.price !== undefined && this.artworkSession) {
+          this.artworkSession.currentPrice = message.price;
+        }
+
+        // Cập nhật leader nếu có
+        if (message.leader && this.artworkSession) {
+          this.artworkSession.winnerId = message.leader;
+        }
+
+        // Hiển thị thông báo nếu được gia hạn
+        if (message.extended) {
+          this.$toast?.info?.('⏱️ Thời gian đã được gia hạn thêm 120 giây!');
+        }
+      }
+    },
+
+    loadCurrentSessionForCountdown() {
+      axios
+        .get(`http://localhost:8081/api/stream/room/${this.roomID}/sessions/current-or-next`, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem("token")
+          }
+        })
+        .then((res) => {
+          if (res.data && res.data.status === 1) {
+            // Session đang LIVE
+            // Cập nhật countdown từ endedAt
+            if (res.data.endedAt) {
+              this.sessionEndTime = new Date(res.data.endedAt);
+              this.updateCountdownFromEndTime();
+              this.startCountdownInterval();
+            }
+
+            // Subscribe to bids cho session này
+            if (res.data.id) {
+              this.subscribeToSessionBids(res.data.id);
+            }
+          }
+        })
+        .catch((err) => {
+          if (err.response?.status !== 404) {
+            console.error('Error loading current session for countdown:', err);
+          }
+        });
     },
 
     // === MESSAGE SENDING ===

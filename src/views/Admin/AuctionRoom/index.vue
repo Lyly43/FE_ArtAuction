@@ -128,13 +128,14 @@
         <p class="mt-2 text-muted">Loading rooms...</p>
       </div>
 
-      <div v-else class="col-12" v-for="room in auctionRooms" :key="room.id">
-        <div
-          class="card border-0 shadow-sm hover-lift transition-base h-100"
+      <div v-else class="col-12" v-for="room in sortedAuctionRooms" :key="room.id">
+        <router-link :to="`/admin/testlivestream/${room.id}`"
+          class="card border-0 shadow-sm hover-lift transition-base h-100 text-decoration-none"
           :class="getBorderClass(room.status)"
-          @click="handleRoomClick(room.id)"
           style="cursor: pointer"
         >
+          <!-- @click="handleRoomClick(room.id)" -->
+
           <div class="card-body p-4">
             <div class="row align-items-center">
               <div class="col-12 col-lg-4 mb-3 mb-lg-0 border-end-lg pe-lg-4">
@@ -163,6 +164,8 @@
                         {{ convertStatus(room.status) }}
                       </span>
                     </div>
+                      <p class="my-3">{{ room.id }}</p>
+
                     <small class="text-muted">
                       <i class="fa-solid fa-tag me-1"></i>{{ room.type }}
                     </small>
@@ -207,7 +210,8 @@
               </div>
             </div>
           </div>
-        </div>
+        </router-link>
+
       </div>
 
       <div v-if="!isLoading && auctionRooms.length === 0" class="text-center py-5">
@@ -354,6 +358,12 @@ export default {
         });
     },
   },
+  computed: {
+    // Đảo ngược thứ tự mảng
+    sortedAuctionRooms() {
+      return [...this.auctionRooms].reverse();
+    }
+  }
 };
 </script>
 
