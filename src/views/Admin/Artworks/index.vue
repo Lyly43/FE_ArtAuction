@@ -43,7 +43,7 @@
                 <i class="fa-solid fa-circle-check"></i>
               </div>
             </div>
-            <small class="text-body-secondary">80% of the total</small>
+            <small class="text-body-secondary">Total number of approved products</small>
           </div>
         </div>
       </div>
@@ -63,7 +63,7 @@
                 <i class="fa-solid fa-clock"></i>
               </div>
             </div>
-            <small class="text-body-secondary">12% of the total</small>
+            <small class="text-body-secondary">Total number of products pending approval</small>
           </div>
         </div>
       </div>

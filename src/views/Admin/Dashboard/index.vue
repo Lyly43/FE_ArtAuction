@@ -12,7 +12,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total users</h6>
-                <h3 class="fw-bold mb-0">120</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalUsers }}</h3>
               </div>
               <div
                 class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
@@ -34,7 +34,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Artwork</h6>
-                <h3 class="fw-bold mb-0">100</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalArtworks }}</h3>
               </div>
               <div
                 class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center"
@@ -56,7 +56,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Auction Rooms</h6>
-                <h3 class="fw-bold mb-0">10</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalAuctionRooms }}</h3>
               </div>
               <div
                 class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
@@ -76,7 +76,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Bidding</h6>
-                <h3 class="fw-bold mb-0">120</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalBids }}</h3>
               </div>
               <div
                 class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -98,7 +98,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Revenue</h6>
-                <h3 class="fw-bold mb-0">100</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.revenue }}</h3>
               </div>
               <div
                 class="bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center"
@@ -108,7 +108,8 @@
               </div>
             </div>
             <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-trend-up me-1"></i>+12.5% over last month
+              <i class="fa-solid fa-arrow-trend-up me-1"></i>{{ statistics.percentage }}% over last
+              month
             </small>
           </div>
         </div>
@@ -120,7 +121,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Active Users</h6>
-                <h3 class="fw-bold mb-0">10</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.activeUsers }}</h3>
               </div>
               <div
                 class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -153,134 +154,102 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    class="cursor-pointer"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#room1-details"
-                    aria-expanded="false"
-                  >
-                    <td class="ps-3 fw-medium text-primary">
-                      <i
-                        class="fa-solid fa-chevron-down text-muted me-2"
-                        style="font-size: 0.8rem"
-                      ></i>
-                      Phòng Tranh Mùa Thu
-                    </td>
+                  <template v-for="room in topAuctionRooms" :key="room.id">
+                    <tr
+                      class="cursor-pointer"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#room1-details"
+                      aria-expanded="false"
+                    >
+                      <td class="ps-3 fw-medium text-primary">
+                        <i
+                          class="fa-solid fa-chevron-down text-muted me-2"
+                          style="font-size: 0.8rem"
+                        ></i>
+                        {{ room.roomName }}
+                      </td>
 
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <img
-                          src="/src/assets/img/4.png"
-                          alt="Art"
-                          class="rounded border me-2"
-                          style="width: 40px; height: 40px; object-fit: cover"
-                        />
-                        <div class="d-flex flex-column">
-                          <span class="fw-medium" style="font-size: 0.9rem">Đêm đầy sao</span>
-                          <small class="text-muted" style="font-size: 0.7rem">Session 1/10</small>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <img
+                            :src="room.sessions?.[0]?.imageUrl || '/src/assets/img/default-art.png'"
+                            alt="Art"
+                            class="rounded border me-2"
+                            style="width: 40px; height: 40px; object-fit: cover"
+                          />
+                          <div class="d-flex flex-column">
+                            <span class="fw-medium" style="font-size: 0.9rem">{{
+                              room.sessions?.[0]?.artworkTitle || "---"
+                            }}</span>
+                            <small class="text-muted" style="font-size: 0.7rem"
+                              >Session {{ room.sessions?.length || 0 }} items</small
+                            >
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td>
-                      <span
-                        class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill"
-                        >Live</span
-                      >
-                    </td>
-                    <td class="small text-body-secondary text-end pe-3">View details</td>
-                  </tr>
+                      <td>
+                        <span
+                          class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill"
+                          >Live</span
+                        >
+                      </td>
+                      <td class="small text-body-secondary text-end pe-3">View details</td>
+                    </tr>
 
-                  <tr>
-                    <td colspan="4" class="p-0 border-0">
-                      <div class="collapse bg-light-subtle show" id="room1-details">
-                        <div class="p-3">
-                          <h6
-                            class="fw-bold text-primary mb-2 small text-uppercase ps-2 border-start border-4 border-secondary-subtle"
-                          >
-                            Danh sách tác phẩm (3/10)
-                          </h6>
+                    <tr>
+                      <td colspan="4" class="p-0 border-0">
+                        <div class="collapse bg-light-subtle show" id="room1-details">
+                          <div class="p-3">
+                            <h6
+                              class="fw-bold text-primary mb-2 small text-uppercase ps-2 border-start border-4 border-secondary-subtle"
+                            >
+                              Danh sách tác phẩm ({{ room.sessions?.length || 0 }})
+                            </h6>
 
-                          <table class="table table-sm table-borderless mb-0 align-middle">
-                            <thead class="text-secondary small border-bottom">
-                              <tr>
-                                <th class="ps-2">Artwork Info</th>
-                                <!-- <th>Trạng thái</th> -->
-                                <th class="text-end pe-2">Giá hiện tại</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td class="ps-2">
-                                  <div class="d-flex align-items-center">
-                                    <span class="me-2 text-muted small fw-bold">#1</span>
-                                    <img
-                                      src="/src/assets/img/4.png"
-                                      class="rounded border me-2"
-                                      style="width: 32px; height: 32px; object-fit: cover"
-                                    />
-                                    <span class="fw-medium text-dark" style="font-size: 0.85rem"
-                                      >Đêm đầy sao</span
-                                    >
-                                  </div>
-                                </td>
-                                <!-- <td>
+                            <table class="table table-sm table-borderless mb-0 align-middle">
+                              <thead class="text-secondary small border-bottom">
+                                <tr>
+                                  <th class="ps-2">Artwork Info</th>
+                                  <!-- <th>Trạng thái</th> -->
+                                  <th class="text-end pe-2">Giá hiện tại</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="(session, Index) in room.sessions" :key="session.id">
+                                  <td class="ps-2">
+                                    <div class="d-flex align-items-center">
+                                      <span class="me-2 text-muted small fw-bold"
+                                        >#{{ Index + 1 }}</span
+                                      >
+                                      <img
+                                        :src="session.imageUrl || '/src/assets/img/default-art.png'"
+                                        class="rounded border me-2"
+                                        style="width: 32px; height: 32px; object-fit: cover"
+                                      />
+                                      <span
+                                        class="fw-medium text-dark"
+                                        style="font-size: 0.85rem"
+                                        >{{ session.artworkTitle }}</span
+                                      >
+                                    </div>
+                                  </td>
+                                  <!-- <td>
                                   <span class="badge bg-danger" style="font-size: 0.7rem"
                                     >Live</span
                                   >
                                 </td> -->
-                                <td class="text-end text-muted pe-2">50.000.000đ</td>
-                              </tr>
-
-                              <tr>
-                                <td class="ps-2">
-                                  <div class="d-flex align-items-center">
-                                    <span class="me-2 text-muted small fw-bold">#2</span>
-                                    <img
-                                      src="/src/assets/img/hoasen.png"
-                                      class="rounded border me-2"
-                                      style="width: 32px; height: 32px; object-fit: cover"
-                                    />
-                                    <span class="fw-medium text-dark" style="font-size: 0.85rem"
-                                      >Hoa hướng dương</span
-                                    >
-                                  </div>
-                                </td>
-                                <!-- <td>
-                                  <span class="badge bg-warning text-dark" style="font-size: 0.7rem"
-                                    >Waiting</span
-                                  >
-                                </td> -->
-                                <td class="text-end text-muted pe-2">10.000.000đ</td>
-                              </tr>
-
-                              <tr>
-                                <td class="ps-2">
-                                  <div class="d-flex align-items-center">
-                                    <span class="me-2 text-muted small fw-bold">#3</span>
-                                    <img
-                                      src="/src/assets/img/cotiendan.png"
-                                      class="rounded border me-2"
-                                      style="width: 32px; height: 32px; object-fit: cover"
-                                    />
-                                    <span class="fw-medium text-dark" style="font-size: 0.85rem"
-                                      >Chân dung nàng Mona</span
-                                    >
-                                  </div>
-                                </td>
-                                <!-- <td>
-                                  <span class="badge bg-secondary" style="font-size: 0.7rem"
-                                    >Pending</span
-                                  >
-                                </td> -->
-                                <td class="text-end text-muted pe-2">--</td>
-                              </tr>
-                            </tbody>
-                          </table>
+                                  <td class="text-end text-muted pe-2">
+                                    {{ formatCurrency(session.currentPrice) }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
+                  </template>
 
                   <tr class="cursor-pointer">
                     <td class="ps-3 fw-medium text-dark">
@@ -438,116 +407,67 @@ export default {
   name: "AdminLive",
   data() {
     return {
-      roomId: "auction-001",
-      started: false,
-      pc: null,
-      localStream: null,
-      channel: null,
-      screenStream: null,
-      rtcConfig: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] },
-      // New data for room creation
-      creatingRoom: false,
-      newRoomId: null,
+      statistics: {},
+      isLoading: false,
+      topAuctionRooms: [],
+      newUsers: [],
+      topArtworks: [],
     };
   },
-  methods: {
-    async start() {
-      try {
-        this.started = true;
 
-        // Signaling nội bộ giữa 2 tab
-        this.channel = new BroadcastChannel(`webrtc-room:${this.roomId}`);
-        this.channel.onmessage = this.onSignal;
-
-        // Tạo peer + lấy camera/mic
-        this.pc = new RTCPeerConnection(this.rtcConfig);
-        this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        // Note: Code video element logic should be handled if you uncomment the template part
-        // this.$refs.localVideo.srcObject = this.localStream;
-
-        this.localStream.getTracks().forEach((t) => this.pc.addTrack(t, this.localStream));
-
-        // ICE
-        this.pc.onicecandidate = (e) => {
-          if (e.candidate) this.channel.postMessage({ type: "ice", candidate: e.candidate });
-        };
-
-        // Tạo offer gửi sang client
-        const offer = await this.pc.createOffer();
-        await this.pc.setLocalDescription(offer);
-        this.channel.postMessage({ type: "offer", sdp: offer });
-      } catch (err) {
-        console.error("start error", err);
-        this.stop();
-      }
-    },
-
-    async onSignal(ev) {
-      if (!this.pc) return;
-      const msg = ev.data;
-
-      if (msg.type === "answer" && msg.sdp) {
-        await this.pc.setRemoteDescription(new RTCSessionDescription(msg.sdp));
-      }
-      if (msg.type === "ice" && msg.candidate) {
-        try {
-          await this.pc.addIceCandidate(new RTCIceCandidate(msg.candidate));
-        } catch {}
-      }
-    },
-
-    async shareScreen() {
-      if (!this.pc) return;
-      try {
-        this.screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-        const screenTrack = this.screenStream.getVideoTracks()[0];
-        const sender = this.pc.getSenders().find((s) => s.track && s.track.kind === "video");
-        if (sender && screenTrack) sender.replaceTrack(screenTrack);
-
-        // Khi dừng chia sẻ, trả lại camera
-        screenTrack.onended = () => {
-          if (!this.localStream) return;
-          const camTrack = this.localStream.getVideoTracks()[0];
-          if (camTrack && sender) sender.replaceTrack(camTrack);
-          this.screenStream.getTracks().forEach((t) => t.stop());
-          this.screenStream = null;
-        };
-      } catch (e) {
-        console.error("shareScreen error", e);
-      }
-    },
-
-    stop() {
-      this.started = false;
-
-      try {
-        this.channel?.close();
-      } catch {}
-      this.channel = null;
-
-      try {
-        this.pc?.getSenders().forEach((s) => s.track && s.track.stop());
-      } catch {}
-      try {
-        this.pc?.close();
-      } catch {}
-      this.pc = null;
-
-      try {
-        this.localStream?.getTracks().forEach((t) => t.stop());
-      } catch {}
-      this.localStream = null;
-
-      try {
-        this.screenStream?.getTracks().forEach((t) => t.stop());
-      } catch {}
-      this.screenStream = null;
-
-      // if (this.$refs.localVideo) this.$refs.localVideo.srcObject = null;
-    },
+  mounted() {
+    this.loadInvoiceStatistical();
+    this.loadTopAuction();
   },
-  beforeUnmount() {
-    this.stop();
+  methods: {
+    formatCurrency(value) {
+      if (!value) return "0₫";
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(value);
+    },
+    //  card thống kê
+    loadInvoiceStatistical() {
+      axios
+        .get(`http://localhost:8081/api/admin/dashboard/thong-ke`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.statistics = res.data;
+          console.log("Kết quả tìm kiếm:", this.statistics);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.statistics = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    //
+    loadTopAuction() {
+      axios
+        .get(`http://localhost:8081/api/admin/dashboard/top-auction-rooms`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.topAuctionRooms = res.data.data;
+          console.log("Kết quả tìm kiếm:", this.topAuctionRooms);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.topAuctionRooms = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
   },
 };
 </script>
