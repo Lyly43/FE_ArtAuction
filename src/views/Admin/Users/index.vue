@@ -117,6 +117,8 @@
                 <th scope="col" class="fw-bold">Phone</th>
                 <th scope="col" class="fw-bold">Role</th>
                 <th scope="col" class="fw-bold">Address</th>
+                <th scope="col" class="fw-bold">Birth of day</th>
+                <th scope="col" class="fw-bold">Gender</th>
                 <th scope="col" class="fw-bold">Status</th>
                 <th scope="col" class="fw-bold">Balance</th>
                 <th scope="col" class="fw-bold">Date</th>
@@ -126,6 +128,17 @@
               </tr>
             </thead>
             <tbody>
+              <tr v-if="isLoading">
+                <td colspan="12" class="text-center py-5 text-muted">
+                  <div class="spinner-border text-primary mb-2" role="status"></div>
+                  <p class="mb-0 small">Đang tải dữ liệu...</p>
+                </td>
+              </tr>
+              <tr v-else-if="users.length === 0">
+                <td colspan="12" class="text-center py-5 text-muted">
+                  Không tìm thấy người dùng nào.
+                </td>
+              </tr>
               <tr v-for="user in users" :key="user.id">
                 <td class="text-center text-secondary fw-medium">#{{ user.id }}</td>
                 <td class="align-middle">
@@ -137,17 +150,17 @@
                       {{ user.fullName.charAt(0) }}
                     </div>
                     <div>
-                      <div class="fw-bold text-dark">{{ user.fullName }}</div>
+                      <div class="fw-bold text-dark">{{ user.fullname }}</div>
                       <div class="small text-muted">{{ user.email }}</div>
                     </div>
                   </div>
                 </td>
-                <td class="align-middle">{{ user.phone }}</td>
+                <td class="align-middle">{{ user.phonenumber }}</td>
                 <td class="align-middle">
                   <span
                     class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill fw-normal"
                   >
-                    {{ user.role }}
+                    {{ convertRole(user.role) }}
                   </span>
                 </td>
 
@@ -156,11 +169,19 @@
                 </td>
 
                 <td class="align-middle">
+                  {{ user.dateOfBirth }}
+                </td>
+
+                <td class="align-middle">
+                  {{ user.dateOfBirth }}
+                </td>
+
+                <td class="align-middle">
                   <button
                     class="btn"
                     :class="['badge rounded-pill border fw-normal', getStatusClass(user.status)]"
                   >
-                    {{ user.status }}
+                    {{ convertStatus(user.status) }}
                   </button>
                 </td>
                 <td class="text-start fw-medium text-dark align-middle">
@@ -248,72 +269,73 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      users: [
-        {
-          id: 1,
-          fullName: "Nguyễn Văn A",
-          email: "nguyenvana@example.com",
-          phone: "0123456789",
-          gender: "Nam",
-          birthday: "01/01/1990",
-          address: "123 Đường ABC, Quận XYZ, TP.HCM",
-          cccd: "123456789012",
-          role: "Buyer",
-          status: "Approved",
-          balance: 5000000,
-          createdAt: "2025-10-22",
-        },
-        {
-          id: 2,
-          fullName: "Trần Thị B",
-          email: "tranthib@example.com",
-          phone: "0987654321",
-          gender: "Nữ",
-          birthday: "05/05/1995",
-          address: "456 Đường DEF, Hà Nội",
-          cccd: "987654321001",
-          role: "Buyer",
-          status: "Locked",
-          balance: 200000,
-          createdAt: "2025-10-20",
-        },
-        {
-          id: 3,
-          fullName: "Lê Văn C",
-          email: "levanc@example.com",
-          phone: "0369852147",
-          gender: "Nam",
-          birthday: "12/12/2000",
-          address: "789 Đường GHI, Đà Nẵng",
-          cccd: "112233445566",
-          role: "Seller",
-          status: "Pending approval",
-          balance: 0,
-          createdAt: "2025-11-01",
-        },
-      ],
+      users: [],
+      isLoading: false,
     };
   },
+  mounted() {
+    this.loadUserData();
+  },
   methods: {
+    loadUserData() {
+      axios
+        .get("http://localhost:8081/api/admin/lay-du-lieu-user", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.users = res.data;
+          console.log(this.users);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
     formatCurrency(value) {
       return new Intl.NumberFormat("vi-VN", {
         style: "currency",
         currency: "VND",
       }).format(value);
     },
+    convertStatus(status) {
+      switch (status) {
+        case 1:
+          return "Approved";
+        case 0:
+          return "Locked";
+        case 2:
+          return "Pending";
+        default:
+          return "Unknown";
+      }
+    },
     getStatusClass(status) {
       switch (status) {
-        case "Approved":
+        case 1:
           return "bg-success-subtle border-success-subtle text-success";
-        case "Locked":
+        case 0:
           return "bg-danger-subtle border-danger-subtle text-danger";
-        case "Pending approval":
+        case 2:
           return "bg-warning-subtle border-warning-subtle text-warning-emphasis";
         default:
           return "bg-secondary-subtle border-secondary-subtle text-secondary";
+      }
+    },
+    convertRole(roleId) {
+      switch (roleId) {
+        case 0:
+          return "Admin";
+        case 1:
+          return "Buyer";
+        case 2:
+          return "Seller";
+        default:
+          return "Unknown";
       }
     },
     // handleApprove(user) {

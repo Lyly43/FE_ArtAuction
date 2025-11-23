@@ -16,14 +16,14 @@
           Hôm nay
         </button>
 
-        <button
+        <!-- <button
           class="btn btn-primary shadow-sm fw-bold"
           data-bs-toggle="modal"
           data-bs-target="#addEventModal"
           @click="resetForm"
         >
           <i class="fa-solid fa-plus me-2"></i>Thêm lịch mới
-        </button>
+        </button> -->
       </div>
     </div>
 

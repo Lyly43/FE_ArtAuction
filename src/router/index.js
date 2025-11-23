@@ -132,12 +132,12 @@ const routes = [
     meta: { layout: "default" },
     // beforeEnter: checkUser,
   },
-  // {
-  //   path: "/admin/management-employees",
-  //   // name: 'auction-room',
-  //   component: () => import("../views/Admin/Employees/index.vue"),
-  //   meta: { layout: "default" },
-  // },
+  {
+    path: "/admin/management-employees",
+    // name: 'auction-room',
+    component: () => import("../views/Admin/Employees/index.vue"),
+    meta: { layout: "default" },
+  },
   {
     path: "/admin/management-users",
     // name: 'auction-room',
@@ -217,12 +217,12 @@ const routes = [
     component: () => import("../views/Admin/Statistical/index.vue"),
     meta: { layout: "default" },
   },
-  {
-    path: "/admin/management-admin",
+  // {
+  //   path: "/admin/management-admin",
 
-    component: () => import("../views/Admin/Admin-Management/index.vue"),
-    meta: { layout: "default" },
-  },
+  //   component: () => import("../views/Admin/Admin-Management/index.vue"),
+  //   meta: { layout: "default" },
+  // },
   {
     path: "/admin/management-setting",
     name: "admin-settings",

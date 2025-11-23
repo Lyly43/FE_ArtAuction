@@ -122,7 +122,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start mb-2">
             <div class="d-flex align-items-center gap-3">
-              <h5 class="fw-bold mb-0">Phòng đấu giá sắp bắt đầu</h5>
+              <h5 class="fw-bold mb-0">The auction is about to begin</h5>
               <span
                 class="badge bg-success-subtle text-success rounded-pill border border-success-subtle"
                 >Sent</span
@@ -134,9 +134,7 @@
             </div>
           </div>
 
-          <p class="mb-2 text-dark">
-            Phòng 01 sẽ bắt đầu phiên đấu giá vào lúc 10:00 ngày 26/03/2024
-          </p>
+          <p class="mb-2 text-dark">Room 01 will start the auction at 10:00 on March 26, 2024</p>
 
           <div class="d-flex align-items-center text-muted small">
             <i class="fa-regular fa-clock me-2"></i>

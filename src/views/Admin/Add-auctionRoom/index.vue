@@ -39,7 +39,7 @@
               <input
                 type="text"
                 class="form-control bg-light border-0"
-                placeholder="Nhập tên phòng..."
+                placeholder="Enter room name..."
               />
             </div>
             <div class="col-12 col-md-6">
@@ -59,7 +59,7 @@
               <textarea
                 class="form-control bg-light border-0"
                 rows="2"
-                placeholder="Mô tả chi tiết..."
+                placeholder="Detailed description..."
               ></textarea>
             </div>
             <div class="col-12 col-md-6">
@@ -69,7 +69,7 @@
               <input
                 type="text"
                 class="form-control bg-light border-0"
-                placeholder="Tên người quản lý..."
+                placeholder="Manager name..."
               />
             </div>
           </div>
@@ -115,7 +115,7 @@
                 <input
                   type="text"
                   class="form-control bg-light border-0 shadow-none"
-                  placeholder="Nhập tên tranh..."
+                  placeholder="Enter the name of the picture..."
                 />
               </div>
             </div>
@@ -362,12 +362,12 @@
                   >
                   <input type="datetime-local" class="form-control bg-light border-0" />
                 </div>
-                <div class="col-12 col-md-6">
+                <!-- <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
                     >Automatic renewal(s)</label
                   >
                   <input type="number" class="form-control bg-light border-0" placeholder="30" />
-                </div>
+                </div> -->
                 <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
                     >Initialization state</label
