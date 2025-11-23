@@ -6,8 +6,11 @@
         <p class="text-body-secondary mb-0">Overview and control of all auction sessions</p>
       </div>
       <div>
-        <router-link to="/admin/add-auction-room" class="btn btn-primary shadow-sm px-4">
-          <i class="fa-solid fa-plus me-2"></i> Create Room
+        <router-link
+          to="/admin/add-auction-room"
+          class="btn btn-primary shadow-sm px-4 rounded-pill fw-bold"
+        >
+          <i class="fa-solid fa-plus me-2"></i>Create Room
         </router-link>
       </div>
     </div>
@@ -34,7 +37,6 @@
           </div>
         </div>
       </div>
-
       <div class="col-12 col-md-6 col-xl-3">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
@@ -54,7 +56,6 @@
           </div>
         </div>
       </div>
-
       <div class="col-12 col-md-6 col-xl-3">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
@@ -74,7 +75,6 @@
           </div>
         </div>
       </div>
-
       <div class="col-12 col-md-6 col-xl-3">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
@@ -96,24 +96,25 @@
       </div>
     </div>
 
-    <div class="card border-0 shadow-sm mb-4">
-      <div class="card-body">
-        <div class="row justify-content-between align-items-center">
-          <div class="col-12 col-md-6 col-lg-5">
-            <div class="input-group bg-light rounded-pill px-2 border-0">
-              <span class="input-group-text bg-transparent border-0 text-secondary">
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </span>
+    <div class="card border-0 shadow-sm mb-4 rounded-pill overflow-hidden">
+      <div class="card-body p-2">
+        <div class="row g-2 align-items-center">
+          <div class="col-12 col-md-8 col-lg-6">
+            <div class="input-group border-0">
+              <span class="input-group-text bg-white border-0 ps-3 text-secondary"
+                ><i class="fa-solid fa-magnifying-glass"></i
+              ></span>
               <input
+                v-model="search"
                 type="text"
-                class="form-control bg-transparent border-0 shadow-none"
-                placeholder="Search for report..."
+                class="form-control border-0 shadow-none"
+                placeholder="Search for auction room..."
+                @keyup.enter="handleSearch"
               />
             </div>
           </div>
-
-          <div class="col-auto">
-            <button class="btn btn-outline-primary px-3">
+          <div class="col-auto ms-auto pe-2">
+            <button class="btn btn-light rounded-pill px-3 fw-bold text-secondary border">
               <i class="fa-solid fa-filter me-2"></i>Filter
             </button>
           </div>
@@ -121,8 +122,13 @@
       </div>
     </div>
 
-    <div class="row no-scrollbar g-4 overflow-y-auto" style="max-height: 400px">
-      <div class="col-12" v-for="room in auctionRooms" :key="room.id">
+    <div class="row g-4">
+      <div v-if="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted">Loading rooms...</p>
+      </div>
+
+      <div v-else class="col-12" v-for="room in auctionRooms" :key="room.id">
         <div
           class="card border-0 shadow-sm hover-lift transition-base h-100"
           :class="getBorderClass(room.status)"
@@ -131,62 +137,70 @@
         >
           <div class="card-body p-4">
             <div class="row align-items-center">
-              <div class="col-12 col-lg-4 mb-3 mb-lg-0 position-relative">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                  <h5 class="fw-bold text-primary mb-0 text-truncate">{{ room.name }}</h5>
-                  <span
-                    class="badge rounded-pill px-3 py-2 fw-normal"
-                    :class="getStatusClass(room.status)"
-                  >
-                    {{ room.status }}
-                  </span>
-                </div>
-                <p class="mb-1 text-dark fw-medium">
-                  <i class="fa-solid fa-palette me-2 text-secondary"></i>{{ room.artworkName }}
-                </p>
-                <small class="text-muted">
-                  <i class="fa-solid fa-tag me-2"></i>{{ room.type }}
-                </small>
+              <div class="col-12 col-lg-4 mb-3 mb-lg-0 border-end-lg pe-lg-4">
+                <div class="d-flex align-items-center gap-3">
+                  <img
+                    :src="room.artworkImage || '/src/assets/img/4.png'"
+                    alt="Art"
+                    class="rounded-3 shadow-sm border object-fit-cover flex-shrink-0"
+                    style="width: 80px; height: 80px"
+                  />
 
-                <div
-                  class="d-none d-lg-block position-absolute top-0 end-0 h-100 border-end opacity-50"
-                ></div>
+                  <div class="overflow-hidden w-100">
+                    <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                      <h5
+                        class="fw-bold text-primary mb-0 text-truncate"
+                        style="max-width: 200px"
+                        :title="room.roomName"
+                      >
+                        {{ room.roomName }}
+                      </h5>
+                      <span
+                        class="badge rounded-pill px-2 py-1 border fw-normal"
+                        style="font-size: 0.7rem"
+                        :class="getStatusClass(room.status)"
+                      >
+                        {{ convertStatus(room.status) }}
+                      </span>
+                    </div>
+                    <small class="text-muted">
+                      <i class="fa-solid fa-tag me-1"></i>{{ room.type }}
+                    </small>
+                  </div>
+                </div>
               </div>
 
-              <div class="col-12 col-lg-8">
+              <div class="col-12 col-lg-8 ps-lg-4">
                 <div class="row g-3">
                   <div class="col-6 col-md-3">
-                    <span class="text-secondary text-uppercase small fw-bold d-block mb-1"
+                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
                       >Start Time</span
                     >
-                    <span class="fw-medium text-dark fs-6">{{ room.startTime }}</span>
+                    <span class="fw-medium text-dark fs-6">{{ formatDate(room.startedAt) }}</span>
                   </div>
-
                   <div class="col-6 col-md-3">
-                    <span class="text-secondary text-uppercase small fw-bold d-block mb-1"
+                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
                       >Participants</span
                     >
                     <div class="d-flex align-items-center">
                       <i class="fa-solid fa-users text-info me-2"></i>
-                      <span class="fw-bold text-dark">{{ room.participants }}</span>
+                      <span class="fw-bold text-dark">{{ room.totalMembers }}</span>
                     </div>
                   </div>
-
                   <div class="col-6 col-md-3">
-                    <span class="text-secondary text-uppercase small fw-bold d-block mb-1"
+                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
                       >Current Price</span
                     >
                     <span class="fw-bold text-primary fs-5">{{
                       formatCurrency(room.currentPrice)
                     }}</span>
                   </div>
-
                   <div class="col-6 col-md-3">
-                    <span class="text-secondary text-uppercase small fw-bold d-block mb-1"
+                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
                       >Start Price</span
                     >
                     <span class="fw-medium text-body-secondary">{{
-                      formatCurrency(room.startPrice)
+                      formatCurrency(room.startingPrice)
                     }}</span>
                   </div>
                 </div>
@@ -195,86 +209,149 @@
           </div>
         </div>
       </div>
+
+      <div v-if="!isLoading && auctionRooms.length === 0" class="text-center py-5">
+        <p class="text-muted">No auction rooms found.</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
+  name: "AuctionRoomManagement",
   data() {
     return {
-      auctionRooms: [
-        {
-          id: 1,
-          name: "Autumn Art Auction Room",
-          status: "Coming soon",
-          type: "Oil painting",
-          artworkName: "Phong cảnh mùa thu",
-          startTime: "19:00 - 20/10/2023",
-          participants: 24,
-          startPrice: 100000,
-          currentPrice: 200000,
-        },
-        {
-          id: 2,
-          name: "Abstract Modern Art",
-          status: "In progress",
-          type: "Oil painting",
-          artworkName: "Trừu tượng số 5",
-          startTime: "08:00 - 25/10/2023",
-          participants: 150,
-          startPrice: 5000000,
-          currentPrice: 7500000,
-        },
-        {
-          id: 3,
-          name: "Vintage Portrait Collection",
-          status: "Ended",
-          type: "Oil painting",
-          artworkName: "Chân dung thiếu nữ",
-          startTime: "10:00 - 15/10/2023",
-          participants: 45,
-          startPrice: 300000,
-          currentPrice: 300000,
-        },
-      ],
+      auctionRooms: [],
+      isLoading: false,
+      search: "",
+      statistics: "",
     };
   },
-
+  mounted() {
+    this.loadAuctionData();
+  },
   methods: {
-    formatCurrency(value) {
-      if (!value) return "0đ";
-      return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(value);
+    // 1. Lấy dữ liệu từ API
+    loadAuctionData() {
+      this.isLoading = true;
+      axios
+        .get("http://localhost:8081/api/admin/auction-rooms/lay-du-lieu", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"), // Đảm bảo đúng key token
+          },
+        })
+        .then((res) => {
+          this.auctionRooms = res.data;
+          console.log("Data Loaded:", this.auctionRooms);
+        })
+        .catch((err) => {
+          console.error("Error loading rooms:", err);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
 
-    // CSS Class cho Badge trạng thái
+    // 2. Tìm kiếm
+    handleSearch() {
+      if (!this.search.trim()) {
+        this.loadAuctionData();
+        return;
+      }
+      this.isLoading = true;
+      axios
+        .get(`http://localhost:8081/api/admin/auction-rooms/tim-kiem?q=${this.search}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.auctionRooms = res.data;
+        })
+        .catch((err) => {
+          console.error("Search error:", err);
+          this.auctionRooms = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    // 3. Chuyển trang khi click
+    handleRoomClick(id) {
+      // Router đến trang chi tiết
+      this.$router.push(`/admin/auction-room/${id}`);
+    },
+
+    // --- HELPER FUNCTIONS ---
+    formatCurrency(value) {
+      if (value === undefined || value === null) return "0đ";
+      return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
+    },
+    formatDate(dateStr) {
+      if (!dateStr) return "Chưa xác định";
+      // Cắt chuỗi đơn giản hoặc format lại tùy ý
+      return dateStr.replace("T", " ").slice(0, 16);
+    },
+    convertStatus(status) {
+      switch (status) {
+        case 0:
+          return "Finished";
+        case 1:
+          return "In progress";
+        case 2:
+          return "Coming soon";
+        default:
+          return "Unknown";
+      }
+    },
     getStatusClass(status) {
       switch (status) {
-        case "Coming soon":
-          return "bg-warning-subtle text-warning-emphasis border border-warning-subtle";
-        case "In progress":
-          return "bg-danger-subtle text-danger border border-danger-subtle";
-        case "Ended":
-          return "bg-secondary-subtle text-secondary border border-secondary-subtle";
+        case 2:
+          return "bg-warning-subtle text-warning-emphasis border-warning-subtle"; // Coming soon
+        case 1:
+          return "bg-danger-subtle text-danger border-danger-subtle"; // Live
+        case 0:
+          return "bg-secondary-subtle text-secondary border-secondary-subtle"; // Ended
         default:
           return "bg-light text-dark border";
       }
     },
-
     getBorderClass(status) {
       switch (status) {
-        case "Coming soon":
+        case 2:
           return "border-start border-4 border-warning";
-        case "In progress":
+        case 1:
           return "border-start border-4 border-danger";
-        case "Ended":
+        case 0:
           return "border-start border-4 border-secondary";
         default:
           return "";
       }
+    },
+
+    //  card thống kê
+    loadAdminStatistical() {
+      axios
+        .get(`http://localhost:8081/api/admin/auction-rooms/thong-ke`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.statistics = res.data;
+          console.log("Kết quả tìm kiếm:", this.statistics);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.statistics = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
   },
 };
@@ -284,9 +361,22 @@ export default {
 .transition-base {
   transition: all 0.2s ease-in-out;
 }
-
 .hover-lift:hover {
   transform: translateY(-3px);
-  background-color: #f8f9fa;
+  background-color: #fff; /* Hoặc #f8f9fa tùy ý */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+.object-fit-cover {
+  object-fit: cover;
+}
+.x-small {
+  font-size: 0.75rem;
+}
+
+/* CSS để tạo đường kẻ ngăn cách trên màn hình lớn */
+@media (min-width: 992px) {
+  .border-end-lg {
+    border-right: 1px solid #dee2e6;
+  }
 }
 </style>

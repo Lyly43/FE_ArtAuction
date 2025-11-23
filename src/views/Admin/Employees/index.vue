@@ -12,7 +12,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">General Admin</h6>
-                <h3 class="fw-bold mb-0">10</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalAdmins }}</h3>
               </div>
               <div
                 class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
@@ -32,7 +32,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">In Operation</h6>
-                <h3 class="fw-bold mb-0">5</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.activeAdmins }}</h3>
               </div>
               <div
                 class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -51,14 +51,14 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-secondary fw-bold mb-1">New Admin (Month)</h6>
-                <h3 class="fw-bold mb-0">0</h3>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Admin has been locked</h6>
+                <h3 class="fw-bold mb-0">{{ statistics.lockedAdmins }}</h3>
               </div>
               <div
-                class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
+                class="bg-danger-subtle text-danger-emphasis rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
-                <i class="fa-solid fa-clock fs-5"></i>
+                <i class="fa-solid fa-ban"></i>
               </div>
             </div>
             <small class="text-body-secondary">Recently added</small>
@@ -96,8 +96,10 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
               </span>
               <input
+                v-model="search"
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
+                @keyup.enter="handleSearch"
                 placeholder="Searching for admin..."
               />
             </div>
@@ -133,11 +135,21 @@
                 <td class="ps-3 fw-bold text-secondary align-middle">{{ employee.id }}</td>
                 <td class="align-middle">
                   <div class="d-flex align-items-center gap-2">
-                    <div
-                      class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                      style="width: 32px; height: 32px"
-                    >
-                      N
+                    <div class="position-relative">
+                      <img
+                        v-if="employee.avatar"
+                        :src="employee.avatar"
+                        alt="Avatar"
+                        class="rounded-circle border border-2 border-white shadow-sm object-fit-cover"
+                        style="width: 40px; height: 40px"
+                      />
+                      <div
+                        v-else
+                        class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-white shadow-sm"
+                        style="width: 40px; height: 40px"
+                      >
+                        {{ employee.fullName ? employee.fullName.charAt(0).toUpperCase() : "A" }}
+                      </div>
                     </div>
                     <span class="fw-medium">{{ employee.fullName }}</span>
                   </div>
@@ -153,7 +165,7 @@
                   <button
                     class="btn badge bg-success-subtle text-success rounded-pill border border-success-subtle px-3 py-2"
                   >
-                    Active
+                    {{ convertStatus(employee.status) }}
                   </button>
                 </td>
                 <td class="small text-body-secondary align-middle">{{ employee.createdAt }}</td>
@@ -180,7 +192,10 @@
                       </li>
                       <li><hr class="dropdown-divider" /></li>
                       <li>
-                        <button class="dropdown-item text-danger" @click="deleteItem">
+                        <button
+                          class="dropdown-item text-danger"
+                          @click="handleDelete(employee.id, employee.fullName)"
+                        >
                           <i class="fa-solid fa-trash me-2"></i>Delete
                         </button>
                       </li>
@@ -203,10 +218,16 @@ export default {
     return {
       employees: [],
       isLoading: false,
+      search: "",
+      statistics: [],
     };
   },
+  mounted() {
+    this.loadAdminData();
+    this.loadAdminStatistical();
+  },
   methods: {
-    loadUserData() {
+    loadAdminData() {
       axios
         .get("http://localhost:8081/api/admin/admins/lay-du-lieu", {
           headers: {
@@ -219,6 +240,97 @@ export default {
         })
         .catch((err) => {
           console.error(err);
+        });
+    },
+
+    convertStatus(status) {
+      switch (status) {
+        case 1:
+          return "Active";
+        case 0:
+          return "Inactive";
+        default:
+          return "Unknown";
+      }
+    },
+    getStatusClass(status) {
+      switch (status) {
+        case 1:
+          return "bg-success-subtle border-success-subtle text-success";
+        case 0:
+          return "bg-secondary-subtle border-secondary-subtle text-secondary";
+        // default:
+        //   return "bg-secondary-subtle border-secondary-subtle text-secondary";
+      }
+    },
+
+    handleSearch() {
+      // Nếu ô tìm kiếm trống thì load lại toàn bộ danh sách
+      if (!this.search.trim()) {
+        this.loadAdminData();
+        return;
+      }
+      this.isLoading = true;
+      axios
+        .get(`http://localhost:8081/api/admin/admins/tim-kiem?q=${this.search}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.employees = res.data;
+          console.log("Kết quả tìm kiếm:", this.employees);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.employees = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    // Xóa
+    handleDelete(adminId, adminName) {
+      if (!confirm(`Bạn có chắc chắn muốn xóa Admin: ${adminName}?`)) return;
+
+      const token = localStorage.getItem("token");
+
+      axios
+        .delete(`http://localhost:8081/api/admin/admins/xoa/${adminId}`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then(() => {
+          alert("Đã xóa thành công!");
+          this.loadAdminData();
+        })
+        .catch((err) => {
+          console.error("Lỗi khi xóa:", err);
+          const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+          alert(message);
+        });
+    },
+
+    //  card thống kê
+    loadAdminStatistical() {
+      axios
+        .get(`http://localhost:8081/api/admin/admins/thong-ke`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.statistics = res.data;
+          console.log("Kết quả tìm kiếm:", this.statistics);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.statistics = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
   },

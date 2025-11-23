@@ -17,7 +17,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total Users</h6>
-                <h3 class="fw-bold mb-0">1,222</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalUsers }}</h3>
               </div>
               <div class="icon-box bg-secondary-subtle text-primary rounded-3 p-2">
                 <i class="fa-solid fa-shield fa-lg"></i>
@@ -36,7 +36,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
-                <h6 class="card-subtitle text-secondary fw-bold mb-1">Verified</h6>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Active</h6>
                 <h3 class="fw-bold mb-0">100</h3>
               </div>
               <div class="icon-box bg-success-subtle text-success rounded-3 p-2">
@@ -54,7 +54,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Sellers</h6>
-                <h3 class="fw-bold mb-0">146</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalSellers }}</h3>
               </div>
               <div class="icon-box bg-info-subtle text-info rounded-3 p-2">
                 <i class="fa-solid fa-users fa-lg"></i>
@@ -71,7 +71,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Locked</h6>
-                <h3 class="fw-bold mb-0">5</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalBlockedUsers }}</h3>
               </div>
               <div class="icon-box bg-danger-subtle text-danger rounded-3 p-2">
                 <i class="fa-solid fa-ban fa-lg"></i>
@@ -92,9 +92,11 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
               </span>
               <input
+                v-model="search"
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
                 placeholder="Search by name, email..."
+                @keyup.enter="handleSearch"
               />
             </div>
           </div>
@@ -134,11 +136,6 @@
                   <p class="mb-0 small">Đang tải dữ liệu...</p>
                 </td>
               </tr>
-              <tr v-else-if="users.length === 0">
-                <td colspan="12" class="text-center py-5 text-muted">
-                  Không tìm thấy người dùng nào.
-                </td>
-              </tr>
               <tr v-for="user in users" :key="user.id">
                 <td class="text-center text-secondary fw-medium">#{{ user.id }}</td>
                 <td class="align-middle">
@@ -147,7 +144,7 @@
                       class="avatar fs-5 bg-secondary-subtle text-secondary rounded-circle me-2 d-flex align-items-center justify-content-center fw-bold flex-shrink-0 border border-2"
                       style="width: 40px; height: 40px"
                     >
-                      {{ user.fullName.charAt(0) }}
+                      {{ user.fullname.charAt(0) }}
                     </div>
                     <div>
                       <div class="fw-bold text-dark">{{ user.fullname }}</div>
@@ -173,7 +170,7 @@
                 </td>
 
                 <td class="align-middle">
-                  {{ user.dateOfBirth }}
+                  {{ convertGender(user.gender) }}
                 </td>
 
                 <td class="align-middle">
@@ -241,7 +238,10 @@
 
                       <li><hr class="dropdown-divider" /></li>
                       <li>
-                        <button class="dropdown-item text-danger" @click="handleDelete(user)">
+                        <button
+                          class="dropdown-item text-danger"
+                          @click="handleDelete(user.id, user.fullname)"
+                        >
                           <i class="fa-solid fa-trash me-2"></i>Delete
                         </button>
                       </li>
@@ -275,10 +275,13 @@ export default {
     return {
       users: [],
       isLoading: false,
+      search: "",
+      statistics: [],
     };
   },
   mounted() {
     this.loadUserData();
+    this.loadUserStatistical();
   },
   methods: {
     loadUserData() {
@@ -305,11 +308,9 @@ export default {
     convertStatus(status) {
       switch (status) {
         case 1:
-          return "Approved";
+          return "Active";
         case 0:
-          return "Locked";
-        case 2:
-          return "Pending";
+          return "Inactive";
         default:
           return "Unknown";
       }
@@ -319,50 +320,104 @@ export default {
         case 1:
           return "bg-success-subtle border-success-subtle text-success";
         case 0:
-          return "bg-danger-subtle border-danger-subtle text-danger";
-        case 2:
-          return "bg-warning-subtle border-warning-subtle text-warning-emphasis";
-        default:
           return "bg-secondary-subtle border-secondary-subtle text-secondary";
+        // default:
+        //   return "bg-secondary-subtle border-secondary-subtle text-secondary";
       }
     },
     convertRole(roleId) {
       switch (roleId) {
         case 0:
-          return "Admin";
+          return "User";
         case 1:
           return "Buyer";
         case 2:
           return "Seller";
-        default:
-          return "Unknown";
+        // default:
+        //   return "Unknown";
       }
     },
-    // handleApprove(user) {
-    //   if (confirm(`Approve user ${user.fullName}?`)) {
-    //     user.status = "Approved";
-    //   }
-    // },
-    // handleReject(user) {
-    //   if (confirm(`Reject application of ${user.fullName}?`)) {
-    //     alert("Refused!");
-    //   }
-    // },
-    // handleLock(user) {
-    //   if (confirm(`Lock account ${user.fullName}?`)) {
-    //     user.status = "Locked";
-    //   }
-    // },
-    // handleUnlock(user) {
-    //   if (confirm(`Unlock account for ${user.fullName}?`)) {
-    //     user.status = "Approved";
-    //   }
-    // },
-    // handleDelete(user) {
-    //   if (confirm("Permanently delete this user?")) {
-    //     // Delete logic
-    //   }
-    // },
+
+    convertGender(status) {
+      switch (status) {
+        case 0:
+          return "Male";
+        case 1:
+          return "female";
+        case 2:
+          return "Other";
+        // default:
+        //   return "Unknown";
+      }
+    },
+
+    handleSearch() {
+      // Nếu ô tìm kiếm trống thì load lại toàn bộ danh sách
+      if (!this.search.trim()) {
+        this.loadUserData();
+        return;
+      }
+      this.isLoading = true;
+      axios
+        .get(`http://localhost:8081/api/admin/tim-kiem-user?q=${this.search}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.users = res.data;
+          console.log("Kết quả tìm kiếm:", this.users);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.users = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    // Xóa
+    handleDelete(userId, userName) {
+      if (!confirm(`Bạn có chắc chắn muốn xóa Admin: ${userName}?`)) return;
+
+      axios
+        .delete(`http://localhost:8081/api/admin/xoa-user/${userId}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then(() => {
+          alert("Đã xóa thành công!");
+          this.loadUserData();
+        })
+        .catch((err) => {
+          console.error("Lỗi khi xóa:", err);
+          const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+          alert(message);
+        });
+    },
+
+    //  card thống kê
+    loadUserStatistical() {
+      axios
+        .get(`http://localhost:8081/api/admin/thong-ke-user`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.statistics = res.data;
+          console.log("Kết quả tìm kiếm:", this.statistics);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.statistics = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
   },
 };
 </script>

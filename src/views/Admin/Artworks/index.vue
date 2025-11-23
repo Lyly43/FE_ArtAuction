@@ -12,7 +12,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total work</h6>
-                <h3 class="fw-bold mb-0">1,222</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalArtworks }}</h3>
               </div>
               <div
                 class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
@@ -34,7 +34,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Approved</h6>
-                <h3 class="fw-bold mb-0">100</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.approvedArtworks }}</h3>
               </div>
               <div
                 class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -54,7 +54,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Pending</h6>
-                <h3 class="fw-bold mb-0">146</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.pendingArtworks }}</h3>
               </div>
               <div
                 class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
@@ -74,7 +74,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Refused</h6>
-                <h3 class="fw-bold mb-0">5</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.rejectedArtworks }}</h3>
               </div>
               <div
                 class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
@@ -98,9 +98,11 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
               </span>
               <input
+                v-model="search"
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
                 placeholder="Search artwork..."
+                @keyup.enter="handleSearch"
               />
             </div>
           </div>
@@ -117,6 +119,7 @@
             <thead class="table-light">
               <tr>
                 <th scope="col" class="ps-3 py-3 fw-bold align-middle">Artwork</th>
+                <th scope="col" class="ps-3 py-3 fw-bold align-middle">Type</th>
                 <th scope="col" class="py-3 fw-bold align-middle">Author</th>
                 <th scope="col" class="py-3 fw-bold align-middle">Year</th>
                 <th scope="col" class="py-3 fw-bold align-middle">Material</th>
@@ -133,20 +136,21 @@
                 <td class="ps-3 align-middle">
                   <div class="d-flex align-items-center gap-3">
                     <img
-                      :src="item.image"
+                      :src="item.avtArtwork"
                       class="rounded border bg-light"
                       style="width: 48px; height: 48px; object-fit: cover"
                       alt="art"
                       loading="lazy"
                     />
                     <div>
-                      <p class="mb-0 fw-bold text-dark">{{ item.name }}</p>
+                      <p class="mb-0 fw-bold text-dark">{{ item.title }}</p>
                       <small class="text-body-secondary">ID: #{{ item.id }}</small>
                     </div>
                   </div>
                 </td>
+                <td class="align-middle">{{ item.paintingGenre }}</td>
                 <td class="align-middle">{{ item.author }}</td>
-                <td class="align-middle">{{ item.year }}</td>
+                <td class="align-middle">{{ item.yearOfCreation }}</td>
                 <td class="align-middle">{{ item.material }}</td>
                 <td class="align-middle">{{ item.size }}</td>
                 <td class="fw-medium text-dark align-middle">{{ formatCurrency(item.price) }}</td>
@@ -156,7 +160,7 @@
                     class="btn badge rounded-pill border fw-normal px-3 py-2"
                     :class="getStatusClass(item.status)"
                   >
-                    {{ item.status }}
+                    {{ convertStatus(item.status) }}
                   </button>
                 </td>
                 <td class="text-center align-middle">
@@ -182,7 +186,10 @@
                       </li>
                       <li><hr class="dropdown-divider" /></li>
                       <li>
-                        <button class="dropdown-item text-danger" @click="handleDelete(item)">
+                        <button
+                          class="dropdown-item text-danger"
+                          @click="handleDelete(item.id, item.title)"
+                        >
                           <i class="fa-solid fa-trash me-2"></i>Delete
                         </button>
                       </li>
@@ -199,50 +206,20 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      artworks: [
-        {
-          id: 1,
-          image: "/src/assets/img/2.png",
-          name: "Painting name",
-          author: "Nguyễn Văn A",
-          year: 2004,
-          material: "Tranh sơn dầu",
-          size: "30*40 cm",
-          price: 50000,
-          status: "Approved",
-          createdAt: "10-06-2024 10:00",
-        },
-        {
-          id: 2,
-          image: "/src/assets/img/2.png",
-          name: "Mùa thu vàng",
-          author: "Trần Thị B",
-          year: 2020,
-          material: "Sơn mài",
-          size: "50*60 cm",
-          price: 1200000,
-          status: "Sold",
-          createdAt: "10-06-2024 10:00",
-        },
-        {
-          id: 3,
-          image: "/src/assets/img/2.png",
-          name: "Hoàng hôn trên biển",
-          author: "Lê Văn C",
-          year: 2023,
-          material: "Màu nước",
-          size: "20*30 cm",
-          price: 0,
-          status: "Pending approval",
-          createdAt: "10-06-2024 10:00",
-        },
-      ],
+      artworks: [],
+      search: "",
+      isLoading: false,
+      statistics: [],
     };
   },
-
+  mounted() {
+    this.loadArtworkData();
+    this.loadArtworkStatistical();
+  },
   methods: {
     formatCurrency(value) {
       if (!value) return "0đ";
@@ -252,27 +229,124 @@ export default {
       }).format(value);
     },
 
+    convertStatus(status) {
+      switch (status) {
+        case 0:
+          return "Not approved";
+        case 1:
+          return "Approved";
+        case 2:
+          return "Up for auction";
+        case 3:
+          return "Refused";
+        default:
+          return "Unknown";
+      }
+    },
+
     getStatusClass(status) {
       // Sử dụng các class background/text chuẩn của Bootstrap 5.3
       switch (status) {
-        case "Approved":
-          return "bg-success-subtle border-success-subtle text-success";
+        case "0":
+          return "bg-secondary-subtle border-secondary-subtle text-secondary";
         case "Sold":
-          return "bg-secondary-subtle border-secondary-subtle text-primary";
-        case "Pending approval":
+          return "bg-success-subtle border-success-subtle text-success";
+        case "2":
           return "bg-warning-subtle border-warning-subtle text-warning-emphasis";
-        case "Refused":
+        case "3":
           return "bg-danger-subtle border-danger-subtle text-danger";
         default:
           return "bg-secondary-subtle border-secondary-subtle text-secondary";
       }
     },
 
-    handleDelete(item) {
-      if (confirm("Are you sure you want to delete this artwork?")) {
-        this.artworks = this.artworks.filter((a) => a.id !== item.id);
-      }
+    loadArtworkData() {
+      axios
+        .get("http://localhost:8081/api/admin/artworks/lay-du-lieu-tac-pham", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.artworks = res.data;
+          console.log(this.artworks);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
+
+    handleSearch() {
+      // Nếu ô tìm kiếm trống thì load lại toàn bộ danh sách
+      if (!this.search.trim()) {
+        this.loadArtworkData();
+        return;
+      }
+      this.isLoading = true;
+      axios
+        .get(`http://localhost:8081/api/admin/artworks/tim-kiem-tac-pham?q=${this.search}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.artworks = res.data;
+          console.log("Kết quả tìm kiếm:", this.artworks);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.artworks = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    // Xóa
+    handleDelete(artworkId, artworkName) {
+      if (!confirm(`Bạn có chắc chắn muốn xóa artwork: ${artworkName}?`)) return;
+      axios
+        .delete(`http://localhost:8081/api/admin/artworks/xoa-tac-pham/${artworkId}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then(() => {
+          alert("Đã xóa thành công!");
+          this.loadArtworkData();
+        })
+        .catch((err) => {
+          console.error("Lỗi khi xóa:", err);
+          const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+          alert(message);
+        });
+    },
+
+    //  card thống kê
+    loadArtworkStatistical() {
+      axios
+        .get(`http://localhost:8081/api/admin/artworks/thong-ke-tac-pham`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.statistics = res.data;
+          console.log("Kết quả tìm kiếm:", this.statistics);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.statistics = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+    // handleDelete(item) {
+    //   if (confirm("Are you sure you want to delete this artwork?")) {
+    //     this.artworks = this.artworks.filter((a) => a.id !== item.id);
+    //   }
+    // },
   },
 };
 </script>
