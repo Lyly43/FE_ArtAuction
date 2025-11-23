@@ -1,261 +1,201 @@
 <template>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-12">
-        <div class="card shadow-lg border-0">
-          <div class="card-header bg-success text-white py-4">
-            <h3 class="mb-0 text-center">
-              <i class="fas fa-palette me-2"></i>
-              Đăng ký tác phẩm tham gia đấu giá
-            </h3>
-          </div>
-          <div class="card-body p-4">
-            <form @submit.prevent="submitArtwork">
-              <div class="row">
-                <!-- Left Column -->
-                <div class="col-lg-6">
-                  <!-- Title -->
-                  <div class="mb-3">
-                    <label class="form-label fw-bold">
-                      Tên tác phẩm <span class="text-danger">*</span>
-                    </label>
-                    <input
-                      v-model="formData.title"
-                      type="text"
-                      class="form-control"
-                      :class="{'is-invalid': errors.title}"
-                      placeholder="Nhập tên tác phẩm"
-                      required
-                    />
-                    <div v-if="errors.title" class="invalid-feedback">{{ errors.title }}</div>
-                  </div>
-
-                  <!-- Description -->
-                  <div class="mb-3">
-                    <label class="form-label fw-bold">
-                      Mô tả <span class="text-danger">*</span>
-                    </label>
-                    <textarea
-                      v-model="formData.description"
-                      class="form-control"
-                      :class="{'is-invalid': errors.description}"
-                      rows="4"
-                      placeholder="Mô tả chi tiết về tác phẩm"
-                      required
-                    ></textarea>
-                    <div v-if="errors.description" class="invalid-feedback">{{ errors.description }}</div>
-                  </div>
-
-                  <!-- Starting Price -->
-                  <div class="mb-3">
-                    <label class="form-label fw-bold">
-                      Giá khởi điểm (VND) <span class="text-danger">*</span>
-                    </label>
-                    <input
-                      v-model.number="formData.startedPrice"
-                      type="number"
-                      class="form-control"
-                      :class="{'is-invalid': errors.startedPrice}"
-                      placeholder="Nhập giá khởi điểm"
-                      min="0"
-                      step="1000"
-                      required
-                    />
-                    <div v-if="errors.startedPrice" class="invalid-feedback">{{ errors.startedPrice }}</div>
-                    <small class="text-muted">
-                      Giá: {{ formatCurrency(formData.startedPrice) }}
-                    </small>
-                  </div>
-
-                  <!-- Year of Creation -->
-                  <div class="mb-3">
-                    <label class="form-label fw-bold">
-                      Năm sáng tác <span class="text-danger">*</span>
-                    </label>
-                    <input
-                      v-model.number="formData.yearOfCreation"
-                      type="number"
-                      class="form-control"
-                      :class="{'is-invalid': errors.yearOfCreation}"
-                      placeholder="Nhập năm sáng tác"
-                      :min="1900"
-                      :max="currentYear"
-                      required
-                    />
-                    <div v-if="errors.yearOfCreation" class="invalid-feedback">{{ errors.yearOfCreation }}</div>
-                  </div>
-                </div>
-
-                <!-- Right Column -->
-                <div class="col-lg-6">
-                  <!-- Painting Genre -->
-                  <div class="mb-3">
-                    <label class="form-label fw-bold">
-                      Thể loại <span class="text-danger">*</span>
-                    </label>
-                    <select
-                      v-model="formData.paintingGenre"
-                      class="form-select"
-                      :class="{'is-invalid': errors.paintingGenre}"
-                      required
-                    >
-                      <option value="">-- Chọn thể loại --</option>
-                      <option value="Landscape">Phong cảnh (Landscape)</option>
-                      <option value="Portrait">Chân dung (Portrait)</option>
-                      <option value="Abstract">Trừu tượng (Abstract)</option>
-                      <option value="Still Life">Tĩnh vật (Still Life)</option>
-                      <option value="Contemporary">Đương đại (Contemporary)</option>
-                      <option value="Traditional">Truyền thống (Traditional)</option>
-                      <option value="Modern">Hiện đại (Modern)</option>
-                      <option value="Other">Khác</option>
-                    </select>
-                    <div v-if="errors.paintingGenre" class="invalid-feedback">{{ errors.paintingGenre }}</div>
-                  </div>
-
-                  <!-- Material -->
-                  <div class="mb-3">
-                    <label class="form-label fw-bold">
-                      Chất liệu <span class="text-danger">*</span>
-                    </label>
-                    <select
-                      v-model="formData.material"
-                      class="form-select"
-                      :class="{'is-invalid': errors.material}"
-                      required
-                    >
-                      <option value="">-- Chọn chất liệu --</option>
-                      <option value="Oil">Sơn dầu (Oil)</option>
-                      <option value="Acrylic">Acrylic</option>
-                      <option value="Watercolor">Màu nước (Watercolor)</option>
-                      <option value="Ink">Mực (Ink)</option>
-                      <option value="Mixed Media">Hỗn hợp (Mixed Media)</option>
-                      <option value="Digital">Kỹ thuật số (Digital)</option>
-                      <option value="Other">Khác</option>
-                    </select>
-                    <div v-if="errors.material" class="invalid-feedback">{{ errors.material }}</div>
-                  </div>
-
-                  <!-- Size -->
-                  <div class="mb-3">
-                    <label class="form-label fw-bold">
-                      Kích thước <span class="text-danger">*</span>
-                    </label>
-                    <input
-                      v-model="formData.size"
-                      type="text"
-                      class="form-control"
-                      :class="{'is-invalid': errors.size}"
-                      placeholder="VD: 70x50cm hoặc 100x80x5cm"
-                      required
-                    />
-                    <div v-if="errors.size" class="invalid-feedback">{{ errors.size }}</div>
-                    <small class="text-muted">Định dạng: ChiềuDài x ChiềuRộng (x ChiềuCao nếu có)</small>
-                  </div>
-
-                  <!-- Certificate File -->
-                  <div class="mb-3">
-                    <label class="form-label fw-bold">
-                      File chứng nhận <span class="text-danger">*</span>
-                    </label>
-                    <input
-                      type="file"
-                      class="form-control"
-                      @change="handleCertificateUpload"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      required
-                    />
-                    <small class="text-muted">Định dạng: PDF, JPG, PNG (Tối đa 5MB)</small>
-
-                    <!-- Certificate file name display -->
-                    <div v-if="certificateFile" class="mt-2">
-                      <div class="alert alert-success py-2 mb-0 d-flex align-items-center justify-content-between">
-                        <div>
-                          <i class="fas fa-file-check me-2"></i>
-                          <span>{{ certificateFile.name }}</span>
-                        </div>
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-danger"
-                          @click="removeCertificate"
-                        >
-                          <i class="fas fa-times"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div v-if="errors.certificateId" class="invalid-feedback d-block">{{ errors.certificateId }}</div>
-                  </div>
-
-                  <!-- Image Upload (Required) -->
-                  <div class="mb-3">
-                    <label class="form-label fw-bold">
-                      Hình ảnh tác phẩm <span class="text-danger">*</span>
-                    </label>
-                    <input
-                      type="file"
-                      class="form-control"
-                      @change="handleFileUpload"
-                      accept="image/*"
-                      required
-                    />
-                    <small class="text-muted">Định dạng: JPG, PNG, WEBP (Tối đa 5MB)</small>
-
-                    <!-- Preview Image -->
-                    <div v-if="imagePreview" class="mt-3">
-                      <img :src="imagePreview" class="img-thumbnail" style="max-height: 200px;" alt="Preview">
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-danger mt-2"
-                        @click="removeImage"
-                      >
-                        <i class="fas fa-times me-1"></i>Xóa ảnh
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Submit Buttons -->
-              <div class="row mt-4">
-                <div class="col-12">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      @click="resetForm"
-                      :disabled="isSubmitting"
-                    >
-                      <i class="fas fa-redo me-2"></i>Đặt lại
-                    </button>
-
-                    <button
-                      type="submit"
-                      class="btn btn-success btn-lg px-5"
-                      :disabled="isSubmitting"
-                    >
-                      <i v-if="isSubmitting" class="fas fa-spinner fa-spin me-2"></i>
-                      <i v-else class="fas fa-paper-plane me-2"></i>
-                      {{ isSubmitting ? 'Đang gửi...' : 'Đăng ký tác phẩm' }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
+  <div class="container mb-5">
+    <div class="row">
+      <div class="col-lg-12 d-flex justify-content-between align-items-center mt-4 mb-3">
+        <div class=""  data-aos="fade-right" data-aos-duration="800">
+          <h3 class="fw-bold">
+            <!-- <i class="fas fa-palette me-2"></i> -->
+            Register Artwork for Auction
+          </h3>
+          <p class="text-muted">
+            Please fill in all information below to register your artwork for auction.
+            All fields marked with <span class="text-danger">*</span> are required.
+          </p>
         </div>
+        <div class=" d-flex gap-3"  data-aos="fade-left" data-aos-duration="800">
+          <button type="button" class="btn btn-secondary" @click="resetForm" :disabled="isSubmitting">
+            <i class="fas fa-redo me-2"></i>Reset
+          </button>
+          <button type="submit" class="btn btn-success btn-lg px-5" :disabled="isSubmitting">
+            <i v-if="isSubmitting" class="fas fa-spinner fa-spin me-2"></i>
+            <i v-else class="fas fa-paper-plane me-2"></i>
+            {{ isSubmitting ? 'Submitting...' : 'Register Artwork' }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row"  data-aos="fade-up" data-aos-duration="800">
+      <div class="col-lg-7">
+        <div class="card border-top border-4 border-success">
+          <div class="card-body">
+            <div class="row">
+              <!-- name artwork -->
+              <div class="col-lg-12 mb-4">
+                <label class="form-label fw-bold">
+                  Artwork Title <span class="text-danger">*</span>
+                </label>
+                <input v-model="formData.title" type="text" class="form-control" :class="{ 'is-invalid': errors.title }"
+                  placeholder="Enter artwork title" required />
+                <div v-if="errors.title" class="invalid-feedback">{{ errors.title }}</div>
+              </div>
+              <!-- Painting Genre -->
+              <div class="col-lg-6 mb-4">
+                <label class="form-label fw-bold">
+                  Genre <span class="text-danger">*</span>
+                </label>
+                <select v-model="formData.paintingGenre" class="form-select"
+                  :class="{ 'is-invalid': errors.paintingGenre }" required>
+                  <option value="">-- Select Genre --</option>
+                  <option value="Landscape">Landscape</option>
+                  <option value="Portrait">Portrait</option>
+                  <option value="Abstract">Abstract</option>
+                  <option value="Still Life">Still Life</option>
+                  <option value="Contemporary">Contemporary</option>
+                  <option value="Traditional">Traditional</option>
+                  <option value="Modern">Modern</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div v-if="errors.paintingGenre" class="invalid-feedback">{{ errors.paintingGenre }}</div>
+              </div>
+              <!-- Material -->
+              <div class="col-lg-6 mb-4">
+                <label class="form-label fw-bold">
+                  Material <span class="text-danger">*</span>
+                </label>
+                <select v-model="formData.material" class="form-select" :class="{ 'is-invalid': errors.material }"
+                  required>
+                  <option value="">-- Select Material --</option>
+                  <option value="Oil">Oil</option>
+                  <option value="Acrylic">Acrylic</option>
+                  <option value="Watercolor">Watercolor</option>
+                  <option value="Ink">Ink</option>
+                  <option value="Mixed Media">Mixed Media</option>
+                  <option value="Digital">Digital</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div v-if="errors.material" class="invalid-feedback">{{ errors.material }}</div>
+              </div>
+              <!-- Size -->
+              <div class="col-lg-6 mb-4">
+                <label class="form-label fw-bold">
+                  Size <span class="text-danger">*</span>
+                </label>
+                <input v-model="formData.size" type="text" class="form-control" :class="{ 'is-invalid': errors.size }"
+                  placeholder="E.g: 70x50cm or 100x80x5cm" required />
+                <div v-if="errors.size" class="invalid-feedback">{{ errors.size }}</div>
+                <small class="text-muted">Format: Length x Width (x Height if applicable)</small>
+              </div>
+              <!-- Year of Creation -->
+              <div class="col-lg-6 mb-4">
+                <label class="form-label fw-bold">
+                  Year of Creation <span class="text-danger">*</span>
+                </label>
+                <input v-model.number="formData.yearOfCreation" type="number" class="form-control"
+                  :class="{ 'is-invalid': errors.yearOfCreation }" placeholder="Enter year of creation" :min="1900"
+                  :max="currentYear" required />
+                <div v-if="errors.yearOfCreation" class="invalid-feedback">{{ errors.yearOfCreation }}</div>
+              </div>
+              <!-- Description -->
+              <div class="col-lg-12">
+                <label class="form-label fw-bold">
+                  Description <span class="text-danger">*</span>
+                </label>
+                <textarea v-model="formData.description" class="form-control"
+                  :class="{ 'is-invalid': errors.description }" rows="4"
+                  placeholder="Detailed description of the artwork" required></textarea>
+                <div v-if="errors.description" class="invalid-feedback">{{ errors.description }}</div>
+              </div>
+            </div>
+
+          </div>
+
+
+
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="card border-top border-4 border-success">
+          <div class="card-body">
+            <div class="row">
+              <!-- Starting Price -->
+              <div class="col-lg-12 mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="form-label fw-bold">
+                    Starting Price (VND) <span class="text-danger">*</span>
+                  </label>
+                  <small class="text-muted">
+                    Price: {{ formatCurrency(formData.startedPrice) }}
+                  </small>
+                </div>
+
+                <input v-model.number="formData.startedPrice" type="number" class="form-control"
+                  :class="{ 'is-invalid': errors.startedPrice }" placeholder="Enter starting price" min="0" step="1000"
+                  required />
+                <div v-if="errors.startedPrice" class="invalid-feedback">{{ errors.startedPrice }}</div>
+
+              </div>
+              <!-- Certificate File -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">
+                  Certificate File <span class="text-danger">*</span>
+                </label>
+                <input type="file" class="form-control" @change="handleCertificateUpload" accept=".pdf,.jpg,.jpeg,.png"
+                  required />
+                <small class="text-muted">Format: PDF, JPG, PNG (Max 5MB)</small>
+
+                <!-- Certificate file name display -->
+                <div v-if="certificateFile" class="mt-2">
+                  <div class="alert alert-success py-2 mb-0 d-flex align-items-center justify-content-between">
+                    <div>
+                      <i class="fas fa-file-check me-2"></i>
+                      <span>{{ certificateFile.name }}</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-danger" @click="removeCertificate">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+                <div v-if="errors.certificateId" class="invalid-feedback d-block">{{ errors.certificateId }}</div>
+              </div>
+
+              <!-- Image Upload (Required) -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">
+                  Artwork Image <span class="text-danger">*</span>
+                </label>
+                <input type="file" class="form-control" @change="handleFileUpload" accept="image/*" required />
+                <small class="text-muted">Format: JPG, PNG, WEBP (Max 5MB)</small>
+
+                <!-- Preview Image -->
+                <div v-if="imagePreview" class="mt-3">
+                  <img :src="imagePreview" class="img-thumbnail" style="max-height: 200px;" alt="Preview">
+                  <button type="button" class="btn btn-sm btn-danger mt-2" @click="removeImage">
+                    <i class="fas fa-times me-1"></i>Remove Image
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="row ">
+      <div class="col-lg-7">
 
         <!-- Info Card -->
         <div class="card border-info mt-4">
           <div class="card-body">
             <h6 class="text-info mb-2">
-              <i class="fas fa-info-circle me-2"></i>Lưu ý:
+              <i class="fas fa-info-circle me-2"></i>
             </h6>
             <ul class="mb-0 small">
-              <li>Tất cả các trường có dấu <span class="text-danger">*</span> là bắt buộc</li>
-              <li>Hình ảnh tác phẩm là <strong>bắt buộc</strong>, nên rõ nét và chất lượng cao</li>
-              <li>File chứng nhận là <strong>bắt buộc</strong>, chấp nhận PDF hoặc hình ảnh (JPG, PNG)</li>
-              <li>Giá khởi điểm phải lớn hơn 0 và là bội số của 1,000 VND</li>
-              <li>Năm sáng tác phải từ năm 1900 đến hiện tại</li>
-              <li>Tác phẩm sẽ được xét duyệt trong vòng 24-48 giờ</li>
+              <li>All fields marked with <span class="text-danger">*</span> are required</li>
+              <li>Artwork image is <strong>required</strong>, should be clear and high quality</li>
+              <li>Certificate file is <strong>required</strong>, accepts PDF or images (JPG, PNG)</li>
+              <li>Starting price must be greater than 0 and a multiple of 1,000 VND</li>
+              <li>Year of creation must be from 1900 to present</li>
+              <li>Artwork will be reviewed within 24-48 hours</li>
             </ul>
           </div>
         </div>
@@ -266,20 +206,16 @@
             <div class="d-flex justify-content-between align-items-center">
               <h5 class="mb-0">
                 <i class="fas fa-exclamation-triangle me-2"></i>
-                Phát hiện hình ảnh AI
+                AI Image Detection
               </h5>
-              <button
-                type="button"
-                class="btn-close btn-close-white"
-                @click="closeAIDetectionResult"
-              ></button>
+              <button type="button" class="btn-close btn-close-white" @click="closeAIDetectionResult"></button>
             </div>
           </div>
           <div class="card-body">
             <div class="text-center mb-3">
               <div class="alert alert-danger mb-3">
                 <i class="fas fa-robot fa-3x mb-3"></i>
-                <h5>{{ aiDetectionResult?.message || 'Hình ảnh được phát hiện là AI' }}</h5>
+                <h5>{{ aiDetectionResult?.message || 'Image detected as AI' }}</h5>
                 <h4 class="mt-2 mb-0">
                   <span class="badge bg-danger fs-5">
                     AI: {{ formatProbability(aiDetectionResult?.aiProbability) }}%
@@ -311,24 +247,16 @@
               </div>
 
               <p class="text-muted mb-3">
-                Hình ảnh của bạn có khả năng cao được tạo bởi AI.
-                Nếu bạn cho rằng đây là lỗi, vui lòng báo cáo để chúng tôi xem xét lại.
+                Your image has a high probability of being AI-generated.
+                If you believe this is an error, please report it for our review.
               </p>
 
               <div class="d-flex justify-content-center gap-2">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  @click="closeAIDetectionResult"
-                >
-                  <i class="fas fa-times me-2"></i>Đóng
+                <button type="button" class="btn btn-secondary" @click="closeAIDetectionResult">
+                  <i class="fas fa-times me-2"></i>Close
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-warning"
-                  @click="handleReportAI"
-                >
-                  <i class="fas fa-flag me-2"></i>Báo cáo sai sót
+                <button type="button" class="btn btn-warning" @click="handleReportAI">
+                  <i class="fas fa-flag me-2"></i>Report Error
                 </button>
               </div>
             </div>
@@ -376,51 +304,51 @@ export default {
 
       // Title
       if (!this.formData.title || this.formData.title.trim().length < 3) {
-        this.errors.title = 'Tên tác phẩm phải có ít nhất 3 ký tự';
+        this.errors.title = 'Artwork title must be at least 3 characters';
         isValid = false;
       }
 
       // Description
       if (!this.formData.description || this.formData.description.trim().length < 10) {
-        this.errors.description = 'Mô tả phải có ít nhất 10 ký tự';
+        this.errors.description = 'Description must be at least 10 characters';
         isValid = false;
       }
 
       // Starting Price
       if (!this.formData.startedPrice || this.formData.startedPrice <= 0) {
-        this.errors.startedPrice = 'Giá khởi điểm phải lớn hơn 0';
+        this.errors.startedPrice = 'Starting price must be greater than 0';
         isValid = false;
       }
 
       // Year of Creation
       if (!this.formData.yearOfCreation ||
-          this.formData.yearOfCreation < 1900 ||
-          this.formData.yearOfCreation > this.currentYear) {
-        this.errors.yearOfCreation = `Năm sáng tác phải từ 1900 đến ${this.currentYear}`;
+        this.formData.yearOfCreation < 1900 ||
+        this.formData.yearOfCreation > this.currentYear) {
+        this.errors.yearOfCreation = `Year of creation must be from 1900 to ${this.currentYear}`;
         isValid = false;
       }
 
       // Painting Genre
       if (!this.formData.paintingGenre) {
-        this.errors.paintingGenre = 'Vui lòng chọn thể loại';
+        this.errors.paintingGenre = 'Please select a genre';
         isValid = false;
       }
 
       // Material
       if (!this.formData.material) {
-        this.errors.material = 'Vui lòng chọn chất liệu';
+        this.errors.material = 'Please select a material';
         isValid = false;
       }
 
       // Size
       if (!this.formData.size || this.formData.size.trim().length < 3) {
-        this.errors.size = 'Vui lòng nhập kích thước';
+        this.errors.size = 'Please enter the size';
         isValid = false;
       }
 
       // Certificate File
       if (!this.certificateFile) {
-        this.errors.certificateId = 'Vui lòng chọn file chứng nhận';
+        this.errors.certificateId = 'Please select a certificate file';
         isValid = false;
       }
 
@@ -433,14 +361,14 @@ export default {
       if (file) {
         // Validate file size (5MB)
         if (file.size > 5 * 1024 * 1024) {
-          this.$toast?.error?.('Kích thước file không được vượt quá 5MB');
+          this.$toast?.error?.('File size must not exceed 5MB');
           event.target.value = '';
           return;
         }
 
         // Validate file type
         if (!file.type.startsWith('image/')) {
-          this.$toast?.error?.('Vui lòng chọn file hình ảnh');
+          this.$toast?.error?.('Please select an image file');
           event.target.value = '';
           return;
         }
@@ -468,7 +396,7 @@ export default {
       if (file) {
         // Validate file size (5MB)
         if (file.size > 5 * 1024 * 1024) {
-          this.$toast?.error?.('Kích thước file không được vượt quá 5MB');
+          this.$toast?.error?.('File size must not exceed 5MB');
           event.target.value = '';
           return;
         }
@@ -476,7 +404,7 @@ export default {
         // Validate file type
         const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
         if (!allowedTypes.includes(file.type)) {
-          this.$toast?.error?.('Vui lòng chọn file PDF hoặc hình ảnh (JPG, PNG)');
+          this.$toast?.error?.('Please select a PDF file or image (JPG, PNG)');
           event.target.value = '';
           return;
         }
@@ -509,13 +437,13 @@ export default {
     submitArtwork() {
       // Validate
       if (!this.validateForm()) {
-        this.$toast?.error?.('Vui lòng kiểm tra lại các thông tin đã nhập');
+        this.$toast?.error?.('Please check the information you entered');
         return;
       }
 
-      // Kiểm tra bắt buộc phải có ảnh
+      // Check if image is required
       if (!this.imageFile) {
-        this.$toast?.error?.('Vui lòng chọn hình ảnh tác phẩm');
+        this.$toast?.error?.('Please select an artwork image');
         return;
       }
 
@@ -599,8 +527,8 @@ export default {
               }
             });
           } else {
-            // Nếu là Human - success
-            const successMessage = res.data.message || 'Đăng ký tác phẩm thành công! Chờ xét duyệt.';
+            // If Human - success
+            const successMessage = res.data.message || 'Artwork registered successfully! Awaiting approval.';
             this.$toast?.success?.(successMessage);
 
             // Reset form
@@ -617,9 +545,9 @@ export default {
           console.error('Error submitting artwork:', err);
 
           if (err.response?.data?.message) {
-            this.$toast?.error?.('Lỗi: ' + err.response.data.message);
+            this.$toast?.error?.('Error: ' + err.response.data.message);
           } else {
-            this.$toast?.error?.('Có lỗi xảy ra khi đăng ký tác phẩm. Vui lòng thử lại.');
+            this.$toast?.error?.('An error occurred while registering the artwork. Please try again.');
           }
         })
         .finally(() => {
@@ -654,8 +582,8 @@ export default {
 
     // Handle Report AI Image
     handleReportAI() {
-      // Chức năng đang được phát triển
-      this.$toast?.info?.('Chức năng báo cáo đang được phát triển. Vui lòng thử lại sau!');
+      // Feature under development
+      this.$toast?.info?.('Report feature is under development. Please try again later!');
       console.log('Report AI detection:', this.aiDetectionResult);
 
       // Đóng result card sau khi thông báo
@@ -753,9 +681,12 @@ export default {
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.1);
   }
@@ -771,6 +702,7 @@ export default {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

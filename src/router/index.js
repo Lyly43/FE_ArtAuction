@@ -163,7 +163,7 @@ const routes = [
   //   meta: { layout: "default" },
   // },
   {
-    path: "/admin/testlivestream",
+    path: "/admin/testlivestream/:id",
     name: "admin-test-livestream",
     component: () => import("../views/Admin/testLiveStream/index.vue"),
     meta: { layout: "default" },
