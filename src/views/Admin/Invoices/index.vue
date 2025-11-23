@@ -12,7 +12,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total Bill</h6>
-                <h3 class="card-text fw-bold mb-0">120</h3>
+                <h3 class="card-text fw-bold mb-0">{{ statistics.totalInvoices }}</h3>
               </div>
               <div
                 class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
@@ -22,7 +22,7 @@
               </div>
             </div>
             <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-up me-1"></i>+12 new invoices
+              <i class="fa-solid fa-arrow-up me-1"></i>Total invoices
             </small>
           </div>
         </div>
@@ -34,7 +34,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Paid</h6>
-                <h3 class="card-text fw-bold mb-0">100</h3>
+                <h3 class="card-text fw-bold mb-0">{{ statistics.paidInvoices }}</h3>
               </div>
               <div
                 class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -43,7 +43,7 @@
                 <i class="fa-solid fa-circle-check fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">80% of the total</small>
+            <small class="text-body-secondary">Total invoices paid</small>
           </div>
         </div>
       </div>
@@ -54,7 +54,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Waiting</h6>
-                <h3 class="card-text fw-bold mb-0">10</h3>
+                <h3 class="card-text fw-bold mb-0">{{ statistics.pendingInvoices }}</h3>
               </div>
               <div
                 class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
@@ -63,7 +63,7 @@
                 <i class="fa-solid fa-clock fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">12% of the total</small>
+            <small class="text-body-secondary">Total pending invoices</small>
           </div>
         </div>
       </div>
@@ -74,7 +74,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Overdue</h6>
-                <h3 class="card-text fw-bold mb-0">12</h3>
+                <h3 class="card-text fw-bold mb-0">{{ statistics.failedInvoices }}</h3>
               </div>
               <div
                 class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
@@ -97,9 +97,11 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
               </span>
               <input
+                v-model="search"
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
                 placeholder="Search invoices, buyers..."
+                @keyup.enter="handleSearch"
               />
             </div>
           </div>
@@ -117,10 +119,10 @@
           <table class="table table-hover align-middle text-nowrap mb-0 w-100">
             <thead class="table-light">
               <tr class="align-middle">
-                <th scope="col" class="py-3 fw-bold ps-3">Buyer</th>
-                <th scope="col" class="py-3 fw-bold">Artwork</th>
+                <th scope="col" class="py-3 fw-bold ps-3">BuyerID</th>
+                <th scope="col" class="py-3 fw-bold">ArtworkID</th>
                 <th scope="col" class="py-3 fw-bold">Price</th>
-                <th scope="col" class="py-3 fw-bold">Service fee</th>
+                <!-- <th scope="col" class="py-3 fw-bold">Service fee</th> -->
                 <th scope="col" class="py-3 fw-bold">Total</th>
                 <th scope="col" class="py-3 fw-bold">Payment method</th>
                 <th scope="col" class="py-3 fw-bold">Created at</th>
@@ -131,104 +133,84 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="invoice in invoices" :key="invoice.id">
-                <td class="ps-3 align-middle">
-                  <div class="d-flex align-items-center gap-2">
-                    <div
-                      class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                      style="width: 36px; height: 36px; font-size: 0.8rem"
-                    >
-                      {{ invoice.buyer.charAt(0) }}
-                    </div>
-                    <div class="fw-medium">{{ invoice.buyer }}</div>
-                  </div>
-                </td>
+              <template v-for="(v, i) in invoices" :key="i">
+                <tr>
+                  <td class="ps-3 align-middle">
+                    {{ v.userId }}
+                  </td>
 
-                <td class="align-middle">
-                  <div class="d-flex align-items-center gap-3">
-                    <img
-                      :src="invoice.image"
-                      alt="artwork"
-                      class="rounded border bg-light"
-                      style="width: 48px; height: 48px; object-fit: cover"
-                    />
-                    <div>
-                      <div class="fw-medium text-dark">{{ invoice.artwork }}</div>
-                      <small class="text-body-secondary" style="font-size: 0.75rem"
-                        >Author: {{ invoice.author }}</small
-                      >
-                    </div>
-                  </div>
-                </td>
+                  <td class="align-middle">
+                    {{ v.artworkId }}
+                  </td>
 
-                <td class="text-body-secondary align-middle">
-                  {{ formatCurrency(invoice.price) }}
-                </td>
-                <td class="text-body-secondary align-middle">{{ formatCurrency(invoice.fee) }}</td>
-                <td class="text-primary fw-bold align-middle">
-                  {{ formatCurrency(invoice.total) }}
-                </td>
-                <td class="align-middle">
-                  <span class="d-inline-flex align-items-center gap-2">
-                    <i class="fa-regular fa-credit-card text-secondary"></i>
-                    {{ invoice.method }}
-                  </span>
-                </td>
-                <td class="small text-secondary align-middle">{{ invoice.date }}</td>
-                <td class="align-middle">
-                  <button
-                    class="btn badge rounded-pill border fw-normal px-3 py-2"
-                    :class="getStatusClass(invoice.status)"
-                  >
-                    {{ invoice.status }}
-                  </button>
-                </td>
-                <td class="text-center align-middle">
-                  <div class="dropdown">
+                  <td class="text-body-secondary align-middle">
+                    {{ formatCurrency(v.amount) }}
+                  </td>
+                  <td class="text-body-secondary align-middle">{{ formatCurrency(v.fee) }}</td>
+                  <td class="text-primary fw-bold align-middle">
+                    {{ formatCurrency(v.totalAmount) }}
+                  </td>
+                  <td class="align-middle">
+                    <span class="d-inline-flex align-items-center gap-2">
+                      <i class="fa-regular fa-credit-card text-secondary"></i>
+                      {{ v.paymentMethod }}
+                    </span>
+                  </td>
+                  <td class="small text-secondary align-middle">
+                    {{ v.createdAt }}
+                  </td>
+                  <td class="align-middle">
                     <button
-                      class="btn btn-sm btn-light rounded-circle"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      style="width: 32px; height: 32px"
+                      class="btn badge rounded-pill border fw-normal px-3 py-2"
+                      :class="getStatusClass(v.invoiceStatus)"
                     >
-                      <i class="fa-solid fa-ellipsis-vertical text-secondary"></i>
+                      {{ convertStatus(v.invoiceStatus) }}
                     </button>
+                  </td>
+                  <td class="text-center align-middle">
+                    <div class="dropdown">
+                      <button
+                        class="btn btn-sm btn-light rounded-circle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        style="width: 32px; height: 32px"
+                      >
+                        <i class="fa-solid fa-ellipsis-vertical text-secondary"></i>
+                      </button>
 
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                      <li>
-                        <a class="dropdown-item" href="#">
-                          <i class="fa-solid fa-eye me-2 text-info"></i>See details
-                        </a>
-                      </li>
-                      <li>
-                        <button class="dropdown-item">
-                          <i class="fa-solid fa-download me-2 text-secondary"></i>Download PDF
-                        </button>
-                      </li>
-
-                      <li><hr class="dropdown-divider" /></li>
-
-                      <template v-if="invoice.status === 'Pending' || invoice.status === 'Overdue'">
+                      <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                         <li>
-                          <button
-                            class="dropdown-item text-success"
-                            @click="confirmPayment(invoice)"
-                          >
-                            <i class="fa-solid fa-check-double me-2"></i>Confirm Payment
+                          <a class="dropdown-item" href="#">
+                            <i class="fa-solid fa-eye me-2 text-info"></i>See details
+                          </a>
+                        </li>
+                        <li>
+                          <button class="dropdown-item">
+                            <i class="fa-solid fa-download me-2 text-secondary"></i>Download PDF
                           </button>
                         </li>
-                        <li><hr class="dropdown-divider" /></li>
-                      </template>
 
-                      <li>
-                        <button class="dropdown-item text-danger" @click="cancelInvoice(invoice)">
-                          <i class="fa-solid fa-ban me-2"></i>Cancel invoice
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
+                        <li><hr class="dropdown-divider" /></li>
+
+                        <template v-if="v.invoiceStatus === 0 || v.invoiceStatus === 2">
+                          <li>
+                            <button class="dropdown-item text-success" @click="confirmPayment(v)">
+                              <i class="fa-solid fa-check-double me-2"></i>Confirm Payment
+                            </button>
+                          </li>
+                          <li><hr class="dropdown-divider" /></li>
+                        </template>
+
+                        <li>
+                          <button class="dropdown-item text-danger" @click="handleDelete(v.id)">
+                            <i class="fa-solid fa-ban me-2"></i>Delete invoice
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </template>
             </tbody>
           </table>
         </div>
@@ -238,83 +220,70 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      invoices: [
-        {
-          id: "INV001",
-          buyer: "Nguyễn Văn A",
-          artwork: "Thiên nhiên hoang dã",
-          image: "/src/assets/img/2.png", // Đã thêm ảnh
-          price: 100000,
-          fee: 10000,
-          total: 110000,
-          method: "Transfer",
-          date: "2025-10-22",
-          status: "Paid",
-        },
-        {
-          id: "INV002",
-          buyer: "Trần Thị B",
-          artwork: "Chân dung thiếu nữ",
-          image: "/src/assets/img/2.png", // Đã thêm ảnh
-          price: 2000000,
-          fee: 200000,
-          total: 2200000,
-          method: "Transfer",
-          date: "2025-10-25",
-          status: "Pending",
-        },
-        {
-          id: "INV003",
-          buyer: "Lê Văn C",
-          artwork: "Hoàng hôn trên biển",
-          image: "/src/assets/img/2.png", // Đã thêm ảnh
-          price: 500000,
-          fee: 50000,
-          total: 550000,
-          method: "E-wallet",
-          date: "2025-10-20",
-          status: "Overdue",
-        },
-        {
-          id: "INV004",
-          buyer: "Phạm Văn D",
-          artwork: "Mùa thu Hà Nội",
-          image: "/src/assets/img/2.png", // Đã thêm ảnh
-          price: 500000,
-          fee: 50000,
-          total: 550000,
-          method: "E-wallet",
-          date: "2025-10-20",
-          status: "Overdue",
-        },
-      ],
+      invoices: [],
+      isLoading: false,
+      search: "",
+      statistics: {},
     };
+  },
+
+  mounted() {
+    this.loadInvoiceData();
+    this.loadInvoiceStatistical();
   },
 
   methods: {
     formatCurrency(value) {
-      if (!value) return "0đ";
+      if (!value) return "0₫";
       return new Intl.NumberFormat("vi-VN", {
         style: "currency",
         currency: "VND",
       }).format(value);
     },
 
+    loadInvoiceData() {
+      axios
+        .get("http://localhost:8081/api/admin/invoices/lay-du-lieu", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.invoices = res.data.data;
+          console.log("test", res.data.data || []);
+        })
+        .catch((err) => {
+          console.log("lỗi");
+
+          console.error(err);
+        });
+    },
+    convertStatus(status) {
+      switch (status) {
+        case 0:
+          return "Pending";
+        case 1:
+          return "Paid";
+        case 2:
+          return "Failed";
+        // default:
+        //   return "Unknown";
+      }
+    },
     getStatusClass(status) {
       switch (status) {
-        case "Paid":
+        case 1:
           return "bg-success-subtle border-success-subtle text-success";
-        case "Pending":
+        case 0:
           return "bg-warning-subtle border-warning-subtle text-warning-emphasis";
-        case "Overdue":
+        case 2:
           return "bg-danger-subtle border-danger-subtle text-danger";
-        case "Cancelled":
-          return "bg-secondary-subtle border-secondary-subtle text-secondary";
-        default:
-          return "bg-light border-light text-dark";
+        // case "Cancelled":
+        //   return "bg-secondary-subtle border-secondary-subtle text-secondary";
       }
     },
 
@@ -328,6 +297,72 @@ export default {
       if (confirm("Are you sure you want to CANCEL this invoice?")) {
         invoice.status = "Cancelled";
       }
+    },
+
+    handleSearch() {
+      // Nếu ô tìm kiếm trống thì load lại toàn bộ danh sách
+      if (!this.search.trim()) {
+        this.loadInvoiceData();
+        return;
+      }
+      this.isLoading = true;
+      axios
+        .get(`http://localhost:8081/api/admin/invoices/tim-kiem?q=${this.search}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.invoices = res.data.data;
+          console.log("Kết quả tìm kiếm:", this.invoices);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.invoices = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    handleDelete(invoiceId) {
+      if (!confirm(`Bạn có chắc chắn muốn xóa invoice này không?`)) return;
+      axios
+        .delete(`http://localhost:8081/api/admin/invoices/xoa/${invoiceId}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then(() => {
+          alert("Đã xóa thành công!");
+          this.loadAdminData();
+        })
+        .catch((err) => {
+          console.error("Lỗi khi xóa:", err);
+          const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+          alert(message);
+        });
+    },
+
+    //  card thống kê
+    loadInvoiceStatistical() {
+      axios
+        .get(`http://localhost:8081/api/admin/invoices/thong-ke`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.statistics = res.data.data;
+          console.log("Kết quả tìm kiếm:", this.statistics);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.statistics = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
   },
 };

@@ -22,7 +22,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total Rooms</h6>
-                <h3 class="fw-bold mb-0">45</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalRooms }}</h3>
               </div>
               <div
                 class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
@@ -43,7 +43,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Live Now</h6>
-                <h3 class="fw-bold mb-0">12</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.runningRooms }}</h3>
               </div>
               <div
                 class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
@@ -62,7 +62,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Upcoming</h6>
-                <h3 class="fw-bold mb-0">8</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.upcomingRooms }}</h3>
               </div>
               <div
                 class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
@@ -81,7 +81,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Finished</h6>
-                <h3 class="fw-bold mb-0">25</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.completedRooms }}</h3>
               </div>
               <div
                 class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -166,6 +166,9 @@
                     <small class="text-muted">
                       <i class="fa-solid fa-tag me-1"></i>{{ room.type }}
                     </small>
+                    <div>
+                      <small class="text-muted"> ID: {{ room.id }} </small>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -232,6 +235,7 @@ export default {
   },
   mounted() {
     this.loadAuctionData();
+    this.loadAuctionStatistical();
   },
   methods: {
     // 1. Lấy dữ liệu từ API
@@ -334,7 +338,7 @@ export default {
     },
 
     //  card thống kê
-    loadAdminStatistical() {
+    loadAuctionStatistical() {
       axios
         .get(`http://localhost:8081/api/admin/auction-rooms/thong-ke`, {
           headers: {

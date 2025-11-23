@@ -60,7 +60,7 @@
                 <i class="fa-solid fa-users fa-lg"></i>
               </div>
             </div>
-            <small class="text-body-secondary">12% of total users</small>
+            <small class="text-body-secondary">Total active users</small>
           </div>
         </div>
       </div>
