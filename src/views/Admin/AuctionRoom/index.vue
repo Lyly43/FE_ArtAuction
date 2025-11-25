@@ -6,10 +6,7 @@
         <p class="text-body-secondary mb-0">Overview and control of all auction sessions</p>
       </div>
       <div>
-        <router-link
-          to="/admin/add-auction-room"
-          class="btn btn-primary shadow-sm px-4 rounded-pill fw-bold"
-        >
+        <router-link to="/admin/add-auction-room" class="btn btn-primary shadow-sm px-4 fw-bold">
           <i class="fa-solid fa-plus me-2"></i>Create Room
         </router-link>
       </div>
@@ -109,14 +106,254 @@
                 type="text"
                 class="form-control border-0 shadow-none"
                 placeholder="Search for auction room..."
-                @keyup.enter="handleSearch"
+                @input="handleSearch"
               />
             </div>
           </div>
           <div class="col-auto ms-auto pe-2">
-            <button class="btn btn-light rounded-pill px-3 fw-bold text-secondary border">
-              <i class="fa-solid fa-filter me-2"></i>Filter
+            <button
+              class="btn btn-outline-primary shadow-sm"
+              type="button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasFilter"
+            >
+              <i class="fa-solid fa-filter me-1"></i> Filter
             </button>
+
+            <Teleport to="body">
+              <div
+                class="offcanvas offcanvas-end border-0 shadow-lg"
+                tabindex="-1"
+                id="offcanvasFilter"
+                aria-labelledby="offcanvasFilterLabel"
+                style="width: 400px"
+              >
+                <div class="offcanvas-header border-bottom bg-light-subtle">
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 32px; height: 32px"
+                    >
+                      <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <h5 class="offcanvas-title fw-bold text-primary" id="offcanvasFilterLabel">
+                      Auction room filter
+                    </h5>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-close shadow-none"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                  ></button>
+                </div>
+
+                <div class="offcanvas-body p-0">
+                  <div class="p-4 custom-scrollbar">
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-magnifying-glass me-1"></i> Search
+                      </label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-white text-secondary border-end-0"
+                          ><i class="fa-solid fa-gavel"></i
+                        ></span>
+                        <input
+                          type="text"
+                          class="form-control border-start-0 shadow-none ps-0"
+                          placeholder="Room Name or Room Code..."
+                        />
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-signal me-1"></i> Room status
+                      </label>
+
+                      <div class="bg-light rounded-3 p-3 border">
+                        <div class="form-check mb-2">
+                          <input class="form-check-input" type="checkbox" id="stLive" value="1" />
+                          <label class="form-check-label text-danger fw-bold" for="stLive">
+                            <i
+                              class="fa-solid fa-circle fa-beat-fade me-1"
+                              style="font-size: 0.5rem"
+                            ></i>
+                            Live
+                          </label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                          <input class="form-check-input" type="checkbox" id="stComing" value="2" />
+                          <label class="form-check-label text-primary fw-medium" for="stComing">
+                            <i class="fa-regular fa-clock me-1"></i> Coming Soon
+                          </label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="stFinished"
+                            value="0"
+                          />
+                          <label class="form-check-label text-success fw-medium" for="stFinished">
+                            <i class="fa-solid fa-flag-checkered me-1"></i> Finished
+                          </label>
+                        </div>
+
+                        <div class="d-flex gap-3 mt-2 pt-2 border-top">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="stCanceled" />
+                            <label class="form-check-label small text-muted" for="stCanceled"
+                              >Canceled</label
+                            >
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="stDraft" />
+                            <label class="form-check-label small text-muted" for="stDraft"
+                              >Draft</label
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        Auction type
+                      </label>
+                      <div class="row g-2">
+                        <div class="col-6">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="typeEnglish" />
+                            <label class="form-check-label" for="typeEnglish"
+                              >English Auction</label
+                            >
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="typeDutch" />
+                            <label class="form-check-label" for="typeDutch">Dutch Auction</label>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="typeSealed" />
+                            <label class="form-check-label" for="typeSealed">Sealed Bid</label>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="typeStream" />
+                            <label class="form-check-label" for="typeStream">Live Stream</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-regular fa-calendar-days me-1"></i> Time of event
+                      </label>
+
+                      <div class="mb-3">
+                        <label class="form-label x-small text-secondary fw-bold">Start Time</label>
+                        <div class="input-group input-group-sm">
+                          <input type="date" class="form-control shadow-none" />
+                          <span class="input-group-text bg-light border-0 text-secondary">-</span>
+                          <input type="date" class="form-control shadow-none" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label class="form-label x-small text-secondary fw-bold">End Time</label>
+                        <div class="input-group input-group-sm">
+                          <input type="date" class="form-control shadow-none" />
+                          <span class="input-group-text bg-light border-0 text-secondary">-</span>
+                          <input type="date" class="form-control shadow-none" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-2">
+                      <!-- <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        Chỉ số phòng
+                      </label> -->
+
+                      <!-- <div class="mb-3">
+                        <label class="form-label x-small text-secondary fw-bold"
+                          >Giá khởi điểm (Start Price)</label
+                        >
+                        <div class="input-group input-group-sm">
+                          <input type="text" class="form-control shadow-none" placeholder="Min" />
+                          <span class="input-group-text bg-light border-0 text-secondary">-</span>
+                          <input type="text" class="form-control shadow-none" placeholder="Max" />
+                        </div>
+                      </div> -->
+
+                      <div>
+                        <label class="form-label x-small text-secondary fw-bold"
+                          >Number of participants</label
+                        >
+                        <div class="btn-group w-100" role="group">
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="parti"
+                            id="partiAll"
+                            checked
+                          />
+                          <label class="btn btn-outline-secondary btn-sm" for="partiAll">All</label>
+
+                          <input type="radio" class="btn-check" name="parti" id="partiLow" />
+                          <label class="btn btn-outline-secondary btn-sm" for="partiLow"
+                            >&lt; 10</label
+                          >
+
+                          <input type="radio" class="btn-check" name="parti" id="partiMid" />
+                          <label class="btn btn-outline-secondary btn-sm" for="partiMid"
+                            >10-50</label
+                          >
+
+                          <input type="radio" class="btn-check" name="parti" id="partiHigh" />
+                          <label class="btn btn-outline-secondary btn-sm" for="partiHigh"
+                            >&gt; 50</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="offcanvas-footer border-top p-3 bg-white">
+                  <div class="row g-2">
+                    <div class="col-4">
+                      <button class="btn btn-light border w-100 fw-bold text-secondary">
+                        <i class="fa-solid fa-rotate-right me-1"></i> Reset
+                      </button>
+                    </div>
+                    <div class="col-8">
+                      <button
+                        class="btn btn-primary w-100 fw-bold shadow-sm"
+                        data-bs-dismiss="offcanvas"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Teleport>
           </div>
         </div>
       </div>
@@ -128,13 +365,58 @@
         <p class="mt-2 text-muted">Loading rooms...</p>
       </div>
 
-      <div v-else class="col-12" v-for="room in auctionRooms" :key="room.id">
-        <div
-          class="card border-0 shadow-sm hover-lift transition-base h-100"
+      <div v-else class="col-12" v-for="room in sortedAuctionRooms" :key="room.id">
+        <router-link
+          :to="`/admin/testlivestream/${room.id}`"
+          class="card border-0 shadow-sm hover-lift transition-base h-100 text-decoration-none position-relative"
           :class="getBorderClass(room.status)"
-          @click="handleRoomClick(room.id)"
           style="cursor: pointer"
         >
+          <div class="dropdown position-absolute top-0 end-0 mt-3 me-3" style="z-index: 10">
+            <button
+              class="btn btn-light btn-sm rounded-circle shadow-sm d-flex align-items-center justify-content-center"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="width: 32px; height: 32px; background-color: rgba(255, 255, 255, 0.9)"
+              @click.prevent
+            >
+              <i class="fa-solid fa-ellipsis text-secondary"></i>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg">
+              <li v-if="room.status === 'live' || room.status === 'streaming'">
+                <a
+                  class="dropdown-item py-2 fw-bold text-danger"
+                  href="#"
+                  @click.prevent="goToLive(room.id)"
+                >
+                  <i class="fa-solid fa-video me-2 animate-pulse"></i>Vào xem Live
+                </a>
+              </li>
+
+              <li>
+                <router-link :to="`/admin/auction-detail/${room.id}`" class="dropdown-item py-2">
+                  <i class="fa-regular fa-eye me-2 text-primary"></i>See Details
+                </router-link>
+                <!-- <router-link :to="`/admin/edit-auction-room/${room.id}`" class="dropdown-item py-2">
+                  <i class="fa-solid fa-pen-to-square me-2"></i>Edit
+                </router-link> -->
+              </li>
+
+              <li><hr class="dropdown-divider" /></li>
+
+              <li>
+                <a
+                  class="dropdown-item py-2 text-secondary"
+                  href="#"
+                  @click.prevent="deleteRoom(room.id)"
+                >
+                  <i class="fa-regular fa-trash-can me-2"></i>Delete
+                </a>
+              </li>
+            </ul>
+          </div>
           <div class="card-body p-4">
             <div class="row align-items-center">
               <div class="col-12 col-lg-4 mb-3 mb-lg-0 border-end-lg pe-lg-4">
@@ -163,6 +445,8 @@
                         {{ convertStatus(room.status) }}
                       </span>
                     </div>
+                    <p class="my-3">{{ room.id }}</p>
+
                     <small class="text-muted">
                       <i class="fa-solid fa-tag me-1"></i>{{ room.type }}
                     </small>
@@ -183,12 +467,20 @@
                   </div>
                   <div class="col-6 col-md-3">
                     <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
+                      >End time</span
+                    >
+                    <span class="fw-medium text-dark fs-6">{{ formatDate(room.stoppedAt) }}</span>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
                       >Participants</span
                     >
-                    <div class="d-flex align-items-center">
-                      <i class="fa-solid fa-users text-info me-2"></i>
-                      <span class="fw-bold text-dark">{{ room.totalMembers }}</span>
-                    </div>
+                    <span class="fw-medium text-dark fs-6">
+                      <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-users text-info me-2"></i>
+                        <span class="fw-bold text-dark">{{ room.totalMembers }}</span>
+                      </div>
+                    </span>
                   </div>
                   <div class="col-6 col-md-3">
                     <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
@@ -198,19 +490,19 @@
                       formatCurrency(room.currentPrice)
                     }}</span>
                   </div>
-                  <div class="col-6 col-md-3">
+                  <!-- <div class="col-6 col-md-3">
                     <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
                       >Start Price</span
                     >
                     <span class="fw-medium text-body-secondary">{{
                       formatCurrency(room.startingPrice)
                     }}</span>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </router-link>
       </div>
 
       <div v-if="!isLoading && auctionRooms.length === 0" class="text-center py-5">
@@ -238,13 +530,12 @@ export default {
     this.loadAuctionStatistical();
   },
   methods: {
-    // 1. Lấy dữ liệu từ API
     loadAuctionData() {
       this.isLoading = true;
       axios
         .get("http://localhost:8081/api/admin/auction-rooms/lay-du-lieu", {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"), // Đảm bảo đúng key token
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         })
         .then((res) => {
@@ -259,8 +550,19 @@ export default {
         });
     },
 
-    // 2. Tìm kiếm
     handleSearch() {
+      // Xóa bộ đếm cũ nếu người dùng gõ tiếp khi chưa hết giờ
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      // Thiết lập bộ đếm mới (ví dụ: chờ 500ms)
+      this.searchTimeout = setTimeout(() => {
+        this.performSearchApi();
+      }, 500);
+    },
+
+    performSearchApi() {
       if (!this.search.trim()) {
         this.loadAuctionData();
         return;
@@ -284,11 +586,9 @@ export default {
         });
     },
 
-    // 3. Chuyển trang khi click
-    handleRoomClick(id) {
-      // Router đến trang chi tiết
-      this.$router.push(`/admin/auction-room/${id}`);
-    },
+    // handleRoomClick(id) {
+    //   this.$router.push(`/admin/auction-room/${id}`);
+    // },
 
     // --- HELPER FUNCTIONS ---
     formatCurrency(value) {
@@ -358,29 +658,68 @@ export default {
         });
     },
   },
+  deleteRoom(roomId) {
+    if (!confirm(`Bạn có chắc chắn muốn xóa phòng này không?`)) return;
+
+    axios
+      .delete(`/api/admin/auction-rooms/xoa/${roomId}`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+      .then(() => {
+        alert("Đã xóa thành công!");
+        this.loadAuctionData();
+      })
+      .catch((err) => {
+        console.error("Lỗi khi xóa:", err);
+        const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+        alert(message);
+      });
+  },
+
+  computed: {
+    // Đảo ngược thứ tự mảng
+    sortedAuctionRooms() {
+      return [...this.auctionRooms].reverse();
+    },
+  },
 };
 </script>
 
-<style scoped>
-.transition-base {
-  transition: all 0.2s ease-in-out;
+<style>
+/* Custom Scrollbar cho phần body lọc */
+.custom-scrollbar {
+  max-height: calc(100vh - 140px); /* Trừ đi header và footer */
+  overflow-y: auto;
 }
-.hover-lift:hover {
-  transform: translateY(-3px);
-  background-color: #fff; /* Hoặc #f8f9fa tùy ý */
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
 }
-.object-fit-cover {
-  object-fit: cover;
-}
-.x-small {
-  font-size: 0.75rem;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #dee2e6;
+  border-radius: 10px;
 }
 
-/* CSS để tạo đường kẻ ngăn cách trên màn hình lớn */
-@media (min-width: 992px) {
-  .border-end-lg {
-    border-right: 1px solid #dee2e6;
-  }
+/* Style cho các nút chọn Role (Selection Chips) */
+.btn-check:checked + .btn-outline-light {
+  background-color: #e7f1ff; /* Nền xanh nhạt */
+  border-color: #0d6efd !important; /* Viền xanh */
+  color: #0d6efd !important; /* Chữ xanh */
+  font-weight: bold;
+}
+
+/* Hiệu ứng focus cho các input text */
+.form-control:focus,
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); /* Bóng mờ xanh nhạt */
+}
+
+/* Style cho các nút chọn nhanh thời gian */
+.active-pill {
+  background-color: #0d6efd !important;
+  color: white !important;
+  border-color: #0d6efd !important;
 }
 </style>

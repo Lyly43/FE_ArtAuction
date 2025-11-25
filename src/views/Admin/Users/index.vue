@@ -96,14 +96,287 @@
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
                 placeholder="Search by name, email..."
-                @keyup.enter="handleSearch"
+                @input="handleSearch"
               />
             </div>
           </div>
           <div class="col-12 col-md-6 col-lg-8 text-md-end">
-            <button class="btn btn-outline-primary me-2">
+            <!-- <button class="btn btn-outline-primary me-2">
+              <i class="fa-solid fa-filter me-1"></i> Filter
+            </button> -->
+            <button
+              class="btn btn-outline-primary shadow-sm"
+              type="button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasFilter"
+            >
               <i class="fa-solid fa-filter me-1"></i> Filter
             </button>
+
+            <Teleport to="body">
+              <div
+                class="offcanvas offcanvas-end border-0 shadow-lg"
+                tabindex="-1"
+                id="offcanvasFilter"
+                aria-labelledby="offcanvasFilterLabel"
+                style="width: 400px"
+              >
+                <div class="offcanvas-header border-bottom bg-light-subtle">
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 32px; height: 32px"
+                    >
+                      <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <h5 class="offcanvas-title fw-bold text-primary" id="offcanvasFilterLabel">
+                      User filter
+                    </h5>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-close shadow-none"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                  ></button>
+                </div>
+
+                <div class="offcanvas-body p-0">
+                  <div class="p-4 custom-scrollbar">
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-magnifying-glass me-1"></i> Search details
+                      </label>
+                      <div class="d-flex flex-column gap-2">
+                        <div class="input-group">
+                          <span class="input-group-text bg-white text-secondary border-end-0"
+                            ><i class="fa-regular fa-user"></i
+                          ></span>
+                          <input
+                            type="text"
+                            class="form-control border-start-0 shadow-none ps-0"
+                            placeholder="Username..."
+                          />
+                        </div>
+                        <div class="input-group">
+                          <span class="input-group-text bg-white text-secondary border-end-0"
+                            ><i class="fa-regular fa-envelope"></i
+                          ></span>
+                          <input
+                            type="text"
+                            class="form-control border-start-0 shadow-none ps-0"
+                            placeholder="Email..."
+                          />
+                        </div>
+                        <div class="input-group">
+                          <span class="input-group-text bg-white text-secondary border-end-0"
+                            ><i class="fa-solid fa-phone"></i
+                          ></span>
+                          <input
+                            type="text"
+                            class="form-control border-start-0 shadow-none ps-0"
+                            placeholder="Phone number..."
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2"
+                        >Role</label
+                      >
+                      <div class="row g-2">
+                        <div class="col-6">
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="roleBuyer"
+                            autocomplete="off"
+                          />
+                          <label
+                            class="btn btn-outline-light text-dark border w-100 d-flex align-items-center justify-content-center gap-2"
+                            for="roleBuyer"
+                          >
+                            <i class="fa-solid fa-bag-shopping text-info"></i> Buyer
+                          </label>
+                        </div>
+                        <div class="col-6">
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="roleSeller"
+                            autocomplete="off"
+                          />
+                          <label
+                            class="btn btn-outline-light text-dark border w-100 d-flex align-items-center justify-content-center gap-2"
+                            for="roleSeller"
+                          >
+                            <i class="fa-solid fa-store text-warning"></i> Seller
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2"
+                        >Status</label
+                      >
+                      <div class="bg-light rounded-3 p-3 border">
+                        <div class="form-check mb-2">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="statusFilter"
+                            id="statusAll"
+                            checked
+                          />
+                          <label class="form-check-label fw-medium" for="statusAll">All</label>
+                        </div>
+                        <div class="form-check mb-2">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="statusFilter"
+                            id="statusActive"
+                          />
+                          <label class="form-check-label text-success" for="statusActive"
+                            >● Active
+                          </label>
+                        </div>
+                        <div class="form-check mb-2">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="statusFilter"
+                            id="statusLocked"
+                          />
+                          <label class="form-check-label text-warning" for="statusLocked"
+                            >● Locked
+                          </label>
+                        </div>
+                        <!-- <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="statusFilter"
+                          id="statusBanned"
+                        />
+                        <label class="form-check-label text-danger" for="statusBanned"
+                          >● Suspended (Đình chỉ)</label
+                        >
+                      </div> -->
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <div class="mb-3">
+                        <label class="form-label fw-bold text-uppercase small text-secondary"
+                          >Gender</label
+                        >
+                        <div class="d-flex gap-3">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="genderFilter"
+                              id="genderMale"
+                            />
+                            <label class="form-check-label" for="genderMale">Male</label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="genderFilter"
+                              id="genderFemale"
+                            />
+                            <label class="form-check-label" for="genderFemale">Female</label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="genderFilter"
+                              id="genderOther"
+                            />
+                            <label class="form-check-label" for="genderOther">Other</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label class="form-label fw-bold text-uppercase small text-secondary"
+                          >Tỉnh / Thành phố</label
+                        >
+                        <select class="form-select shadow-none">
+                          <option selected disabled>Chọn khu vực...</option>
+                          <option value="HN">Hà Nội</option>
+                          <option value="HCM">TP. Hồ Chí Minh</option>
+                          <option value="DN">Đà Nẵng</option>
+                          <option value="Other">Khác</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2"
+                        >Date of birth</label
+                      >
+                      <div class="input-group input-group-sm">
+                        <input type="date" class="form-control shadow-none" placeholder="From" />
+                        <span class="input-group-text bg-light text-secondary">to</span>
+                        <input type="date" class="form-control shadow-none" placeholder="To" />
+                      </div>
+                    </div>
+
+                    <div class="mb-2">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2"
+                        >Account creation date</label
+                      >
+
+                      <div class="d-flex flex-wrap gap-2 mb-2">
+                        <button class="btn btn-sm btn-light border text-secondary active-pill">
+                          Last 7 days
+                        </button>
+                        <button class="btn btn-sm btn-light border text-secondary">
+                          This month
+                        </button>
+                      </div>
+
+                      <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"
+                          ><i class="fa-regular fa-calendar"></i
+                        ></span>
+                        <input type="date" class="form-control border-start-0 shadow-none" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="offcanvas-footer border-top p-3 bg-white">
+                  <div class="row g-2">
+                    <div class="col-4">
+                      <button class="btn btn-light border w-100 fw-bold text-secondary">
+                        <i class="fa-solid fa-rotate-right me-1"></i> Reset
+                      </button>
+                    </div>
+                    <div class="col-8">
+                      <button
+                        class="btn btn-primary w-100 fw-bold shadow-sm"
+                        data-bs-dismiss="offcanvas"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Teleport>
+
             <!-- <button class="btn btn-outline-secondary">
               <i class="fa-solid fa-download me-1"></i> Export
             </button> -->
@@ -139,12 +412,21 @@
               <tr v-for="user in users" :key="user.id">
                 <td class="text-center text-secondary fw-medium">#{{ user.id }}</td>
                 <td class="align-middle">
-                  <div class="d-flex align-items-center">
+                  <div class="d-flex align-items-center gap-2">
+                    <img
+                      v-if="user.avt"
+                      :src="user.avt"
+                      alt="User Avatar"
+                      class="rounded-circle border"
+                      style="width: 32px; height: 32px; object-fit: cover"
+                    />
+
                     <div
-                      class="avatar fs-5 bg-secondary-subtle text-secondary rounded-circle me-2 d-flex align-items-center justify-content-center fw-bold flex-shrink-0 border border-2"
-                      style="width: 40px; height: 40px"
+                      v-else
+                      class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                      style="width: 32px; height: 32px"
                     >
-                      {{ user.fullname.charAt(0) }}
+                      {{ user.fullName ? user.fullName.charAt(0).toUpperCase() : "U" }}
                     </div>
                     <div>
                       <div class="fw-bold text-dark">{{ user.fullname }}</div>
@@ -277,6 +559,7 @@ export default {
       isLoading: false,
       search: "",
       statistics: [],
+      searchTimeout: null,
     };
   },
   mounted() {
@@ -352,6 +635,18 @@ export default {
     },
 
     handleSearch() {
+      // Xóa bộ đếm cũ nếu người dùng gõ tiếp khi chưa hết giờ
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      // Thiết lập bộ đếm mới (ví dụ: chờ 500ms)
+      this.searchTimeout = setTimeout(() => {
+        this.performSearchApi(); // Gọi hàm thực thi API sau khi hết giờ chờ
+      }, 500);
+    },
+
+    performSearchApi() {
       // Nếu ô tìm kiếm trống thì load lại toàn bộ danh sách
       if (!this.search.trim()) {
         this.loadUserData();
@@ -422,4 +717,39 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Custom Scrollbar cho phần body lọc */
+.custom-scrollbar {
+  max-height: calc(100vh - 140px); /* Trừ đi header và footer */
+  overflow-y: auto;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #dee2e6;
+  border-radius: 10px;
+}
+
+/* Style cho các nút chọn Role (Selection Chips) */
+.btn-check:checked + .btn-outline-light {
+  background-color: #e7f1ff; /* Nền xanh nhạt */
+  border-color: #0d6efd !important; /* Viền xanh */
+  color: #0d6efd !important; /* Chữ xanh */
+  font-weight: bold;
+}
+
+/* Hiệu ứng focus cho các input text */
+.form-control:focus,
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); /* Bóng mờ xanh nhạt */
+}
+
+/* Style cho các nút chọn nhanh thời gian */
+.active-pill {
+  background-color: #0d6efd !important;
+  color: white !important;
+  border-color: #0d6efd !important;
+}
+</style>

@@ -101,14 +101,303 @@
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
                 placeholder="Search invoices, buyers..."
-                @keyup.enter="handleSearch"
+                @input="handleSearch"
               />
             </div>
           </div>
           <div class="col-12 col-md-6 col-lg-8 text-md-end">
-            <button class="btn btn-outline-primary">
-              <i class="fa-solid fa-filter me-2"></i>Filter
+            <button
+              class="btn btn-outline-primary shadow-sm"
+              type="button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasFilter"
+            >
+              <i class="fa-solid fa-filter me-1"></i> Filter
             </button>
+
+            <Teleport to="body">
+              <div
+                class="offcanvas offcanvas-end border-0 shadow-lg"
+                tabindex="-1"
+                id="offcanvasFilter"
+                aria-labelledby="offcanvasFilterLabel"
+                style="width: 400px"
+              >
+                <div class="offcanvas-header border-bottom bg-light-subtle">
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 32px; height: 32px"
+                    >
+                      <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <h5 class="offcanvas-title fw-bold text-primary" id="offcanvasFilterLabel">
+                      Invoice filter
+                    </h5>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-close shadow-none"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                  ></button>
+                </div>
+
+                <div class="offcanvas-body p-0">
+                  <div class="p-4 custom-scrollbar">
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-user-tag me-1"></i> Buyer Information
+                      </label>
+
+                      <div class="d-flex flex-column gap-2">
+                        <!-- <div class="input-group">
+                          <span class="input-group-text bg-white text-secondary border-end-0"
+                            ><i class="fa-solid fa-magnifying-glass"></i
+                          ></span>
+                          <input
+                            type="text"
+                            class="form-control border-start-0 shadow-none ps-0"
+                            placeholder="Tên, Email hoặc SĐT..."
+                          />
+                        </div> -->
+
+                        <div class="input-group">
+                          <span class="input-group-text bg-white text-secondary border-end-0"
+                            ><i class="fa-solid fa-id-card"></i
+                          ></span>
+                          <input
+                            type="text"
+                            class="form-control border-start-0 shadow-none ps-0"
+                            placeholder="Buyer ID (#)"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-image me-1"></i> Related works
+                      </label>
+                      <div class="row g-2">
+                        <!-- <div class="col-12">
+                          <div class="input-group">
+                            <span class="input-group-text bg-white text-secondary border-end-0"
+                              ><i class="fa-solid fa-palette"></i
+                            ></span>
+                            <input
+                              type="text"
+                              class="form-control border-start-0 shadow-none ps-0"
+                              placeholder="Name of the work..."
+                            />
+                          </div>
+                        </div> -->
+                        <div class="col-6">
+                          <div class="input-group">
+                            <span class="input-group-text bg-white text-secondary border-end-0"
+                              ><i class="fa-solid fa-palette"></i
+                            ></span>
+                            <input
+                              type="text"
+                              class="form-control shadow-none"
+                              placeholder="Artwork ID"
+                            />
+                          </div>
+                        </div>
+                        <!-- <div class="col-6">
+                          <input
+                            type="text"
+                            class="form-control shadow-none"
+                            placeholder="Tên nghệ sĩ"
+                          />
+                        </div> -->
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        Status and Method
+                      </label>
+
+                      <div class="mb-3">
+                        <label class="form-label x-small fw-bold text-secondary"
+                          >Invoice status</label
+                        >
+                        <div class="d-flex flex-wrap gap-2">
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="stPending"
+                            autocomplete="off"
+                          />
+                          <label class="btn btn-outline-warning btn-sm rounded-pill" for="stPending"
+                            >Pending</label
+                          >
+
+                          <input type="checkbox" class="btn-check" id="stPaid" autocomplete="off" />
+                          <label class="btn btn-outline-success btn-sm rounded-pill" for="stPaid"
+                            >Paid</label
+                          >
+
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="stFailed"
+                            autocomplete="off"
+                          />
+                          <label class="btn btn-outline-danger btn-sm rounded-pill" for="stFailed"
+                            >Overdue</label
+                          >
+
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="stRefund"
+                            autocomplete="off"
+                          />
+                          <label
+                            class="btn btn-outline-secondary btn-sm rounded-pill"
+                            for="stRefund"
+                            >Refunded</label
+                          >
+                        </div>
+                      </div>
+
+                      <div>
+                        <label class="form-label x-small fw-bold text-secondary"
+                          >Payment method</label
+                        >
+                        <select class="form-select shadow-none bg-light border-0">
+                          <option selected value="">Tất cả</option>
+                          <option value="vnpay">VNPay QR</option>
+                          <option value="momo">Ví MoMo</option>
+                          <option value="banking">Chuyển khoản ngân hàng</option>
+                          <option value="visa">Thẻ Visa/Mastercard</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-money-bill-wave me-1"></i> Total amount (VND)
+                      </label>
+
+                      <div class="d-flex flex-wrap gap-2 mb-2">
+                        <button
+                          class="btn btn-sm btn-light border text-secondary active-pill"
+                          style="font-size: 0.75rem"
+                        >
+                          &lt; 1M
+                        </button>
+                        <button
+                          class="btn btn-sm btn-light border text-secondary"
+                          style="font-size: 0.75rem"
+                        >
+                          1M-10M
+                        </button>
+                        <button
+                          class="btn btn-sm btn-light border text-secondary"
+                          style="font-size: 0.75rem"
+                        >
+                          &gt; 10M
+                        </button>
+                      </div>
+
+                      <div class="input-group">
+                        <input type="number" class="form-control shadow-none" placeholder="Min" />
+                        <span
+                          class="input-group-text bg-white border-start-0 border-end-0 text-secondary"
+                          >-</span
+                        >
+                        <input type="number" class="form-control shadow-none" placeholder="Max" />
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-2">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-regular fa-calendar-check me-1"></i> Creation time
+                      </label>
+
+                      <div class="btn-group w-100 mb-2" role="group">
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="dateQuick"
+                          id="dateToday"
+                          autocomplete="off"
+                        />
+                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateToday"
+                          >Today</label
+                        >
+
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="dateQuick"
+                          id="dateWeek"
+                          autocomplete="off"
+                        />
+                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateWeek"
+                          >This week</label
+                        >
+
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="dateQuick"
+                          id="dateMonth"
+                          autocomplete="off"
+                          checked
+                        />
+                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateMonth"
+                          >This month</label
+                        >
+                      </div>
+
+                      <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-secondary">From</span>
+                        <input type="date" class="form-control shadow-none" />
+                        <span class="input-group-text bg-light text-secondary">To</span>
+                        <input type="date" class="form-control shadow-none" />
+                      </div>
+
+                      <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="filterPaidDate" />
+                        <!-- <label class="form-check-label small text-secondary" for="filterPaidDate">
+                          Áp dụng cho ngày thanh toán (Paid Date)
+                        </label> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="offcanvas-footer border-top p-3 bg-white">
+                  <div class="row g-2">
+                    <div class="col-4">
+                      <button class="btn btn-light border w-100 fw-bold text-secondary">
+                        <i class="fa-solid fa-rotate-right me-1"></i> Reset
+                      </button>
+                    </div>
+                    <div class="col-8">
+                      <button
+                        class="btn btn-primary w-100 fw-bold shadow-sm"
+                        data-bs-dismiss="offcanvas"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Teleport>
             <!-- <button class="btn btn-primary ms-2">
               <i class="fa-solid fa-plus me-2"></i>Create Invoice
             </button> -->
@@ -228,6 +517,7 @@ export default {
       isLoading: false,
       search: "",
       statistics: {},
+      searchTimeout: null,
     };
   },
 
@@ -269,7 +559,7 @@ export default {
         case 1:
           return "Paid";
         case 2:
-          return "Failed";
+          return "Overdue";
         // default:
         //   return "Unknown";
       }
@@ -300,6 +590,18 @@ export default {
     },
 
     handleSearch() {
+      //Xóa bộ đếm cũ nếu người dùng gõ tiếp khi chưa hết giờ
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      // Thiết lập bộ đếm mới (ví dụ: chờ 500ms)
+      this.searchTimeout = setTimeout(() => {
+        this.performSearchApi();
+      }, 500);
+    },
+
+    performSearchApi() {
       // Nếu ô tìm kiếm trống thì load lại toàn bộ danh sách
       if (!this.search.trim()) {
         this.loadInvoiceData();
@@ -367,3 +669,39 @@ export default {
   },
 };
 </script>
+<style>
+/* Custom Scrollbar cho phần body lọc */
+.custom-scrollbar {
+  max-height: calc(100vh - 140px); /* Trừ đi header và footer */
+  overflow-y: auto;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #dee2e6;
+  border-radius: 10px;
+}
+
+/* Style cho các nút chọn Role (Selection Chips) */
+.btn-check:checked + .btn-outline-light {
+  background-color: #e7f1ff; /* Nền xanh nhạt */
+  border-color: #0d6efd !important; /* Viền xanh */
+  color: #0d6efd !important; /* Chữ xanh */
+  font-weight: bold;
+}
+
+/* Hiệu ứng focus cho các input text */
+.form-control:focus,
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); /* Bóng mờ xanh nhạt */
+}
+
+/* Style cho các nút chọn nhanh thời gian */
+.active-pill {
+  background-color: #0d6efd !important;
+  color: white !important;
+  border-color: #0d6efd !important;
+}
+</style>

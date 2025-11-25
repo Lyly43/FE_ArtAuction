@@ -40,6 +40,8 @@
                 type="text"
                 class="form-control bg-light border-0"
                 placeholder="Enter room name..."
+                v-model="roomForm.roomName"
+                required
               />
             </div>
             <div class="col-12 col-md-6">
@@ -50,6 +52,8 @@
                 type="text"
                 class="form-control bg-light border-0"
                 placeholder="VD: Tranh sơn dầu..."
+                v-model="roomForm.type"
+                required
               />
             </div>
             <div class="col-12">
@@ -60,6 +64,8 @@
                 class="form-control bg-light border-0"
                 rows="2"
                 placeholder="Detailed description..."
+                v-model="roomForm.description"
+                required
               ></textarea>
             </div>
             <div class="col-12 col-md-6">
@@ -70,6 +76,8 @@
                 type="text"
                 class="form-control bg-light border-0"
                 placeholder="Manager name..."
+                v-model="roomForm.adminId"
+                required
               />
             </div>
           </div>
@@ -94,7 +102,7 @@
           <div class="row g-3 mb-4">
             <div class="col-12 col-md-6">
               <label class="form-label fw-bold small text-secondary text-uppercase"
-                >Lọc theo thể loại</label
+                >Filter by category</label
               >
               <select v-model="selectedCategory" class="form-select bg-light border-0">
                 <option value="" disabled selected hidden>
@@ -102,6 +110,7 @@
                 </option>
                 <option value="son-dau">Canvas</option>
                 <option value="chan-dung">Portrait painting</option>
+                <option value="phong-canh">Landscape</option>
               </select>
             </div>
             <div class="col-12 col-md-6">
@@ -116,6 +125,7 @@
                   type="text"
                   class="form-control bg-light border-0 shadow-none"
                   placeholder="Enter the name of the picture..."
+                  v-model="search"
                 />
               </div>
             </div>
@@ -125,6 +135,11 @@
             <p class="fw-bold text-primary mb-2 small text-uppercase">
               <i class="fa-solid fa-list me-2"></i>List of available works
             </p>
+
+            <div v-if="isLoadingArtworks" class="text-center py-3 text-muted">
+              <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+              Loading artworks...
+            </div>
 
             <div class="row g-3" v-if="filteredArtworks.length > 0">
               <div class="col-12 col-md-6" v-for="art in filteredArtworks" :key="art.id">
@@ -205,7 +220,7 @@
               <div>
                 <h5 class="fw-bold mb-0">Schedule and Pricing Configuration</h5>
                 <small class="text-muted"
-                  >Sắp xếp thứ tự và đặt giá cho {{ scheduleList.length }} work</small
+                  >Sort order and set price for {{ scheduleList.length }} artwork</small
                 >
               </div>
             </div>
@@ -354,7 +369,11 @@
                   <label class="form-label fw-bold small text-secondary text-uppercase"
                     >Start at</label
                   >
-                  <input type="datetime-local" class="form-control bg-light border-0" />
+                  <input
+                    type="datetime-local"
+                    class="form-control bg-light border-0"
+                    v-model="roomForm.startedAt"
+                  />
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
@@ -404,13 +423,19 @@
                     type="text"
                     class="form-control bg-light border-0"
                     placeholder="VD: 200.000"
+                    v-model="roomForm.depositAmount"
                   />
                 </div>
                 <div class="col-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
                     >Payment due date (days)</label
                   >
-                  <input type="number" class="form-control bg-light border-0" value="3" />
+                  <input
+                    type="number"
+                    class="form-control bg-light border-0"
+                    value="3"
+                    v-model="roomForm.paymentDeadlineDays"
+                  />
                 </div>
               </div>
 
@@ -458,8 +483,10 @@
       </div>
 
       <div class="d-flex gap-2 mt-4 justify-content-end">
-        <button class="btn btn-danger text-light fw-bold shadow-sm px-4">Cancel</button>
-        <button class="btn btn-primary fw-bold shadow-sm px-4" @click="submitForm">
+        <button class="btn btn-danger text-light fw-bold shadow-sm px-4" type="button">
+          Cancel
+        </button>
+        <button class="btn btn-primary fw-bold shadow-sm px-4" type="submit">
           <i class="fa-solid fa-check me-2"></i>Completed
         </button>
       </div>
@@ -468,74 +495,145 @@
 </template>
 
 <script>
+// import { searchForWorkspaceRoot } from "vite";
+import axios from "axios";
+
 export default {
   data() {
     return {
       selectedCategory: "",
-
-      // CẬP NHẬT DATA: Thêm size
-      allArtworks: [
-        {
-          id: 111,
-          name: "Sắc màu đại dương",
-          author: "Nguyễn Văn B",
-          type: "Tranh sơn dầu",
-          category: "son-dau",
-          img: "/src/assets/img/4.png",
-          size: "30x40 cm",
-        },
-        {
-          id: 222,
-          name: "Chiều tím",
-          author: "Lê Văn C",
-          type: "Tranh phong cảnh",
-          category: "phong-canh",
-          img: "/src/assets/img/4.png",
-          size: "50x70 cm",
-        },
-        {
-          id: 333,
-          name: "Thiếu nữ bên hoa",
-          author: "Trần Văn D",
-          type: "Tranh chân dung",
-          category: "chan-dung",
-          img: "/src/assets/img/4.png",
-          size: "60x60 cm",
-        },
-        {
-          id: 444,
-          name: "Rừng thu",
-          author: "Phạm E",
-          type: "Tranh sơn dầu",
-          category: "son-dau",
-          img: "/src/assets/img/4.png",
-          size: "100x120 cm",
-        },
-      ],
-
+      allArtworks: [],
+      search: "",
+      isLoadingArtworks: false,
       scheduleList: [],
+      roomForm: {
+        roomName: "",
+        type: "",
+        description: "",
+        adminId: "",
+        depositAmount: 0,
+        paymentDeadlineDays: 3,
+        startedAt: "",
+        stoppedAt: "",
+        status: 2,
+        viewCount: 0,
+      },
     };
   },
+
+  mounted() {
+    this.loadAddRoomArt();
+  },
+
   computed: {
     filteredArtworks() {
       if (!this.selectedCategory) return [];
-      return this.allArtworks.filter(
+
+      let filtered = this.allArtworks.filter(
         (art) =>
           art.category === this.selectedCategory &&
           !this.scheduleList.find((item) => item.id === art.id)
       );
+
+      // SỬA LỖI 2: this.searchQuery -> this.search
+      if (this.search) {
+        const query = this.search.toLowerCase();
+        filtered = filtered.filter((art) => art.name.toLowerCase().includes(query));
+      }
+      return filtered;
     },
     totalDuration() {
       return this.scheduleList.reduce((sum, item) => sum + (parseInt(item.duration) || 0), 0);
     },
   },
+
   methods: {
-    addToSchedule(artwork) {
-      this.scheduleList.push({ ...artwork, startPrice: "", stepPrice: "", duration: 15 });
+    loadAddRoomArt() {
+      this.isLoadingArtworks = true;
+      axios
+        .get("http://localhost:8081/api/admin/auction-rooms/artworks", {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then((res) => {
+          console.log("API Data RAW:", res.data);
+
+          this.allArtworks = res.data.map((item) => {
+            // Gọi hàm mapCategory
+            const cat = this.mapCategory(item.paintingGenre, item.material);
+            console.log(`Mapping: ${item.paintingGenre} + ${item.material} => ${cat}`); // DEBUG LOG
+
+            return {
+              id: item.id,
+              name: item.title,
+              author: item.author,
+              type: item.paintingGenre,
+              category: cat,
+              img: item.avtArtwork,
+              size: item.size,
+              basePrice: item.startedPrice,
+            };
+          });
+        })
+        .catch((err) => {
+          console.error("ERROR:", err);
+        })
+        .finally(() => {
+          this.isLoadingArtworks = false;
+        });
     },
+
+    mapCategory(genre, material) {
+      if (!genre) return "phong-canh"; // Mặc định
+
+      const g = genre.toLowerCase();
+      const m = material ? material.toLowerCase() : "";
+
+      // --- THỨ TỰ MỚI (QUAN TRỌNG) ---
+
+      // 1. Ưu tiên bắt Chân dung trước
+      if (g.includes("portrait") || g.includes("chân dung") || g.includes("figure")) {
+        return "chan-dung";
+      }
+
+      // 2. Tiếp theo bắt Phong cảnh
+      if (
+        g.includes("landscape") ||
+        g.includes("phong cảnh") ||
+        g.includes("nature") ||
+        g.includes("seascape")
+      ) {
+        return "phong-canh";
+      }
+
+      // 3. Cuối cùng mới bắt Sơn dầu/Canvas (Những tranh còn lại)
+      if (
+        g.includes("oil") ||
+        m.includes("oil") ||
+        g.includes("canvas") ||
+        m.includes("canvas") ||
+        g.includes("acrylic")
+      ) {
+        return "son-dau";
+      }
+
+      // Fallback
+      return "phong-canh";
+    },
+
+    // SỬA LỖI 3: BỎ COMMENT CÁC HÀM NÀY
+    addToSchedule(artwork) {
+      this.scheduleList.push({
+        ...artwork,
+        startPrice: artwork.basePrice,
+        stepPrice: "",
+        duration: "",
+      });
+    },
+
     removeFromSchedule(index) {
       this.scheduleList.splice(index, 1);
     },
+
     moveItem(index, direction) {
       const newIndex = index + direction;
       if (newIndex >= 0 && newIndex < this.scheduleList.length) {
@@ -544,9 +642,20 @@ export default {
         this.scheduleList[newIndex] = temp;
       }
     },
+
     submitForm() {
-      console.log("Danh sách đấu giá:", this.scheduleList);
-      alert("Tạo phòng thành công!");
+      // ... giữ nguyên logic submit của bạn ...
+      if (!this.roomForm.roomName || !this.roomForm.adminId) {
+        alert("Vui lòng nhập tên phòng và Admin ID!");
+        return;
+      }
+      if (this.scheduleList.length < 10) {
+        alert("Vui lòng thêm ít nhất 10 tác phẩm vào phiên đấu giá!");
+        return;
+      }
+      console.log("Submitting...", this.roomForm, this.scheduleList);
+      alert("Check console log for submit data");
+      // Gửi axios...
     },
   },
 };

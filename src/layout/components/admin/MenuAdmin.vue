@@ -16,9 +16,10 @@
         </div>
       </div>
     </div>
-    <div id="sidebar-scrollbar" class="">
-      <nav class="iq-sidebar-menu">
-        <ul id="iq-sidebar-toggle" class="iq-menu">
+
+    <div id="sidebar-scrollbar" class="d-flex flex-column" style="height: calc(100vh - 80px)">
+      <nav class="iq-sidebar-menu d-flex flex-column h-100">
+        <ul id="iq-sidebar-toggle" class="iq-menu flex-grow-1 overflow-auto custom-scrollbar">
           <li class="iq-menu-title">
             <i class="fa-solid fa-minus"></i>
             <span>Dashboard</span>
@@ -112,7 +113,13 @@
               </li>
             </ul>
           </li>
-          <li class="text-danger ms-3"><i class="bi bi-box-arrow-right me-3"></i>Logout</li>
+          <button
+            class="btn border-0 bg-transparent text-danger ms-3 text-start"
+            @click="performLogout"
+            data-bs-dismiss="modal"
+          >
+            <i class="bi bi-box-arrow-right me-3"></i>Logout
+          </button>
           <!-- <li>
             <a href="dashboard-2.html" class="iq-waves-effect"><i class="ri-home-8-line"></i><span>Dashboard
                 3</span></a>
@@ -142,6 +149,55 @@
   </div>
 </template>
 <script>
-export default {};
+import axios from "axios";
+export default {
+  data() {
+    return {
+      admin: {},
+    };
+  },
+  mounted() {
+    this.admin = {
+      name: localStorage.getItem("name_admin"),
+      email: localStorage.getItem("email_admin"),
+      check: localStorage.getItem("check_admin"),
+      avt: localStorage.getItem("avatar_admin"),
+    };
+    console.log("menu", this.admin);
+  },
+  methods: {
+    performLogout() {
+      const token = localStorage.getItem("token");
+      const finish = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("name_admin");
+        localStorage.removeItem("email_admin");
+        localStorage.removeItem("check_admin");
+        this.user = null;
+        this.$router.push("/admin/login");
+        this.$toast.success("Log out successfully");
+      };
+
+      if (!token) {
+        finish();
+        return;
+      }
+
+      axios
+        .post(
+          "http://localhost:8081/api/auth/logout",
+          {},
+          { headers: { Authorization: "Bearer " + token } }
+        )
+        .then(() => {
+          finish();
+        })
+        .catch(() => {
+          // Dù lỗi vẫn xóa local và chuyển trang để đảm bảo UX
+          finish();
+        });
+    },
+  },
+};
 </script>
-<style></style>
+<style scoped></style>

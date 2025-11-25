@@ -22,7 +22,8 @@
               </div>
             </div>
             <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-up me-1"></i>+12 works
+              <!-- <i class="fa-solid fa-arrow-up me-1"></i> -->
+              Total list of works
             </small>
           </div>
         </div>
@@ -102,14 +103,332 @@
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
                 placeholder="Search artwork..."
-                @keyup.enter="handleSearch"
+                @input="handleSearch"
               />
             </div>
           </div>
-          <div class="col-12 col-md-6 col-lg-8 text-md-end">
-            <button class="btn btn-outline-primary me-2">
-              <i class="fa-solid fa-filter me-2"></i>Filter
+          <div
+            class="col-12 col-md-6 col-lg-8 text-md-end d-flex justify-content-md-end justify-content-start align-items-center gap-2"
+          >
+            <button
+              class="btn btn-outline-primary shadow-sm"
+              type="button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasFilter"
+            >
+              <i class="fa-solid fa-filter me-1"></i> Filter
             </button>
+
+            <Teleport to="body">
+              <div
+                class="offcanvas offcanvas-end border-0 shadow-lg"
+                tabindex="-1"
+                id="offcanvasFilter"
+                aria-labelledby="offcanvasFilterLabel"
+                style="width: 400px"
+              >
+                <div class="offcanvas-header border-bottom bg-light-subtle">
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 32px; height: 32px"
+                    >
+                      <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <h5 class="offcanvas-title fw-bold text-primary" id="offcanvasFilterLabel">
+                      Artwork filter
+                    </h5>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-close shadow-none"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                  ></button>
+                </div>
+
+                <div class="offcanvas-body p-0">
+                  <div class="p-4 custom-scrollbar">
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-circle-info me-1"></i> Basic information
+                      </label>
+
+                      <div class="d-flex flex-column gap-2">
+                        <div class="input-group">
+                          <span class="input-group-text bg-white text-secondary border-end-0"
+                            ><i class="fa-solid fa-heading"></i
+                          ></span>
+                          <input
+                            type="text"
+                            class="form-control border-start-0 shadow-none ps-0"
+                            placeholder="Name of the work..."
+                          />
+                        </div>
+
+                        <div class="input-group">
+                          <span class="input-group-text bg-white text-secondary border-end-0"
+                            ><i class="fa-solid fa-user-pen"></i
+                          ></span>
+                          <input
+                            type="text"
+                            class="form-control border-start-0 shadow-none ps-0"
+                            placeholder="Author / Artist Name..."
+                          />
+                        </div>
+
+                        <div class="row g-2">
+                          <div class="col-6">
+                            <div class="input-group">
+                              <span class="input-group-text bg-white text-secondary border-end-0"
+                                ><i class="fa-solid fa-fingerprint"></i
+                              ></span>
+                              <input
+                                type="text"
+                                class="form-control border-start-0 shadow-none ps-0"
+                                placeholder="ID (#)"
+                              />
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="input-group">
+                              <span class="input-group-text bg-white text-secondary border-end-0"
+                                ><i class="fa-regular fa-calendar"></i
+                              ></span>
+                              <input
+                                type="number"
+                                class="form-control border-start-0 shadow-none ps-0"
+                                placeholder="Year of composition"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mb-4">
+                      <div class="row g-2">
+                        <div class="col-6">
+                          <label class="form-label x-small fw-bold text-secondary"
+                            >Thể loại (Genre)</label
+                          >
+                          <select class="form-select shadow-none bg-light border-0">
+                            <option selected value="">Tất cả</option>
+                            <option value="Abstract">Trừu tượng</option>
+                            <option value="Portrait">Chân dung</option>
+                            <option value="Landscape">Phong cảnh</option>
+                            <option value="Modern">Hiện đại</option>
+                            <option value="Traditional">Truyền thống</option>
+                          </select>
+                        </div>
+                        <div class="col-6">
+                          <label class="form-label x-small fw-bold text-secondary">Material</label>
+                          <select class="form-select shadow-none bg-light border-0">
+                            <option selected value="">Tất cả</option>
+                            <option value="Oil">Sơn dầu</option>
+                            <option value="Acrylic">Acrylic</option>
+                            <option value="Watercolor">Màu nước</option>
+                            <option value="Ink">Mực</option>
+                            <option value="Mixed">Tổng hợp</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-ruler-combined me-1"></i> Category and Size
+                      </label>
+
+                      <div class="mb-3">
+                        <div class="btn-group w-100" role="group">
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="typeArt"
+                            id="typeOriginal"
+                            autocomplete="off"
+                            checked
+                          />
+                          <label class="btn btn-outline-secondary btn-sm" for="typeOriginal"
+                            >Original</label
+                          >
+
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="typeArt"
+                            id="typePrint"
+                            autocomplete="off"
+                          />
+                          <label class="btn btn-outline-secondary btn-sm" for="typePrint"
+                            >Print</label
+                          >
+
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="typeArt"
+                            id="typeLimited"
+                            autocomplete="off"
+                          />
+                          <label class="btn btn-outline-secondary btn-sm" for="typeLimited"
+                            >Limited</label
+                          >
+                        </div>
+                      </div>
+
+                      <div class="row g-2">
+                        <div class="col-6">
+                          <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-0 text-secondary fw-bold"
+                              >W</span
+                            >
+                            <input
+                              type="number"
+                              class="form-control border-0 bg-light shadow-none"
+                              placeholder="Width (cm)"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-0 text-secondary fw-bold"
+                              >H</span
+                            >
+                            <input
+                              type="number"
+                              class="form-control border-0 bg-light shadow-none"
+                              placeholder="Height (cm)"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-tag me-1"></i> Price range (VND)
+                      </label>
+
+                      <div class="d-flex flex-wrap gap-2 mb-2">
+                        <button
+                          class="btn btn-sm btn-light border text-secondary active-pill"
+                          style="font-size: 0.75rem"
+                        >
+                          &lt; 5tr
+                        </button>
+                        <button
+                          class="btn btn-sm btn-light border text-secondary"
+                          style="font-size: 0.75rem"
+                        >
+                          5-20tr
+                        </button>
+                        <button
+                          class="btn btn-sm btn-light border text-secondary"
+                          style="font-size: 0.75rem"
+                        >
+                          20-100tr
+                        </button>
+                        <button
+                          class="btn btn-sm btn-light border text-secondary"
+                          style="font-size: 0.75rem"
+                        >
+                          &gt; 100tr
+                        </button>
+                      </div>
+
+                      <div class="input-group">
+                        <input type="text" class="form-control shadow-none" placeholder="Min" />
+                        <span
+                          class="input-group-text bg-white border-start-0 border-end-0 text-secondary"
+                          >-</span
+                        >
+                        <input type="text" class="form-control shadow-none" placeholder="Max" />
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        Approval status
+                      </label>
+                      <div class="bg-light rounded-3 p-3 border">
+                        <div class="form-check mb-2">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="artStatus"
+                            id="stNotApproved"
+                          />
+                          <label class="form-check-label text-secondary" for="stNotApproved">
+                            <i class="fa-regular fa-clock me-1"></i> Not Approved
+                          </label>
+                        </div>
+                        <div class="form-check mb-2">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="artStatus"
+                            id="stApproved"
+                            checked
+                          />
+                          <label class="form-check-label text-success fw-medium" for="stApproved">
+                            <i class="fa-solid fa-check me-1"></i> Approved
+                          </label>
+                        </div>
+                        <div class="form-check mb-2">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="artStatus"
+                            id="stAuction"
+                          />
+                          <label class="form-check-label text-primary fw-medium" for="stAuction">
+                            <i class="fa-solid fa-gavel me-1"></i> Up for Auction
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="artStatus"
+                            id="stRefused"
+                          />
+                          <label class="form-check-label text-danger" for="stRefused">
+                            <i class="fa-solid fa-ban me-1"></i> Refused
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="offcanvas-footer border-top p-3 bg-white">
+                  <div class="row g-2">
+                    <div class="col-4">
+                      <button class="btn btn-light border w-100 fw-bold text-secondary">
+                        <i class="fa-solid fa-rotate-right me-1"></i> Reset
+                      </button>
+                    </div>
+                    <div class="col-8">
+                      <button
+                        class="btn btn-primary w-100 fw-bold shadow-sm"
+                        data-bs-dismiss="offcanvas"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Teleport>
+
             <button class="btn btn-primary"><i class="fa-solid fa-plus me-2"></i>Add New</button>
           </div>
         </div>
@@ -175,7 +494,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                       <li>
-                        <RouterLink :to="`/admin/artwork-detail`" class="dropdown-item">
+                        <RouterLink :to="`/admin/artwork-detail/${item.id}`" class="dropdown-item">
                           <i class="fa-solid fa-eye me-2 text-primary"></i>See details
                         </RouterLink>
                       </li>
@@ -239,24 +558,20 @@ export default {
           return "Up for auction";
         case 3:
           return "Refused";
-        default:
-          return "Unknown";
       }
     },
 
     getStatusClass(status) {
       // Sử dụng các class background/text chuẩn của Bootstrap 5.3
       switch (status) {
-        case "0":
+        case 0:
           return "bg-secondary-subtle border-secondary-subtle text-secondary";
-        case "Sold":
+        case 1:
           return "bg-success-subtle border-success-subtle text-success";
-        case "2":
+        case 2:
           return "bg-warning-subtle border-warning-subtle text-warning-emphasis";
-        case "3":
+        case 3:
           return "bg-danger-subtle border-danger-subtle text-danger";
-        default:
-          return "bg-secondary-subtle border-secondary-subtle text-secondary";
       }
     },
 
@@ -277,6 +592,18 @@ export default {
     },
 
     handleSearch() {
+      // Xóa bộ đếm cũ nếu người dùng gõ tiếp khi chưa hết giờ
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      // Thiết lập bộ đếm mới (ví dụ: chờ 500ms)
+      this.searchTimeout = setTimeout(() => {
+        this.performSearchApi();
+      }, 500);
+    },
+
+    performSearchApi() {
       // Nếu ô tìm kiếm trống thì load lại toàn bộ danh sách
       if (!this.search.trim()) {
         this.loadArtworkData();
@@ -350,3 +677,39 @@ export default {
   },
 };
 </script>
+<style>
+/* Custom Scrollbar cho phần body lọc */
+.custom-scrollbar {
+  max-height: calc(100vh - 140px); /* Trừ đi header và footer */
+  overflow-y: auto;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #dee2e6;
+  border-radius: 10px;
+}
+
+/* Style cho các nút chọn Role (Selection Chips) */
+.btn-check:checked + .btn-outline-light {
+  background-color: #e7f1ff; /* Nền xanh nhạt */
+  border-color: #0d6efd !important; /* Viền xanh */
+  color: #0d6efd !important; /* Chữ xanh */
+  font-weight: bold;
+}
+
+/* Hiệu ứng focus cho các input text */
+.form-control:focus,
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); /* Bóng mờ xanh nhạt */
+}
+
+/* Style cho các nút chọn nhanh thời gian */
+.active-pill {
+  background-color: #0d6efd !important;
+  color: white !important;
+  border-color: #0d6efd !important;
+}
+</style>

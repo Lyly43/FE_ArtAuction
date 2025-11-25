@@ -35,23 +35,32 @@
             <form>
               <div class="form-floating mb-3">
                 <input
+                  v-model="ad.email"
                   type="text"
                   class="form-control border-0 bg-light rounded-3"
                   id="floatingInput"
                   placeholder="name@example.com"
-                  value="usertest01@gmail.com"
                 />
                 <label for="floatingInput" class="text-secondary">Username or Email</label>
               </div>
 
               <div class="form-floating mb-3">
                 <input
+                  v-model="ad.password"
                   type="password"
                   class="form-control border-0 bg-light rounded-3"
                   id="floatingPassword"
                   placeholder="Password"
                 />
                 <label for="floatingPassword" class="text-secondary">Password</label>
+
+                <span
+                  class="position-absolute top-50 end-0 translate-middle-y me-3 text-secondary"
+                  style="cursor: pointer; z-index: 10"
+                  @click="showPassword = !showPassword"
+                >
+                  <i :class="showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
+                </span>
               </div>
 
               <div class="d-flex justify-content-between align-items-center mb-4">
@@ -66,7 +75,11 @@
                 > -->
               </div>
 
-              <button class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm mb-4">
+              <button
+                v-on:click="DangNhap()"
+                type="button"
+                class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm mb-4"
+              >
                 Login
               </button>
             </form>
@@ -78,8 +91,51 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "LoginPage",
+  data() {
+    return {
+      ad: {},
+    };
+  },
+  methods: {
+    DangNhap() {
+      axios
+        .post("http://localhost:8081/api/admin/auth/login", this.ad)
+        .then((res) => {
+          if (res.data.status) {
+            this.$toast.success(res.data.message);
+            console.log("log ad", res.data);
+
+            localStorage.setItem("token", res.data.token);
+            this.user = {
+              email: "",
+              password: "",
+            };
+            this.$router.push("/admin/dashboard");
+          } else {
+            this.$toast.error(res.data.message);
+            console.log(res.data);
+          }
+        })
+        .catch((err) => {
+          if (err.response && err.response.data) {
+            if (err.response.data.errors) {
+              const list = Object.values(err.response.data.errors);
+              list.forEach((v) => {
+                this.$toast.error(v[0]);
+              });
+            } else {
+              this.$toast.error(err.response.data.message || "Login failed");
+            }
+          } else {
+            this.$toast.error("Server error");
+          }
+        });
+    },
+  },
 };
 </script>
 

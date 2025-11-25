@@ -99,15 +99,306 @@
                 v-model="search"
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
-                @keyup.enter="handleSearch"
+                @input="handleSearch"
                 placeholder="Searching for admin..."
               />
             </div>
           </div>
-          <div class="col-12 col-md-6 col-lg-8 text-md-end">
-            <button class="btn btn-outline-primary me-2">
-              <i class="fa-solid fa-filter me-2"></i>Filter
+          <div
+            class="col-12 col-md-6 col-lg-8 text-md-end d-flex justify-content-md-end justify-content-start align-items-center gap-2"
+          >
+            <button
+              class="btn btn-outline-primary shadow-sm"
+              type="button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasFilter"
+            >
+              <i class="fa-solid fa-filter me-1"></i> Filter
             </button>
+
+            <Teleport to="body">
+              <div
+                class="offcanvas offcanvas-end border-0 shadow-lg"
+                tabindex="-1"
+                id="offcanvasFilter"
+                aria-labelledby="offcanvasFilterLabel"
+                style="width: 400px"
+              >
+                <div class="offcanvas-header border-bottom bg-light-subtle">
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 32px; height: 32px"
+                    >
+                      <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <h5 class="offcanvas-title fw-bold text-primary" id="offcanvasFilterLabel">
+                      Employee filter
+                    </h5>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-close shadow-none"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                  ></button>
+                </div>
+
+                <div class="offcanvas-body p-0">
+                  <div class="p-4 custom-scrollbar">
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-id-card me-1"></i> Employee information
+                      </label>
+
+                      <div class="d-flex flex-column gap-2">
+                        <div class="input-group">
+                          <span class="input-group-text bg-white text-secondary border-end-0"
+                            ><i class="fa-regular fa-user"></i
+                          ></span>
+                          <input
+                            type="text"
+                            class="form-control border-start-0 shadow-none ps-0"
+                            placeholder="Employee name..."
+                          />
+                        </div>
+
+                        <div class="input-group">
+                          <span class="input-group-text bg-white text-secondary border-end-0"
+                            ><i class="fa-regular fa-envelope"></i
+                          ></span>
+                          <input
+                            type="text"
+                            class="form-control border-start-0 shadow-none ps-0"
+                            placeholder="Email..."
+                          />
+                        </div>
+
+                        <div class="row g-2">
+                          <div class="col-6">
+                            <div class="input-group">
+                              <span class="input-group-text bg-white text-secondary border-end-0"
+                                ><i class="fa-solid fa-phone"></i
+                              ></span>
+                              <input
+                                type="text"
+                                class="form-control border-start-0 shadow-none ps-0"
+                                placeholder="PhoneNumber"
+                              />
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="input-group">
+                              <span class="input-group-text bg-white text-secondary border-end-0"
+                                ><i class="fa-solid fa-hashtag"></i
+                              ></span>
+                              <input
+                                type="text"
+                                class="form-control border-start-0 shadow-none ps-0"
+                                placeholder="Emp ID"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-solid fa-user-tag me-1"></i> Roles and Powers
+                      </label>
+                      <small class="text-muted d-block mb-2 fst-italic" style="font-size: 0.75rem"
+                        >Multiple positions can be selected</small
+                      >
+
+                      <div class="row g-2">
+                        <div class="col-6">
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="roleSuperAdmin"
+                            autocomplete="off"
+                          />
+                          <label
+                            class="btn btn-outline-danger btn-sm w-100 text-start"
+                            for="roleSuperAdmin"
+                          >
+                            <i class="fa-solid fa-crown me-1"></i> Super Admin
+                          </label>
+                        </div>
+                        <div class="col-6">
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="roleAdmin"
+                            autocomplete="off"
+                          />
+                          <label
+                            class="btn btn-outline-danger btn-sm w-100 text-start"
+                            for="roleAdmin"
+                          >
+                            <i class="fa-solid fa-user-shield me-1"></i> Admin
+                          </label>
+                        </div>
+                        <div class="col-6">
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="roleMod"
+                            autocomplete="off"
+                          />
+                          <label
+                            class="btn btn-outline-primary btn-sm w-100 text-start"
+                            for="roleMod"
+                          >
+                            <i class="fa-solid fa-gavel me-1"></i> Moderator
+                          </label>
+                        </div>
+                        <div class="col-6">
+                          <input type="checkbox" class="btn-check" id="roleOp" autocomplete="off" />
+                          <label
+                            class="btn btn-outline-primary btn-sm w-100 text-start"
+                            for="roleOp"
+                          >
+                            <i class="fa-solid fa-headset me-1"></i> Operator
+                          </label>
+                        </div>
+                        <div class="col-6">
+                          <input type="checkbox" class="btn-check" id="roleHR" autocomplete="off" />
+                          <label
+                            class="btn btn-outline-success btn-sm w-100 text-start"
+                            for="roleHR"
+                          >
+                            <i class="fa-solid fa-users-gear me-1"></i> HR
+                          </label>
+                        </div>
+                        <div class="col-6">
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="roleAcc"
+                            autocomplete="off"
+                          />
+                          <label
+                            class="btn btn-outline-success btn-sm w-100 text-start"
+                            for="roleAcc"
+                          >
+                            <i class="fa-solid fa-calculator me-1"></i> Accountant
+                          </label>
+                        </div>
+                        <div class="col-6">
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="roleStaff"
+                            autocomplete="off"
+                          />
+                          <label
+                            class="btn btn-outline-secondary btn-sm w-100 text-start"
+                            for="roleStaff"
+                          >
+                            <i class="fa-solid fa-id-badge me-1"></i> Staff
+                          </label>
+                        </div>
+                        <div class="col-6">
+                          <input
+                            type="checkbox"
+                            class="btn-check"
+                            id="roleView"
+                            autocomplete="off"
+                          />
+                          <label
+                            class="btn btn-outline-secondary btn-sm w-100 text-start"
+                            for="roleView"
+                          >
+                            <i class="fa-regular fa-eye me-1"></i> Viewer
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        Operating status
+                      </label>
+                      <div class="bg-light rounded-3 p-3 border">
+                        <div class="form-check mb-2">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="empStatus"
+                            id="stActive"
+                            value="1"
+                            checked
+                          />
+                          <label class="form-check-label text-success fw-medium" for="stActive">
+                            <i class="fa-solid fa-circle-check me-1"></i> Active
+                          </label>
+                        </div>
+
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="empStatus"
+                            id="stSuspended"
+                            value="3"
+                          />
+                          <label class="form-check-label text-danger" for="stSuspended">
+                            <i class="fa-solid fa-ban me-1"></i> Inactive
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-regular fa-calendar-days me-1"></i> Time of joining
+                      </label>
+
+                      <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text bg-light text-secondary">From</span>
+                        <input type="date" class="form-control shadow-none" />
+                        <span class="input-group-text bg-light text-secondary">To</span>
+                        <input type="date" class="form-control shadow-none" />
+                      </div>
+
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="checkLastUpdated" />
+                        <label class="form-check-label small text-secondary" for="checkLastUpdated">
+                          Filter by last updated date
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="offcanvas-footer border-top p-3 bg-white">
+                  <div class="row g-2">
+                    <div class="col-4">
+                      <button class="btn btn-light border w-100 fw-bold text-secondary">
+                        <i class="fa-solid fa-rotate-right me-1"></i> Reset
+                      </button>
+                    </div>
+                    <div class="col-8">
+                      <button
+                        class="btn btn-primary w-100 fw-bold shadow-sm"
+                        data-bs-dismiss="offcanvas"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Teleport>
+
             <button class="btn btn-primary">
               <i class="fa-solid fa-plus me-2"></i>Add New Admin
             </button>
@@ -220,6 +511,7 @@ export default {
       isLoading: false,
       search: "",
       statistics: [],
+      searchTimeout: null,
     };
   },
   mounted() {
@@ -265,6 +557,17 @@ export default {
     },
 
     handleSearch() {
+      // Xóa bộ đếm cũ nếu người dùng gõ tiếp khi chưa hết giờ
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      // Thiết lập bộ đếm mới (ví dụ: chờ 500ms)
+      this.searchTimeout = setTimeout(() => {
+        this.performSearchApi();
+      }, 500);
+    },
+    performSearchApi() {
       // Nếu ô tìm kiếm trống thì load lại toàn bộ danh sách
       if (!this.search.trim()) {
         this.loadAdminData();
@@ -294,12 +597,10 @@ export default {
     handleDelete(adminId, adminName) {
       if (!confirm(`Bạn có chắc chắn muốn xóa Admin: ${adminName}?`)) return;
 
-      const token = localStorage.getItem("token");
-
       axios
         .delete(`http://localhost:8081/api/admin/admins/xoa/${adminId}`, {
           headers: {
-            Authorization: "Bearer " + token,
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         })
         .then(() => {

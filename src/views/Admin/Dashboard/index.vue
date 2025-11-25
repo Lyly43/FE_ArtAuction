@@ -12,7 +12,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total users</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.totalUsers }}</h3>
+                <h3 class="fw-bold mb-0">{{ statistics?.totalUsers?.currentMonth || 0 }}</h3>
               </div>
               <div
                 class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
@@ -22,7 +22,8 @@
               </div>
             </div>
             <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-trend-up me-1"></i>+12.5% over last month
+              <i class="fa-solid fa-arrow-trend-up me-1"></i
+              >{{ statistics?.totalUsers?.percentage || 0 }}% over last month
             </small>
           </div>
         </div>
@@ -34,7 +35,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Artwork</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.totalArtworks }}</h3>
+                <h3 class="fw-bold mb-0">{{ statistics?.totalArtworks?.currentMonth }}</h3>
               </div>
               <div
                 class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center"
@@ -44,7 +45,8 @@
               </div>
             </div>
             <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-trend-up me-1"></i>+12.5% over last month
+              <i class="fa-solid fa-arrow-trend-up me-1"></i
+              >{{ statistics?.totalArtworks?.percentage || 0 }}% over last month
             </small>
           </div>
         </div>
@@ -56,7 +58,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Auction Rooms</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.totalAuctionRooms }}</h3>
+                <h3 class="fw-bold mb-0">{{ statistics?.totalAuctionRooms || 0 }}</h3>
               </div>
               <div
                 class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
@@ -76,7 +78,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Bidding</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.totalBids }}</h3>
+                <h3 class="fw-bold mb-0">{{ statistics?.totalBids?.currentMonth || 0 }}</h3>
               </div>
               <div
                 class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -86,7 +88,7 @@
               </div>
             </div>
             <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-trend-up me-1"></i>+12.5% over last month
+              <i class="fa-solid fa-arrow-trend-up me-1"></i>Total number of bids
             </small>
           </div>
         </div>
@@ -98,7 +100,9 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Revenue</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.revenue }}</h3>
+                <h3 class="fw-bold mb-0">
+                  {{ formatCurrency(statistics?.revenue?.currentMonth || 0) }}
+                </h3>
               </div>
               <div
                 class="bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center"
@@ -108,8 +112,8 @@
               </div>
             </div>
             <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-trend-up me-1"></i>{{ statistics.percentage }}% over last
-              month
+              <i class="fa-solid fa-arrow-trend-up me-1"></i>
+              {{ statistics?.revenue?.percentage || 0 }}% over last month
             </small>
           </div>
         </div>
@@ -121,7 +125,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Active Users</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.activeUsers }}</h3>
+                <h3 class="fw-bold mb-0">{{ statistics?.activeUsers || 0 }}</h3>
               </div>
               <div
                 class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -130,7 +134,7 @@
                 <i class="fa-solid fa-user-check fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">10 people are active now</small>
+            <small class="text-body-secondary">Number of active people</small>
           </div>
         </div>
       </div>
@@ -154,11 +158,19 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <template v-for="room in topAuctionRooms" :key="room.id">
+                  <tr v-if="isLoading">
+                    <td colspan="4" class="text-center py-4 text-muted">Loading data...</td>
+                  </tr>
+
+                  <tr v-else-if="!topAuctionRooms || topAuctionRooms.length === 0">
+                    <td colspan="4" class="text-center py-4 text-muted">No rooms found.</td>
+                  </tr>
+
+                  <template v-for="(room, index) in topAuctionRooms" :key="room.id">
                     <tr
                       class="cursor-pointer"
                       data-bs-toggle="collapse"
-                      data-bs-target="#room1-details"
+                      :data-bs-target="'#room-' + room.id"
                       aria-expanded="false"
                     >
                       <td class="ps-3 fw-medium text-primary">
@@ -176,71 +188,76 @@
                             alt="Art"
                             class="rounded border me-2"
                             style="width: 40px; height: 40px; object-fit: cover"
+                            @error="$event.target.src = '/src/assets/img/default-art.png'"
                           />
                           <div class="d-flex flex-column">
-                            <span class="fw-medium" style="font-size: 0.9rem">{{
-                              room.sessions?.[0]?.artworkTitle || "---"
-                            }}</span>
-                            <small class="text-muted" style="font-size: 0.7rem"
-                              >Session {{ room.sessions?.length || 0 }} items</small
-                            >
+                            <span class="fw-medium" style="font-size: 0.9rem">
+                              {{ room.sessions?.[0]?.artworkTitle || "---" }}
+                            </span>
+                            <small class="text-muted" style="font-size: 0.7rem">
+                              Session {{ room.sessions ? room.sessions.length : 0 }} items
+                            </small>
                           </div>
                         </div>
                       </td>
 
                       <td>
                         <span
-                          class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill"
-                          >Live</span
+                          class="badge rounded-pill border px-2 py-1"
+                          :class="getStatusClass(room.status)"
                         >
+                          {{ convertStatus(room.status) }}
+                        </span>
                       </td>
+
                       <td class="small text-body-secondary text-end pe-3">View details</td>
                     </tr>
 
                     <tr>
                       <td colspan="4" class="p-0 border-0">
-                        <div class="collapse bg-light-subtle show" id="room1-details">
+                        <div class="collapse bg-light-subtle" :id="'room-' + room.id">
                           <div class="p-3">
                             <h6
                               class="fw-bold text-primary mb-2 small text-uppercase ps-2 border-start border-4 border-secondary-subtle"
                             >
-                              Danh sách tác phẩm ({{ room.sessions?.length || 0 }})
+                              Danh sách tác phẩm ({{ room.sessions ? room.sessions.length : 0 }})
                             </h6>
 
                             <table class="table table-sm table-borderless mb-0 align-middle">
                               <thead class="text-secondary small border-bottom">
                                 <tr>
                                   <th class="ps-2">Artwork Info</th>
-                                  <!-- <th>Trạng thái</th> -->
                                   <th class="text-end pe-2">Giá hiện tại</th>
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr v-for="(session, Index) in room.sessions" :key="session.id">
+                                <tr v-for="(session, sIndex) in room.sessions" :key="session.id">
                                   <td class="ps-2">
                                     <div class="d-flex align-items-center">
                                       <span class="me-2 text-muted small fw-bold"
-                                        >#{{ Index + 1 }}</span
+                                        >#{{ sIndex + 1 }}</span
                                       >
                                       <img
                                         :src="session.imageUrl || '/src/assets/img/default-art.png'"
                                         class="rounded border me-2"
                                         style="width: 32px; height: 32px; object-fit: cover"
+                                        @error="
+                                          $event.target.src = '/src/assets/img/default-art.png'
+                                        "
                                       />
-                                      <span
-                                        class="fw-medium text-dark"
-                                        style="font-size: 0.85rem"
-                                        >{{ session.artworkTitle }}</span
-                                      >
+                                      <span class="fw-medium text-dark" style="font-size: 0.85rem">
+                                        {{ session.artworkTitle }}
+                                      </span>
                                     </div>
                                   </td>
-                                  <!-- <td>
-                                  <span class="badge bg-danger" style="font-size: 0.7rem"
-                                    >Live</span
-                                  >
-                                </td> -->
                                   <td class="text-end text-muted pe-2">
                                     {{ formatCurrency(session.currentPrice) }}
+                                  </td>
+                                </tr>
+
+                                <tr v-if="!room.sessions || room.sessions.length === 0">
+                                  <td colspan="2" class="text-center text-muted small fst-italic">
+                                    Chưa có phiên đấu giá nào.
                                   </td>
                                 </tr>
                               </tbody>
@@ -250,37 +267,6 @@
                       </td>
                     </tr>
                   </template>
-
-                  <tr class="cursor-pointer">
-                    <td class="ps-3 fw-medium text-dark">
-                      <i
-                        class="fa-solid fa-chevron-down text-muted me-2"
-                        style="font-size: 0.8rem"
-                      ></i>
-                      Phòng Sơn Dầu
-                    </td>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <img
-                          src="/src/assets/img/cotiendan.png"
-                          alt="Art"
-                          class="rounded border me-2 bg-light"
-                          style="width: 40px; height: 40px; object-fit: cover"
-                        />
-                        <div class="d-flex flex-column">
-                          <span class="fw-medium" style="font-size: 0.9rem">Hoàng hôn biển</span>
-                          <small class="text-muted" style="font-size: 0.7rem">Session 1/10</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <span
-                        class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill"
-                        >Coming soon</span
-                      >
-                    </td>
-                    <td class="text-end pe-3"><small class="text-muted">View details</small></td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -297,7 +283,7 @@
             <div class="table-responsive text-nowrap overflow-y-auto">
               <table class="table table-hover align-middle text-nowrap mb-0 w-100">
                 <thead class="table-light">
-                  <tr>
+                  <tr class="align-middle">
                     <th scope="col" class="ps-3 py-3 fw-bold align-middle">Username</th>
                     <th scope="col" class="py-3 fw-bold align-middle">Email</th>
                     <th scope="col" class="py-3 fw-bold align-middle">Registration date</th>
@@ -305,48 +291,44 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="ps-3">
-                      <div class="d-flex align-items-center gap-2">
-                        <div
-                          class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                          style="width: 32px; height: 32px"
-                        >
-                          N
-                        </div>
-                        <span class="fw-medium">Nguyễn Thị A</span>
-                      </div>
-                    </td>
-                    <td class="text-muted">a@gmail.com</td>
-                    <td>2025-10-22</td>
-                    <td>
-                      <button
-                        class="btn badge bg-success-subtle text-success rounded-pill border border-success-subtle"
-                      >
-                        Approved
-                      </button>
-                    </td>
+                  <tr v-if="isLoading">
+                    <td colspan="4" class="text-center py-4 text-muted">Loading...</td>
                   </tr>
-                  <tr>
-                    <td class="ps-3">
+
+                  <tr v-else-if="!newUsers || newUsers.length === 0">
+                    <td colspan="4" class="text-center py-4 text-muted">No new users.</td>
+                  </tr>
+
+                  <tr v-for="user in newUsers" :key="user.id">
+                    <td class="ps-3 align-middle">
                       <div class="d-flex align-items-center gap-2">
+                        <img
+                          v-if="user.avt"
+                          :src="user.avt"
+                          alt="User Avatar"
+                          class="rounded-circle border"
+                          style="width: 32px; height: 32px; object-fit: cover"
+                        />
+
                         <div
+                          v-else
                           class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
                           style="width: 32px; height: 32px"
                         >
-                          N
+                          {{ user.fullName ? user.fullName.charAt(0).toUpperCase() : "U" }}
                         </div>
-                        <span class="fw-medium">Nguyễn Thị A</span>
+                        <span class="fw-medium">{{ user.username }}</span>
                       </div>
                     </td>
-                    <td class="text-muted">a@gmail.com</td>
-                    <td>2025-10-22</td>
-                    <td>
-                      <button
-                        class="btn badge bg-warning-subtle text-warning-emphasis rounded-pill border border-warning-subtle"
+                    <td class="text-muted align-middle">{{ user.email }}</td>
+                    <td class="small align-middle">{{ user.createdAt }}</td>
+                    <td class="align-middle">
+                      <span
+                        class="badge rounded-pill border"
+                        :class="getStatusClassUser(user.status)"
                       >
-                        Pending
-                      </button>
+                        {{ convertStatusUser(user.status) }}
+                      </span>
                     </td>
                   </tr>
                 </tbody>
@@ -373,24 +355,24 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr v-for="art in topArtworks" :key="art.id">
                 <td class="ps-3 align-middle">
                   <div class="d-flex align-items-center gap-3">
                     <img
-                      src="/src/assets/img/3.png"
+                      :src="art.artworkImageUrl"
                       class="rounded border bg-light"
                       style="width: 48px; height: 48px; object-fit: cover"
                       alt="art"
                       loading="lazy"
                     />
                     <div>
-                      <p class="mb-0 fw-bold text-dark">Tên tranh</p>
+                      <p class="mb-0 fw-bold text-dark">{{ art.artworkTitle }}</p>
                     </div>
                   </div>
                 </td>
                 <td class="align-middle">Tranh sơn dầu</td>
-                <td class="align-middle">Nguyễn Văn A</td>
-                <td class="text-success fw-bold align-middle">200.000.000đ</td>
+                <td class="align-middle">{{ art.winnerName }}</td>
+                <td class="text-success fw-bold align-middle">{{ art.totalAmount }}</td>
               </tr>
             </tbody>
           </table>
@@ -418,6 +400,8 @@ export default {
   mounted() {
     this.loadInvoiceStatistical();
     this.loadTopAuction();
+    this.loadUserData();
+    this.loadArtworkData();
   },
   methods: {
     formatCurrency(value) {
@@ -436,7 +420,11 @@ export default {
           },
         })
         .then((res) => {
-          this.statistics = res.data;
+          if (res.data && res.data.data) {
+            this.statistics = res.data.data;
+          } else {
+            this.statistics = {};
+          }
           console.log("Kết quả tìm kiếm:", this.statistics);
         })
         .catch((err) => {
@@ -450,6 +438,7 @@ export default {
 
     //
     loadTopAuction() {
+      this.isLoading = true;
       axios
         .get(`http://localhost:8081/api/admin/dashboard/top-auction-rooms`, {
           headers: {
@@ -457,8 +446,16 @@ export default {
           },
         })
         .then((res) => {
-          this.topAuctionRooms = res.data.data;
-          console.log("Kết quả tìm kiếm:", this.topAuctionRooms);
+          console.log("API Response Gốc:", res.data);
+
+          if (res.data && Array.isArray(res.data.data)) {
+            this.topAuctionRooms = res.data.data;
+          } else {
+            // Fallback nếu API trả về mảng trực tiếp
+            this.topAuctionRooms = res.data;
+          }
+
+          console.log("Mảng phòng đấu giá (Final):", this.topAuctionRooms);
         })
         .catch((err) => {
           console.error("Lỗi tìm kiếm:", err);
@@ -466,6 +463,85 @@ export default {
         })
         .finally(() => {
           this.isLoading = false;
+        });
+    },
+    convertStatus(status) {
+      switch (status) {
+        case 0:
+          return "Finished";
+        case 1:
+          return "Live";
+        case 2:
+          return "Upcoming";
+        default:
+          return "Unknown";
+      }
+    },
+    getStatusClass(status) {
+      switch (status) {
+        case 1: // Live
+          return "bg-danger-subtle text-danger border-danger-subtle";
+        case 2: // Upcoming
+          return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
+        case 0: // Finished
+          return "bg-secondary-subtle text-secondary border-secondary-subtle";
+        default:
+          return "bg-light text-dark border";
+      }
+    },
+
+    // new users
+    loadUserData() {
+      axios
+        .get(`http://localhost:8081/api/admin/dashboard/top-new-users`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.newUsers = res.data;
+          console.log(this.newUsers);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+
+    convertStatusUser(status) {
+      switch (status) {
+        case 1:
+          return "Active";
+        case 0:
+          return "Inactive";
+        default:
+          return "Unknown";
+      }
+    },
+    getStatusClassUser(status) {
+      switch (status) {
+        case 1:
+          return "bg-success-subtle border-success-subtle text-success";
+        case 0:
+          return "bg-secondary-subtle border-secondary-subtle text-secondary";
+        // default:
+        //   return "bg-secondary-subtle border-secondary-subtle text-secondary";
+      }
+    },
+
+    // Top 10 Session có giá cao nhất
+    loadArtworkData() {
+      axios
+        .get("http://localhost:8081/api/admin/dashboard/top-sessions", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.topArtworks = res.data;
+          console.log(this.topArtworks);
+        })
+        .catch((err) => {
+          console.error(err);
         });
     },
   },
