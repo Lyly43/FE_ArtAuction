@@ -270,10 +270,8 @@
                         >
                         <select class="form-select shadow-none bg-light border-0">
                           <option selected value="">Tất cả</option>
-                          <option value="vnpay">VNPay QR</option>
-                          <option value="momo">Ví MoMo</option>
                           <option value="banking">Chuyển khoản ngân hàng</option>
-                          <option value="visa">Thẻ Visa/Mastercard</option>
+                          <option value="visa">Ví điện tử</option>
                         </select>
                       </div>
                     </div>
