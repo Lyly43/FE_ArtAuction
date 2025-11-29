@@ -12,7 +12,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total users</h6>
-                <h3 class="fw-bold mb-0">{{ statistics?.totalUsers?.currentMonth || 0 }}</h3>
+                <h3 class="fw-bold mb-0">{{ statistics?.totalUsers?.total }}</h3>
               </div>
               <div
                 class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
@@ -21,10 +21,7 @@
                 <i class="fa-solid fa-users fs-5"></i>
               </div>
             </div>
-            <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-trend-up me-1"></i
-              >{{ statistics?.totalUsers?.percentage || 0 }}% over last month
-            </small>
+            <small class="text-secondary fw-medium"> Total number of users </small>
           </div>
         </div>
       </div>
@@ -35,7 +32,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Artwork</h6>
-                <h3 class="fw-bold mb-0">{{ statistics?.totalArtworks?.currentMonth }}</h3>
+                <h3 class="fw-bold mb-0">{{ statistics?.totalArtworks?.total }}</h3>
               </div>
               <div
                 class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center"
@@ -44,10 +41,7 @@
                 <i class="fa-solid fa-image fs-5"></i>
               </div>
             </div>
-            <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-trend-up me-1"></i
-              >{{ statistics?.totalArtworks?.percentage || 0 }}% over last month
-            </small>
+            <small class="text-secondary fw-medium"> Total number of works </small>
           </div>
         </div>
       </div>
@@ -58,7 +52,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Auction Rooms</h6>
-                <h3 class="fw-bold mb-0">{{ statistics?.totalAuctionRooms || 0 }}</h3>
+                <h3 class="fw-bold mb-0">{{ statistics?.totalAuctionRooms }}</h3>
               </div>
               <div
                 class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
@@ -67,7 +61,7 @@
                 <i class="fa-solid fa-hammer fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">23 rooms are in operation</small>
+            <small class="text-body-secondary">Total number of auction rooms</small>
           </div>
         </div>
       </div>
@@ -78,7 +72,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Bidding</h6>
-                <h3 class="fw-bold mb-0">{{ statistics?.totalBids?.currentMonth || 0 }}</h3>
+                <h3 class="fw-bold mb-0">{{ statistics?.totalBids?.total }}</h3>
               </div>
               <div
                 class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -87,9 +81,7 @@
                 <i class="fa-solid fa-chart-line fs-5"></i>
               </div>
             </div>
-            <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-trend-up me-1"></i>Total number of bids
-            </small>
+            <small class="text-secondary fw-medium"> Total number of bids </small>
           </div>
         </div>
       </div>

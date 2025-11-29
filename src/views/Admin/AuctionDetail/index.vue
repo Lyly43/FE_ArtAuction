@@ -26,12 +26,36 @@
       </div>
 
       <div class="d-flex gap-2">
-        <button class="btn btn-outline-secondary fw-medium shadow-sm px-3">
-          <i class="fa-solid fa-pen-to-square me-2"></i>Edit
-        </button>
-        <button class="btn btn-danger fw-bold shadow-sm px-4">
-          <i class="fa-solid fa-video me-2"></i>Enter Live Room
-        </button>
+        <div>
+          <router-link
+            :to="`/admin/edit-auction-room/${roomDetail.id}`"
+            v-if="roomDetail.status === 2"
+            class="btn btn-outline-secondary fw-medium shadow-sm px-3"
+          >
+            <i class="fa-solid fa-pen-to-square me-2"></i>Edit
+          </router-link>
+
+          <button
+            v-else
+            class="btn btn-outline-secondary fw-medium shadow-sm px-3 opacity-50"
+            style="cursor: not-allowed"
+          >
+            <i class="fa-solid fa-pen-to-square me-2"></i>Edit
+          </button>
+        </div>
+        <div>
+          <router-link v-if="roomDetail.status === 1" class="btn btn-danger fw-bold shadow-sm px-4">
+            <i class="fa-solid fa-video me-2"></i>Enter Live Room
+          </router-link>
+
+          <button
+            v-else
+            class="btn btn-danger fw-bold shadow-sm px-4 opacity-50"
+            style="cursor: not-allowed"
+          >
+            <i class="fa-solid fa-video me-2"></i>Enter Live Room
+          </button>
+        </div>
       </div>
     </div>
 
@@ -170,30 +194,6 @@ import axios from "axios";
 export default {
   data() {
     return {
-      // room: {
-      //   id: "ROOM-001",
-      //   name: "Triển lãm tranh Mùa Thu 2025 - Vẻ đẹp Á Đông",
-      //   description:
-      //     "Phòng đấu giá chuyên về các tác phẩm sơn dầu chủ đề mùa thu và phong cảnh làng quê Việt Nam. Quy tụ các họa sĩ trẻ tài năng.",
-      //   admin: "Nguyễn Quản Trị",
-      //   startTime: "23/11/2025 08:00",
-      //   endTime: "23/11/2025 12:00",
-      //   isLive: true,
-      //   stats: {
-      //     participants: 124,
-      //     viewers: 850,
-      //   },
-      // },
-      // // Mock data 10 tác phẩm
-      // artworks: Array.from({ length: 10 }, (_, i) => ({
-      //   id: `ART-${100 + i}`,
-      //   name: i % 2 === 0 ? `Chiều buông trên sông ${i}` : `Thiếu nữ bên hoa huệ ${i}`,
-      //   author: i % 3 === 0 ? "Trần Văn A" : "Lê Thị B",
-      //   img: "/src/assets/img/4.png", // Dùng lại ảnh mẫu của bạn
-      //   startPrice: 5000000 + i * 100000,
-      //   currentPrice: i < 3 ? 12000000 : null, // 3 tranh đầu đang có giá đấu
-      //   status: i === 0 ? "sold" : i < 3 ? "bidding" : "waiting",
-      // })),
       roomId: null,
       isLoading: false,
       roomDetail: {},

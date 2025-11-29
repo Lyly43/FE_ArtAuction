@@ -224,46 +224,43 @@
                       </label>
 
                       <div class="mb-3">
-                        <label class="form-label x-small fw-bold text-secondary"
-                          >Invoice status</label
+                        <label class="form-label fw-bold text-uppercase small text-secondary mb-2"
+                          >Status</label
                         >
-                        <div class="d-flex flex-wrap gap-2">
-                          <input
-                            type="checkbox"
-                            class="btn-check"
-                            id="stPending"
-                            autocomplete="off"
-                          />
-                          <label class="btn btn-outline-warning btn-sm rounded-pill" for="stPending"
-                            >Pending</label
-                          >
-
-                          <input type="checkbox" class="btn-check" id="stPaid" autocomplete="off" />
-                          <label class="btn btn-outline-success btn-sm rounded-pill" for="stPaid"
-                            >Paid</label
-                          >
-
-                          <input
-                            type="checkbox"
-                            class="btn-check"
-                            id="stFailed"
-                            autocomplete="off"
-                          />
-                          <label class="btn btn-outline-danger btn-sm rounded-pill" for="stFailed"
-                            >Overdue</label
-                          >
-
-                          <input
-                            type="checkbox"
-                            class="btn-check"
-                            id="stRefund"
-                            autocomplete="off"
-                          />
-                          <label
-                            class="btn btn-outline-secondary btn-sm rounded-pill"
-                            for="stRefund"
-                            >Refunded</label
-                          >
+                        <div class="bg-light rounded-3 p-3 border">
+                          <div class="form-check mb-2">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="statusFilter"
+                              id="statusPaid"
+                            />
+                            <label class="form-check-label text-success" for="statusActive"
+                              >● Paid
+                            </label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="statusFilter"
+                              id="statusPending"
+                            />
+                            <label class="form-check-label text-warning" for="statusLocked"
+                              >● Pending
+                            </label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="statusFilter"
+                              id="statusOverdue"
+                            />
+                            <label class="form-check-label text-danger" for="statusLocked"
+                              >● Overdue
+                            </label>
+                          </div>
                         </div>
                       </div>
 
@@ -669,39 +666,4 @@ export default {
   },
 };
 </script>
-<style>
-/* Custom Scrollbar cho phần body lọc */
-.custom-scrollbar {
-  max-height: calc(100vh - 140px); /* Trừ đi header và footer */
-  overflow-y: auto;
-}
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #dee2e6;
-  border-radius: 10px;
-}
-
-/* Style cho các nút chọn Role (Selection Chips) */
-.btn-check:checked + .btn-outline-light {
-  background-color: #e7f1ff; /* Nền xanh nhạt */
-  border-color: #0d6efd !important; /* Viền xanh */
-  color: #0d6efd !important; /* Chữ xanh */
-  font-weight: bold;
-}
-
-/* Hiệu ứng focus cho các input text */
-.form-control:focus,
-.form-select:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); /* Bóng mờ xanh nhạt */
-}
-
-/* Style cho các nút chọn nhanh thời gian */
-.active-pill {
-  background-color: #0d6efd !important;
-  color: white !important;
-  border-color: #0d6efd !important;
-}
-</style>
+<style></style>

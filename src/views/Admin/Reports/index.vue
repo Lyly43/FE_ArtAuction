@@ -12,7 +12,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">General report</h6>
-                <h3 class="card-text fw-bold mb-0">120</h3>
+                <h3 class="card-text fw-bold mb-0">{{ statistics.totalReports }}</h3>
               </div>
               <div
                 class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
@@ -22,7 +22,7 @@
               </div>
             </div>
             <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-up me-1"></i>+12 new reports
+              <i class="fa-solid fa-arrow-up me-1"></i>Total reports
             </small>
           </div>
         </div>
@@ -34,7 +34,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Pending</h6>
-                <h3 class="card-text fw-bold mb-0">100</h3>
+                <h3 class="card-text fw-bold mb-0">{{ statistics.pendingReports }}</h3>
               </div>
               <div
                 class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
@@ -54,7 +54,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">In progress</h6>
-                <h3 class="card-text fw-bold mb-0">10</h3>
+                <h3 class="card-text fw-bold mb-0">{{ statistics.investigatingReports }}</h3>
               </div>
               <div
                 class="bg-info-subtle text-info-emphasis rounded-circle d-flex align-items-center justify-content-center"
@@ -74,7 +74,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Resolved</h6>
-                <h3 class="card-text fw-bold mb-0">12</h3>
+                <h3 class="card-text fw-bold mb-0">{{ statistics.resolvedReports }}</h3>
               </div>
               <div
                 class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -83,7 +83,7 @@
                 <i class="fa-solid fa-circle-check fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">12% of the total</small>
+            <small class="text-body-secondary">Number of rejected reports</small>
           </div>
         </div>
       </div>
@@ -101,6 +101,7 @@
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
                 placeholder="Search for report..."
+                @input="handleSearch"
               />
             </div>
           </div>
@@ -130,19 +131,26 @@
               <tr v-for="item in reports" :key="item.id">
                 <td class="ps-3 align-middle">
                   <div class="d-flex align-items-center gap-2">
+                    <!-- <img
+                      v-if="report.avatar"
+                      :src="report.avatar"
+                      alt="Avatar"
+                      class="rounded-circle border border-2 border-white shadow-sm object-fit-cover"
+                      style="width: 40px; height: 40px"
+                    /> -->
                     <div
-                      class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                      style="width: 32px; height: 32px; font-size: 0.8rem"
+                      class="bg-secondary-subtle bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-white shadow-sm"
+                      style="width: 40px; height: 40px"
                     >
-                      {{ item.reporter.charAt(0) }}
+                      {{ item.reporterName ? item.reporterName.charAt(0).toUpperCase() : "U" }}
                     </div>
-                    <span class="fw-medium">{{ item.reporter }}</span>
+                    <span class="fw-medium">{{ item.reporterName }}</span>
                   </div>
                 </td>
 
                 <td class="align-middle">
                   <span class="badge bg-light text-dark border fw-normal rounded-pill">
-                    {{ item.objectType }}
+                    objectType
                   </span>
                 </td>
 
@@ -153,7 +161,7 @@
                   style="max-width: 250px"
                   :title="item.content"
                 >
-                  {{ item.content }}
+                  {{ item.reportReason }}
                 </td>
 
                 <td class="small text-body-secondary align-middle">{{ item.createdAt }}</td>
@@ -161,9 +169,9 @@
                 <td class="align-middle">
                   <button
                     class="btn badge rounded-pill border fw-normal px-3 py-2"
-                    :class="getStatusClass(item.status)"
+                    :class="getStatusClass(item.reportStatus)"
                   >
-                    {{ item.status }}
+                    {{ convertStatus(item.reportStatus) }}
                   </button>
                 </td>
 
@@ -200,6 +208,11 @@
                           <i class="fa-solid fa-ban me-2"></i>Block
                         </button>
                       </li>
+                      <li>
+                        <button class="dropdown-item text-danger" @click="handleDelete(item.id)">
+                          <i class="fa-solid fa-trash me-2"></i>Delete
+                        </button>
+                      </li>
                     </ul>
                   </div>
                 </td>
@@ -213,53 +226,169 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
       reports: [
-        {
-          id: 1,
-          reporter: "Nguyễn Văn A",
-          objectType: "User",
-          objectName: "Trần Thị B",
-          content: "Spam tin nhắn lừa đảo trong phòng đấu giá...",
-          createdAt: "2025-10-22 14:00",
-          status: "Pending",
-        },
-        {
-          id: 2,
-          reporter: "Lê Văn C",
-          objectType: "Artwork",
-          objectName: "Tranh Mùa Thu",
-          content: "Đây là tranh chép, không phải tranh gốc...",
-          createdAt: "2025-10-22 15:30",
-          status: "Resolved",
-        },
-        {
-          id: 3, // Sửa lại ID bị trùng (id 2 -> id 3)
-          reporter: "Lê Văn C",
-          objectType: "Artwork",
-          objectName: "Tranh Mùa Thu",
-          content: "Đây là tranh chép, không phải tranh gốc...",
-          createdAt: "2025-10-22 15:30",
-          status: "Rejected",
-        },
+        // {
+        //   id: 1,
+        //   reporter: "Nguyễn Văn A",
+        //   objectType: "User",
+        //   objectName: "Trần Thị B",
+        //   content: "Spam tin nhắn lừa đảo trong phòng đấu giá...",
+        //   createdAt: "2025-10-22 14:00",
+        //   status: "Pending",
+        // },
+        // {
+        //   id: 2,
+        //   reporter: "Lê Văn C",
+        //   objectType: "Artwork",
+        //   objectName: "Tranh Mùa Thu",
+        //   content: "Đây là tranh chép, không phải tranh gốc...",
+        //   createdAt: "2025-10-22 15:30",
+        //   status: "Resolved",
+        // },
+        // {
+        //   id: 3, // Sửa lại ID bị trùng (id 2 -> id 3)
+        //   reporter: "Lê Văn C",
+        //   objectType: "Artwork",
+        //   objectName: "Tranh Mùa Thu",
+        //   content: "Đây là tranh chép, không phải tranh gốc...",
+        //   createdAt: "2025-10-22 15:30",
+        //   status: "Rejected",
+        // },
       ],
+      isLoading: false,
+      statistics: [],
     };
   },
+  mounted() {
+    this.loadReportData();
+    this.loadReportStatistical();
+  },
   methods: {
+    loadReportData() {
+      this.isLoading = true;
+      axios
+        .get("http://localhost:8081/api/admin/reports/lay-du-lieu", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.reports = res.data.data;
+          console.log("Data Loaded:", this.reports);
+        })
+        .catch((err) => {
+          console.error("Error loading rooms:", err);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+    convertStatus(status) {
+      switch (status) {
+        case 0:
+          return "Pending";
+        case 1:
+          return "In progress";
+        case 2:
+          return "Done";
+        default:
+          return "Unknown";
+      }
+    },
+
     // Lấy màu trạng thái - Cập nhật style cho Badge Pill
     getStatusClass(status) {
       switch (status) {
-        case "Pending":
+        case 0:
           return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
-        case "Resolved":
+        case 2:
           return "bg-success-subtle text-success border-success-subtle";
-        case "Rejected":
+        case 1:
           return "bg-danger-subtle text-danger border-danger-subtle";
         default:
           return "bg-light text-dark border-light";
       }
+    },
+
+    handleDelete(reportId) {
+      if (!confirm(`Bạn có chắc chắn muốn xóa report này không?`)) return;
+      axios
+        .delete(`http://localhost:8081/api/admin/reports/xoa/${reportId}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then(() => {
+          alert("Đã xóa thành công!");
+          this.loadReportData();
+        })
+        .catch((err) => {
+          console.error("Lỗi khi xóa:", err);
+          const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+          alert(message);
+        });
+    },
+
+    handleSearch() {
+      // Xóa bộ đếm cũ nếu người dùng gõ tiếp khi chưa hết giờ
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      // Thiết lập bộ đếm mới (ví dụ: chờ 500ms)
+      this.searchTimeout = setTimeout(() => {
+        this.performSearchApi();
+      }, 500);
+    },
+
+    performSearchApi() {
+      // Nếu ô tìm kiếm trống thì load lại toàn bộ danh sách
+      if (!this.search.trim()) {
+        this.loadReportData();
+        return;
+      }
+      this.isLoading = true;
+      axios
+        .get(`http://localhost:8081/api/admin/reports/tim-kiem?q=${this.search}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.artworks = res.data;
+          console.log("Kết quả tìm kiếm:", this.artworks);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.artworks = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    loadReportStatistical() {
+      axios
+        .get(`http://localhost:8081/api/admin/reports/thong-ke`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.statistics = res.data.data;
+          console.log("Kết quả tìm kiếm:", this.statistics);
+        })
+        .catch((err) => {
+          console.error("Lỗi tìm kiếm:", err);
+          this.statistics = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
   },
 };

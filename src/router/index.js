@@ -332,9 +332,15 @@ const routes = [
     props: true,
   },
   {
-    path: "/admin/edit-auction-room",
+    path: "/admin/edit-auction-room/:id",
     // name: "artwork-detail",
     component: () => import("../views/Admin/EditAuctionRoom/index.vue"),
+    meta: { layout: "default" },
+  },
+  {
+    path: "/admin/edit-artwork/:id",
+    // name: "artwork-detail",
+    component: () => import("../views/Admin/EditArtwork/index.vue"),
     meta: { layout: "default" },
   },
 ];

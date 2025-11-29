@@ -287,6 +287,7 @@
                           class="form-control form-control-sm border-0 shadow-none"
                           placeholder="50.000đ"
                           v-model="item.startPrice"
+                          required
                         />
                       </div>
                       <div class="col-4">
@@ -298,6 +299,7 @@
                           class="form-control form-control-sm border-0 shadow-none"
                           placeholder="10.000đ"
                           v-model="item.stepPrice"
+                          required
                         />
                       </div>
                       <div class="col-4">
@@ -309,6 +311,7 @@
                           class="form-control form-control-sm border-0 shadow-none"
                           placeholder="15"
                           v-model="item.duration"
+                          required
                         />
                       </div>
                     </div>
@@ -364,7 +367,7 @@
                 <h5 class="fw-bold mb-0">Time configuration</h5>
               </div>
 
-              <div class="row g-3">
+              <div class="row g-3 mb-4">
                 <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
                     >Start at</label
@@ -373,13 +376,19 @@
                     type="datetime-local"
                     class="form-control bg-light border-0"
                     v-model="roomForm.startedAt"
+                    required
                   />
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
                     >Expected end</label
                   >
-                  <input type="datetime-local" class="form-control bg-light border-0" />
+                  <input
+                    type="datetime-local"
+                    class="form-control bg-light border-0"
+                    v-model="roomForm.stoppedAt"
+                    required
+                  />
                 </div>
                 <!-- <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
@@ -387,7 +396,7 @@
                   >
                   <input type="number" class="form-control bg-light border-0" placeholder="30" />
                 </div> -->
-                <div class="col-12 col-md-6">
+                <!-- <div class="col-12 col-md-6">
                   <label class="form-label fw-bold small text-secondary text-uppercase"
                     >Initialization state</label
                   >
@@ -395,7 +404,52 @@
                     <option value="schedule">Scheduled</option>
                     <option value="draft">Draft</option>
                   </select>
+                </div> -->
+              </div>
+
+              <!-- Ảnh đại diện phòng -->
+              <div class="col-12">
+                <label class="form-label fw-bold small text-secondary text-uppercase">
+                  Cover Image
+                </label>
+
+                <div
+                  class="border rounded-3 d-flex flex-column align-items-center justify-content-center bg-light position-relative overflow-hidden"
+                  style="height: 400px; border-style: dashed !important; cursor: pointer"
+                  @click="$refs.fileInput.click()"
+                >
+                  <img
+                    v-if="previewImage"
+                    :src="previewImage"
+                    class="w-100 h-100 object-fit-cover position-absolute"
+                    alt="Cover Preview"
+                    loading="lazy"
+                  />
+
+                  <div v-else class="text-center text-muted">
+                    <i class="fa-solid fa-cloud-arrow-up fs-1 mb-2"></i>
+                    <p class="mb-0 small fw-medium">Click to upload photo</p>
+                    <small style="font-size: 0.7rem">Support: JPG, PNG, WEBP</small>
+                  </div>
+
+                  <input
+                    type="file"
+                    ref="fileInput"
+                    class="d-none"
+                    accept="image/*"
+                    @change="handleFileUpload"
+                  />
                 </div>
+
+                <!-- <div class="mt-2">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm bg-light border-0"
+                    placeholder="Hoặc dán đường dẫn ảnh vào đây..."
+                    v-model="roomForm.imageAuctionRoom"
+                    @input="previewImage = roomForm.imageAuctionRoom"
+                  />
+                </div> -->
               </div>
             </div>
           </div>
@@ -424,6 +478,7 @@
                     class="form-control bg-light border-0"
                     placeholder="VD: 200.000"
                     v-model="roomForm.depositAmount"
+                    required
                   />
                 </div>
                 <div class="col-6">
@@ -435,6 +490,7 @@
                     class="form-control bg-light border-0"
                     value="3"
                     v-model="roomForm.paymentDeadlineDays"
+                    required
                   />
                 </div>
               </div>
@@ -506,6 +562,7 @@ export default {
       search: "",
       isLoadingArtworks: false,
       scheduleList: [],
+      previewImage: null,
       roomForm: {
         roomName: "",
         type: "",
@@ -517,6 +574,7 @@ export default {
         stoppedAt: "",
         status: 2,
         viewCount: 0,
+        imageAuctionRoom: "",
       },
     };
   },
@@ -535,7 +593,6 @@ export default {
           !this.scheduleList.find((item) => item.id === art.id)
       );
 
-      // SỬA LỖI 2: this.searchQuery -> this.search
       if (this.search) {
         const query = this.search.toLowerCase();
         filtered = filtered.filter((art) => art.name.toLowerCase().includes(query));
@@ -567,7 +624,7 @@ export default {
               name: item.title,
               author: item.author,
               type: item.paintingGenre,
-              category: cat,
+              category: this.mapCategory(item.paintingGenre, item.material),
               img: item.avtArtwork,
               size: item.size,
               basePrice: item.startedPrice,
@@ -587,8 +644,6 @@ export default {
 
       const g = genre.toLowerCase();
       const m = material ? material.toLowerCase() : "";
-
-      // --- THỨ TỰ MỚI (QUAN TRỌNG) ---
 
       // 1. Ưu tiên bắt Chân dung trước
       if (g.includes("portrait") || g.includes("chân dung") || g.includes("figure")) {
@@ -620,7 +675,6 @@ export default {
       return "phong-canh";
     },
 
-    // SỬA LỖI 3: BỎ COMMENT CÁC HÀM NÀY
     addToSchedule(artwork) {
       this.scheduleList.push({
         ...artwork,
@@ -643,19 +697,81 @@ export default {
       }
     },
 
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        // Tạo URL giả lập để xem trước ngay lập tức
+        this.previewImage = URL.createObjectURL(file);
+      }
+    },
+
     submitForm() {
-      // ... giữ nguyên logic submit của bạn ...
       if (!this.roomForm.roomName || !this.roomForm.adminId) {
         alert("Vui lòng nhập tên phòng và Admin ID!");
         return;
       }
-      if (this.scheduleList.length < 10) {
-        alert("Vui lòng thêm ít nhất 10 tác phẩm vào phiên đấu giá!");
+      if (!this.roomForm.startedAt || !this.roomForm.stoppedAt) {
+        alert("Vui lòng chọn thời gian bắt đầu và kết thúc!");
         return;
       }
-      console.log("Submitting...", this.roomForm, this.scheduleList);
-      alert("Check console log for submit data");
-      // Gửi axios...
+      if (this.scheduleList.length === 0) {
+        alert("Vui lòng thêm ít nhất 1 tác phẩm vào phiên đấu giá!");
+        return;
+      }
+
+      this.isSubmitting = true;
+
+      const parseNumber = (val) => {
+        if (!val) return 0;
+        return Number(String(val).replace(/[^0-9]/g, ""));
+      };
+
+      // Nếu không nhập thì mới lấy ảnh của tác phẩm đầu tiên trong danh sách (scheduleList)
+      let finalCoverImage = this.roomForm.imageAuctionRoom;
+      if (!finalCoverImage && this.scheduleList.length > 0) {
+        finalCoverImage = this.scheduleList[0].img || "";
+      }
+
+      const payload = {
+        ...this.roomForm,
+        depositAmount: parseNumber(this.roomForm.depositAmount),
+        paymentDeadlineDays: Number(this.roomForm.paymentDeadlineDays),
+        status: Number(this.roomForm.status),
+        imageAuctionRoom: finalCoverImage,
+        startedAt: this.roomForm.startedAt ? this.roomForm.startedAt + ":00" : null,
+        stoppedAt: this.roomForm.stoppedAt ? this.roomForm.stoppedAt + ":00" : null,
+        artworks: this.scheduleList.map((item) => ({
+          artworkId: item.id,
+          startingPrice: parseNumber(item.startPrice),
+          bidStep: parseNumber(item.stepPrice) > 0 ? parseNumber(item.stepPrice) : 1000,
+          duration: Number(item.duration),
+        })),
+      };
+
+      console.log("Payload gửi đi:", payload);
+
+      axios
+        .post("http://localhost:8081/api/admin/auction-rooms/tao-phong-hoan-chinh", payload, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          alert("🎉 Tạo phòng đấu giá thành công!");
+          this.$router.push("/admin/management-auction");
+        })
+        .catch((err) => {
+          console.error("Lỗi tạo phòng:", err);
+          const message = err.response?.data?.message || "Có lỗi xảy ra khi tạo phòng!";
+          if (err.response?.data?.errors) {
+            alert("Lỗi dữ liệu: " + JSON.stringify(err.response.data.errors));
+          } else {
+            alert("❌ Thất bại: " + message);
+          }
+        })
+        .finally(() => {
+          this.isSubmitting = false;
+        });
     },
   },
 };

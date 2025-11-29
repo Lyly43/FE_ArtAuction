@@ -28,9 +28,7 @@
                 <i class="fa-solid fa-layer-group fs-5"></i>
               </div>
             </div>
-            <small class="text-success fw-medium"
-              ><i class="fa-solid fa-arrow-trend-up me-1"></i>+5 new rooms</small
-            >
+            <small class="text-secondary fw-medium">Total auction room</small>
           </div>
         </div>
       </div>
@@ -204,7 +202,7 @@
                           </label>
                         </div>
 
-                        <div class="d-flex gap-3 mt-2 pt-2 border-top">
+                        <!-- <div class="d-flex gap-3 mt-2 pt-2 border-top">
                           <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="stCanceled" />
                             <label class="form-check-label small text-muted" for="stCanceled"
@@ -217,7 +215,7 @@
                               >Draft</label
                             >
                           </div>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
 
@@ -399,9 +397,24 @@
                 <router-link :to="`/admin/auction-detail/${room.id}`" class="dropdown-item py-2">
                   <i class="fa-regular fa-eye me-2 text-primary"></i>See Details
                 </router-link>
-                <!-- <router-link :to="`/admin/edit-auction-room/${room.id}`" class="dropdown-item py-2">
+              </li>
+              <li>
+                <router-link
+                  v-if="room.status === 2"
+                  :to="`/admin/edit-auction-room/${room.id}`"
+                  class="dropdown-item py-2"
+                >
                   <i class="fa-solid fa-pen-to-square me-2"></i>Edit
-                </router-link> -->
+                </router-link>
+
+                <span
+                  v-else
+                  class="dropdown-item py-2 text-muted opacity-50"
+                  style="cursor: not-allowed"
+                  title="Only upcoming room edits can be made."
+                >
+                  <i class="fa-solid fa-pen-to-square me-2"></i>Edit
+                </span>
               </li>
 
               <li><hr class="dropdown-divider" /></li>
@@ -422,7 +435,7 @@
               <div class="col-12 col-lg-4 mb-3 mb-lg-0 border-end-lg pe-lg-4">
                 <div class="d-flex align-items-center gap-3">
                   <img
-                    :src="room.artworkImage || '/src/assets/img/4.png'"
+                    :src="room.imageAuctionRoom || '/src/assets/img/4.png'"
                     alt="Art"
                     class="rounded-3 shadow-sm border object-fit-cover flex-shrink-0"
                     style="width: 80px; height: 80px"
@@ -657,25 +670,25 @@ export default {
           this.isLoading = false;
         });
     },
-  },
-  deleteRoom(roomId) {
-    if (!confirm(`Bạn có chắc chắn muốn xóa phòng này không?`)) return;
+    deleteRoom(roomId) {
+      if (!confirm(`Bạn có chắc chắn muốn xóa phòng này?`)) return;
 
-    axios
-      .delete(`/api/admin/auction-rooms/xoa/${roomId}`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      })
-      .then(() => {
-        alert("Đã xóa thành công!");
-        this.loadAuctionData();
-      })
-      .catch((err) => {
-        console.error("Lỗi khi xóa:", err);
-        const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
-        alert(message);
-      });
+      axios
+        .delete(`http://localhost:8081/api/admin/auction-rooms/xoa/${roomId}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then(() => {
+          alert("Đã xóa thành công!");
+          this.loadAuctionData();
+        })
+        .catch((err) => {
+          console.error("Lỗi khi xóa:", err);
+          const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+          alert(message);
+        });
+    },
   },
 
   computed: {
@@ -690,7 +703,7 @@ export default {
 <style>
 /* Custom Scrollbar cho phần body lọc */
 .custom-scrollbar {
-  max-height: calc(100vh - 140px); /* Trừ đi header và footer */
+  max-height: calc(100vh - 140px);
   overflow-y: auto;
 }
 .custom-scrollbar::-webkit-scrollbar {
@@ -701,25 +714,9 @@ export default {
   border-radius: 10px;
 }
 
-/* Style cho các nút chọn Role (Selection Chips) */
-.btn-check:checked + .btn-outline-light {
-  background-color: #e7f1ff; /* Nền xanh nhạt */
-  border-color: #0d6efd !important; /* Viền xanh */
-  color: #0d6efd !important; /* Chữ xanh */
-  font-weight: bold;
-}
-
-/* Hiệu ứng focus cho các input text */
 .form-control:focus,
 .form-select:focus {
   border-color: #0d6efd;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); /* Bóng mờ xanh nhạt */
-}
-
-/* Style cho các nút chọn nhanh thời gian */
-.active-pill {
-  background-color: #0d6efd !important;
-  color: white !important;
-  border-color: #0d6efd !important;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
 }
 </style>

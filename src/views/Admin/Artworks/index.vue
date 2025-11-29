@@ -429,7 +429,9 @@
               </div>
             </Teleport>
 
-            <button class="btn btn-primary"><i class="fa-solid fa-plus me-2"></i>Add New</button>
+            <button class="btn btn-primary shadow">
+              <i class="fa-solid fa-plus me-2"></i>Add New
+            </button>
           </div>
         </div>
 
@@ -441,9 +443,10 @@
                 <th scope="col" class="ps-3 py-3 fw-bold align-middle">Type</th>
                 <th scope="col" class="py-3 fw-bold align-middle">Author</th>
                 <th scope="col" class="py-3 fw-bold align-middle">Year</th>
-                <th scope="col" class="py-3 fw-bold align-middle">Material</th>
+                <th scope="col" class="py-3 fw-bold align-middle">Painting Genre</th>
                 <th scope="col" class="py-3 fw-bold align-middle">Size</th>
                 <th scope="col" class="py-3 fw-bold align-middle">Starting Price</th>
+                <th scope="col" class="py-3 fw-bold align-middle">Created at</th>
                 <th scope="col" class="py-3 fw-bold align-middle">Status</th>
                 <th scope="col" class="py-3 fw-bold align-middle text-center">
                   <i class="fa-solid fa-ellipsis"></i>
@@ -470,9 +473,11 @@
                 <td class="align-middle">{{ item.paintingGenre }}</td>
                 <td class="align-middle">{{ item.author }}</td>
                 <td class="align-middle">{{ item.yearOfCreation }}</td>
-                <td class="align-middle">{{ item.material }}</td>
+                <td class="align-middle">{{ item.paintingGenre }}</td>
                 <td class="align-middle">{{ item.size }}</td>
-                <td class="fw-medium text-dark align-middle">{{ formatCurrency(item.price) }}</td>
+                <td class="fw-medium text-dark align-middle">
+                  {{ formatCurrency(item.startedPrice) }}
+                </td>
                 <td class="small text-body-secondary align-middle">{{ item.createdAt }}</td>
                 <td class="align-middle">
                   <button
@@ -499,9 +504,9 @@
                         </RouterLink>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="#">
+                        <router-link :to="`/admin/edit-artwork/${item.id}`" class="dropdown-item">
                           <i class="fa-solid fa-pen me-2 text-info"></i>Edit
-                        </a>
+                        </router-link>
                       </li>
                       <li><hr class="dropdown-divider" /></li>
                       <li>
@@ -704,12 +709,5 @@ export default {
 .form-select:focus {
   border-color: #0d6efd;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); /* Bóng mờ xanh nhạt */
-}
-
-/* Style cho các nút chọn nhanh thời gian */
-.active-pill {
-  background-color: #0d6efd !important;
-  color: white !important;
-  border-color: #0d6efd !important;
 }
 </style>

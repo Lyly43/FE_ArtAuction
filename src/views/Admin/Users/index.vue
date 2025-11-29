@@ -414,20 +414,19 @@
                 <td class="align-middle">
                   <div class="d-flex align-items-center gap-2">
                     <img
-                      v-if="user.avt"
-                      :src="user.avt"
+                      :src="user.avt ? user.avt : '/src/assets/img/default.png'"
                       alt="User Avatar"
                       class="rounded-circle border"
                       style="width: 32px; height: 32px; object-fit: cover"
                     />
 
-                    <div
+                    <!-- <div
                       v-else
                       class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
                       style="width: 32px; height: 32px"
                     >
                       {{ user.fullName ? user.fullName.charAt(0).toUpperCase() : "U" }}
-                    </div>
+                    </div> -->
                     <div>
                       <div class="fw-bold text-dark">{{ user.fullname }}</div>
                       <div class="small text-muted">{{ user.email }}</div>
@@ -480,28 +479,14 @@
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
                       <!-- <li><h6 class="dropdown-header">Actions</h6></li> -->
                       <li>
-                        <a class="dropdown-item" href="#"
+                        <a class="dropdown-item" @click.prevent="openEditModal(user)"
                           ><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Edit
                           details</a
                         >
                       </li>
+                      <li><hr class="dropdown-divider" /></li>
 
-                      <template v-if="user.status === 'Pending approval'">
-                        <li><hr class="dropdown-divider" /></li>
-                        <li>
-                          <button class="dropdown-item text-success" @click="handleApprove(user)">
-                            <i class="fa-solid fa-check me-2"></i>Approve
-                          </button>
-                        </li>
-                        <li>
-                          <button class="dropdown-item text-danger" @click="handleReject(user)">
-                            <i class="fa-solid fa-xmark me-2"></i>Reject
-                          </button>
-                        </li>
-                      </template>
-
-                      <template v-if="user.status === 'Approved'">
-                        <li><hr class="dropdown-divider" /></li>
+                      <template v-if="user.status !== 2">
                         <li>
                           <button class="dropdown-item text-warning" @click="handleLock(user)">
                             <i class="fa-solid fa-lock me-2"></i>Lock Account
@@ -509,16 +494,13 @@
                         </li>
                       </template>
 
-                      <template v-if="user.status === 'Locked'">
-                        <li><hr class="dropdown-divider" /></li>
+                      <template v-if="user.status === 2">
                         <li>
                           <button class="dropdown-item text-success" @click="handleUnlock(user)">
-                            <i class="fa-solid fa-lock-open me-2"></i>Unlock
+                            <i class="fa-solid fa-lock-open me-2"></i>Unlock Account
                           </button>
                         </li>
                       </template>
-
-                      <li><hr class="dropdown-divider" /></li>
                       <li>
                         <button
                           class="dropdown-item text-danger"
@@ -547,6 +529,243 @@
         </nav> -->
       </div>
     </div>
+    <div
+      class="modal fade"
+      id="editUserModal"
+      tabindex="-1"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+          <div class="modal-header bg-secondary-subtle px-4 py-3 border-0">
+            <div class="d-flex align-items-center gap-2">
+              <div
+                class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+                style="width: 40px; height: 40px"
+              >
+                <i class="fa-solid fa-user-pen"></i>
+              </div>
+              <div>
+                <h5 class="modal-title fw-bold text-primary mb-0">Update User Profile</h5>
+                <small class="text-body-secondary">ID: #{{ editingUser.id }}</small>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body p-0">
+            <div class="row g-0 h-100">
+              <div class="col-12 col-lg-4 bg-light-subtle border-end border-light-subtle">
+                <div
+                  class="d-flex flex-column align-items-center text-center p-4 h-100 justify-content-center"
+                >
+                  <div class="position-relative mb-3">
+                    <img
+                      :src="previewAvt || editingUser.avt || 'https://via.placeholder.com/150'"
+                      class="rounded-circle shadow-sm border border-4 border-white object-fit-cover"
+                      style="width: 150px; height: 150px"
+                      alt="User Avatar"
+                    />
+                    <label
+                      for="uploadAvtInput"
+                      class="position-absolute bottom-0 end-0 bg-white text-primary border border-2 border-white rounded-circle shadow-sm d-flex align-items-center justify-content-center p-2 mb-1 me-1"
+                      style="width: 38px; height: 38px; cursor: pointer"
+                    >
+                      <i class="fa-solid fa-camera"></i>
+                    </label>
+                    <input
+                      type="file"
+                      id="uploadAvtInput"
+                      class="d-none"
+                      @change="handleFileUpload"
+                      accept="image/*"
+                    />
+                  </div>
+
+                  <h5 class="fw-bold text-dark mb-1">{{ editingUser.fullname }}</h5>
+                  <p class="text-secondary small mb-3">{{ editingUser.email }}</p>
+
+                  <div class="d-flex gap-2 justify-content-center w-100">
+                    <div class="bg-white rounded-3 p-2 border shadow-sm flex-fill">
+                      <small class="d-block text-muted" style="font-size: 0.7rem">BALANCE</small>
+                      <span class="fw-bold text-success">{{
+                        formatCurrency(editingUser.balance)
+                      }}</span>
+                    </div>
+                    <div class="bg-white rounded-3 p-2 border shadow-sm flex-fill">
+                      <small class="d-block text-muted" style="font-size: 0.7rem">CREATED</small>
+                      <span class="fw-bold text-dark">{{
+                        editingUser.createdAt?.split(" ")[0]
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-8 bg-white">
+                <div class="p-4">
+                  <form @submit.prevent="updateUser">
+                    <p class="text-uppercase fw-bold text-secondary small mb-3 border-bottom pb-2">
+                      <i class="fa-regular fa-id-card me-1"></i> Personal Info
+                    </p>
+
+                    <div class="row g-3 mb-4">
+                      <div class="col-12">
+                        <div class="form-floating">
+                          <input
+                            type="text"
+                            class="form-control bg-light-subtle"
+                            id="floatName"
+                            v-model="editingUser.fullname"
+                            placeholder="Fullname"
+                          />
+                          <label for="floatName">Full Name</label>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-floating">
+                          <input
+                            type="date"
+                            class="form-control bg-light-subtle"
+                            id="floatDob"
+                            v-model="editingUser.dateOfBirth"
+                          />
+                          <label for="floatDob">Date of Birth</label>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-floating">
+                          <select
+                            class="form-select bg-light-subtle"
+                            id="floatGender"
+                            v-model="editingUser.gender"
+                          >
+                            <option :value="0">Male</option>
+                            <option :value="1">Female</option>
+                            <option :value="2">Other</option>
+                          </select>
+                          <label for="floatGender">Gender</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p class="text-uppercase fw-bold text-secondary small mb-3 border-bottom pb-2">
+                      <i class="fa-solid fa-layer-group me-1"></i> Role & Status
+                    </p>
+
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label class="form-label small fw-bold text-secondary">User Role</label>
+                        <div class="btn-group w-100" role="group">
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="roleRadio"
+                            id="role0"
+                            :value="0"
+                            v-model="editingUser.role"
+                            autocomplete="off"
+                          />
+                          <label class="btn btn-outline-secondary btn-sm py-2" for="role0"
+                            >User</label
+                          >
+
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="roleRadio"
+                            id="role1"
+                            :value="1"
+                            v-model="editingUser.role"
+                            autocomplete="off"
+                          />
+                          <label class="btn btn-outline-secondary btn-sm py-2" for="role1"
+                            >Buyer</label
+                          >
+
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="roleRadio"
+                            id="role2"
+                            :value="2"
+                            v-model="editingUser.role"
+                            autocomplete="off"
+                          />
+                          <label class="btn btn-outline-secondary btn-sm py-2" for="role2"
+                            >Seller</label
+                          >
+                        </div>
+                      </div>
+
+                      <!-- <div class="col-md-6">
+                        <label class="form-label small fw-bold text-secondary"
+                          >Account Status</label
+                        >
+                        <div class="input-group">
+                          <span class="input-group-text bg-light-subtle border-end-0">
+                            <i
+                              class="fa-solid fa-toggle-on"
+                              :class="editingUser.status === 1 ? 'text-success' : 'text-danger'"
+                            ></i>
+                          </span>
+                          <select
+                            class="form-select bg-light-subtle border-start-0"
+                            v-model="editingUser.status"
+                          >
+                            <option :value="1" class="text-success fw-bold">Active</option>
+                            <option :value="0" class="text-danger fw-bold">Locked</option>
+                            <option value="Pending approval">Pending</option>
+                          </select>
+                        </div>
+                      </div> -->
+                    </div>
+
+                    <div class="mt-4">
+                      <div class="form-floating">
+                        <input
+                          type="text"
+                          class="form-control bg-light-subtle"
+                          id="floatAddress"
+                          v-model="editingUser.address"
+                          placeholder="Address"
+                        />
+                        <label for="floatAddress">Address</label>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer bg-white border-top px-4 py-3">
+            <button
+              type="button"
+              class="btn btn-danger rounded-pill px-4 fw-medium text-light"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"
+              @click="updateUser"
+            >
+              <i class="fa-regular fa-floppy-disk me-2"></i>Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -560,6 +779,10 @@ export default {
       search: "",
       statistics: [],
       searchTimeout: null,
+      editingUser: {}, // Object chứa user đang chỉnh sửa
+      previewAvt: null, // Link ảnh preview khi chọn file mới
+      selectedFile: null, // File thực tế để upload
+      modalInstance: null, // Biến giữ instance của Modal
     };
   },
   mounted() {
@@ -594,8 +817,8 @@ export default {
           return "Active";
         case 0:
           return "Inactive";
-        default:
-          return "Unknown";
+        case 2:
+          return "Locked";
       }
     },
     getStatusClass(status) {
@@ -604,8 +827,8 @@ export default {
           return "bg-success-subtle border-success-subtle text-success";
         case 0:
           return "bg-secondary-subtle border-secondary-subtle text-secondary";
-        // default:
-        //   return "bg-secondary-subtle border-secondary-subtle text-secondary";
+        case 2:
+          return "bg-danger-subtle border-danger-subtle text-danger";
       }
     },
     convertRole(roleId) {
@@ -713,14 +936,133 @@ export default {
           this.isLoading = false;
         });
     },
+
+    // 1. Hàm mở Modal và đổ dữ liệu
+    openEditModal(user) {
+      // Clone dữ liệu để không sửa trực tiếp vào bảng khi chưa lưu
+      this.editingUser = { ...user };
+
+      // Reset các biến upload ảnh
+      this.previewAvt = null;
+      this.selectedFile = null;
+
+      // Hiển thị Modal Bootstrap
+      const modalElement = document.getElementById("editUserModal");
+      // eslint-disable-next-line no-undef
+      this.modalInstance = new bootstrap.Modal(modalElement);
+      this.modalInstance.show();
+    },
+
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.selectedFile = file; // Lưu file vào biến để gửi lên server
+        this.previewAvt = URL.createObjectURL(file); // Tạo link ảnh ảo để xem trước
+      }
+    },
+
+    // Thêm vào trong methods: {}
+    toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    },
+
+    // Sửa lại hàm updateUser
+    async updateUser() {
+      if (!this.editingUser.id) return;
+
+      // Tạo object dữ liệu thường (JSON), KHÔNG dùng FormData
+      const dataToSend = {
+        fullname: this.editingUser.fullname,
+        phonenumber: this.editingUser.phonenumber || "",
+        address: this.editingUser.address || "",
+        gender: this.editingUser.gender,
+        role: this.editingUser.role,
+        status: this.editingUser.status,
+        dateOfBirth: this.editingUser.dateOfBirth || "",
+      };
+
+      if (this.selectedFile) {
+        try {
+          dataToSend.avt = await this.toBase64(this.selectedFile);
+        } catch (error) {
+          console.error("Lỗi chuyển đổi ảnh:", error);
+          return;
+        }
+      } else {
+        // Nếu không chọn ảnh mới, giữ nguyên link ảnh cũ (hoặc null)
+        dataToSend.avt = this.editingUser.avt;
+      }
+
+      this.isLoading = true;
+
+      // Gửi request dạng JSON (Axios mặc định gửi JSON)
+      axios
+        .put(`http://localhost:8081/api/admin/cap-nhat-user/${this.editingUser.id}`, dataToSend, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          alert("Cập nhật thông tin thành công!");
+          if (this.modalInstance) this.modalInstance.hide();
+          this.loadUserData();
+        })
+        .catch((err) => {
+          console.error("Lỗi cập nhật:", err);
+          const message = err.response?.data?.message || "Có lỗi xảy ra!";
+          alert(message);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    handleLock(user) {
+      if (!confirm(`Are you sure you want to block the account: ${user.fullname}?`)) return;
+      this.updateUserStatus(user.id, 2);
+    },
+
+    handleUnlock(user) {
+      if (!confirm(`Do you want to unlock the account: ${user.fullname}?`)) return;
+      this.updateUserStatus(user.id, 1);
+    },
+
+    updateUserStatus(userId, newStatus) {
+      this.isLoading = true;
+
+      const user = this.users.find((u) => u.id === userId);
+      const dataToSend = { ...user, status: newStatus };
+
+      axios
+        .put(`http://localhost:8081/api/admin/cap-nhat-user/${userId}`, dataToSend, {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then(() => {
+          if (newStatus === 2) alert("Account blocked successfully!");
+          else if (newStatus === 1) alert("Account unlocked!");
+
+          this.loadUserData();
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+          alert("An error occurred, please try again!");
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
   },
 };
 </script>
 
 <style scoped>
-/* Custom Scrollbar cho phần body lọc */
-.custom-scrollbar {
-  max-height: calc(100vh - 140px); /* Trừ đi header và footer */
+/* .custom-scrollbar {
+  max-height: calc(100vh - 140px);
   overflow-y: auto;
 }
 .custom-scrollbar::-webkit-scrollbar {
@@ -731,25 +1073,9 @@ export default {
   border-radius: 10px;
 }
 
-/* Style cho các nút chọn Role (Selection Chips) */
-.btn-check:checked + .btn-outline-light {
-  background-color: #e7f1ff; /* Nền xanh nhạt */
-  border-color: #0d6efd !important; /* Viền xanh */
-  color: #0d6efd !important; /* Chữ xanh */
-  font-weight: bold;
-}
-
-/* Hiệu ứng focus cho các input text */
 .form-control:focus,
 .form-select:focus {
   border-color: #0d6efd;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); /* Bóng mờ xanh nhạt */
-}
-
-/* Style cho các nút chọn nhanh thời gian */
-.active-pill {
-  background-color: #0d6efd !important;
-  color: white !important;
-  border-color: #0d6efd !important;
-}
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+} */
 </style>
