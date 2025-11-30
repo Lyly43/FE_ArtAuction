@@ -426,7 +426,6 @@ export default {
 </script>
 
 <style scoped>
-/* Tinh chỉnh icon prev/next của carousel để dễ nhìn trên nền sáng */
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   width: 2.5rem;

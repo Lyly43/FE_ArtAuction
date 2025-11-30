@@ -150,24 +150,6 @@
                   <div class="p-4 custom-scrollbar">
                     <div class="mb-4">
                       <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        <i class="fa-solid fa-magnifying-glass me-1"></i> Search
-                      </label>
-                      <div class="input-group">
-                        <span class="input-group-text bg-white text-secondary border-end-0"
-                          ><i class="fa-solid fa-gavel"></i
-                        ></span>
-                        <input
-                          type="text"
-                          class="form-control border-start-0 shadow-none ps-0"
-                          placeholder="Room Name or Room Code..."
-                        />
-                      </div>
-                    </div>
-
-                    <hr class="border-secondary opacity-10 my-4" />
-
-                    <div class="mb-4">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
                         <i class="fa-solid fa-signal me-1"></i> Room status
                       </label>
 
@@ -201,57 +183,6 @@
                             <i class="fa-solid fa-flag-checkered me-1"></i> Finished
                           </label>
                         </div>
-
-                        <!-- <div class="d-flex gap-3 mt-2 pt-2 border-top">
-                          <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="stCanceled" />
-                            <label class="form-check-label small text-muted" for="stCanceled"
-                              >Canceled</label
-                            >
-                          </div>
-                          <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="stDraft" />
-                            <label class="form-check-label small text-muted" for="stDraft"
-                              >Draft</label
-                            >
-                          </div>
-                        </div> -->
-                      </div>
-                    </div>
-
-                    <hr class="border-secondary opacity-10 my-4" />
-
-                    <div class="mb-4">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        Auction type
-                      </label>
-                      <div class="row g-2">
-                        <div class="col-6">
-                          <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="typeEnglish" />
-                            <label class="form-check-label" for="typeEnglish"
-                              >English Auction</label
-                            >
-                          </div>
-                        </div>
-                        <div class="col-6">
-                          <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="typeDutch" />
-                            <label class="form-check-label" for="typeDutch">Dutch Auction</label>
-                          </div>
-                        </div>
-                        <div class="col-6">
-                          <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="typeSealed" />
-                            <label class="form-check-label" for="typeSealed">Sealed Bid</label>
-                          </div>
-                        </div>
-                        <div class="col-6">
-                          <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="typeStream" />
-                            <label class="form-check-label" for="typeStream">Live Stream</label>
-                          </div>
-                        </div>
                       </div>
                     </div>
 
@@ -284,21 +215,6 @@
                     <hr class="border-secondary opacity-10 my-4" />
 
                     <div class="mb-2">
-                      <!-- <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        Chỉ số phòng
-                      </label> -->
-
-                      <!-- <div class="mb-3">
-                        <label class="form-label x-small text-secondary fw-bold"
-                          >Giá khởi điểm (Start Price)</label
-                        >
-                        <div class="input-group input-group-sm">
-                          <input type="text" class="form-control shadow-none" placeholder="Min" />
-                          <span class="input-group-text bg-light border-0 text-secondary">-</span>
-                          <input type="text" class="form-control shadow-none" placeholder="Max" />
-                        </div>
-                      </div> -->
-
                       <div>
                         <label class="form-label x-small text-secondary fw-bold"
                           >Number of participants</label
@@ -503,14 +419,6 @@
                       formatCurrency(room.currentPrice)
                     }}</span>
                   </div>
-                  <!-- <div class="col-6 col-md-3">
-                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
-                      >Start Price</span
-                    >
-                    <span class="fw-medium text-body-secondary">{{
-                      formatCurrency(room.startingPrice)
-                    }}</span>
-                  </div> -->
                 </div>
               </div>
             </div>
@@ -700,23 +608,4 @@ export default {
 };
 </script>
 
-<style>
-/* Custom Scrollbar cho phần body lọc */
-.custom-scrollbar {
-  max-height: calc(100vh - 140px);
-  overflow-y: auto;
-}
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #dee2e6;
-  border-radius: 10px;
-}
-
-.form-control:focus,
-.form-select:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
-}
-</style>
+<style></style>

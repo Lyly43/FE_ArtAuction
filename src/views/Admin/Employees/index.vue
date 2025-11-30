@@ -148,65 +148,6 @@
                   <div class="p-4 custom-scrollbar">
                     <div class="mb-4">
                       <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        <i class="fa-solid fa-id-card me-1"></i> Employee information
-                      </label>
-
-                      <div class="d-flex flex-column gap-2">
-                        <div class="input-group">
-                          <span class="input-group-text bg-white text-secondary border-end-0"
-                            ><i class="fa-regular fa-user"></i
-                          ></span>
-                          <input
-                            type="text"
-                            class="form-control border-start-0 shadow-none ps-0"
-                            placeholder="Employee name..."
-                          />
-                        </div>
-
-                        <div class="input-group">
-                          <span class="input-group-text bg-white text-secondary border-end-0"
-                            ><i class="fa-regular fa-envelope"></i
-                          ></span>
-                          <input
-                            type="text"
-                            class="form-control border-start-0 shadow-none ps-0"
-                            placeholder="Email..."
-                          />
-                        </div>
-
-                        <div class="row g-2">
-                          <div class="col-6">
-                            <div class="input-group">
-                              <span class="input-group-text bg-white text-secondary border-end-0"
-                                ><i class="fa-solid fa-phone"></i
-                              ></span>
-                              <input
-                                type="text"
-                                class="form-control border-start-0 shadow-none ps-0"
-                                placeholder="PhoneNumber"
-                              />
-                            </div>
-                          </div>
-                          <div class="col-6">
-                            <div class="input-group">
-                              <span class="input-group-text bg-white text-secondary border-end-0"
-                                ><i class="fa-solid fa-hashtag"></i
-                              ></span>
-                              <input
-                                type="text"
-                                class="form-control border-start-0 shadow-none ps-0"
-                                placeholder="Emp ID"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <hr class="border-secondary opacity-10 my-4" />
-
-                    <div class="mb-4">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
                         <i class="fa-solid fa-user-tag me-1"></i> Roles and Powers
                       </label>
                       <small class="text-muted d-block mb-2 fst-italic" style="font-size: 0.75rem"
@@ -367,13 +308,6 @@
                         <input type="date" class="form-control shadow-none" />
                         <span class="input-group-text bg-light text-secondary">To</span>
                         <input type="date" class="form-control shadow-none" />
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="checkLastUpdated" />
-                        <label class="form-check-label small text-secondary" for="checkLastUpdated">
-                          Filter by last updated date
-                        </label>
                       </div>
                     </div>
                   </div>

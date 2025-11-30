@@ -144,82 +144,6 @@
                 <div class="offcanvas-body p-0">
                   <div class="p-4 custom-scrollbar">
                     <div class="mb-4">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        <i class="fa-solid fa-magnifying-glass me-1"></i> Search details
-                      </label>
-                      <div class="d-flex flex-column gap-2">
-                        <div class="input-group">
-                          <span class="input-group-text bg-white text-secondary border-end-0"
-                            ><i class="fa-regular fa-user"></i
-                          ></span>
-                          <input
-                            type="text"
-                            class="form-control border-start-0 shadow-none ps-0"
-                            placeholder="Username..."
-                          />
-                        </div>
-                        <div class="input-group">
-                          <span class="input-group-text bg-white text-secondary border-end-0"
-                            ><i class="fa-regular fa-envelope"></i
-                          ></span>
-                          <input
-                            type="text"
-                            class="form-control border-start-0 shadow-none ps-0"
-                            placeholder="Email..."
-                          />
-                        </div>
-                        <div class="input-group">
-                          <span class="input-group-text bg-white text-secondary border-end-0"
-                            ><i class="fa-solid fa-phone"></i
-                          ></span>
-                          <input
-                            type="text"
-                            class="form-control border-start-0 shadow-none ps-0"
-                            placeholder="Phone number..."
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <hr class="border-secondary opacity-10 my-4" />
-
-                    <div class="mb-4">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2"
-                        >Role</label
-                      >
-                      <div class="row g-2">
-                        <div class="col-6">
-                          <input
-                            type="checkbox"
-                            class="btn-check"
-                            id="roleBuyer"
-                            autocomplete="off"
-                          />
-                          <label
-                            class="btn btn-outline-light text-dark border w-100 d-flex align-items-center justify-content-center gap-2"
-                            for="roleBuyer"
-                          >
-                            <i class="fa-solid fa-bag-shopping text-info"></i> Buyer
-                          </label>
-                        </div>
-                        <div class="col-6">
-                          <input
-                            type="checkbox"
-                            class="btn-check"
-                            id="roleSeller"
-                            autocomplete="off"
-                          />
-                          <label
-                            class="btn btn-outline-light text-dark border w-100 d-flex align-items-center justify-content-center gap-2"
-                            for="roleSeller"
-                          >
-                            <i class="fa-solid fa-store text-warning"></i> Seller
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mb-4">
                       <label class="form-label fw-bold text-uppercase small text-secondary mb-2"
                         >Status</label
                       >
@@ -345,13 +269,6 @@
                         <button class="btn btn-sm btn-light border text-secondary">
                           This month
                         </button>
-                      </div>
-
-                      <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0"
-                          ><i class="fa-regular fa-calendar"></i
-                        ></span>
-                        <input type="date" class="form-control border-start-0 shadow-none" />
                       </div>
                     </div>
                   </div>

@@ -146,83 +146,6 @@
                 <div class="offcanvas-body p-0">
                   <div class="p-4 custom-scrollbar">
                     <div class="mb-4">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        <i class="fa-solid fa-user-tag me-1"></i> Buyer Information
-                      </label>
-
-                      <div class="d-flex flex-column gap-2">
-                        <!-- <div class="input-group">
-                          <span class="input-group-text bg-white text-secondary border-end-0"
-                            ><i class="fa-solid fa-magnifying-glass"></i
-                          ></span>
-                          <input
-                            type="text"
-                            class="form-control border-start-0 shadow-none ps-0"
-                            placeholder="Tên, Email hoặc SĐT..."
-                          />
-                        </div> -->
-
-                        <div class="input-group">
-                          <span class="input-group-text bg-white text-secondary border-end-0"
-                            ><i class="fa-solid fa-id-card"></i
-                          ></span>
-                          <input
-                            type="text"
-                            class="form-control border-start-0 shadow-none ps-0"
-                            placeholder="Buyer ID (#)"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <hr class="border-secondary opacity-10 my-4" />
-
-                    <div class="mb-4">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        <i class="fa-solid fa-image me-1"></i> Related works
-                      </label>
-                      <div class="row g-2">
-                        <!-- <div class="col-12">
-                          <div class="input-group">
-                            <span class="input-group-text bg-white text-secondary border-end-0"
-                              ><i class="fa-solid fa-palette"></i
-                            ></span>
-                            <input
-                              type="text"
-                              class="form-control border-start-0 shadow-none ps-0"
-                              placeholder="Name of the work..."
-                            />
-                          </div>
-                        </div> -->
-                        <div class="col-6">
-                          <div class="input-group">
-                            <span class="input-group-text bg-white text-secondary border-end-0"
-                              ><i class="fa-solid fa-palette"></i
-                            ></span>
-                            <input
-                              type="text"
-                              class="form-control shadow-none"
-                              placeholder="Artwork ID"
-                            />
-                          </div>
-                        </div>
-                        <!-- <div class="col-6">
-                          <input
-                            type="text"
-                            class="form-control shadow-none"
-                            placeholder="Tên nghệ sĩ"
-                          />
-                        </div> -->
-                      </div>
-                    </div>
-
-                    <hr class="border-secondary opacity-10 my-4" />
-
-                    <div class="mb-4">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        Status and Method
-                      </label>
-
                       <div class="mb-3">
                         <label class="form-label fw-bold text-uppercase small text-secondary mb-2"
                           >Status</label
@@ -303,60 +226,11 @@
                           &gt; 10M
                         </button>
                       </div>
-
-                      <div class="input-group">
-                        <input type="number" class="form-control shadow-none" placeholder="Min" />
-                        <span
-                          class="input-group-text bg-white border-start-0 border-end-0 text-secondary"
-                          >-</span
-                        >
-                        <input type="number" class="form-control shadow-none" placeholder="Max" />
-                      </div>
                     </div>
 
                     <hr class="border-secondary opacity-10 my-4" />
 
                     <div class="mb-2">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        <i class="fa-regular fa-calendar-check me-1"></i> Creation time
-                      </label>
-
-                      <div class="btn-group w-100 mb-2" role="group">
-                        <input
-                          type="radio"
-                          class="btn-check"
-                          name="dateQuick"
-                          id="dateToday"
-                          autocomplete="off"
-                        />
-                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateToday"
-                          >Today</label
-                        >
-
-                        <input
-                          type="radio"
-                          class="btn-check"
-                          name="dateQuick"
-                          id="dateWeek"
-                          autocomplete="off"
-                        />
-                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateWeek"
-                          >This week</label
-                        >
-
-                        <input
-                          type="radio"
-                          class="btn-check"
-                          name="dateQuick"
-                          id="dateMonth"
-                          autocomplete="off"
-                          checked
-                        />
-                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateMonth"
-                          >This month</label
-                        >
-                      </div>
-
                       <div class="input-group input-group-sm">
                         <span class="input-group-text bg-light text-secondary">From</span>
                         <input type="date" class="form-control shadow-none" />

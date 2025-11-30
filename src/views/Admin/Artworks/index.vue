@@ -150,63 +150,6 @@
                 <div class="offcanvas-body p-0">
                   <div class="p-4 custom-scrollbar">
                     <div class="mb-4">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        <i class="fa-solid fa-circle-info me-1"></i> Basic information
-                      </label>
-
-                      <div class="d-flex flex-column gap-2">
-                        <div class="input-group">
-                          <span class="input-group-text bg-white text-secondary border-end-0"
-                            ><i class="fa-solid fa-heading"></i
-                          ></span>
-                          <input
-                            type="text"
-                            class="form-control border-start-0 shadow-none ps-0"
-                            placeholder="Name of the work..."
-                          />
-                        </div>
-
-                        <div class="input-group">
-                          <span class="input-group-text bg-white text-secondary border-end-0"
-                            ><i class="fa-solid fa-user-pen"></i
-                          ></span>
-                          <input
-                            type="text"
-                            class="form-control border-start-0 shadow-none ps-0"
-                            placeholder="Author / Artist Name..."
-                          />
-                        </div>
-
-                        <div class="row g-2">
-                          <div class="col-6">
-                            <div class="input-group">
-                              <span class="input-group-text bg-white text-secondary border-end-0"
-                                ><i class="fa-solid fa-fingerprint"></i
-                              ></span>
-                              <input
-                                type="text"
-                                class="form-control border-start-0 shadow-none ps-0"
-                                placeholder="ID (#)"
-                              />
-                            </div>
-                          </div>
-                          <div class="col-6">
-                            <div class="input-group">
-                              <span class="input-group-text bg-white text-secondary border-end-0"
-                                ><i class="fa-regular fa-calendar"></i
-                              ></span>
-                              <input
-                                type="number"
-                                class="form-control border-start-0 shadow-none ps-0"
-                                placeholder="Year of composition"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mb-4">
                       <div class="row g-2">
                         <div class="col-6">
                           <label class="form-label x-small fw-bold text-secondary"
@@ -220,90 +163,6 @@
                             <option value="Modern">Hiện đại</option>
                             <option value="Traditional">Truyền thống</option>
                           </select>
-                        </div>
-                        <div class="col-6">
-                          <label class="form-label x-small fw-bold text-secondary">Material</label>
-                          <select class="form-select shadow-none bg-light border-0">
-                            <option selected value="">Tất cả</option>
-                            <option value="Oil">Sơn dầu</option>
-                            <option value="Acrylic">Acrylic</option>
-                            <option value="Watercolor">Màu nước</option>
-                            <option value="Ink">Mực</option>
-                            <option value="Mixed">Tổng hợp</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <hr class="border-secondary opacity-10 my-4" />
-
-                    <div class="mb-4">
-                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        <i class="fa-solid fa-ruler-combined me-1"></i> Category and Size
-                      </label>
-
-                      <div class="mb-3">
-                        <div class="btn-group w-100" role="group">
-                          <input
-                            type="radio"
-                            class="btn-check"
-                            name="typeArt"
-                            id="typeOriginal"
-                            autocomplete="off"
-                            checked
-                          />
-                          <label class="btn btn-outline-secondary btn-sm" for="typeOriginal"
-                            >Original</label
-                          >
-
-                          <input
-                            type="radio"
-                            class="btn-check"
-                            name="typeArt"
-                            id="typePrint"
-                            autocomplete="off"
-                          />
-                          <label class="btn btn-outline-secondary btn-sm" for="typePrint"
-                            >Print</label
-                          >
-
-                          <input
-                            type="radio"
-                            class="btn-check"
-                            name="typeArt"
-                            id="typeLimited"
-                            autocomplete="off"
-                          />
-                          <label class="btn btn-outline-secondary btn-sm" for="typeLimited"
-                            >Limited</label
-                          >
-                        </div>
-                      </div>
-
-                      <div class="row g-2">
-                        <div class="col-6">
-                          <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-light border-0 text-secondary fw-bold"
-                              >W</span
-                            >
-                            <input
-                              type="number"
-                              class="form-control border-0 bg-light shadow-none"
-                              placeholder="Width (cm)"
-                            />
-                          </div>
-                        </div>
-                        <div class="col-6">
-                          <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-light border-0 text-secondary fw-bold"
-                              >H</span
-                            >
-                            <input
-                              type="number"
-                              class="form-control border-0 bg-light shadow-none"
-                              placeholder="Height (cm)"
-                            />
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -674,40 +533,7 @@ export default {
           this.isLoading = false;
         });
     },
-    // handleDelete(item) {
-    //   if (confirm("Are you sure you want to delete this artwork?")) {
-    //     this.artworks = this.artworks.filter((a) => a.id !== item.id);
-    //   }
-    // },
   },
 };
 </script>
-<style>
-/* Custom Scrollbar cho phần body lọc */
-.custom-scrollbar {
-  max-height: calc(100vh - 140px); /* Trừ đi header và footer */
-  overflow-y: auto;
-}
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #dee2e6;
-  border-radius: 10px;
-}
-
-/* Style cho các nút chọn Role (Selection Chips) */
-.btn-check:checked + .btn-outline-light {
-  background-color: #e7f1ff; /* Nền xanh nhạt */
-  border-color: #0d6efd !important; /* Viền xanh */
-  color: #0d6efd !important; /* Chữ xanh */
-  font-weight: bold;
-}
-
-/* Hiệu ứng focus cho các input text */
-.form-control:focus,
-.form-select:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); /* Bóng mờ xanh nhạt */
-}
-</style>
+<style></style>

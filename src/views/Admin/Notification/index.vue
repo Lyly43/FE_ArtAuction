@@ -11,7 +11,7 @@
     </div>
 
     <div class="row g-3 mb-4">
-      <div class="col-12 col-md-6 col-xl-3">
+      <div class="col-12 col-md-6 col-xl-4">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="col-12 col-md-6 col-xl-3">
+      <div class="col-12 col-md-6 col-xl-4">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <div class="col-12 col-md-6 col-xl-3">
+      <div class="col-12 col-md-6 col-xl-4">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
@@ -78,7 +78,7 @@
         </div>
       </div>
 
-      <div class="col-12 col-md-6 col-xl-3">
+      <!-- <div class="col-12 col-md-6 col-xl-3">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
@@ -101,7 +101,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <div class="card border-0 shadow-sm mb-4">
@@ -133,7 +133,7 @@
       </div>
     </div>
 
-    <div class="d-flex no-scrollbar flex-column gap-3 overflow-y-auto" style="max-height: 400px">
+    <div class="d-flex no-scrollbar flex-column gap-3 overflow-y-auto" style="max-height: 500px">
       <div v-if="isLoading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status"></div>
       </div>
@@ -142,7 +142,7 @@
         <p>Không có thông báo nào</p>
       </div>
 
-      <template v-else>
+      <div v-else class="d-flex flex-column gap-3">
         <div
           v-for="notification in notifications"
           :key="notification.id"
@@ -154,8 +154,9 @@
                 <h5 class="fw-bold mb-0">{{ notification.title }}</h5>
                 <span
                   class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1"
+                  :class="getStatusClass(notification.notificationStatus)"
                 >
-                  Sent
+                  {{ convertStatus(notification.notificationStatus) }}
                 </span>
               </div>
 
@@ -186,13 +187,12 @@
                   class="dropdown-menu dropdown-menu-end shadow border-0"
                   style="border-radius: 8px"
                 >
-                  <li>
+                  <!-- <li>
                     <button class="dropdown-item" @click="viewDetail(notification)">
                       <i class="fa-solid fa-circle-info me-2 text-primary"></i>
                       See Details
                     </button>
-                  </li>
-
+                  </li> -->
                   <li><hr class="dropdown-divider" /></li>
 
                   <li>
@@ -212,61 +212,6 @@
               <i class="fa-regular fa-clock me-2"></i>
               <span>{{ formatDate(notification.notificationTime) }}</span>
             </div>
-          </div>
-        </div>
-      </template>
-
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <div class="d-flex align-items-center gap-3">
-              <h5 class="fw-bold mb-0">Phòng đấu giá sắp bắt đầu</h5>
-              <span
-                class="badge bg-success-subtle text-success rounded-pill border border-success-subtle"
-                >Sent</span
-              >
-            </div>
-            <div class="d-flex align-items-center text-body-secondary">
-              <i class="fa-solid fa-user-group me-2"></i>
-              <small>Receiver: <strong>VIP Members</strong></small>
-            </div>
-          </div>
-
-          <p class="mb-2 text-dark">
-            Phòng VIP 01 sẽ bắt đầu phiên đấu giá vào lúc 10:00 ngày 26/03/2024
-          </p>
-
-          <div class="d-flex align-items-center text-muted small">
-            <i class="fa-regular fa-clock me-2"></i>
-            <span>25/03/2024 09:00</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <div class="d-flex align-items-center gap-3">
-              <h5 class="fw-bold mb-0">Cảnh báo vi phạm</h5>
-              <span
-                class="badge bg-danger-subtle text-danger rounded-pill border border-danger-subtle"
-                >Failed</span
-              >
-            </div>
-            <div class="d-flex align-items-center text-body-secondary">
-              <i class="fa-solid fa-user me-2"></i>
-              <small>Receiver: <strong>User #123</strong></small>
-            </div>
-          </div>
-
-          <p class="mb-2 text-dark">Tài khoản của bạn bị tạm khóa do vi phạm chính sách.</p>
-
-          <div class="d-flex align-items-center text-muted small">
-            <i class="fa-regular fa-clock me-2"></i>
-            <span>25/03/2024 08:30</span>
-            <span class="ms-3 text-danger"
-              ><i class="fa-solid fa-circle-exclamation me-1"></i>Network Error</span
-            >
           </div>
         </div>
       </div>
@@ -346,7 +291,6 @@ export default {
     // Hàm xử lý khi bấm Xem chi tiết
     viewDetail(notification) {
       console.log("Xem chi tiết ID:", notification.id);
-      // Logic mở modal hoặc chuyển trang của bạn ở đây
       alert("Xem chi tiết: " + notification.title);
     },
 
@@ -362,6 +306,27 @@ export default {
         return `${hours}:${minutes} ${day}/${month}/${year}`;
       } catch {
         return dateString;
+      }
+    },
+
+    convertStatus(status) {
+      switch (status) {
+        case 1:
+          return "Sent";
+        case 0:
+          return "Failed";
+        default:
+          return "Unknown";
+      }
+    },
+    getStatusClass(status) {
+      switch (status) {
+        case 1:
+          return "bg-success-subtle border-success-subtle text-success";
+        case 0:
+          return "bg-danger-subtle border-danger-subtle text-danger";
+        // default:
+        //   return "bg-secondary-subtle border-secondary-subtle text-secondary";
       }
     },
   },
