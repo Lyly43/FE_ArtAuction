@@ -280,37 +280,42 @@
       </div>
 
       <div v-else class="col-12" v-for="room in sortedAuctionRooms" :key="room.id">
-        <router-link
-          :to="`/admin/testlivestream/${room.id}`"
-          class="card border-0 shadow-sm hover-lift transition-base h-100 text-decoration-none position-relative"
+        <div
+          class="card border-0 shadow-sm h-100 text-decoration-none position-relative"
           :class="getBorderClass(room.status)"
-          style="cursor: pointer"
+          style="cursor: pointer; overflow: visible"
+          @click="$router.push(`/admin/testlivestream/${room.id}`)"
         >
-          <div class="dropdown position-absolute top-0 end-0 mt-3 me-3" style="z-index: 10">
+          <div class="dropdown position-absolute top-0 end-0 mt-3 me-3" style="z-index: 100">
             <button
               class="btn btn-light btn-sm rounded-circle shadow-sm d-flex align-items-center justify-content-center"
               type="button"
               data-bs-toggle="dropdown"
+              data-bs-display="static"
               aria-expanded="false"
               style="width: 32px; height: 32px; background-color: rgba(255, 255, 255, 0.9)"
-              @click.prevent
+              @click.stop
             >
               <i class="fa-solid fa-ellipsis text-secondary"></i>
             </button>
 
-            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg">
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg" style="z-index: 1000">
               <li v-if="room.status === 'live' || room.status === 'streaming'">
                 <a
                   class="dropdown-item py-2 fw-bold text-danger"
                   href="#"
-                  @click.prevent="goToLive(room.id)"
+                  @click.prevent.stop="goToLive(room.id)"
                 >
                   <i class="fa-solid fa-video me-2 animate-pulse"></i>Vào xem Live
                 </a>
               </li>
 
               <li>
-                <router-link :to="`/admin/auction-detail/${room.id}`" class="dropdown-item py-2">
+                <router-link
+                  :to="`/admin/auction-detail/${room.id}`"
+                  class="dropdown-item py-2"
+                  @click.stop
+                >
                   <i class="fa-regular fa-eye me-2 text-primary"></i>See Details
                 </router-link>
               </li>
@@ -319,6 +324,7 @@
                   v-if="room.status === 2"
                   :to="`/admin/edit-auction-room/${room.id}`"
                   class="dropdown-item py-2"
+                  @click.stop
                 >
                   <i class="fa-solid fa-pen-to-square me-2"></i>Edit
                 </router-link>
@@ -328,6 +334,7 @@
                   class="dropdown-item py-2 text-muted opacity-50"
                   style="cursor: not-allowed"
                   title="Only upcoming room edits can be made."
+                  @click.stop
                 >
                   <i class="fa-solid fa-pen-to-square me-2"></i>Edit
                 </span>
@@ -339,19 +346,20 @@
                 <a
                   class="dropdown-item py-2 text-secondary"
                   href="#"
-                  @click.prevent="deleteRoom(room.id)"
+                  @click.prevent.stop="deleteRoom(room.id)"
                 >
                   <i class="fa-regular fa-trash-can me-2"></i>Delete
                 </a>
               </li>
             </ul>
           </div>
-          <div class="card-body p-4">
+
+          <div class="card-body" style="padding: 50px 20px">
             <div class="row align-items-center">
               <div class="col-12 col-lg-4 mb-3 mb-lg-0 border-end-lg pe-lg-4">
                 <div class="d-flex align-items-center gap-3">
                   <img
-                    :src="room.imageAuctionRoom"
+                    :src="room.imageAuctionRoom || '/src/assets/img/4.png'"
                     alt="Art"
                     class="rounded-3 shadow-sm border object-fit-cover flex-shrink-0"
                     style="width: 80px; height: 80px"
@@ -418,20 +426,11 @@
                       formatCurrency(room.currentPrice)
                     }}</span>
                   </div>
-
-                  <!-- <div class="col-6 col-md-3">
-                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
-                      >Start Price</span
-                    >
-                    <span class="fw-medium text-body-secondary">{{
-                      formatCurrency(room.startingPrice)
-                    }}</span>
-                  </div> -->
                 </div>
               </div>
             </div>
           </div>
-        </router-link>
+        </div>
       </div>
 
       <div v-if="!isLoading && auctionRooms.length === 0" class="text-center py-5">
