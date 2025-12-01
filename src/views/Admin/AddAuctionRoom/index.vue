@@ -406,51 +406,6 @@
                   </select>
                 </div> -->
               </div>
-
-              <!-- Ảnh đại diện phòng -->
-              <div class="col-12">
-                <label class="form-label fw-bold small text-secondary text-uppercase">
-                  Cover Image
-                </label>
-
-                <div
-                  class="border rounded-3 d-flex flex-column align-items-center justify-content-center bg-light position-relative overflow-hidden"
-                  style="height: 400px; border-style: dashed !important; cursor: pointer"
-                  @click="$refs.fileInput.click()"
-                >
-                  <img
-                    v-if="previewImage"
-                    :src="previewImage"
-                    class="w-100 h-100 object-fit-cover position-absolute"
-                    alt="Cover Preview"
-                    loading="lazy"
-                  />
-
-                  <div v-else class="text-center text-muted">
-                    <i class="fa-solid fa-cloud-arrow-up fs-1 mb-2"></i>
-                    <p class="mb-0 small fw-medium">Click to upload photo</p>
-                    <small style="font-size: 0.7rem">Support: JPG, PNG, WEBP</small>
-                  </div>
-
-                  <input
-                    type="file"
-                    ref="fileInput"
-                    class="d-none"
-                    accept="image/*"
-                    @change="handleFileUpload"
-                  />
-                </div>
-
-                <!-- <div class="mt-2">
-                  <input
-                    type="text"
-                    class="form-control form-control-sm bg-light border-0"
-                    placeholder="Hoặc dán đường dẫn ảnh vào đây..."
-                    v-model="roomForm.imageAuctionRoom"
-                    @input="previewImage = roomForm.imageAuctionRoom"
-                  />
-                </div> -->
-              </div>
             </div>
           </div>
         </div>
@@ -463,75 +418,37 @@
                   class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center me-3"
                   style="width: 48px; height: 48px"
                 >
-                  <i class="fa-solid fa-bell fs-5"></i>
+                  <i class="fa-solid fa-images fs-5"></i>
                 </div>
-                <h5 class="fw-bold mb-0">Finance & Announcements</h5>
+                <h5 class="fw-bold mb-0">Cover image</h5>
               </div>
 
-              <div class="row g-3 mb-4">
-                <div class="col-6">
-                  <label class="form-label fw-bold small text-secondary text-uppercase"
-                    >Deposit (VND)</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control bg-light border-0"
-                    placeholder="VD: 200.000"
-                    v-model="roomForm.depositAmount"
-                    required
-                  />
+              <div
+                class="border rounded-3 d-flex flex-column align-items-center justify-content-center bg-light position-relative overflow-hidden"
+                style="height: 400px; border-style: dashed !important; cursor: pointer"
+                @click="$refs.fileInput.click()"
+              >
+                <img
+                  v-if="previewImage"
+                  :src="previewImage"
+                  class="w-100 h-100 object-fit-cover position-absolute"
+                  alt="Cover Preview"
+                  loading="lazy"
+                />
+
+                <div v-else class="text-center text-muted">
+                  <i class="fa-solid fa-cloud-arrow-up fs-1 mb-2"></i>
+                  <p class="mb-0 small fw-medium">Click to upload photo</p>
+                  <small style="font-size: 0.7rem">Support: JPG, PNG, WEBP</small>
                 </div>
-                <div class="col-6">
-                  <label class="form-label fw-bold small text-secondary text-uppercase"
-                    >Payment due date (days)</label
-                  >
-                  <input
-                    type="number"
-                    class="form-control bg-light border-0"
-                    value="3"
-                    v-model="roomForm.paymentDeadlineDays"
-                    required
-                  />
-                </div>
-              </div>
 
-              <hr class="text-secondary opacity-25" />
-
-              <div class="mb-3">
-                <label class="form-label fw-bold small text-secondary text-uppercase"
-                  >Advance Notice (Minutes)</label
-                >
-                <input type="number" class="form-control bg-light border-0" placeholder="VD: 15" />
-              </div>
-
-              <div class="list-group">
-                <label
-                  class="list-group-item list-group-item-action border-0 rounded px-2 d-flex justify-content-between align-items-center mb-1"
-                >
-                  <div>
-                    <p class="mb-0 fw-medium">Notice when finished</p>
-                    <small class="text-muted" style="font-size: 0.75rem"
-                      >Send notification to winner</small
-                    >
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" checked />
-                  </div>
-                </label>
-
-                <label
-                  class="list-group-item list-group-item-action border-0 rounded px-2 d-flex justify-content-between align-items-center"
-                >
-                  <div>
-                    <p class="mb-0 fw-medium">Show publicly now</p>
-                    <small class="text-muted" style="font-size: 0.75rem"
-                      >Users can see this room</small
-                    >
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" checked />
-                  </div>
-                </label>
+                <input
+                  type="file"
+                  ref="fileInput"
+                  class="d-none"
+                  accept="image/*"
+                  @change="handleFileUpload"
+                />
               </div>
             </div>
           </div>
@@ -562,7 +479,9 @@ export default {
       search: "",
       isLoadingArtworks: false,
       scheduleList: [],
+      selectedFile: null,
       previewImage: null,
+
       roomForm: {
         roomName: "",
         type: "",
@@ -574,6 +493,7 @@ export default {
         stoppedAt: "",
         status: 2,
         viewCount: 0,
+
         imageAuctionRoom: "",
       },
     };
@@ -624,7 +544,9 @@ export default {
               name: item.title,
               author: item.author,
               type: item.paintingGenre,
+
               category: this.mapCategory(item.paintingGenre, item.material),
+
               img: item.avtArtwork,
               size: item.size,
               basePrice: item.startedPrice,
@@ -700,22 +622,26 @@ export default {
     handleFileUpload(event) {
       const file = event.target.files[0];
       if (file) {
-        // Tạo URL giả lập để xem trước ngay lập tức
+        // Tạo preview để hiển thị ngay lập tức
         this.previewImage = URL.createObjectURL(file);
+
+        // Lưu file gốc để chuẩn bị upload
+        this.selectedFile = file;
       }
     },
 
     submitForm() {
       if (!this.roomForm.roomName || !this.roomForm.adminId) {
-        alert("Vui lòng nhập tên phòng và Admin ID!");
+        alert("Please enter room name and Admin ID!");
         return;
       }
+
       if (!this.roomForm.startedAt || !this.roomForm.stoppedAt) {
-        alert("Vui lòng chọn thời gian bắt đầu và kết thúc!");
+        alert("Please select start and end time!");
         return;
       }
       if (this.scheduleList.length === 0) {
-        alert("Vui lòng thêm ít nhất 1 tác phẩm vào phiên đấu giá!");
+        alert("Please add at least 1 piece to the auction!");
         return;
       }
 
@@ -757,16 +683,17 @@ export default {
           },
         })
         .then((res) => {
-          alert("🎉 Tạo phòng đấu giá thành công!");
+          alert("Auction room created successfully!");
           this.$router.push("/admin/management-auction");
         })
         .catch((err) => {
-          console.error("Lỗi tạo phòng:", err);
-          const message = err.response?.data?.message || "Có lỗi xảy ra khi tạo phòng!";
+          console.error("Error", err);
+          const message =
+            err.response?.data?.message || "An error occurred while creating the room!";
           if (err.response?.data?.errors) {
-            alert("Lỗi dữ liệu: " + JSON.stringify(err.response.data.errors));
+            alert("Data error: " + JSON.stringify(err.response.data.errors));
           } else {
-            alert("❌ Thất bại: " + message);
+            alert("Failure: " + message);
           }
         })
         .finally(() => {

@@ -351,7 +351,7 @@
               <div class="col-12 col-lg-4 mb-3 mb-lg-0 border-end-lg pe-lg-4">
                 <div class="d-flex align-items-center gap-3">
                   <img
-                    :src="room.imageAuctionRoom || '/src/assets/img/4.png'"
+                    :src="room.imageAuctionRoom"
                     alt="Art"
                     class="rounded-3 shadow-sm border object-fit-cover flex-shrink-0"
                     style="width: 80px; height: 80px"
@@ -374,7 +374,6 @@
                         {{ convertStatus(room.status) }}
                       </span>
                     </div>
-                    <p class="my-3">{{ room.id }}</p>
 
                     <small class="text-muted">
                       <i class="fa-solid fa-tag me-1"></i>{{ room.type }}
@@ -419,6 +418,15 @@
                       formatCurrency(room.currentPrice)
                     }}</span>
                   </div>
+
+                  <!-- <div class="col-6 col-md-3">
+                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
+                      >Start Price</span
+                    >
+                    <span class="fw-medium text-body-secondary">{{
+                      formatCurrency(room.startingPrice)
+                    }}</span>
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -579,7 +587,7 @@ export default {
         });
     },
     deleteRoom(roomId) {
-      if (!confirm(`Bạn có chắc chắn muốn xóa phòng này?`)) return;
+      if (!confirm(`Are you sure you want to delete this room?`)) return;
 
       axios
         .delete(`http://localhost:8081/api/admin/auction-rooms/xoa/${roomId}`, {
@@ -588,12 +596,12 @@ export default {
           },
         })
         .then(() => {
-          alert("Đã xóa thành công!");
+          alert("Deleted successfully!");
           this.loadAuctionData();
         })
         .catch((err) => {
-          console.error("Lỗi khi xóa:", err);
-          const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+          console.error("Error:", err);
+          const message = err.response?.data?.message || "An error occurred while deleting!";
           alert(message);
         });
     },

@@ -39,9 +39,7 @@
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Sent</h6>
                 <h3 class="fw-bold mb-0">
-                  {{
-                    (statistical && statistical.statusCounts && statistical.statusCounts["0"]) || 0
-                  }}
+                  {{ statistical && statistical.statusCounts && statistical.statusCounts["1"] }}
                 </h3>
               </div>
               <div
@@ -62,9 +60,7 @@
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Failed</h6>
                 <h3 class="fw-bold mb-0">
-                  {{
-                    (statistical && statistical.statusCounts && statistical.statusCounts["1"]) || 0
-                  }}
+                  {{ statistical && statistical.statusCounts && statistical.statusCounts["0"] }}
                 </h3>
               </div>
               <div
@@ -113,20 +109,24 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
               </span>
               <input
+                v-model="search"
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
                 placeholder="Search by notification content..."
+                @input="handleSearch"
               />
             </div>
           </div>
           <div class="col-12 col-md-4">
             <select
+              v-model="selectedStatus"
+              @change="handleFilter"
               class="form-select rounded-pill border-0 bg-light shadow-none"
               aria-label="Filter select"
             >
-              <option selected>All Status</option>
+              <option value="">All Status</option>
               <option value="1">Sent</option>
-              <option value="2">Failed</option>
+              <option value="0">Failed</option>
             </select>
           </div>
         </div>
@@ -139,7 +139,7 @@
       </div>
 
       <div v-else-if="notifications.length === 0" class="text-center py-5 text-muted">
-        <p>Không có thông báo nào</p>
+        <p>No announcements</p>
       </div>
 
       <div v-else class="d-flex flex-column gap-3">
@@ -193,7 +193,7 @@
                       See Details
                     </button>
                   </li> -->
-                  <li><hr class="dropdown-divider" /></li>
+                  <!-- <li><hr class="dropdown-divider" /></li> -->
 
                   <li>
                     <button
@@ -226,6 +226,8 @@ export default {
       statistical: {},
       isLoading: false,
       notifications: [],
+      search: "",
+      selectedStatus: "",
     };
   },
 
@@ -291,6 +293,7 @@ export default {
     // Hàm xử lý khi bấm Xem chi tiết
     viewDetail(notification) {
       console.log("Xem chi tiết ID:", notification.id);
+
       alert("Xem chi tiết: " + notification.title);
     },
 
@@ -328,6 +331,77 @@ export default {
         // default:
         //   return "bg-secondary-subtle border-secondary-subtle text-secondary";
       }
+    },
+
+    handleSearch() {
+      // Xóa bộ đếm cũ nếu người dùng gõ tiếp khi chưa hết giờ
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      // Thiết lập bộ đếm mới (ví dụ: chờ 500ms)
+      this.searchTimeout = setTimeout(() => {
+        this.performSearchApi();
+      }, 500);
+    },
+
+    performSearchApi() {
+      if (!this.search.trim()) {
+        this.loadNotificationData();
+        return;
+      }
+      this.isLoading = true;
+      axios
+        .get(`http://localhost:8081/api/admin/notifications/tim-kiem?q=${this.search}`, {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then((res) => {
+          const payload = res.data && res.data.data ? res.data.data : res.data;
+          this.notifications = Array.isArray(payload) ? payload : [];
+
+          // console.log("Kết quả tìm kiếm:", this.notifications);
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+          this.notifications = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    handleFilter() {
+      if (this.selectedStatus === "") {
+        this.loadNotificationData();
+        return;
+      }
+
+      this.isLoading = true;
+
+      axios
+        .get(`http://localhost:8081/api/admin/notifications/loc-theo-trang-thai`, {
+          params: { status: this.selectedStatus }, // Tự động tạo ?status=...
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then((res) => {
+          const payload = res.data?.data;
+
+          if (Array.isArray(payload)) {
+            this.notifications = payload;
+          } else if (payload && Array.isArray(payload.content)) {
+            this.notifications = payload.content;
+          } else {
+            this.notifications = [];
+          }
+          console.log(`Đã lọc theo status ${this.selectedStatus}:`, this.notifications.length);
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+          this.notifications = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
   },
 };

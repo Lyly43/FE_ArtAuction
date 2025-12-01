@@ -326,6 +326,12 @@ const routes = [
     meta: { layout: "default" },
   },
   {
+    path: "/admin/seller-requests",
+    // name: "artwork-detail",
+    component: () => import("../views/Admin/SellerRequest/index.vue"),
+    meta: { layout: "default" },
+  },
+  {
     path: "/admin/auction-detail/:id",
     component: () => import("../views/Admin/AuctionDetail/index.vue"),
     meta: { layout: "default" },
@@ -341,6 +347,18 @@ const routes = [
     path: "/admin/edit-artwork/:id",
     // name: "artwork-detail",
     component: () => import("../views/Admin/EditArtwork/index.vue"),
+    meta: { layout: "default" },
+  },
+  {
+    path: "/admin/add-admin",
+    // name: "artwork-detail",
+    component: () => import("../views/Admin/AddAdmin/index.vue"),
+    meta: { layout: "default" },
+  },
+  {
+    path: "/admin/add-user",
+    // name: "artwork-detail",
+    component: () => import("../views/Admin/AddUser/index.vue"),
     meta: { layout: "default" },
   },
 ];

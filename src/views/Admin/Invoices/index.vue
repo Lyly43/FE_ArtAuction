@@ -226,11 +226,60 @@
                           &gt; 10M
                         </button>
                       </div>
+
+                      <div class="input-group">
+                        <input type="number" class="form-control shadow-none" placeholder="Min" />
+                        <span
+                          class="input-group-text bg-white border-start-0 border-end-0 text-secondary"
+                          >-</span
+                        >
+                        <input type="number" class="form-control shadow-none" placeholder="Max" />
+                      </div>
                     </div>
 
                     <hr class="border-secondary opacity-10 my-4" />
 
                     <div class="mb-2">
+                      <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
+                        <i class="fa-regular fa-calendar-check me-1"></i> Creation time
+                      </label>
+
+                      <div class="btn-group w-100 mb-2" role="group">
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="dateQuick"
+                          id="dateToday"
+                          autocomplete="off"
+                        />
+                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateToday"
+                          >Today</label
+                        >
+
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="dateQuick"
+                          id="dateWeek"
+                          autocomplete="off"
+                        />
+                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateWeek"
+                          >This week</label
+                        >
+
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="dateQuick"
+                          id="dateMonth"
+                          autocomplete="off"
+                          checked
+                        />
+                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateMonth"
+                          >This month</label
+                        >
+                      </div>
+
                       <div class="input-group input-group-sm">
                         <span class="input-group-text bg-light text-secondary">From</span>
                         <input type="date" class="form-control shadow-none" />
@@ -280,7 +329,6 @@
                 <th scope="col" class="py-3 fw-bold ps-3">BuyerID</th>
                 <th scope="col" class="py-3 fw-bold">ArtworkID</th>
                 <th scope="col" class="py-3 fw-bold">Price</th>
-                <!-- <th scope="col" class="py-3 fw-bold">Service fee</th> -->
                 <th scope="col" class="py-3 fw-bold">Total</th>
                 <th scope="col" class="py-3 fw-bold">Payment method</th>
                 <th scope="col" class="py-3 fw-bold">Created at</th>
@@ -304,7 +352,7 @@
                   <td class="text-body-secondary align-middle">
                     {{ formatCurrency(v.amount) }}
                   </td>
-                  <td class="text-body-secondary align-middle">{{ formatCurrency(v.fee) }}</td>
+
                   <td class="text-primary fw-bold align-middle">
                     {{ formatCurrency(v.totalAmount) }}
                   </td>
@@ -337,12 +385,12 @@
                       </button>
 
                       <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                        <li>
+                        <!-- <li>
                           <a class="dropdown-item" href="#">
                             <i class="fa-solid fa-eye me-2 text-info"></i>See details
                           </a>
-                        </li>
-                        <li>
+                        </li> -->
+                        <!-- <li>
                           <button class="dropdown-item">
                             <i class="fa-solid fa-download me-2 text-secondary"></i>Download PDF
                           </button>
@@ -357,11 +405,11 @@
                             </button>
                           </li>
                           <li><hr class="dropdown-divider" /></li>
-                        </template>
+                        </template> -->
 
                         <li>
                           <button class="dropdown-item text-danger" @click="handleDelete(v.id)">
-                            <i class="fa-solid fa-ban me-2"></i>Delete invoice
+                            <i class="fa-solid fa-trash me-2"></i>Delete
                           </button>
                         </li>
                       </ul>
@@ -397,11 +445,17 @@ export default {
 
   methods: {
     formatCurrency(value) {
-      if (!value) return "0₫";
-      return new Intl.NumberFormat("vi-VN", {
+      if (!value) return "$0";
+
+      // Giả sử tỷ giá 1 USD = 25,400 VND
+      const exchangeRate = 25400;
+      const usdValue = value / exchangeRate;
+
+      return new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "VND",
-      }).format(value);
+        currency: "USD",
+        maximumFractionDigits: 2, // Giữ lại 2 số lẻ (ví dụ: $12.50)
+      }).format(usdValue);
     },
 
     loadInvoiceData() {
@@ -497,7 +551,7 @@ export default {
     },
 
     handleDelete(invoiceId) {
-      if (!confirm(`Bạn có chắc chắn muốn xóa invoice này không?`)) return;
+      if (!confirm(`Are you sure you want to delete this invoice?`)) return;
       axios
         .delete(`http://localhost:8081/api/admin/invoices/xoa/${invoiceId}`, {
           headers: {
@@ -505,12 +559,12 @@ export default {
           },
         })
         .then(() => {
-          alert("Đã xóa thành công!");
-          this.loadAdminData();
+          alert("Deleted successfully!");
+          this.loadInvoiceData();
         })
         .catch((err) => {
           console.error("Lỗi khi xóa:", err);
-          const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+          const message = err.response?.data?.message || "An error occurred while deleting!";
           alert(message);
         });
     },
@@ -538,4 +592,5 @@ export default {
   },
 };
 </script>
+
 <style></style>

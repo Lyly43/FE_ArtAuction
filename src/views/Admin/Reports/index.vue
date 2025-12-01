@@ -21,9 +21,7 @@
                 <i class="fa-solid fa-file-lines fs-5"></i>
               </div>
             </div>
-            <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-up me-1"></i>Total reports
-            </small>
+            <small class="text-secondary fw-medium"> Total reports </small>
           </div>
         </div>
       </div>
@@ -191,16 +189,16 @@
                           <i class="fa-solid fa-eye me-2 text-primary"></i>See details
                         </button>
                       </li>
-                      <li>
+                      <!-- <li>
                         <button class="dropdown-item">
                           <i class="fa-solid fa-arrow-up-right-from-square me-2 text-info"></i>View
                           accused
                         </button>
-                      </li>
+                      </li> -->
                       <li><hr class="dropdown-divider" /></li>
                       <li>
                         <button class="dropdown-item">
-                          <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i>Warning
+                          <i class="fa-solid fa-triangle-exclamation me-2"></i>Warning
                         </button>
                       </li>
                       <li>
@@ -315,7 +313,7 @@ export default {
     },
 
     handleDelete(reportId) {
-      if (!confirm(`Bạn có chắc chắn muốn xóa report này không?`)) return;
+      if (!confirm(`Are you sure you want to delete this report?`)) return;
       axios
         .delete(`http://localhost:8081/api/admin/reports/xoa/${reportId}`, {
           headers: {
@@ -323,12 +321,12 @@ export default {
           },
         })
         .then(() => {
-          alert("Đã xóa thành công!");
+          alert("Deleted successfully!");
           this.loadReportData();
         })
         .catch((err) => {
-          console.error("Lỗi khi xóa:", err);
-          const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+          console.error("Error:", err);
+          const message = err.response?.data?.message || "Error!";
           alert(message);
         });
     },
@@ -363,7 +361,7 @@ export default {
           console.log("Kết quả tìm kiếm:", this.artworks);
         })
         .catch((err) => {
-          console.error("Lỗi tìm kiếm:", err);
+          console.error("Error:", err);
           this.artworks = [];
         })
         .finally(() => {
@@ -383,7 +381,7 @@ export default {
           console.log("Kết quả tìm kiếm:", this.statistics);
         })
         .catch((err) => {
-          console.error("Lỗi tìm kiếm:", err);
+          console.error("Error:", err);
           this.statistics = [];
         })
         .finally(() => {

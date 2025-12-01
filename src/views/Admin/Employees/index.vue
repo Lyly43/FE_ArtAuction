@@ -333,9 +333,9 @@
               </div>
             </Teleport>
 
-            <button class="btn btn-primary">
+            <router-link to="/admin/add-admin" class="btn btn-primary">
               <i class="fa-solid fa-plus me-2"></i>Add New Admin
-            </button>
+            </router-link>
           </div>
         </div>
 
@@ -362,19 +362,18 @@
                   <div class="d-flex align-items-center gap-2">
                     <div class="position-relative">
                       <img
-                        v-if="employee.avatar"
                         :src="employee.avatar"
                         alt="Avatar"
                         class="rounded-circle border border-2 border-white shadow-sm object-fit-cover"
                         style="width: 40px; height: 40px"
                       />
-                      <div
+                      <!-- <div
                         v-else
-                        class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-white shadow-sm"
+                        class="bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold border border-2 border-white shadow-sm"
                         style="width: 40px; height: 40px"
                       >
                         {{ employee.fullName ? employee.fullName.charAt(0).toUpperCase() : "A" }}
-                      </div>
+                      </div> -->
                     </div>
                     <span class="fw-medium">{{ employee.fullName }}</span>
                   </div>
@@ -412,7 +411,7 @@
                       </li>
                       <li>
                         <RouterLink class="dropdown-item" to="/edit"
-                          ><i class="fa-solid fa-pen me-2 text-info"></i>Edit</RouterLink
+                          ><i class="fa-solid fa-pen me-2"></i>Edit</RouterLink
                         >
                       </li>
                       <li><hr class="dropdown-divider" /></li>
@@ -529,7 +528,7 @@ export default {
 
     // Xóa
     handleDelete(adminId, adminName) {
-      if (!confirm(`Bạn có chắc chắn muốn xóa Admin: ${adminName}?`)) return;
+      if (!confirm(`Are you sure you want to delete Admin ${adminName} không?`)) return;
 
       axios
         .delete(`http://localhost:8081/api/admin/admins/xoa/${adminId}`, {
@@ -538,7 +537,7 @@ export default {
           },
         })
         .then(() => {
-          alert("Đã xóa thành công!");
+          alert("Deleted successfully!");
           this.loadAdminData();
         })
         .catch((err) => {

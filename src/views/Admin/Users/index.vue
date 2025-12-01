@@ -23,10 +23,8 @@
                 <i class="fa-solid fa-shield fa-lg"></i>
               </div>
             </div>
-            <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-trend-up me-1"></i>+12%
-            </small>
-            <span class="text-body-secondary small ms-1">vs last month</span>
+
+            <span class="text-body-secondary small ms-1">Total users</span>
           </div>
         </div>
       </div>
@@ -37,13 +35,13 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Active</h6>
-                <h3 class="fw-bold mb-0">100</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.activeUsers }}</h3>
               </div>
               <div class="icon-box bg-success-subtle text-success rounded-3 p-2">
                 <i class="fa-solid fa-circle-check fa-lg"></i>
               </div>
             </div>
-            <small class="text-body-secondary">80% of total users</small>
+            <small class="text-body-secondary">Number of active users</small>
           </div>
         </div>
       </div>
@@ -60,7 +58,7 @@
                 <i class="fa-solid fa-users fa-lg"></i>
               </div>
             </div>
-            <small class="text-body-secondary">Total active users</small>
+            <small class="text-body-secondary">Total Seller</small>
           </div>
         </div>
       </div>
@@ -323,7 +321,7 @@
               <tr v-if="isLoading">
                 <td colspan="12" class="text-center py-5 text-muted">
                   <div class="spinner-border text-primary mb-2" role="status"></div>
-                  <p class="mb-0 small">Đang tải dữ liệu...</p>
+                  <p class="mb-0 small">Loading data...</p>
                 </td>
               </tr>
               <tr v-for="user in users" :key="user.id">
@@ -331,7 +329,7 @@
                 <td class="align-middle">
                   <div class="d-flex align-items-center gap-2">
                     <img
-                      :src="user.avt ? user.avt : '/src/assets/img/default.png'"
+                      :src="user.avt"
                       alt="User Avatar"
                       class="rounded-circle border"
                       style="width: 32px; height: 32px; object-fit: cover"
@@ -977,22 +975,4 @@ export default {
 };
 </script>
 
-<style scoped>
-/* .custom-scrollbar {
-  max-height: calc(100vh - 140px);
-  overflow-y: auto;
-}
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #dee2e6;
-  border-radius: 10px;
-}
-
-.form-control:focus,
-.form-select:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
-} */
-</style>
+<style scoped></style>

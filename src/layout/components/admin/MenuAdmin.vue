@@ -75,6 +75,14 @@
                   ><i class="fa-solid fa-user"></i>User</router-link
                 >
               </li>
+              <li :class="{ active: $route.path === '/admin/seller-requests' }">
+                <router-link to="/admin/seller-requests">
+                  <i class="fa-solid fa-user-shield"></i> Seller Requests
+                  <span class="badge bg-danger rounded-pill" v-if="pendingCount > 0">{{
+                    pendingCount
+                  }}</span>
+                </router-link>
+              </li>
               <li :class="{ active: $route.path === '/admin/management-artwork' }">
                 <router-link to="/admin/management-artwork"
                   ><i class="fa-solid fa-image"></i>Artwork</router-link
@@ -101,11 +109,6 @@
                 >
               </li>
 
-              <!-- <li :class="{ active: $route.path === '/admin/management-admin' }">
-                <router-link to="/admin/management-admin"
-                  ><i class="fa-solid fa-shield-halved"></i>Admin</router-link
-                >
-              </li> -->
               <li :class="{ active: $route.path === '/admin/management-setting/general-setting' }">
                 <router-link to="/admin/management-setting/general-setting"
                   ><i class="fa-solid fa-gear"></i>Setting</router-link

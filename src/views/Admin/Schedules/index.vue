@@ -192,7 +192,7 @@ export default {
       // Danh sách sự kiện (sẽ được load từ API)
       events: [],
 
-      selectedEvent: null, // Sự kiện đang xem chi tiết
+      selectedEvent: null,
       isLoading: false,
     };
   },
@@ -242,7 +242,6 @@ export default {
   },
 
   methods: {
-    // --- 1. GỌI API LẤY TẤT CẢ PHÒNG ---
     fetchAllAuctionRooms() {
       this.isLoading = true;
       axios

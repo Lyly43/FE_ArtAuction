@@ -12,6 +12,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total users</h6>
+
                 <h3 class="fw-bold mb-0">{{ statistics?.totalUsers?.total }}</h3>
               </div>
               <div
@@ -21,6 +22,7 @@
                 <i class="fa-solid fa-users fs-5"></i>
               </div>
             </div>
+
             <small class="text-secondary fw-medium"> Total number of users </small>
           </div>
         </div>
@@ -32,6 +34,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Artwork</h6>
+
                 <h3 class="fw-bold mb-0">{{ statistics?.totalArtworks?.total }}</h3>
               </div>
               <div
@@ -41,6 +44,7 @@
                 <i class="fa-solid fa-image fs-5"></i>
               </div>
             </div>
+
             <small class="text-secondary fw-medium"> Total number of works </small>
           </div>
         </div>
@@ -52,6 +56,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Auction Rooms</h6>
+
                 <h3 class="fw-bold mb-0">{{ statistics?.totalAuctionRooms }}</h3>
               </div>
               <div
@@ -72,6 +77,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Bidding</h6>
+
                 <h3 class="fw-bold mb-0">{{ statistics?.totalBids?.total }}</h3>
               </div>
               <div
@@ -81,6 +87,7 @@
                 <i class="fa-solid fa-chart-line fs-5"></i>
               </div>
             </div>
+
             <small class="text-secondary fw-medium"> Total number of bids </small>
           </div>
         </div>
@@ -176,7 +183,7 @@
                       <td>
                         <div class="d-flex align-items-center">
                           <img
-                            :src="room.sessions?.[0]?.imageUrl || '/src/assets/img/default-art.png'"
+                            :src="room.sessions?.[0]?.avtArtwork"
                             alt="Art"
                             class="rounded border me-2"
                             style="width: 40px; height: 40px; object-fit: cover"
@@ -184,10 +191,10 @@
                           />
                           <div class="d-flex flex-column">
                             <span class="fw-medium" style="font-size: 0.9rem">
-                              {{ room.sessions?.[0]?.artworkTitle || "---" }}
+                              {{ room.sessions?.[0]?.artworkTitle }}
                             </span>
                             <small class="text-muted" style="font-size: 0.7rem">
-                              Session {{ room.sessions ? room.sessions.length : 0 }} items
+                              Room has {{ room.sessions ? room.sessions.length : 0 }} items
                             </small>
                           </div>
                         </div>
@@ -212,14 +219,14 @@
                             <h6
                               class="fw-bold text-primary mb-2 small text-uppercase ps-2 border-start border-4 border-secondary-subtle"
                             >
-                              Danh sách tác phẩm ({{ room.sessions ? room.sessions.length : 0 }})
+                              List of works ({{ room.sessions ? room.sessions.length : 0 }})
                             </h6>
 
                             <table class="table table-sm table-borderless mb-0 align-middle">
                               <thead class="text-secondary small border-bottom">
                                 <tr>
                                   <th class="ps-2">Artwork Info</th>
-                                  <th class="text-end pe-2">Giá hiện tại</th>
+                                  <th class="text-end pe-2">Current price</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -230,7 +237,7 @@
                                         >#{{ sIndex + 1 }}</span
                                       >
                                       <img
-                                        :src="session.imageUrl || '/src/assets/img/default-art.png'"
+                                        :src="session.avtArtwork"
                                         class="rounded border me-2"
                                         style="width: 32px; height: 32px; object-fit: cover"
                                         @error="
@@ -249,7 +256,7 @@
 
                                 <tr v-if="!room.sessions || room.sessions.length === 0">
                                   <td colspan="2" class="text-center text-muted small fst-italic">
-                                    Chưa có phiên đấu giá nào.
+                                    There are no auctions yet.
                                   </td>
                                 </tr>
                               </tbody>
@@ -295,20 +302,19 @@
                     <td class="ps-3 align-middle">
                       <div class="d-flex align-items-center gap-2">
                         <img
-                          v-if="user.avt"
                           :src="user.avt"
                           alt="User Avatar"
                           class="rounded-circle border"
                           style="width: 32px; height: 32px; object-fit: cover"
                         />
 
-                        <div
+                        <!-- <div
                           v-else
                           class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
                           style="width: 32px; height: 32px"
                         >
                           {{ user.fullName ? user.fullName.charAt(0).toUpperCase() : "U" }}
-                        </div>
+                        </div> -->
                         <span class="fw-medium">{{ user.username }}</span>
                       </div>
                     </td>
@@ -358,13 +364,16 @@
                       loading="lazy"
                     />
                     <div>
-                      <p class="mb-0 fw-bold text-dark">{{ art.artworkTitle }}</p>
+                      <p class="mb-0 fww-medium">{{ art.artworkTitle }}</p>
+                      <small class="text-body-secondary">ID: {{ art.sessionId }}</small>
                     </div>
                   </div>
                 </td>
-                <td class="align-middle">Tranh sơn dầu</td>
+                <td class="align-middle">{{ art.paintingGenre }}</td>
                 <td class="align-middle">{{ art.winnerName }}</td>
-                <td class="text-success fw-bold align-middle">{{ art.totalAmount }}</td>
+                <td class="text-success fw-bold align-middle">
+                  {{ formatCurrency(art.totalAmount) }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -397,12 +406,19 @@ export default {
   },
   methods: {
     formatCurrency(value) {
-      if (!value) return "0₫";
-      return new Intl.NumberFormat("vi-VN", {
+      if (!value) return "$0";
+
+      // Giả sử tỷ giá 1 USD = 25,400 VND
+      const exchangeRate = 25400;
+      const usdValue = value / exchangeRate;
+
+      return new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "VND",
-      }).format(value);
+        currency: "USD",
+        maximumFractionDigits: 2, // Giữ lại 2 số lẻ (ví dụ: $12.50)
+      }).format(usdValue);
     },
+
     //  card thống kê
     loadInvoiceStatistical() {
       axios

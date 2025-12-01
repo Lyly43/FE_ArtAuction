@@ -287,10 +287,6 @@
                 </div>
               </div>
             </Teleport>
-
-            <button class="btn btn-primary shadow">
-              <i class="fa-solid fa-plus me-2"></i>Add New
-            </button>
           </div>
         </div>
 
@@ -405,11 +401,17 @@ export default {
   },
   methods: {
     formatCurrency(value) {
-      if (!value) return "0đ";
-      return new Intl.NumberFormat("vi-VN", {
+      if (!value) return "$0";
+
+      // Giả sử tỷ giá 1 USD = 25,400 VND
+      const exchangeRate = 25400;
+      const usdValue = value / exchangeRate;
+
+      return new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "VND",
-      }).format(value);
+        currency: "USD",
+        maximumFractionDigits: 2, // Giữ lại 2 số lẻ (ví dụ: $12.50)
+      }).format(usdValue);
     },
 
     convertStatus(status) {
@@ -536,4 +538,3 @@ export default {
   },
 };
 </script>
-<style></style>

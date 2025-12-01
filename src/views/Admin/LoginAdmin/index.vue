@@ -52,6 +52,7 @@
                   id="floatingPassword"
                   placeholder="Password"
                 />
+
                 <label for="floatingPassword" class="text-secondary">Password</label>
 
                 <span
@@ -97,7 +98,10 @@ export default {
   name: "LoginPage",
   data() {
     return {
-      ad: {},
+      showPassword: false,
+      ad: {
+        password: "",
+      },
     };
   },
   methods: {
