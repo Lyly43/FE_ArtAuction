@@ -102,6 +102,15 @@ const routes = [
     path: "/client/auction-room/:id",
     name: "auction-room",
     component: () => import("../views/Client/AuctionRoom/index.vue"),
+    meta: { layout: "blank" },
+    // meta: { layout: "client" },
+    props: true,
+    beforeEnter: checkUser,
+  },
+  {
+    path: "/client/Regis-auct-room/:id",
+    name: "Regis-auct-room",
+    component: () => import("../views/Client/RegisAuction/index.vue"),
     meta: { layout: "client" },
     props: true,
     beforeEnter: checkUser,
@@ -123,6 +132,9 @@ const routes = [
     meta: { layout: "client" },
     beforeEnter: checkUser,
   },
+
+
+
 
   // ADMIN
   {

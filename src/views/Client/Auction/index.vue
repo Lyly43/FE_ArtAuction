@@ -145,24 +145,20 @@
             <button class="nav-link w-100 fw-semibold auction-tab" :class="{ 'active': activeAuctionTab === 'ongoing' }"
               @click="activeAuctionTab = 'ongoing'">
               <i class="fa-solid fa-broadcast-tower me-2"></i>Đang diễn ra
-              <span
-                class="badge ms-2"
-                :class="activeAuctionTab === 'ongoing' ? 'text-bg-success text-light' : 'bg-light text-secondary'"
-              >
+              <!-- <span class="badge ms-2"
+                :class="activeAuctionTab === 'ongoing' ? 'text-bg-success text-light' : 'bg-light text-secondary'">
                 {{ ongoingAuctions.length }}
-              </span>
+              </span> -->
             </button>
           </li>
           <li class="nav-item col-lg-5">
             <button class="nav-link w-100 fw-semibold auction-tab"
               :class="{ 'active': activeAuctionTab === 'upcoming' }" @click="activeAuctionTab = 'upcoming'">
               <i class="fa-solid fa-clock me-2"></i>Sắp diễn ra
-              <span
-                class="badge ms-2"
-                :class="activeAuctionTab === 'upcoming' ? 'text-bg-success text-light' : 'bg-light text-secondary'"
-              >
+              <!-- <span class="badge ms-2"
+                :class="activeAuctionTab === 'upcoming' ? 'text-bg-success text-light' : 'bg-light text-secondary'">
                 {{ upcomingAuctions.length }}
-              </span>
+              </span> -->
             </button>
           </li>
         </ul>
@@ -172,8 +168,8 @@
         <div class="row py-2">
           <template v-for="tag in tags" :key="tag">
             <div class="col-4 d-flex align-items-center">
-              <button type="button" class="btn btn-outline-success w-100 fw-bold" :class="{ active: selectedTag === tag }"
-                @click="selectTag(tag)">
+              <button type="button" class="btn btn-outline-success w-100 fw-bold"
+                :class="{ active: selectedTag === tag }" @click="selectTag(tag)">
                 {{ tag }}
               </button>
             </div>
@@ -225,7 +221,7 @@
                 </div>
 
                 <div class="" v-else-if="auction.status === 2">
-                  <router-link to="" class="w-100">
+                  <router-link :to="`/client/Regis-auct-room/${auction.id}`" class="w-100">
                     <button class="btn btn-outline-warning w-100">Reserve Spot</button>
                   </router-link>
                 </div>
@@ -238,6 +234,38 @@
         </div>
       </template>
     </div>
+
+    <!-- Pagination Controls -->
+    <div class="row my-4" v-if="totalPages > 1">
+      <div class="col-12">
+        <nav aria-label="Auction pagination">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" :class="{ disabled: currentPage === 0 }">
+              <button class="page-link" @click="prevPage" :disabled="currentPage === 0">
+                <i class="fa-solid fa-chevron-left"></i> Previous
+              </button>
+            </li>
+
+            <li class="page-item" v-for="page in displayedPageNumbers" :key="page"
+              :class="{ active: page === currentPage + 1 }">
+              <button class="page-link" @click="goToPage(page - 1)">
+                {{ page }}
+              </button>
+            </li>
+
+            <li class="page-item" :class="{ disabled: currentPage >= totalPages - 1 }">
+              <button class="page-link" @click="nextPage" :disabled="currentPage >= totalPages - 1">
+                Next <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- <div class="text-center text-muted small mt-3">
+          Trang {{ currentPage + 1 }} / {{ totalPages }}
+        </div> -->
+      </div>
+    </div>
   </div>
 
 </template>
@@ -247,42 +275,220 @@ import axios from "axios";
 export default {
   data() {
     return {
-      AuctionList: [],
+      ongoingAuctions: [],
+      upcomingAuctions: [],
       tags: ["Landscape", "Portrait", "Folk"],
-      activeAuctionTab: 'ongoing'
+      activeAuctionTab: 'ongoing',
+
+      // Pagination cho ongoing
+      ongoingCurrentPage: 0,
+      ongoingPageSize: 12,
+      ongoingTotalPages: 0,
+      ongoingTotalElements: 0,
+
+      // Pagination cho upcoming
+      upcomingCurrentPage: 0,
+      upcomingPageSize: 12,
+      upcomingTotalPages: 0,
+      upcomingTotalElements: 0
     };
   },
 
   computed: {
-    ongoingAuctions() {
-      return this.AuctionList.filter((room) => room.status === 1);
-    },
-    upcomingAuctions() {
-      return this.AuctionList.filter((room) => room.status === 2);
-    },
     displayedAuctions() {
       if (this.activeAuctionTab === 'upcoming') return this.upcomingAuctions;
       return this.ongoingAuctions;
+    },
+    currentPage() {
+      return this.activeAuctionTab === 'upcoming' ? this.upcomingCurrentPage : this.ongoingCurrentPage;
+    },
+    totalPages() {
+      return this.activeAuctionTab === 'upcoming' ? this.upcomingTotalPages : this.ongoingTotalPages;
+    },
+    totalElements() {
+      return this.activeAuctionTab === 'upcoming' ? this.upcomingTotalElements : this.ongoingTotalElements;
+    },
+    displayedPageNumbers() {
+      const pages = [];
+      const maxPagesToShow = 5;
+      let startPage = Math.max(1, this.currentPage + 1 - Math.floor(maxPagesToShow / 2));
+      let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
+
+      if (endPage - startPage < maxPagesToShow - 1) {
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      return pages;
+    }
+  },
+
+  watch: {
+    activeAuctionTab(newTab) {
+      // Khi chuyển tab, reset về trang đầu nếu chưa có dữ liệu
+      if (newTab === 'ongoing' && this.ongoingAuctions.length === 0) {
+        this.getOngoingAuctions();
+      } else if (newTab === 'upcoming' && this.upcomingAuctions.length === 0) {
+        this.getUpcomingAuctions();
+      }
     }
   },
 
   mounted() {
-    this.getAuction();
+    // Load cả 2 loại auctions khi khởi động
+    this.getOngoingAuctions();
+    this.getUpcomingAuctions();
   },
 
   methods: {
-    getAuction() {
+    getOngoingAuctions() {
+      const token = localStorage.getItem('token');
+      const requestBody = {
+        page: this.ongoingCurrentPage,
+        size: this.ongoingPageSize
+      };
+
+      console.log('🔍 [ONGOING] Sending pagination request:', requestBody);
+
       axios
-        .get("http://localhost:8081/api/auctionroom/allAuctionRoom")
+        .post("http://localhost:8081/api/auctionroom/ongoing", requestBody, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
         .then((res) => {
-          if (res.data) {
-            this.AuctionList = res.data.filter(room => room.status !== 0);
+          console.log('✅ [ONGOING] API Response received:', res.data);
+
+          if (res.data && Array.isArray(res.data)) {
+            const filteredRooms = res.data.filter(room => room.status !== 0);
+
+            const getSortValue = (room) => {
+              const dateField = room.createdAt || room.startTime || room.updatedAt;
+              if (dateField) {
+                const timestamp = new Date(dateField).getTime();
+                return Number.isNaN(timestamp) ? 0 : timestamp;
+              }
+              return room.id || 0;
+            };
+            this.ongoingAuctions = filteredRooms.sort((a, b) => getSortValue(b) - getSortValue(a));
+
+            this.ongoingTotalElements = (this.ongoingCurrentPage * this.ongoingPageSize) + res.data.length;
+
+            if (res.data.length === this.ongoingPageSize) {
+              this.ongoingTotalPages = this.ongoingCurrentPage + 2;
+            } else {
+              this.ongoingTotalPages = this.ongoingCurrentPage + 1;
+            }
+
+            console.log('✅ [ONGOING] Final list:', this.ongoingAuctions.length, 'items');
+          } else {
+            console.warn('⚠️ [ONGOING] Response is not an array:', typeof res.data);
           }
         })
         .catch((err) => {
-          this.error = err.message;
-          this.$toast.error("Không thể tải danh sách đấu giá!");
+          console.error('❌ [ONGOING] API Error:', err);
+          this.$toast.error("Không thể tải danh sách đấu giá đang diễn ra!");
         });
+    },
+
+    getUpcomingAuctions() {
+      const token = localStorage.getItem('token');
+      const requestBody = {
+        page: this.upcomingCurrentPage,
+        size: this.upcomingPageSize
+      };
+
+      console.log('🔍 [UPCOMING] Sending pagination request:', requestBody);
+
+      axios
+        .post("http://localhost:8081/api/auctionroom/upcoming", requestBody, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then((res) => {
+          console.log('✅ [UPCOMING] API Response received:', res.data);
+
+          if (res.data && Array.isArray(res.data)) {
+            const filteredRooms = res.data.filter(room => room.status !== 0);
+
+            const getSortValue = (room) => {
+              const dateField = room.createdAt || room.startTime || room.updatedAt;
+              if (dateField) {
+                const timestamp = new Date(dateField).getTime();
+                return Number.isNaN(timestamp) ? 0 : timestamp;
+              }
+              return room.id || 0;
+            };
+            this.upcomingAuctions = filteredRooms.sort((a, b) => getSortValue(b) - getSortValue(a));
+
+            this.upcomingTotalElements = (this.upcomingCurrentPage * this.upcomingPageSize) + res.data.length;
+
+            if (res.data.length === this.upcomingPageSize) {
+              this.upcomingTotalPages = this.upcomingCurrentPage + 2;
+            } else {
+              this.upcomingTotalPages = this.upcomingCurrentPage + 1;
+            }
+
+            console.log('✅ [UPCOMING] Final list:', this.upcomingAuctions.length, 'items');
+          } else {
+            console.warn('⚠️ [UPCOMING] Response is not an array:', typeof res.data);
+          }
+        })
+        .catch((err) => {
+          console.error('❌ [UPCOMING] API Error:', err);
+          this.$toast.error("Không thể tải danh sách đấu giá sắp diễn ra!");
+        });
+    },
+
+    nextPage() {
+      if (this.activeAuctionTab === 'ongoing') {
+        if (this.ongoingCurrentPage < this.ongoingTotalPages - 1) {
+          this.ongoingCurrentPage++;
+          this.getOngoingAuctions();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } else {
+        if (this.upcomingCurrentPage < this.upcomingTotalPages - 1) {
+          this.upcomingCurrentPage++;
+          this.getUpcomingAuctions();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+    },
+
+    prevPage() {
+      if (this.activeAuctionTab === 'ongoing') {
+        if (this.ongoingCurrentPage > 0) {
+          this.ongoingCurrentPage--;
+          this.getOngoingAuctions();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } else {
+        if (this.upcomingCurrentPage > 0) {
+          this.upcomingCurrentPage--;
+          this.getUpcomingAuctions();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+    },
+
+    goToPage(pageNumber) {
+      if (this.activeAuctionTab === 'ongoing') {
+        if (pageNumber >= 0 && pageNumber < this.ongoingTotalPages) {
+          this.ongoingCurrentPage = pageNumber;
+          this.getOngoingAuctions();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } else {
+        if (pageNumber >= 0 && pageNumber < this.upcomingTotalPages) {
+          this.upcomingCurrentPage = pageNumber;
+          this.getUpcomingAuctions();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
     },
     goToRoom(id) {
       if (!id) return;
@@ -329,5 +535,62 @@ export default {
 .auction-tab:focus-visible {
   outline: none;
   box-shadow: none;
+}
+
+/* Pagination Styling */
+.pagination {
+  --bs-pagination-color: #0f584f;
+  --bs-pagination-border-color: #0f584f;
+  --bs-pagination-hover-color: #fff;
+  --bs-pagination-hover-bg: #0f584f;
+  --bs-pagination-hover-border-color: #0f584f;
+  --bs-pagination-focus-color: #0f584f;
+  --bs-pagination-focus-bg: #e9ecef;
+  --bs-pagination-active-color: #fff !important;
+  --bs-pagination-active-bg: #0f584f !important;
+  --bs-pagination-active-border-color: #0f584f !important;
+  --bs-pagination-disabled-color: #6c757d;
+  --bs-pagination-disabled-bg: #fff;
+  --bs-pagination-disabled-border-color: #dee2e6;
+}
+
+.page-link {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.page-link:hover {
+  color: #fff !important;
+}
+
+.page-item.active .page-link {
+  background-color: #0f584f !important;
+  border-color: #0f584f !important;
+  color: #fff !important;
+  z-index: 3;
+}
+
+.page-link:focus,
+.page-item.active .page-link:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.page-item:not(:first-child) .page-link {
+  margin-left: -1px;
+}
+
+/* Disabled state */
+.page-item.disabled .page-link {
+  background-color: #f8f9fa !important;
+  border-color: #dee2e6 !important;
+  color: #adb5bd !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+.page-item.disabled .page-link:hover {
+  background-color: #f8f9fa !important;
+  color: #adb5bd !important;
 }
 </style>
