@@ -5,74 +5,87 @@
         <h4 class="text-primary fw-bold mb-1">User Management</h4>
         <p class="text-body-secondary mb-0">Manage access and user information</p>
       </div>
-      <button class="btn btn-primary shadow-sm">
+      <router-link to="/admin/add-user" class="btn btn-primary shadow-sm">
         <i class="fa-solid fa-plus me-2"></i>Add New User
-      </button>
+      </router-link>
     </div>
 
     <div class="row g-3 mb-4">
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div
+          class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-secondary"
+        >
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total Users</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.totalUsers }}</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ statistics.totalUsers }}</h3>
               </div>
-              <div class="icon-box bg-secondary-subtle text-primary rounded-3 p-2">
-                <i class="fa-solid fa-shield fa-lg"></i>
+              <div
+                class="bg-secondary bg-opacity-10 rounded-4 d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-shield fs-5"></i>
               </div>
             </div>
-
-            <span class="text-body-secondary small ms-1">Total users</span>
+            <small class="text-secondary fw-medium">Total registered users</small>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-success">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Active</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.activeUsers }}</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ statistics.activeUsers }}</h3>
               </div>
-              <div class="icon-box bg-success-subtle text-success rounded-3 p-2">
-                <i class="fa-solid fa-circle-check fa-lg"></i>
+              <div
+                class="bg-success bg-opacity-10 text-success rounded-4 d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-circle-check fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">Number of active users</small>
+            <small class="text-secondary fw-medium">Currently active</small>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-info">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Sellers</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.totalSellers }}</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ statistics.totalSellers }}</h3>
               </div>
-              <div class="icon-box bg-info-subtle text-info rounded-3 p-2">
-                <i class="fa-solid fa-users fa-lg"></i>
+              <div
+                class="bg-info bg-opacity-10 text-info rounded-4 d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-users fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">Total Seller</small>
+            <small class="text-secondary fw-medium">Total sellers</small>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-danger">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Locked</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.totalBlockedUsers }}</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ statistics.totalBlockedUsers }}</h3>
               </div>
-              <div class="icon-box bg-danger-subtle text-danger rounded-3 p-2">
-                <i class="fa-solid fa-ban fa-lg"></i>
+              <div
+                class="bg-danger bg-opacity-10 text-danger rounded-4 d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-ban fs-5"></i>
               </div>
             </div>
             <small class="text-danger fw-medium">Policy violation</small>
@@ -131,16 +144,18 @@
                       User filter
                     </h5>
                   </div>
-                  <button
-                    type="button"
-                    class="btn-close shadow-none"
-                    data-bs-dismiss="offcanvas"
-                    aria-label="Close"
-                  ></button>
+                  <div class="modal-header bg-secondary-subtle px-4 py-3 border-0">
+                    <button
+                      type="button"
+                      class="btn-close"
+                      @click="closeModal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
                 </div>
 
-                <div class="offcanvas-body p-0">
-                  <div class="p-4 custom-scrollbar">
+                <div class="offcanvas-body p-0 flex-grow-1 overflow-y-auto custom-scrollbar-hidden">
+                  <div class="p-4">
                     <div class="mb-4">
                       <label class="form-label fw-bold text-uppercase small text-secondary mb-2"
                         >Status</label
@@ -148,6 +163,8 @@
                       <div class="bg-light rounded-3 p-3 border">
                         <div class="form-check mb-2">
                           <input
+                            :value="null"
+                            v-model="filterForm.status"
                             class="form-check-input"
                             type="radio"
                             name="statusFilter"
@@ -158,6 +175,8 @@
                         </div>
                         <div class="form-check mb-2">
                           <input
+                            :value="1"
+                            v-model="filterForm.status"
                             class="form-check-input"
                             type="radio"
                             name="statusFilter"
@@ -169,6 +188,8 @@
                         </div>
                         <div class="form-check mb-2">
                           <input
+                            :value="2"
+                            v-model="filterForm.status"
                             class="form-check-input"
                             type="radio"
                             name="statusFilter"
@@ -178,19 +199,90 @@
                             >● Locked
                           </label>
                         </div>
-                        <!-- <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="statusFilter"
-                          id="statusBanned"
-                        />
-                        <label class="form-check-label text-danger" for="statusBanned"
-                          >● Suspended (Đình chỉ)</label
-                        >
-                      </div> -->
                       </div>
                     </div>
+
+                    <hr class="border-secondary opacity-10 my-4" />
+                    <!-- Lọc theo role -->
+                    <!-- <div class="mb-4">
+                      <div class="d-flex align-items-center gap-2 mb-3 text-secondary">
+                        <i class="fa-solid fa-user-tag"></i>
+                        <label class="form-label fw-bold text-uppercase small mb-0"
+                          >Roles & Powers</label
+                        >
+                      </div>
+
+                      <div class="row g-2">
+                        <div class="col-6">
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="roleFilter"
+                            id="roleAll"
+                            :value="null"
+                            v-model="filterForm.role"
+                            checked
+                          />
+                          <label
+                            class="btn btn-outline-secondary w-100 d-flex align-items-center gap-2 py-2 text-start shadow-sm"
+                            for="roleAll"
+                          >
+                            <i class="fa-solid fa-users"></i> All Roles
+                          </label>
+                        </div>
+
+                        <div class="col-6">
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="roleFilter"
+                            id="roleUser"
+                            :value="0"
+                            v-model="filterForm.role"
+                          />
+                          <label
+                            class="btn btn-outline-dark w-100 d-flex align-items-center gap-2 py-2 text-start shadow-sm"
+                            for="roleUser"
+                          >
+                            <i class="fa-regular fa-user"></i> User
+                          </label>
+                        </div>
+
+                        <div class="col-6">
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="roleFilter"
+                            id="roleBuyer"
+                            :value="1"
+                            v-model="filterForm.role"
+                          />
+                          <label
+                            class="btn btn-outline-info w-100 d-flex align-items-center gap-2 py-2 text-start shadow-sm"
+                            for="roleBuyer"
+                          >
+                            <i class="fa-solid fa-cart-shopping"></i> Buyer
+                          </label>
+                        </div>
+
+                        <div class="col-6">
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="roleFilter"
+                            id="roleSeller"
+                            :value="2"
+                            v-model="filterForm.role"
+                          />
+                          <label
+                            class="btn btn-outline-warning w-100 d-flex align-items-center gap-2 py-2 text-start shadow-sm text-dark"
+                            for="roleSeller"
+                          >
+                            <i class="fa-solid fa-store"></i> Seller
+                          </label>
+                        </div>
+                      </div>
+                    </div> -->
 
                     <hr class="border-secondary opacity-10 my-4" />
 
@@ -202,6 +294,8 @@
                         <div class="d-flex gap-3">
                           <div class="form-check">
                             <input
+                              :value="0"
+                              v-model="filterForm.gender"
                               class="form-check-input"
                               type="radio"
                               name="genderFilter"
@@ -211,6 +305,8 @@
                           </div>
                           <div class="form-check">
                             <input
+                              :value="1"
+                              v-model="filterForm.gender"
                               class="form-check-input"
                               type="radio"
                               name="genderFilter"
@@ -220,6 +316,8 @@
                           </div>
                           <div class="form-check">
                             <input
+                              :value="2"
+                              v-model="filterForm.gender"
                               class="form-check-input"
                               type="radio"
                               name="genderFilter"
@@ -232,14 +330,13 @@
 
                       <div>
                         <label class="form-label fw-bold text-uppercase small text-secondary"
-                          >Tỉnh / Thành phố</label
+                          >Province / City</label
                         >
-                        <select class="form-select shadow-none">
-                          <option selected disabled>Chọn khu vực...</option>
-                          <option value="HN">Hà Nội</option>
-                          <option value="HCM">TP. Hồ Chí Minh</option>
-                          <option value="DN">Đà Nẵng</option>
-                          <option value="Other">Khác</option>
+                        <select v-model="filterForm.province" class="form-select shadow-none">
+                          <option :value="''" selected>Select area...</option>
+                          <option v-for="prov in provinces" :key="prov.id" :value="prov.name">
+                            {{ prov.name }}
+                          </option>
                         </select>
                       </div>
                     </div>
@@ -249,9 +346,19 @@
                         >Date of birth</label
                       >
                       <div class="input-group input-group-sm">
-                        <input type="date" class="form-control shadow-none" placeholder="From" />
+                        <input
+                          type="date"
+                          class="form-control shadow-none"
+                          v-model="filterForm.dateOfBirthFrom"
+                          placeholder="From"
+                        />
                         <span class="input-group-text bg-light text-secondary">to</span>
-                        <input type="date" class="form-control shadow-none" placeholder="To" />
+                        <input
+                          type="date"
+                          class="form-control shadow-none"
+                          v-model="filterForm.dateOfBirthTo"
+                          placeholder="To"
+                        />
                       </div>
                     </div>
 
@@ -261,10 +368,28 @@
                       >
 
                       <div class="d-flex flex-wrap gap-2 mb-2">
-                        <button class="btn btn-sm btn-light border text-secondary active-pill">
+                        <button
+                          type="button"
+                          class="btn btn-sm border"
+                          :class="
+                            filterForm.createdAtFilter === 'last7days'
+                              ? 'btn-primary text-white'
+                              : 'btn-light text-secondary'
+                          "
+                          @click="setCreatedFilter('last7days')"
+                        >
                           Last 7 days
                         </button>
-                        <button class="btn btn-sm btn-light border text-secondary">
+                        <button
+                          type="button"
+                          class="btn btn-sm border"
+                          :class="
+                            filterForm.createdAtFilter === 'thismonth'
+                              ? 'btn-primary text-white'
+                              : 'btn-light text-secondary'
+                          "
+                          @click="setCreatedFilter('thismonth')"
+                        >
                           This month
                         </button>
                       </div>
@@ -275,13 +400,17 @@
                 <div class="offcanvas-footer border-top p-3 bg-white">
                   <div class="row g-2">
                     <div class="col-4">
-                      <button class="btn btn-light border w-100 fw-bold text-secondary">
+                      <button
+                        class="btn btn-light border w-100 fw-bold text-secondary"
+                        @click="resetFilter"
+                      >
                         <i class="fa-solid fa-rotate-right me-1"></i> Reset
                       </button>
                     </div>
                     <div class="col-8">
                       <button
                         class="btn btn-primary w-100 fw-bold shadow-sm"
+                        @click="handleFilter"
                         data-bs-dismiss="offcanvas"
                       >
                         Apply
@@ -298,130 +427,162 @@
           </div>
         </div>
 
-        <div class="table-responsive overflow-y-auto">
-          <table class="table table-hover align-middle text-nowrap">
-            <thead class="table-light">
+        <div class="table-responsive overflow-y-auto custom-scrollbar" style="max-height: 500px">
+          <table class="table table-hover align-middle text-nowrap mb-0">
+            <thead class="bg-light sticky-top shadow-sm border-bottom border-light-subtle">
               <tr>
-                <th scope="col" class="fw-bold">ID</th>
-                <th scope="col" class="fw-bold">User Info</th>
-                <th scope="col" class="fw-bold">Phone</th>
-                <th scope="col" class="fw-bold">Role</th>
-                <th scope="col" class="fw-bold">Address</th>
-                <th scope="col" class="fw-bold">Birth of day</th>
-                <th scope="col" class="fw-bold">Gender</th>
-                <th scope="col" class="fw-bold">Status</th>
-                <th scope="col" class="fw-bold">Balance</th>
-                <th scope="col" class="fw-bold">Date</th>
-                <th scope="col" class="fw-bold">
-                  <i class="fa-solid fa-ellipsis"></i>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase ps-4 py-3">ID</th>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase py-3">User Info</th>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase py-3">Phone</th>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase py-3">Role</th>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase py-3">Address</th>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase py-3">Birthday</th>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase py-3">Gender</th>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase py-3">Status</th>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase py-3">Balance</th>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase py-3">
+                  Created At
+                </th>
+                <th scope="col" class="fw-bold x-small text-dark text-uppercase py-3 text-center">
+                  Action
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr v-if="isLoading">
-                <td colspan="12" class="text-center py-5 text-muted">
-                  <div class="spinner-border text-primary mb-2" role="status"></div>
-                  <p class="mb-0 small">Loading data...</p>
+                <td colspan="11" class="text-center py-5 text-muted border-0">
+                  <div
+                    class="spinner-border spinner-border-sm text-primary mb-2"
+                    role="status"
+                  ></div>
+                  <p class="mb-0 small">Loading user data...</p>
                 </td>
               </tr>
-              <tr v-for="user in users" :key="user.id">
-                <td class="text-center text-secondary fw-medium">#{{ user.id }}</td>
-                <td class="align-middle">
-                  <div class="d-flex align-items-center gap-2">
-                    <img
-                      :src="user.avt"
-                      alt="User Avatar"
-                      class="rounded-circle border"
-                      style="width: 32px; height: 32px; object-fit: cover"
-                    />
 
-                    <!-- <div
-                      v-else
-                      class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                      style="width: 32px; height: 32px"
-                    >
-                      {{ user.fullName ? user.fullName.charAt(0).toUpperCase() : "U" }}
-                    </div> -->
+              <tr
+                v-for="user in sortedUser"
+                :key="user.id"
+                class="transition-bg border-bottom border-light-subtle"
+              >
+                <td class="text-secondary fw-medium ps-4">
+                  <span class="badge bg-light text-secondary border border-light-subtle"
+                    >#{{ user.id }}</span
+                  >
+                </td>
+
+                <td>
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative">
+                      <img
+                        :src="user.avt"
+                        class="rounded-circle border border-2 border-white shadow-sm object-fit-cover"
+                        style="width: 40px; height: 40px"
+                      />
+                    </div>
                     <div>
-                      <div class="fw-bold text-dark">{{ user.fullname }}</div>
-                      <div class="small text-muted">{{ user.email }}</div>
+                      <div class="fw-bold text-dark mb-0" style="font-size: 0.95rem">
+                        {{ user.fullname }}
+                      </div>
+                      <div class="small text-muted" style="font-size: 0.8rem">{{ user.email }}</div>
                     </div>
                   </div>
                 </td>
-                <td class="align-middle">{{ user.phonenumber }}</td>
-                <td class="align-middle">
+
+                <td class="text-dark">{{ user.phonenumber }}</td>
+
+                <td>
                   <span
-                    class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill fw-normal"
+                    class="badge rounded-pill px-3 py-2 border fw-medium"
+                    :class="getRoleClass(user.role)"
                   >
                     {{ convertRole(user.role) }}
                   </span>
                 </td>
 
-                <td class="align-middle">
-                  {{ user.address }}
-                </td>
-
-                <td class="align-middle">
-                  {{ user.dateOfBirth }}
-                </td>
-
-                <td class="align-middle">
-                  {{ convertGender(user.gender) }}
-                </td>
-
-                <td class="align-middle">
-                  <button
-                    class="btn"
-                    :class="['badge rounded-pill border fw-normal', getStatusClass(user.status)]"
+                <td>
+                  <span
+                    class="d-inline-block text-truncate text-secondary"
+                    style="max-width: 150px"
+                    :title="user.address"
                   >
-                    {{ convertStatus(user.status) }}
-                  </button>
+                    {{ user.address }}
+                  </span>
                 </td>
-                <td class="text-start fw-medium text-dark align-middle">
-                  {{ formatCurrency(user.balance) }}
-                </td>
-                <td class="small text-muted align-middle">{{ user.createdAt }}</td>
 
-                <td class="text-center align-middle">
+                <td class="text-secondary">{{ user.dateOfBirth }}</td>
+
+                <td>
+                  <span
+                    class="badge bg-light text-dark border border-light-subtle rounded-pill fw-normal px-2"
+                  >
+                    <i class="fa-solid fa-venus-mars me-1 text-secondary opacity-50"></i>
+                    {{ convertGender(user.gender) }}
+                  </span>
+                </td>
+
+                <td>
+                  <span
+                    class="badge rounded-pill border fw-medium px-2 py-1"
+                    :class="getStatusClass(user.status)"
+                  >
+                    <i
+                      class="fa-solid fa-circle fa-2xs me-1"
+                      :class="
+                        user.status === 1
+                          ? 'text-success'
+                          : user.status === 2
+                          ? 'text-danger'
+                          : 'text-secondary'
+                      "
+                    ></i>
+                    {{ convertStatus(user.status) }}
+                  </span>
+                </td>
+
+                <td class="text-success text-end fw-bold">{{ formatCurrency(user.balance) }}</td>
+
+                <td class="small text-muted">{{ formatDate(user.createdAt) }}</td>
+
+                <td class="text-center">
                   <div class="dropdown">
                     <button
-                      class="btn btn-sm btn-light rounded-circle"
+                      class="btn btn-sm btn-light btn-action rounded-circle border-0"
                       type="button"
                       data-bs-toggle="dropdown"
+                      style="width: 32px; height: 32px"
                     >
                       <i class="fa-solid fa-ellipsis-vertical text-secondary"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                      <!-- <li><h6 class="dropdown-header">Actions</h6></li> -->
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
                       <li>
-                        <a class="dropdown-item" @click.prevent="openEditModal(user)"
-                          ><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Edit
-                          details</a
-                        >
+                        <a class="dropdown-item py-2" @click.prevent="openEditModal(user)">
+                          <i class="fa-regular fa-pen-to-square me-2 text-primary"></i>Edit Details
+                        </a>
                       </li>
-                      <li><hr class="dropdown-divider" /></li>
-
+                      <li><hr class="dropdown-divider my-1" /></li>
                       <template v-if="user.status !== 2">
                         <li>
-                          <button class="dropdown-item text-warning" @click="handleLock(user)">
+                          <button class="dropdown-item py-2 text-warning" @click="handleLock(user)">
                             <i class="fa-solid fa-lock me-2"></i>Lock Account
                           </button>
                         </li>
                       </template>
-
                       <template v-if="user.status === 2">
                         <li>
-                          <button class="dropdown-item text-success" @click="handleUnlock(user)">
+                          <button
+                            class="dropdown-item py-2 text-success"
+                            @click="handleUnlock(user)"
+                          >
                             <i class="fa-solid fa-lock-open me-2"></i>Unlock Account
                           </button>
                         </li>
                       </template>
                       <li>
                         <button
-                          class="dropdown-item text-danger"
+                          class="dropdown-item py-2 text-danger"
                           @click="handleDelete(user.id, user.fullname)"
                         >
-                          <i class="fa-solid fa-trash me-2"></i>Delete
+                          <i class="fa-regular fa-trash-can me-2"></i>Delete User
                         </button>
                       </li>
                     </ul>
@@ -431,17 +592,6 @@
             </tbody>
           </table>
         </div>
-
-        <!-- <nav class="d-flex justify-content-between align-items-center mt-4">
-          <small class="text-body-secondary">Showing 3 of 1222 users</small>
-          <ul class="pagination pagination-sm mb-0">
-            <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-          </ul>
-        </nav> -->
       </div>
     </div>
     <div
@@ -551,11 +701,11 @@
                             class="form-control bg-light-subtle"
                             id="floatDob"
                             v-model="editingUser.dateOfBirth"
+                            :max="maxDate"
                           />
                           <label for="floatDob">Date of Birth</label>
                         </div>
                       </div>
-
                       <div class="col-md-6">
                         <div class="form-floating">
                           <select
@@ -667,6 +817,7 @@
               type="button"
               class="btn btn-danger rounded-pill px-4 fw-medium text-light"
               data-bs-dismiss="modal"
+              @click="closeModal"
             >
               Cancel
             </button>
@@ -694,15 +845,33 @@ export default {
       search: "",
       statistics: [],
       searchTimeout: null,
-      editingUser: {}, // Object chứa user đang chỉnh sửa
-      previewAvt: null, // Link ảnh preview khi chọn file mới
+      editingUser: {},
+      previewAvt: null,
       selectedFile: null, // File thực tế để upload
       modalInstance: null, // Biến giữ instance của Modal
+
+      filterForm: {
+        status: null, // null=All, 1=Active, 2=Locked
+        gender: null, // null=All, 0=Male, 1=Female, 2=Other
+        province: "", // Chuỗi địa chỉ
+        dateOfBirthFrom: "",
+        dateOfBirthTo: "",
+        createdAtFilter: "", // "last7days", "thismonth"
+        role: null,
+      },
+      provinces: [],
     };
   },
   mounted() {
     this.loadUserData();
     this.loadUserStatistical();
+    this.fetchProvinces();
+  },
+  computed: {
+    // Đảo ngược thứ tự mảng
+    sortedUser() {
+      return [...this.users].reverse();
+    },
   },
   methods: {
     loadUserData() {
@@ -721,11 +890,34 @@ export default {
         });
     },
     formatCurrency(value) {
-      return new Intl.NumberFormat("vi-VN", {
+      if (!value) return "$0";
+
+      // Giả sử tỷ giá 1 USD = 25,400 VND
+      const exchangeRate = 25400;
+      const usdValue = value / exchangeRate;
+
+      return new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "VND",
-      }).format(value);
+        currency: "USD",
+        maximumFractionDigits: 2, // Giữ lại 2 số lẻ (ví dụ: $12.50)
+      }).format(usdValue);
     },
+
+    formatDate(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+
+      // Tùy chọn định dạng (Format: Oct 22, 2025, 02:30 PM)
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short", // "short" = Oct, "long" = October, "numeric" = 10
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true, // true = AM/PM, false = 24h
+      });
+    },
+
     convertStatus(status) {
       switch (status) {
         case 1:
@@ -756,6 +948,17 @@ export default {
           return "Seller";
         // default:
         //   return "Unknown";
+      }
+    },
+
+    getRoleClass(roleId) {
+      switch (roleId) {
+        case 1:
+          return "bg-info-subtle border-info-subtle text-info";
+        case 0:
+          return "bg-secondary-subtle border-secondary-subtle text-secondary";
+        case 2:
+          return "bg-danger-subtle border-danger-subtle text-danger";
       }
     },
 
@@ -812,7 +1015,7 @@ export default {
 
     // Xóa
     handleDelete(userId, userName) {
-      if (!confirm(`Bạn có chắc chắn muốn xóa Admin: ${userName}?`)) return;
+      if (!confirm(`Are you sure you want to delete user ${userName}?`)) return;
 
       axios
         .delete(`http://localhost:8081/api/admin/xoa-user/${userId}`, {
@@ -821,11 +1024,11 @@ export default {
           },
         })
         .then(() => {
-          alert("Đã xóa thành công!");
+          alert("Deleted successfully!");
           this.loadUserData();
         })
         .catch((err) => {
-          console.error("Lỗi khi xóa:", err);
+          console.error("Error:", err);
           const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
           alert(message);
         });
@@ -890,6 +1093,15 @@ export default {
     async updateUser() {
       if (!this.editingUser.id) return;
 
+      if (this.editingUser.dateOfBirth) {
+        const dob = new Date(this.editingUser.dateOfBirth);
+        const today = new Date();
+        if (dob > today) {
+          alert("Date of birth cannot be in the future!");
+          return;
+        }
+      }
+
       // Tạo object dữ liệu thường (JSON), KHÔNG dùng FormData
       const dataToSend = {
         fullname: this.editingUser.fullname,
@@ -923,7 +1135,7 @@ export default {
           },
         })
         .then((res) => {
-          alert("Cập nhật thông tin thành công!");
+          alert("Information updated successfully!");
           if (this.modalInstance) this.modalInstance.hide();
           this.loadUserData();
         })
@@ -969,6 +1181,73 @@ export default {
         })
         .finally(() => {
           this.isLoading = false;
+        });
+    },
+
+    // Lọc
+    handleFilter() {
+      this.isLoading = true;
+
+      // chuyển chuỗi rỗng thành null nếu cần thiết
+      const payload = {
+        status: this.filterForm.status,
+        gender: this.filterForm.gender,
+        province: this.filterForm.province || null,
+        dateOfBirthFrom: this.filterForm.dateOfBirthFrom || null,
+        dateOfBirthTo: this.filterForm.dateOfBirthTo || null,
+        createdAtFilter: this.filterForm.createdAtFilter || null,
+        role: this.filterForm.role,
+      };
+
+      axios
+        .post("http://localhost:8081/api/admin/loc-user", payload, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.users = res.data;
+        })
+        .catch((err) => {
+          console.error("Lỗi bộ lọc:", err);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+    resetFilter() {
+      this.filterForm = {
+        status: null,
+        gender: null,
+        province: "",
+        dateOfBirthFrom: "",
+        dateOfBirthTo: "",
+        createdAtFilter: "",
+        role: null,
+      };
+      // Sau khi reset thì load lại toàn bộ dữ liệu gốc
+      this.loadUserData();
+    },
+    // Helper để set nhanh thời gian tạo
+    setCreatedFilter(val) {
+      // Nếu bấm lại vào nút đang active thì bỏ chọn (toggle)
+      if (this.filterForm.createdAtFilter === val) {
+        this.filterForm.createdAtFilter = "";
+      } else {
+        this.filterForm.createdAtFilter = val;
+      }
+    },
+
+    fetchProvinces() {
+      axios
+        .get("https://open.oapi.vn/location/provinces?page=0&size=63")
+        .then((res) => {
+          if (res.data && res.data.data) {
+            this.provinces = res.data.data;
+          }
+        })
+        .catch((err) => {
+          console.error("Lỗi lấy danh sách tỉnh thành:", err);
         });
     },
   },

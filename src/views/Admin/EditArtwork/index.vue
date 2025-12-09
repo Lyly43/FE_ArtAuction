@@ -72,7 +72,7 @@
                 <label class="form-label small fw-bold text-secondary">ARTWORK TITLE</label>
                 <input
                   type="text"
-                  class="form-control bg-light border-0 fw-bold fs-5 text-primary"
+                  class="form-control bg-light border-0 fw-bold"
                   v-model="artworkForm.title"
                   placeholder="Enter artwork title..."
                 />
@@ -113,15 +113,6 @@
             <div class="card-body p-4">
               <div class="row g-3">
                 <div class="col-12 col-md-6">
-                  <label class="form-label small fw-bold text-secondary">GENRE</label>
-                  <select class="form-select bg-light border-0" v-model="artworkForm.paintingGenre">
-                    <option value="Portrait">Portrait</option>
-                    <option value="Landscape">Landscape</option>
-                    <option value="Abstract">Abstract</option>
-                    <option value="Still Life">Still Life</option>
-                  </select>
-                </div>
-                <div class="col-12 col-md-6">
                   <label class="form-label small fw-bold text-secondary">Painting Genre</label>
                   <input
                     type="text"
@@ -136,7 +127,12 @@
                     type="number"
                     class="form-control bg-light border-0"
                     v-model="artworkForm.yearOfCreation"
+                    placeholder="YYYY"
+                    :max="new Date().getFullYear()"
                   />
+                  <!-- <small v-if="errors.yearOfCreation" class="text-danger">{{
+                    errors.yearOfCreation
+                  }}</small> -->
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label small fw-bold text-secondary">SIZE (Dimensions)</label>
@@ -191,32 +187,24 @@
             </div>
             <div class="card-body p-4">
               <div class="mb-3">
-                <label class="form-label small fw-bold text-secondary">STARTING PRICE (VND)</label>
+                <label class="form-label small fw-bold text-secondary">STARTING PRICE</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-0 text-secondary fw-bold">₫</span>
+                  <span class="input-group-text bg-light border-0 text-success fw-bold">$</span>
                   <input
-                    type="text"
-                    class="form-control bg-light border-0 fw-bold fs-5"
-                    v-model="artworkForm.price"
+                    type="number"
+                    class="form-control bg-light border-0 fw-bold fs-5 text-end"
+                    v-model.number="priceUSD"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
                   />
                 </div>
+                <small v-if="errors.price" class="text-danger mt-1 d-block">
+                  {{ errors.price }}
+                </small>
               </div>
 
               <hr class="border-secondary opacity-10 my-3" />
-
-              <!-- <div class="mb-3">
-                <label class="form-label small fw-bold text-secondary">APPROVAL STATUS</label>
-                <select
-                  class="form-select border-0 py-2 fw-medium"
-                  v-model="artworkForm.status"
-                  :class="getStatusBackground(artworkForm.status)"
-                >
-                  <option :value="0">Not Approved</option>
-                  <option :value="1">Approved</option>
-                  <option :value="2">Up for Auction</option>
-                  <option :value="3">Refused</option>
-                </select>
-              </div> -->
 
               <div class="alert alert-light border d-flex align-items-center mb-0" role="alert">
                 <i class="fa-regular fa-clock me-2 text-secondary"></i>
@@ -242,6 +230,7 @@ export default {
       artworkId: null,
       isLoading: false,
       isSaving: false,
+      errors: {},
       artworkForm: {
         title: "",
         paintingGenre: "",
@@ -255,10 +244,10 @@ export default {
         avtArtwork: "",
         createdAt: "",
       },
+      priceUSD: 0,
     };
   },
   mounted() {
-    // Giả sử route là /admin/edit-artwork/:id
     this.artworkId = this.$route.params.id;
     if (this.artworkId) {
       this.loadArtworkDetail();
@@ -274,9 +263,8 @@ export default {
         })
         .then((res) => {
           const data = res.data;
-          console.log("API Response:", data); // Debug: Kiểm tra xem API thực sự trả về gì
+          console.log("API Response:", data);
 
-          // Xử lý cả 2 trường hợp: API trả về mảng chứa 1 phần tử hoặc trả về object
           const artworkData = Array.isArray(data) ? data[0] : data;
 
           if (artworkData) {
@@ -295,19 +283,40 @@ export default {
               avtArtwork: artworkData.avtArtwork || "",
               createdAt: artworkData.createdAt || "",
             };
+
+            this.priceUSD = artworkData.startedPrice || 0;
           }
         })
         .catch((err) => {
           console.error(err);
-          alert("Không thể tải thông tin tác phẩm.");
+          alert("Unable to load work information.");
         })
         .finally(() => (this.isLoading = false));
     },
 
-    // Lưu thay đổi
     saveChanges() {
+      this.errors = {};
+      const currentYear = new Date().getFullYear();
+
+      // Validate Năm sáng tác
+      if (this.artworkForm.yearOfCreation > currentYear) {
+        this.errors.yearOfCreation = `Year cannot be in the future (Max: ${currentYear})`;
+        alert("Invalid Year of Creation!");
+        return;
+      }
+
+      // Validate Giá USD
+      if (this.priceUSD <= 0) {
+        this.errors.price = "Starting price must be greater than $0.";
+        return;
+      }
+
+      if (this.artworkForm.yearOfCreation < 0) {
+        this.errors.yearOfCreation = "Year cannot be negative";
+        return;
+      }
+
       this.isSaving = true;
-      // Gọi API cập nhật
       const payload = {
         title: this.artworkForm.title,
         author: this.artworkForm.author,
@@ -315,7 +324,7 @@ export default {
         yearOfCreation: this.artworkForm.yearOfCreation,
         material: this.artworkForm.material,
         size: this.artworkForm.size,
-        startedPrice: Number(this.artworkForm.price),
+        startedPrice: Number(this.priceUSD),
         status: this.artworkForm.status,
         description: this.artworkForm.description,
       };
@@ -339,7 +348,6 @@ export default {
         .finally(() => (this.isSaving = false));
     },
 
-    // Helpers UI
     convertStatus(status) {
       switch (status) {
         case 0:
@@ -369,7 +377,6 @@ export default {
       }
     },
     getStatusBackground(status) {
-      // Dùng cho Background của thẻ Select
       switch (status) {
         case 0:
           return "bg-secondary-subtle text-secondary";
@@ -397,7 +404,7 @@ export default {
 .form-control:focus,
 .form-select:focus {
   background-color: #fff;
-  border: 1px solid #86b7fe; /* Primary light */
+  border: 1px solid #86b7fe;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
 }
 </style>

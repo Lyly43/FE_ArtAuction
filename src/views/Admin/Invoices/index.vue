@@ -7,87 +7,88 @@
 
     <div class="row g-3 mb-4">
       <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div
+          class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-secondary"
+        >
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total Bill</h6>
-                <h3 class="card-text fw-bold mb-0">{{ statistics.totalInvoices }}</h3>
+                <h3 class="card-text fw-bold mb-0 text-dark">{{ statistics.totalInvoices }}</h3>
               </div>
               <div
-                class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                class="bg-secondary-subtle text-primary rounded-4 d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
                 <i class="fa-solid fa-file-lines fs-5"></i>
               </div>
             </div>
-            <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-up me-1"></i>Total invoices
-            </small>
+            <small class="text-secondary fw-medium">Total invoices generated</small>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-success">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Paid</h6>
-                <h3 class="card-text fw-bold mb-0">{{ statistics.paidInvoices }}</h3>
+                <h3 class="card-text fw-bold mb-0 text-dark">{{ statistics.paidInvoices }}</h3>
               </div>
               <div
-                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                class="bg-success bg-opacity-10 text-success rounded-4 d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
                 <i class="fa-solid fa-circle-check fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">Total invoices paid</small>
+            <small class="text-success fw-medium">Successfully paid</small>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-warning">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Waiting</h6>
-                <h3 class="card-text fw-bold mb-0">{{ statistics.pendingInvoices }}</h3>
+                <h3 class="card-text fw-bold mb-0 text-dark">{{ statistics.pendingInvoices }}</h3>
               </div>
               <div
-                class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
+                class="bg-warning bg-opacity-10 text-warning-emphasis rounded-4 d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
                 <i class="fa-solid fa-clock fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">Total pending invoices</small>
+            <small class="text-secondary fw-medium">Pending payment</small>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-danger">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Overdue</h6>
-                <h3 class="card-text fw-bold mb-0">{{ statistics.failedInvoices }}</h3>
+                <h3 class="card-text fw-bold mb-0 text-dark">{{ statistics.failedInvoices }}</h3>
               </div>
               <div
-                class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
+                class="bg-danger bg-opacity-10 text-danger rounded-4 d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
                 <i class="fa-solid fa-ban fs-5"></i>
               </div>
             </div>
-            <small class="text-danger fw-medium">Need to process</small>
+            <small class="text-danger fw-medium">Action required</small>
           </div>
         </div>
       </div>
     </div>
+
     <div class="card border-0 shadow-sm">
       <div class="card-body">
         <div class="row g-3 mb-4">
@@ -153,6 +154,21 @@
                         <div class="bg-light rounded-3 p-3 border">
                           <div class="form-check mb-2">
                             <input
+                              :value="null"
+                              v-model="filterForm.paymentStatus"
+                              class="form-check-input"
+                              type="radio"
+                              name="statusFilter"
+                              id="statusAll"
+                            />
+                            <label class="form-check-label text-success" for="statusActive"
+                              >● All
+                            </label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input
+                              :value="1"
+                              v-model="filterForm.paymentStatus"
                               class="form-check-input"
                               type="radio"
                               name="statusFilter"
@@ -164,6 +180,8 @@
                           </div>
                           <div class="form-check mb-2">
                             <input
+                              :value="0"
+                              v-model="filterForm.paymentStatus"
                               class="form-check-input"
                               type="radio"
                               name="statusFilter"
@@ -175,6 +193,8 @@
                           </div>
                           <div class="form-check mb-2">
                             <input
+                              :value="2"
+                              v-model="filterForm.paymentStatus"
                               class="form-check-input"
                               type="radio"
                               name="statusFilter"
@@ -191,10 +211,13 @@
                         <label class="form-label x-small fw-bold text-secondary"
                           >Payment method</label
                         >
-                        <select class="form-select shadow-none bg-light border-0">
-                          <option selected value="">Tất cả</option>
-                          <option value="banking">Chuyển khoản ngân hàng</option>
-                          <option value="visa">Ví điện tử</option>
+                        <select
+                          class="form-select shadow-none bg-light border-0"
+                          v-model="filterForm.paymentMethod"
+                        >
+                          <option selected value="">All</option>
+                          <option value="banking">Bank transfer</option>
+                          <option value="visa">E-wallet</option>
                         </select>
                       </div>
                     </div>
@@ -203,40 +226,68 @@
 
                     <div class="mb-4">
                       <label class="form-label fw-bold text-uppercase small text-secondary mb-2">
-                        <i class="fa-solid fa-money-bill-wave me-1"></i> Total amount (VND)
+                        <i class="fa-solid fa-dollar-sign me-1"></i> Total amount (USD)
                       </label>
 
                       <div class="d-flex flex-wrap gap-2 mb-2">
                         <button
-                          class="btn btn-sm btn-light border text-secondary active-pill"
+                          class="btn btn-sm btn-light border text-secondary"
+                          :class="{
+                            'active-pill':
+                              filterForm.totalAmountMaxUSD === 100 &&
+                              filterForm.totalAmountMinUSD === 0,
+                          }"
+                          @click="setTotalAmountRangeUSD(0, 100)"
                           style="font-size: 0.75rem"
                         >
-                          &lt; 1M
+                          &lt; $100
                         </button>
+
                         <button
                           class="btn btn-sm btn-light border text-secondary"
+                          :class="{
+                            'active-pill':
+                              filterForm.totalAmountMinUSD === 100 &&
+                              filterForm.totalAmountMaxUSD === 1000,
+                          }"
+                          @click="setTotalAmountRangeUSD(100, 1000)"
                           style="font-size: 0.75rem"
                         >
-                          1M-10M
+                          $100 - $1k
                         </button>
+
                         <button
                           class="btn btn-sm btn-light border text-secondary"
+                          :class="{
+                            'active-pill':
+                              filterForm.totalAmountMinUSD === 1000 &&
+                              !filterForm.totalAmountMaxUSD,
+                          }"
+                          @click="setTotalAmountRangeUSD(1000, null)"
                           style="font-size: 0.75rem"
                         >
-                          &gt; 10M
+                          &gt; $1k
                         </button>
                       </div>
-
                       <div class="input-group">
-                        <input type="number" class="form-control shadow-none" placeholder="Min" />
+                        <input
+                          type="number"
+                          v-model="filterForm.totalAmountMinUSD"
+                          class="form-control shadow-none"
+                          placeholder="Min ($)"
+                        />
                         <span
                           class="input-group-text bg-white border-start-0 border-end-0 text-secondary"
                           >-</span
                         >
-                        <input type="number" class="form-control shadow-none" placeholder="Max" />
+                        <input
+                          type="number"
+                          class="form-control shadow-none"
+                          placeholder="Max ($)"
+                          v-model="filterForm.totalAmountMaxUSD"
+                        />
                       </div>
                     </div>
-
                     <hr class="border-secondary opacity-10 my-4" />
 
                     <div class="mb-2">
@@ -244,55 +295,27 @@
                         <i class="fa-regular fa-calendar-check me-1"></i> Creation time
                       </label>
 
-                      <div class="btn-group w-100 mb-2" role="group">
-                        <input
-                          type="radio"
-                          class="btn-check"
-                          name="dateQuick"
-                          id="dateToday"
-                          autocomplete="off"
-                        />
-                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateToday"
-                          >Today</label
-                        >
-
-                        <input
-                          type="radio"
-                          class="btn-check"
-                          name="dateQuick"
-                          id="dateWeek"
-                          autocomplete="off"
-                        />
-                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateWeek"
-                          >This week</label
-                        >
-
-                        <input
-                          type="radio"
-                          class="btn-check"
-                          name="dateQuick"
-                          id="dateMonth"
-                          autocomplete="off"
-                          checked
-                        />
-                        <label class="btn btn-outline-light text-dark border btn-sm" for="dateMonth"
-                          >This month</label
-                        >
-                      </div>
-
                       <div class="input-group input-group-sm">
                         <span class="input-group-text bg-light text-secondary">From</span>
-                        <input type="date" class="form-control shadow-none" />
+                        <input
+                          type="date"
+                          class="form-control shadow-none"
+                          v-model="filterForm.dateFrom"
+                        />
                         <span class="input-group-text bg-light text-secondary">To</span>
-                        <input type="date" class="form-control shadow-none" />
+                        <input
+                          type="date"
+                          class="form-control shadow-none"
+                          v-model="filterForm.dateTo"
+                        />
                       </div>
 
-                      <div class="form-check mt-2">
+                      <!-- <div class="form-check mt-2">
                         <input class="form-check-input" type="checkbox" id="filterPaidDate" />
-                        <!-- <label class="form-check-label small text-secondary" for="filterPaidDate">
+                        <label class="form-check-label small text-secondary" for="filterPaidDate">
                           Áp dụng cho ngày thanh toán (Paid Date)
-                        </label> -->
-                      </div>
+                        </label>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -300,7 +323,10 @@
                 <div class="offcanvas-footer border-top p-3 bg-white">
                   <div class="row g-2">
                     <div class="col-4">
-                      <button class="btn btn-light border w-100 fw-bold text-secondary">
+                      <button
+                        class="btn btn-light border w-100 fw-bold text-secondary"
+                        @click="resetFilter"
+                      >
                         <i class="fa-solid fa-rotate-right me-1"></i> Reset
                       </button>
                     </div>
@@ -308,6 +334,7 @@
                       <button
                         class="btn btn-primary w-100 fw-bold shadow-sm"
                         data-bs-dismiss="offcanvas"
+                        @click="handleFilter"
                       >
                         Apply
                       </button>
@@ -316,100 +343,126 @@
                 </div>
               </div>
             </Teleport>
-            <!-- <button class="btn btn-primary ms-2">
-              <i class="fa-solid fa-plus me-2"></i>Create Invoice
-            </button> -->
           </div>
         </div>
 
-        <div class="table-responsive text-nowrap overflow-y-auto">
-          <table class="table table-hover align-middle text-nowrap mb-0 w-100">
-            <thead class="table-light">
-              <tr class="align-middle">
-                <th scope="col" class="py-3 fw-bold ps-3">BuyerID</th>
-                <th scope="col" class="py-3 fw-bold">ArtworkID</th>
-                <th scope="col" class="py-3 fw-bold">Price</th>
-                <th scope="col" class="py-3 fw-bold">Total</th>
-                <th scope="col" class="py-3 fw-bold">Payment method</th>
-                <th scope="col" class="py-3 fw-bold">Created at</th>
-                <th scope="col" class="py-3 fw-bold">Status</th>
-                <th scope="col" class="py-3 fw-bold text-center">
-                  <i class="fa-solid fa-ellipsis"></i>
+        <div class="table-responsive overflow-y-auto custom-scrollbar" style="max-height: 500px">
+          <table class="table table-hover align-middle text-nowrap mb-0">
+            <thead class="bg-light sticky-top shadow-sm border-bottom border-light-subtle">
+              <tr>
+                <th scope="col" class="ps-4 py-3 fw-bold text-dark text-uppercase x-small border-0">
+                  Buyer ID
+                </th>
+                <th scope="col" class="py-3 fw-bold text-dark text-uppercase x-small border-0">
+                  Artwork ID
+                </th>
+                <th
+                  scope="col"
+                  class="py-3 fw-bold text-dark text-uppercase x-small border-0 text-end pe-4"
+                >
+                  Price
+                </th>
+                <th
+                  scope="col"
+                  class="py-3 fw-bold text-dark text-uppercase x-small border-0 text-end pe-4"
+                >
+                  Total
+                </th>
+                <th scope="col" class="py-3 fw-bold text-dark text-uppercase x-small border-0">
+                  Payment Method
+                </th>
+                <th scope="col" class="py-3 fw-bold text-dark text-uppercase x-small border-0">
+                  Created At
+                </th>
+                <th
+                  scope="col"
+                  class="py-3 fw-bold text-dark text-uppercase x-small border-0 text-center"
+                >
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  class="py-3 fw-bold text-dark text-uppercase x-small border-0 text-center"
+                >
+                  Action
                 </th>
               </tr>
             </thead>
+
             <tbody>
               <template v-for="(v, i) in invoices" :key="i">
-                <tr>
-                  <td class="ps-3 align-middle">
-                    {{ v.userId }}
+                <tr class="transition-bg border-bottom border-light-subtle">
+                  <td class="ps-4 py-3 border-0">
+                    <span
+                      class="badge bg-light text-dark border border-light-subtle rounded-pill fw-normal"
+                    >
+                      <i class="fa-regular fa-user me-1 text-secondary"></i>{{ v.userId }}
+                    </span>
                   </td>
 
-                  <td class="align-middle">
-                    {{ v.artworkId }}
+                  <td class="py-3 border-0">
+                    <span
+                      class="badge bg-light text-secondary border border-light-subtle rounded-pill fw-normal"
+                    >
+                      #{{ v.artworkId }}
+                    </span>
                   </td>
 
-                  <td class="text-body-secondary align-middle">
+                  <td class="py-3 border-0 text-end pe-4 text-secondary">
                     {{ formatCurrency(v.amount) }}
                   </td>
 
-                  <td class="text-primary fw-bold align-middle">
-                    {{ formatCurrency(v.totalAmount) }}
+                  <td class="py-3 border-0 text-end pe-4">
+                    <span class="fw-bold text-primary">{{ formatCurrency(v.totalAmount) }}</span>
                   </td>
-                  <td class="align-middle">
-                    <span class="d-inline-flex align-items-center gap-2">
-                      <i class="fa-regular fa-credit-card text-secondary"></i>
+
+                  <td class="py-3 border-0">
+                    <span class="d-inline-flex align-items-center gap-2 text-dark">
+                      <div
+                        class="bg-secondary-subtle rounded-circle p-1 d-flex justify-content-center align-items-center"
+                        style="width: 24px; height: 24px"
+                      >
+                        <i class="fa-regular fa-credit-card text-secondary small"></i>
+                      </div>
                       {{ v.paymentMethod }}
                     </span>
                   </td>
-                  <td class="small text-secondary align-middle">
-                    {{ v.createdAt }}
+
+                  <td class="py-3 border-0 small text-muted">
+                    {{ formatDate(v.createdAt) }}
                   </td>
-                  <td class="align-middle">
-                    <button
-                      class="btn badge rounded-pill border fw-normal px-3 py-2"
+
+                  <td class="py-3 border-0 text-center">
+                    <span
+                      class="badge rounded-pill border fw-medium px-3 py-2"
                       :class="getStatusClass(v.invoiceStatus)"
                     >
+                      <i class="fa-solid fa-circle fa-2xs me-1 opacity-75"></i>
                       {{ convertStatus(v.invoiceStatus) }}
-                    </button>
+                    </span>
                   </td>
-                  <td class="text-center align-middle">
+
+                  <td class="text-center py-3 border-0">
                     <div class="dropdown">
                       <button
-                        class="btn btn-sm btn-light rounded-circle"
+                        class="btn btn-sm btn-light btn-action rounded-circle border-0"
                         type="button"
                         data-bs-toggle="dropdown"
+                        data-bs-display="static"
+                        aria-expanded="false"
                         style="width: 32px; height: 32px"
+                        @click.stop="toggleDropdown(v.id)"
                       >
                         <i class="fa-solid fa-ellipsis-vertical text-secondary"></i>
                       </button>
 
-                      <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                        <!-- <li>
-                          <a class="dropdown-item" href="#">
-                            <i class="fa-solid fa-eye me-2 text-info"></i>See details
-                          </a>
-                        </li> -->
-                        <!-- <li>
-                          <button class="dropdown-item">
-                            <i class="fa-solid fa-download me-2 text-secondary"></i>Download PDF
-                          </button>
-                        </li>
-
-                        <li><hr class="dropdown-divider" /></li>
-
-                        <template v-if="v.invoiceStatus === 0 || v.invoiceStatus === 2">
-                          <li>
-                            <button class="dropdown-item text-success" @click="confirmPayment(v)">
-                              <i class="fa-solid fa-check-double me-2"></i>Confirm Payment
-                            </button>
-                          </li>
-                          <li><hr class="dropdown-divider" /></li>
-                        </template> -->
-
+                      <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
                         <li>
-                          <button class="dropdown-item text-danger" @click="handleDelete(v.id)">
-                            <i class="fa-solid fa-trash me-2"></i>Delete
+                          <button
+                            class="dropdown-item py-2 text-danger"
+                            @click="handleDelete(v.id)"
+                          >
+                            <i class="fa-regular fa-trash-can me-2"></i>Delete Invoice
                           </button>
                         </li>
                       </ul>
@@ -435,27 +488,40 @@ export default {
       search: "",
       statistics: {},
       searchTimeout: null,
+
+      filterForm: {
+        paymentStatus: null,
+        invoiceStatus: null,
+        paymentMethod: "",
+        totalAmountRange: "",
+        totalAmountMinUSD: null,
+        totalAmountMaxUSD: null,
+        dateFrom: "",
+        dateTo: "",
+      },
     };
   },
 
   mounted() {
     this.loadInvoiceData();
     this.loadInvoiceStatistical();
+    document.addEventListener("click", this.closeDropdown);
+  },
+
+  beforeUnmount() {
+    document.removeEventListener("click", this.closeDropdown);
   },
 
   methods: {
     formatCurrency(value) {
-      if (!value) return "$0";
-
-      // Giả sử tỷ giá 1 USD = 25,400 VND
-      const exchangeRate = 25400;
-      const usdValue = value / exchangeRate;
+      if (!value && value !== 0) return "$0.00";
 
       return new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-        maximumFractionDigits: 2, // Giữ lại 2 số lẻ (ví dụ: $12.50)
-      }).format(usdValue);
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value);
     },
 
     loadInvoiceData() {
@@ -475,6 +541,22 @@ export default {
           console.error(err);
         });
     },
+
+    formatDate(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+
+      // Tùy chọn định dạng (Format: Oct 22, 2025, 02:30 PM)
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+    },
+
     convertStatus(status) {
       switch (status) {
         case 0:
@@ -588,6 +670,87 @@ export default {
         .finally(() => {
           this.isLoading = false;
         });
+    },
+
+    handleFilter() {
+      this.isLoading = true;
+
+      let minUSD =
+        this.filterForm.totalAmountMinUSD !== null && this.filterForm.totalAmountMinUSD !== ""
+          ? Number(this.filterForm.totalAmountMinUSD)
+          : null;
+
+      let maxUSD =
+        this.filterForm.totalAmountMaxUSD !== null && this.filterForm.totalAmountMaxUSD !== ""
+          ? Number(this.filterForm.totalAmountMaxUSD)
+          : null;
+
+      const payload = {
+        paymentStatus: this.filterForm.paymentStatus,
+        invoiceStatus: this.filterForm.invoiceStatus,
+        paymentMethod: this.filterForm.paymentMethod === "" ? null : this.filterForm.paymentMethod,
+
+        // Gửi giá trị USD trực tiếp
+        totalAmountMin: minUSD,
+        totalAmountMax: maxUSD,
+
+        dateFrom: this.filterForm.dateFrom ? `${this.filterForm.dateFrom}T00:00:00` : null,
+        dateTo: this.filterForm.dateTo ? `${this.filterForm.dateTo}T23:59:59` : null,
+      };
+
+      console.log("Payload lọc (USD):", payload);
+
+      axios
+        .post("http://localhost:8081/api/admin/invoices/loc-hoa-don", payload, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.invoices = res.data.data || [];
+        })
+        .catch((err) => {
+          console.error("Lỗi bộ lọc:", err);
+          this.invoices = [];
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    resetFilter() {
+      this.filterForm = {
+        paymentStatus: null,
+        invoiceStatus: null,
+        paymentMethod: "",
+        totalAmountMinUSD: null,
+        totalAmountMaxUSD: null,
+        dateFrom: "",
+        dateTo: "",
+      };
+
+      this.loadInvoiceData();
+    },
+
+    // Helper set nhanh khoảng giá
+    setTotalAmountRangeUSD(min, max) {
+      // Nếu click lại nút đang chọn thì hủy chọn (reset)
+      if (this.filterForm.totalAmountMinUSD === min && this.filterForm.totalAmountMaxUSD === max) {
+        this.filterForm.totalAmountMinUSD = null;
+        this.filterForm.totalAmountMaxUSD = null;
+      } else {
+        // Gán giá trị vào ô input
+        this.filterForm.totalAmountMinUSD = min;
+        this.filterForm.totalAmountMaxUSD = max;
+      }
+    },
+    toggleDropdown(id) {
+      if (this.activeDropdownId === id) {
+        this.activeDropdownId = null;
+      } else {
+        this.activeDropdownId = id;
+      }
     },
   },
 };

@@ -5,42 +5,68 @@
         <h4 class="fw-bold text-primary mb-1">Seller Requests</h4>
         <p class="text-body-secondary mb-0">Review applications to become a seller</p>
       </div>
-      <button class="btn btn-light shadow-sm text-secondary" @click="fetchRequests">
+      <!-- <button class="btn btn-light shadow-sm text-secondary" @click="fetchRequests">
         <i class="fa-solid fa-rotate-right me-2"></i>Refresh
-      </button>
+      </button> -->
     </div>
 
     <div class="row g-3 mb-4">
       <div class="col-12 col-md-4">
-        <div class="card border-0 shadow-sm h-100 bg-secondary-subtle">
-          <div class="card-body d-flex align-items-center justify-content-between">
-            <div>
-              <h6 class="fw-bold text-primary mb-1">Pending Review</h6>
-              <h3 class="fw-bold mb-0 text-primary">{{ pendingCount }}</h3>
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-warning">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Pending Review</h6>
+                <h3 class="fw-bold mb-0 text-dark">{{ pendingCount }}</h3>
+              </div>
+              <div
+                class="bg-warning bg-opacity-10 text-warning-emphasis rounded-4 d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-hourglass-half fs-5"></i>
+              </div>
             </div>
-            <i class="fa-solid fa-hourglass-half fa-2x text-primary opacity-50"></i>
+            <small class="text-secondary fw-medium">Awaiting approval</small>
           </div>
         </div>
       </div>
+
       <div class="col-12 col-md-4">
-        <div class="card border-0 shadow-sm h-100 bg-success-subtle">
-          <div class="card-body d-flex align-items-center justify-content-between">
-            <div>
-              <h6 class="fw-bold text-success mb-1">Approved Today</h6>
-              <h3 class="fw-bold mb-0 text-success">12</h3>
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-success">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Approved Today</h6>
+                <h3 class="fw-bold mb-0 text-dark">12</h3>
+              </div>
+              <div
+                class="bg-success bg-opacity-10 text-success rounded-4 d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-check-double fs-5"></i>
+              </div>
             </div>
-            <i class="fa-solid fa-check-double fa-2x text-success opacity-50"></i>
+            <small class="text-success fw-medium">Processed successfully</small>
           </div>
         </div>
       </div>
+
       <div class="col-12 col-md-4">
-        <div class="card border-0 shadow-sm h-100 bg-danger-subtle">
-          <div class="card-body d-flex align-items-center justify-content-between">
-            <div>
-              <h6 class="fw-bold text-danger mb-1">Rejected</h6>
-              <h3 class="fw-bold mb-0 text-danger">5</h3>
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-danger">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="card-subtitle text-secondary fw-bold mb-1">Rejected</h6>
+                <h3 class="fw-bold mb-0 text-dark">5</h3>
+              </div>
+              <div
+                class="bg-danger bg-opacity-10 text-danger rounded-4 d-flex align-items-center justify-content-center"
+                style="width: 48px; height: 48px"
+              >
+                <i class="fa-solid fa-xmark fs-5"></i>
+              </div>
             </div>
-            <i class="fa-solid fa-xmark fa-2x text-danger opacity-50"></i>
+            <small class="text-danger fw-medium">Request denied</small>
           </div>
         </div>
       </div>
@@ -53,7 +79,11 @@
             <li class="nav-item">
               <a
                 class="btn rounded-pill fw-medium border-0 w-100"
-                :class="currentStatus === 'PENDING' ? 'btn-secondary' : 'btn-light text-secondary'"
+                :class="
+                  currentStatus === 'PENDING'
+                    ? 'btn-secondary-subtle fw-bold'
+                    : 'btn-light text-secondary'
+                "
                 @click.prevent="changeStatus('PENDING')"
                 style="cursor: pointer"
               >
@@ -63,7 +93,11 @@
             <li class="nav-item">
               <a
                 class="btn rounded-pill fw-medium border-0 w-100"
-                :class="currentStatus === 'APPROVED' ? 'btn-secondary' : 'btn-light text-secondary'"
+                :class="
+                  currentStatus === 'APPROVED'
+                    ? 'btn-secondary-subtle fw-bold'
+                    : 'btn-light text-secondary'
+                "
                 @click.prevent="changeStatus('APPROVED')"
                 style="cursor: pointer"
               >
@@ -73,7 +107,11 @@
             <li class="nav-item">
               <a
                 class="btn rounded-pill fw-medium border-0 w-100"
-                :class="currentStatus === 'REJECTED' ? 'btn-secondary' : 'btn-light text-secondary'"
+                :class="
+                  currentStatus === 'REJECTED'
+                    ? 'btn-secondary-subtle fw-bold'
+                    : 'btn-light text-secondary'
+                "
                 @click.prevent="changeStatus('REJECTED')"
                 style="cursor: pointer"
               >
@@ -82,7 +120,7 @@
             </li>
           </ul>
 
-          <div class="input-group" style="max-width: 300px">
+          <!-- <div class="input-group" style="max-width: 300px">
             <span class="input-group-text bg-light border-end-0 text-secondary">
               <i class="fa-solid fa-search"></i>
             </span>
@@ -92,7 +130,7 @@
               placeholder="Search user ID..."
               v-model="searchQuery"
             />
-          </div>
+          </div> -->
         </div>
       </div>
 
@@ -124,11 +162,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="req in filteredRequests" :key="req.id">
+              <tr v-for="req in sortedRequests" :key="req.id">
                 <td class="ps-4">
                   <div class="d-flex align-items-center gap-3">
                     <img
-                      :src="req.userAvt || 'https://via.placeholder.com/40?text=U'"
+                      :src="req.userAvt"
                       class="rounded-circle border"
                       width="40"
                       height="40"
@@ -459,6 +497,11 @@ export default {
     pendingCount() {
       return this.requests.filter((r) => r.status === "PENDING").length;
     },
+
+    // Đảo ngược thứ tự mảng
+    sortedRequests() {
+      return [...this.filteredRequests].reverse();
+    },
   },
   mounted() {
     this.fetchRequests();
@@ -584,13 +627,17 @@ export default {
     },
 
     formatDate(dateString) {
-      if (!dateString) return "N/A";
-      return new Date(dateString).toLocaleDateString("vi-VN", {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+
+      // Tùy chọn định dạng (Format: Oct 22, 2025, 02:30 PM)
+      return date.toLocaleDateString("en-US", {
         year: "numeric",
-        month: "short",
+        month: "short", // "short" = Oct, "long" = October, "numeric" = 10
         day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
+        hour12: true, // true = AM/PM, false = 24h
       });
     },
 

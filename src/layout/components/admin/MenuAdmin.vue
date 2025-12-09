@@ -134,16 +134,18 @@
         </ul>
         <div class="p-3 mt-auto">
           <!-- cá nhân ở đây -->
-          <div class="d-flex align-items-center gap-3">
-            <img
-              src="../../../assets/img/user_test.jpg"
-              class="img-avatar"
-              alt=""
-              style="width: 40px; height: 40px; border-radius: 50%"
-            />
+          <div class="d-flex align-items-center gap-2">
+            <router-link to="/admin/profile">
+              <img
+                :src="info.avatar"
+                class="img-avatar"
+                alt=""
+                style="width: 40px; height: 40px; border-radius: 50%"
+              />
+            </router-link>
             <div class="ms-2">
-              <p class="fw-bold mb-0">john_sins (Admin)</p>
-              <p class="text-muted small mb-0">connchonam@example.com</p>
+              <p class="fw-bold mb-0">{{ info.name }}</p>
+              <p class="text-muted small mb-0">{{ info.email }}</p>
             </div>
           </div>
         </div>
@@ -157,6 +159,7 @@ export default {
   data() {
     return {
       admin: {},
+      info: {},
     };
   },
   mounted() {
@@ -167,6 +170,7 @@ export default {
       avt: localStorage.getItem("avatar_admin"),
     };
     console.log("menu", this.admin);
+    this.loadInfo();
   },
   methods: {
     performLogout() {
@@ -196,8 +200,20 @@ export default {
           finish();
         })
         .catch(() => {
-          // Dù lỗi vẫn xóa local và chuyển trang để đảm bảo UX
           finish();
+        });
+    },
+
+    loadInfo() {
+      axios
+        .get(`http://localhost:8081/api/admin/auth/me`, {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then((res) => {
+          this.info = res.data;
+        })
+        .catch((err) => {
+          console.error("Lỗi khi xóa:", err);
         });
     },
   },

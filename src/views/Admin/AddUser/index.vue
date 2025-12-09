@@ -78,7 +78,7 @@
           </div>
         </div>
 
-        <div class="card border-0 shadow-sm rounded-4">
+        <!-- <div class="card border-0 shadow-sm rounded-4">
           <div class="card-body p-4">
             <h6 class="fw-bold text-secondary mb-3">Account Status</h6>
             <div
@@ -100,7 +100,7 @@
               If locked, this user cannot login or bid/sell items.
             </p>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="col-12 col-lg-8 col-xl-9">
@@ -379,8 +379,8 @@ export default {
       };
     },
 
-    async submitForm() {
-      // 1. Validate
+    submitForm() {
+      // 1. Validate cơ bản
       if (!this.form.username || !this.form.email || !this.form.password) {
         alert("Please fill in required fields (*)");
         return;
@@ -392,40 +392,47 @@ export default {
 
       this.isSubmitting = true;
 
-      // 2. Xử lý Upload ảnh (nếu có)
-      let uploadImagePromise;
+      // 2. Tạo Promise xử lý upload ảnh trước
+      let uploadPromise;
+
       if (this.selectedFile) {
         const formData = new FormData();
-        formData.append("file", this.selectedFile);
+        formData.append("imageFile", this.selectedFile);
 
-        uploadImagePromise = axios
-          .post("http://localhost:8081/api/upload/image", formData, {
+        // Gọi API upload
+        uploadPromise = axios
+          .post("http://localhost:8081/api/admin/uploads/upload-image", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization: "Bearer " + localStorage.getItem("token"),
             },
           })
-          .then((res) => res.data.url);
+          .then((res) => {
+            return res.data.data.imageUrl;
+          });
       } else {
-        // Nếu không có ảnh, trả về chuỗi rỗng
-        uploadImagePromise = Promise.resolve("");
+        // Nếu không có ảnh, trả về Promise resolve rỗng
+        uploadPromise = Promise.resolve("");
       }
 
-      uploadImagePromise
+      // 3. Chuỗi xử lý chính (Chain)
+      uploadPromise
         .then((avatarUrl) => {
+          console.log("Uploaded Image URL:", avatarUrl);
+
+          // Chuẩn bị dữ liệu để tạo User
           const payload = {
             username: this.form.username,
             password: this.form.password,
             email: this.form.email,
-            phonenumber: this.form.phoneNumber,
-            cccd: this.form.cccd,
+            phoneNumber: this.form.phoneNumber,
             address: this.form.address,
             dateOfBirth: this.form.dateOfBirth,
             gender: this.form.gender,
             role: this.form.role,
             status: this.form.status,
-            avt: avatarUrl, // API dùng 'avt'
-            // fullName: this.form.fullName // Backend JSON mẫu không có fullName, nhưng tôi để đây nếu DTO của bạn có map
+            fullname: this.form.fullName,
+            avt: avatarUrl,
           };
 
           console.log("Payload sending:", payload);
@@ -439,7 +446,7 @@ export default {
           this.$router.push("/admin/management-users");
         })
         .catch((err) => {
-          console.error("Error creating user:", err);
+          console.error("Error process:", err);
           const msg = err.response?.data?.message || "Failed to create user. Please try again.";
           alert(msg);
         })
@@ -451,25 +458,4 @@ export default {
 };
 </script>
 
-<style scoped>
-/* CSS Styles */
-.x-small {
-  font-size: 0.75rem;
-}
-
-.rounded-circle.border:hover {
-  border-color: var(--bs-primary) !important;
-  opacity: 0.9;
-}
-
-.form-control:focus,
-.form-select:focus {
-  box-shadow: none;
-  border: 1px solid var(--bs-primary) !important;
-  background-color: #fff !important;
-}
-
-.btn-check:checked + .btn {
-  border-width: 2px;
-}
-</style>
+<style scoped></style>

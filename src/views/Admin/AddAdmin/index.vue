@@ -71,7 +71,7 @@
           </div>
         </div>
 
-        <div class="card border-0 shadow-sm rounded-4">
+        <!-- <div class="card border-0 shadow-sm rounded-4">
           <div class="card-body p-4">
             <h6 class="fw-bold text-secondary mb-3">Account Status</h6>
             <div
@@ -93,7 +93,7 @@
               If locked, this admin will not be able to access the system.
             </p>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="col-12 col-lg-8 col-xl-9">
@@ -190,6 +190,19 @@
                     <label for="phoneInput">Phone Number</label>
                   </div>
                 </div>
+
+                <div class="col-12">
+                  <div class="form-floating">
+                    <input
+                      type="tel"
+                      class="form-control bg-light border-0"
+                      id="addressInput"
+                      placeholder=""
+                      v-model="form.address"
+                    />
+                    <label for="phoneInput">Address</label>
+                  </div>
+                </div>
                 <div class="col-12">
                   <label class="form-label fw-bold text-secondary small text-uppercase mb-2"
                     >Role & Permissions</label
@@ -250,18 +263,15 @@ export default {
         password: "",
         confirmPassword: "",
         phoneNumber: "",
-        address: "Vietnam",
-        role: "admin",
-        status: 1, // 1: Active, 0: Locked
+        address: "",
+        role: "",
+        status: "1",
         avatar: "",
       },
 
       roles: [
-        { label: "Super Admin", value: "super_admin", icon: "fa-solid fa-crown text-danger" }, // Tất cả, gồm cả phân quyền
-        { label: "Auction Admin", value: "admin", icon: "fa-solid fa-gavel text-info" }, // Duyệt tác phẩm, quản lý phiên đấu giá, kiểm soát livestream
-        // { label: "Content Admin", value: "moderator", icon: "fa-solid fa-gavel text-info" },
-        { label: "Finance Admin", value: "finance", icon: "fa-solid fa-dollar-sign text-warning" }, //Thanh toán, refund, invoice
-        { label: "Support Admin", value: "support", icon: "fa-solid fa-users-gear text-success" }, // Xử lý khiếu nại, cảnh báo, khóa user
+        { label: "Super Admin", value: "4", icon: "fa-solid fa-crown text-danger" },
+        { label: "Admin", value: "3", icon: "fa-solid fa-users-gear text-success" },
       ],
     };
   },
@@ -277,94 +287,102 @@ export default {
     },
   },
 
+  // Thay thế đoạn script cũ bằng đoạn này
   methods: {
     handleFileUpload(event) {
       const file = event.target.files[0];
       if (file) {
+        // Validate kích thước (ví dụ 3MB)
+        if (file.size > 3 * 1024 * 1024) {
+          alert("File too large! Please select an image under 3MB.");
+          return;
+        }
         this.selectedFile = file;
         this.previewImage = URL.createObjectURL(file);
       }
     },
 
     submitForm() {
-      // 1. Validate dữ liệu
+      // 1. Validate form
       if (!this.form.email || !this.form.password || !this.form.fullName) {
-        alert("Vui lòng điền đầy đủ các trường bắt buộc (*)");
+        alert("Please fill in all information (*)");
         return;
       }
       if (this.form.password !== this.form.confirmPassword) {
-        alert("Mật khẩu xác nhận không khớp!");
+        alert("Confirmation password does not match!");
         return;
       }
 
       this.isSubmitting = true;
 
-      // 2. Tạo Promise xử lý ảnh (Upload hoặc trả về rỗng)
+      // 2. Xử lý Upload ảnh
       let uploadImagePromise;
-
       if (this.selectedFile) {
-        // Nếu có chọn file -> Gọi API Upload
         const formData = new FormData();
-        formData.append("file", this.selectedFile);
+        formData.append("imageFile", this.selectedFile);
 
         uploadImagePromise = axios
-          .post("http://localhost:8081/api/upload/image", formData, {
+          .post("http://localhost:8081/api/admin/uploads/upload-image", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization: "Bearer " + localStorage.getItem("token"),
             },
           })
           .then((res) => {
-            // Trả về URL ảnh để step sau dùng
-            return res.data.url;
+            console.log("KẾT QUẢ UPLOAD:", res.data);
+
+            if (res.data && res.data.data && res.data.data.imageUrl) {
+              return res.data.data.imageUrl;
+            }
+
+            // Fallback (dự phòng các trường hợp khác)
+            if (typeof res.data.data === "string") return res.data.data;
+
+            return "";
+          })
+          .catch((err) => {
+            console.error("Lỗi Upload ảnh:", err);
+            return "";
           });
       } else {
-        // Nếu không chọn file -> Trả về chuỗi rỗng ngay lập tức
         uploadImagePromise = Promise.resolve("");
       }
 
-      // 3. Chuỗi xử lý chính (Chain)
+      // 3. Tạo Admin với link ảnh đã lấy được
       uploadImagePromise
         .then((avatarUrl) => {
-          // --- Lúc này đã có avatarUrl (hoặc rỗng) ---
+          console.log("Link ảnh cuối cùng:", avatarUrl);
 
           const payload = {
-            fullName: this.form.fullName,
-            email: this.form.email,
-            password: this.form.password,
-            phoneNumber: this.form.phoneNumber,
-            address: this.form.address,
-            status: this.form.status,
-            role: this.form.role,
-            avatar: avatarUrl, // Gán URL vào đây
+            ...this.form,
+            // Nếu có ảnh thì dùng link, không thì để rỗng
+            avatar: avatarUrl,
+            // Ép kiểu role về số nguyên (tránh lỗi 400 vì gửi string "1")
+            role: parseInt(this.form.role),
           };
 
+          delete payload.confirmPassword;
           console.log("Payload gửi đi:", payload);
 
-          // Gọi API thêm Admin
           return axios.post("http://localhost:8081/api/admin/admins/them-admin", payload, {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token"),
-            },
+            headers: { Authorization: "Bearer " + localStorage.getItem("token") },
           });
         })
-        .then((res) => {
-          // --- Xử lý khi thành công ---
-          alert("Tạo tài khoản Admin thành công!");
+        .then(() => {
+          alert("Account created successfully!");
           this.$router.push("/admin/management-employees");
         })
         .catch((err) => {
-          // --- Xử lý lỗi (cho cả upload và create) ---
-          console.error("Lỗi quy trình:", err);
-
+          console.error("Lỗi tạo Admin:", err);
           let message = "Có lỗi xảy ra!";
-          if (err.response && err.response.data) {
-            message = err.response.data.message || JSON.stringify(err.response.data);
+          if (err.response && err.response.data && err.response.data.message) {
+            message = err.response.data.message;
+          } else if (err.response && err.response.status === 400) {
+            message = "Invalid data (Check duplicate Email or Role)";
           }
           alert("Thất bại: " + message);
         })
         .finally(() => {
-          // --- Luôn chạy để tắt loading ---
           this.isSubmitting = false;
         });
     },
@@ -373,26 +391,7 @@ export default {
 </script>
 
 <style scoped>
-/* Custom CSS nhỏ để tinh chỉnh */
 .x-small {
   font-size: 0.75rem;
-}
-
-/* Hiệu ứng hover cho nút upload ảnh */
-.rounded-circle.border:hover {
-  border-color: var(--bs-primary) !important;
-  opacity: 0.9;
-}
-
-/* Style cho Floating label input để bỏ viền default xấu của browser khi focus */
-.form-control:focus {
-  box-shadow: none;
-  border: 1px solid var(--bs-primary) !important; /* Viền khi focus */
-  background-color: #fff !important;
-}
-
-/* Style cho Radio Button Role Selection */
-.btn-check:checked + .btn {
-  border-width: 2px;
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="container-fluid py-4 bg-light-subtle min-vh-100">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
       <div class="mb-3 mb-md-0">
-        <h4 class="fw-bold text-primary mb-1">Auction Room Management</h4>
+        <h4 class="fw-bold text-primary mb-1">Notification Management</h4>
         <p class="text-body-secondary mb-0">Manage all auction rooms notifications</p>
       </div>
       <router-link to="/admin/sent-notification" class="btn btn-primary shadow-sm px-4">
@@ -144,7 +144,7 @@
 
       <div v-else class="d-flex flex-column gap-3">
         <div
-          v-for="notification in notifications"
+          v-for="notification in sortedNotifications"
           :key="notification.id"
           class="card border-0 shadow-sm position-relative"
         >
@@ -236,6 +236,13 @@ export default {
     this.loadNotificationData();
   },
 
+  computed: {
+    // Đảo ngược thứ tự mảng
+    sortedNotifications() {
+      return [...this.notifications].reverse();
+    },
+  },
+
   watch: {
     notifications: {
       handler(newVal) {
@@ -298,18 +305,18 @@ export default {
     },
 
     formatDate(dateString) {
-      if (!dateString) return "N/A";
-      try {
-        const date = new Date(dateString);
-        const hours = String(date.getHours()).padStart(2, "0");
-        const minutes = String(date.getMinutes()).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const year = date.getFullYear();
-        return `${hours}:${minutes} ${day}/${month}/${year}`;
-      } catch {
-        return dateString;
-      }
+      if (!dateString) return "";
+      const date = new Date(dateString);
+
+      // Tùy chọn định dạng (Format: Oct 22, 2025, 02:30 PM)
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short", // "short" = Oct, "long" = October, "numeric" = 10
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true, // true = AM/PM, false = 24h
+      });
     },
 
     convertStatus(status) {

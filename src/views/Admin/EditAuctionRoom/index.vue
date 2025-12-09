@@ -100,7 +100,7 @@
                   </div>
                   <div>
                     <h6 class="fw-bold mb-0 text-uppercase text-secondary">Auction list</h6>
-                    <small class="text-muted">There are 6 {{ scheduleList.length }} works</small>
+                    <small class="text-muted">There are {{ scheduleList.length }} works</small>
                   </div>
                 </div>
 
@@ -174,39 +174,47 @@
 
                         <div class="col-12 col-lg-5">
                           <div class="row g-2 mt-4">
-                            <div class="col-4">
-                              <small class="form-label x-small text-secondary mb-0"
-                                >Starting price</small
+                            <div class="col-8">
+                              <label class="form-label x-small fw-bold text-secondary mb-0"
+                                >STARTING PRICE</label
                               >
-                              <input
-                                type="text"
-                                class="form-control form-control-sm border-0 shadow-none"
-                                placeholder="50.000đ"
-                                v-model="item.startPrice"
-                              />
+
+                              <div class="input-group input-group-sm">
+                                <span
+                                  class="input-group-text bg-white border-end-0 text-success fw-bold"
+                                  >$</span
+                                >
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm border-start-0 shadow-none ps-0"
+                                  placeholder="0.00"
+                                  v-model="item.startPrice"
+                                  @blur="formatCurrencyUSD(item)"
+                                  @focus="unformatCurrency(item)"
+                                  required
+                                />
+                              </div>
                             </div>
-                            <div class="col-4">
+                            <!-- <div class="col-4">
                               <small class="form-label x-small text-secondary mb-0"
                                 >Price step</small
                               >
                               <input
                                 type="text"
                                 class="form-control form-control-sm border-0 shadow-none"
-                                placeholder="10.000đ"
+                                placeholder=""
                                 v-model="item.stepPrice"
                               />
                             </div>
                             <div class="col-4">
-                              <small class="form-label x-small text-secondary mb-0"
-                                >Duration(p)</small
-                              >
+                              <small class="form-label x-small text-secondary mb-0">Duration</small>
                               <input
                                 type="number"
                                 class="form-control form-control-sm border-0 shadow-none"
                                 placeholder="15"
                                 v-model="item.duration"
                               />
-                            </div>
+                            </div> -->
                           </div>
                         </div>
 
@@ -342,7 +350,7 @@
                   <input
                     type="datetime-local"
                     class="form-control bg-light border-0"
-                    v-model="roomForm.stoppedAt"
+                    v-model="roomForm.estimatedEndTime"
                   />
                 </div>
                 <div
@@ -370,7 +378,7 @@
               <div class="card-body p-4">
                 <div class="row g-3">
                   <div class="col-12">
-                    <label class="form-label small fw-bold text-secondary">DEPOSIT (VND)</label>
+                    <label class="form-label small fw-bold text-secondary">DEPOSIT</label>
                     <div class="input-group">
                       <span class="input-group-text bg-light border-0 fw-bold text-secondary"
                         >₫</span
@@ -400,7 +408,6 @@
                       type="text"
                       class="form-control bg-light border-0 text-muted"
                       v-model="roomForm.adminId"
-                      readonly
                     />
                   </div>
                 </div>
@@ -526,9 +533,10 @@ export default {
         depositAmount: 0,
         paymentDeadlineDays: 3,
         startedAt: "",
-        stoppedAt: "",
+        // stoppedAt: "",
         status: 2,
         imageAuctionRoom: "",
+        estimatedEndTime: "",
       },
 
       // Danh sách tranh
@@ -582,7 +590,7 @@ export default {
         })
         .then((res) => {
           const data = res.data;
-          console.log("API Chi tiết trả về:", data); // F12 xem dòng này để kiểm chứng
+          console.log("API Chi tiết trả về:", data);
 
           this.roomForm = {
             roomName: data.roomName,
@@ -593,35 +601,24 @@ export default {
             paymentDeadlineDays: 3,
             status: data.status,
             startedAt: data.startedAt ? data.startedAt.slice(0, 16) : "",
-            stoppedAt: data.stoppedAt ? data.stoppedAt.slice(0, 16) : "",
+            // stoppedAt: data.stoppedAt ? data.stoppedAt.slice(0, 16) : "",
+            estimatedEndTime: data.estimatedEndTime ? data.estimatedEndTime.slice(0, 16) : "",
 
-            // Lưu link ảnh gốc để gửi đi khi save
-            // Thử lấy tất cả các trường có thể chứa ảnh từ Backend
             imageAuctionRoom: data.imageAuctionRoom || data.artworkImage || data.image || "",
           };
 
-          // --- SỬA LOGIC HIỂN THỊ ẢNH (QUAN TRỌNG) ---
-
-          // 1. Ưu tiên: Ảnh bìa phòng (imageAuctionRoom)
           if (data.imageAuctionRoom && data.imageAuctionRoom.trim() !== "") {
             this.previewImage = data.imageAuctionRoom;
-          }
-          // 2. Ưu tiên nhì: Trường artworkImage (Khả năng cao cái ảnh tím nằm ở đây)
-          else if (data.artworkImage && data.artworkImage.trim() !== "") {
+          } else if (data.artworkImage && data.artworkImage.trim() !== "") {
             this.previewImage = data.artworkImage;
-          }
-          // 3. Ưu tiên ba: Trường image (tên chung chung)
-          else if (data.image && data.image.trim() !== "") {
+          } else if (data.image && data.image.trim() !== "") {
             this.previewImage = data.image;
-          }
-          // 4. Đường cùng: Mới lấy ảnh tác phẩm đầu tiên (Cây nến)
-          else if (data.artworks && data.artworks.length > 0) {
+          } else if (data.artworks && data.artworks.length > 0) {
             this.previewImage = data.artworks[0].avtArtwork;
           } else {
             this.previewImage = null;
           }
 
-          // Map danh sách tác phẩm
           if (data.artworks && data.artworks.length > 0) {
             this.scheduleList = data.artworks.map((item) => ({
               id: item.artworkId,
@@ -647,13 +644,13 @@ export default {
       if (file) {
         // Validate loại file (tùy chọn)
         if (!file.type.match("image.*")) {
-          alert("Vui lòng chọn file hình ảnh!");
+          alert("Please select image file!");
           return;
         }
 
         // Validate kích thước (ví dụ 5MB)
         if (file.size > 5 * 1024 * 1024) {
-          alert("Dung lượng ảnh không được quá 5MB");
+          alert("Photo size must not exceed 5MB");
           return;
         }
 
@@ -695,50 +692,121 @@ export default {
 
     // --- 3. Logic Lưu (Update) ---
     saveChanges() {
+      // 1. Kiểm tra dữ liệu bắt buộc
       if (!this.roomForm.roomName || !this.roomForm.adminId)
-        return alert("Thiếu tên phòng hoặc Admin ID!");
-      if (this.scheduleList.length === 0) return alert("Cần ít nhất 1 tác phẩm!");
+        return alert("Vui lòng nhập Tên phòng và ID Admin!");
+      if (this.scheduleList.length === 0) return alert("Phòng đấu giá cần ít nhất 1 tác phẩm!");
 
       this.isSaving = true;
-      const parseNum = (v) => Number(String(v).replace(/[^0-9]/g, ""));
 
-      const payload = {
-        ...this.roomForm,
-        depositAmount: parseNum(this.roomForm.depositAmount),
-        startedAt:
-          this.roomForm.startedAt.length === 16
-            ? this.roomForm.startedAt + ":00"
-            : this.roomForm.startedAt,
-        stoppedAt:
-          this.roomForm.stoppedAt.length === 16
-            ? this.roomForm.stoppedAt + ":00"
-            : this.roomForm.stoppedAt,
-        artworks: this.scheduleList.map((item) => ({
-          artworkId: item.id,
-          startingPrice: parseNum(item.startPrice),
-          bidStep: parseNum(item.stepPrice),
-          duration: Number(item.duration) || 15,
-        })),
-      };
+      // 2. Tạo Promise cho việc Upload ảnh (nếu người dùng có chọn ảnh mới)
+      let uploadPromise;
 
-      if (this.isEditMode) {
-        axios
-          .put(`http://localhost:8081/api/admin/auction-rooms/cap-nhat/${this.roomId}`, payload, {
-            headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-          })
-          .then(() => {
-            alert("Đã cập nhật phòng thành công!");
-            this.$router.push("/admin/management-auction");
-          })
-          .catch((err) => {
-            console.error(err);
-            alert("Cập nhật thất bại: " + (err.response?.data?.message || "Lỗi hệ thống"));
-          })
-          .finally(() => (this.isSaving = false));
+      if (this.selectedFile) {
+        const formData = new FormData();
+
+        formData.append("imageFile", this.selectedFile);
+
+        console.log("Uploading photos...");
+        uploadPromise = axios.post(
+          "http://localhost:8081/api/admin/uploads/upload-image",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+      } else {
+        // Nếu không chọn ảnh mới -> Tạo một Promise giả để chạy tiếp ngay lập tức
+        uploadPromise = Promise.resolve(null);
       }
-    },
 
-    // --- 4. Logic Modal Chọn Tranh ---
+      // 3. Thực thi chuỗi: Upload xong -> Lấy URL -> Update thông tin phòng
+      uploadPromise
+        .then((uploadRes) => {
+          if (uploadRes) {
+            // Lấy phần data bên trong (chứa imageUrl)
+            const resData = uploadRes.data.data || uploadRes.data;
+
+            // Lấy URL từ key "imageUrl" như trong Postman đã hiện
+            let finalUrl = "";
+            if (typeof resData === "object" && resData.imageUrl) {
+              finalUrl = resData.imageUrl;
+            } else if (typeof resData === "string") {
+              finalUrl = resData;
+            }
+
+            if (!finalUrl) {
+              alert("Error: 'imageUrl' not found in API response!");
+              throw new Error("Cannot extract Image URL");
+            }
+
+            // Gán URL vào form
+            this.roomForm.imageAuctionRoom = finalUrl;
+          }
+
+          const parseNum = (v) => Number(String(v).replace(/[^0-9]/g, ""));
+
+          const payload = {
+            ...this.roomForm, // Copy các trường roomName, description, status...
+
+            // Xử lý tiền cọc
+            depositAmount: parseNum(this.roomForm.depositAmount),
+
+            // Xử lý ngày tháng (Thêm :00 giây nếu form thiếu)
+            startedAt:
+              this.roomForm.startedAt.length === 16
+                ? this.roomForm.startedAt + ":00"
+                : this.roomForm.startedAt,
+            estimatedEndTime:
+              this.roomForm.estimatedEndTime.length === 16
+                ? this.roomForm.estimatedEndTime + ":00"
+                : this.roomForm.estimatedEndTime,
+
+            // Map danh sách tác phẩm
+            artworks: this.scheduleList.map((item) => ({
+              artworkId: item.id,
+              startingPrice: parseNum(item.startPrice),
+              bidStep: parseNum(item.stepPrice),
+              duration: Number(item.duration) || 15,
+            })),
+          };
+
+          console.log("Đang gửi dữ liệu update:", payload);
+          return axios.put(
+            `http://localhost:8081/api/admin/auction-rooms/cap-nhat/${this.roomId}`,
+            payload,
+            {
+              headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+            }
+          );
+        })
+        .then((updateRes) => {
+          // --- BƯỚC D: XỬ LÝ KHI UPDATE THÀNH CÔNG ---
+          console.log("Update thành công:", updateRes);
+          alert("Cập nhật phòng đấu giá thành công!");
+          this.$router.push("/admin/management-auction");
+        })
+        .catch((err) => {
+          // --- BƯỚC E: BẮT LỖI (Upload lỗi hoặc Update lỗi đều vào đây) ---
+          console.error("Lỗi trong quá trình lưu:", err);
+
+          let errorMsg = "Đã có lỗi xảy ra!";
+          if (err.response && err.response.data) {
+            // Lấy thông báo lỗi chi tiết từ Backend
+            errorMsg = err.response.data.message || "Lỗi dữ liệu từ Server";
+            console.log("Chi tiết lỗi Server:", err.response.data);
+          }
+          alert("Cập nhật thất bại: " + errorMsg);
+        })
+        .finally(() => {
+          // Tắt trạng thái loading
+          this.isSaving = false;
+        });
+    },
+    // Modal Chọn Tranh ---
     toggleSelect(art) {
       const idx = this.selectedArtworksTemp.findIndex((x) => x.id === art.id);
       if (idx > -1) this.selectedArtworksTemp.splice(idx, 1);
@@ -794,9 +862,9 @@ export default {
       switch (status) {
         case 1:
           return "bg-danger-subtle text-danger border-danger-subtle";
-        case 2:
-          return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
         case 0:
+          return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
+        case 2:
           return "bg-secondary-subtle text-secondary border-secondary-subtle";
         default:
           return "bg-light text-dark";
@@ -806,9 +874,9 @@ export default {
       switch (status) {
         case 1:
           return "Live Now";
-        case 2:
-          return "Coming Soon";
         case 0:
+          return "Coming Soon";
+        case 2:
           return "Finished";
         default:
           return "Unknown";
@@ -818,6 +886,32 @@ export default {
       if (status === 1) return "text-danger";
       if (status === 2) return "text-warning-emphasis";
       return "text-secondary";
+    },
+
+    // Hàm format hiển thị khi người dùng nhập xong (sự kiện blur)
+    formatCurrencyUSD(item) {
+      if (!item.startPrice) return;
+
+      // Giữ lại số và dấu chấm
+      let val = parseFloat(String(item.startPrice).replace(/[^0-9.]/g, ""));
+
+      if (isNaN(val)) {
+        item.startPrice = "";
+        return;
+      }
+
+      // Format theo chuẩn US (ví dụ: 1,200.50)
+      item.startPrice = new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(val);
+    },
+
+    // Hàm bỏ format khi người dùng click vào để sửa (sự kiện focus)
+    unformatCurrency(item) {
+      if (!item.startPrice) return;
+      // Chuyển từ "1,200.50" thành "1200.50" để dễ sửa
+      item.startPrice = String(item.startPrice).replace(/,/g, "");
     },
   },
 };

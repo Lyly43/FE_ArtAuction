@@ -53,7 +53,7 @@ const routes = [
   },
   {
     path: "/client/profile",
-    name: "profile",
+    // name: "profile",
     component: () => import("../views/Client/Profile/index.vue"),
     meta: { layout: "client" },
     beforeEnter: checkUser,
@@ -225,7 +225,7 @@ const routes = [
   // },
   {
     path: "/admin/management-setting",
-    name: "admin-settings",
+    // name: "admin-settings",
     component: () => import("../views/Admin/Settings/index.vue"),
     meta: { layout: "default" },
     children: [
@@ -359,6 +359,12 @@ const routes = [
     path: "/admin/add-user",
     // name: "artwork-detail",
     component: () => import("../views/Admin/AddUser/index.vue"),
+    meta: { layout: "default" },
+  },
+  {
+    path: "/admin/profile",
+    // name: "artwork-detail",
+    component: () => import("../views/Admin/Profile/index.vue"),
     meta: { layout: "default" },
   },
 ];

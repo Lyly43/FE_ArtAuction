@@ -29,7 +29,7 @@
         <div>
           <router-link
             :to="`/admin/edit-auction-room/${roomDetail.id}`"
-            v-if="roomDetail.status === 2"
+            v-if="roomDetail.status === 0"
             class="btn btn-outline-secondary fw-medium shadow-sm px-3"
           >
             <i class="fa-solid fa-pen-to-square me-2"></i>Edit
@@ -90,7 +90,7 @@
                 </div>
                 <div>
                   <small class="text-secondary d-block x-small fw-bold">END (EXPECTED)</small>
-                  <span class="fw-medium">{{ formatDate(roomDetail.stoppedAt) }}</span>
+                  <span class="fw-medium">{{ formatDate(roomDetail.estimatedEndTime) }}</span>
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@
 
     <div class="d-flex align-items-center justify-content-between mb-3">
       <h5 class="fw-bold text-dark mb-0">
-        <i class="fa-solid fa-images me-2 text-info"></i>List of works (10)
+        <i class="fa-solid fa-images me-2 text-info"></i>List of works
       </h5>
       <!-- <div class="input-group" style="width: 250px">
         <span class="input-group-text bg-white border-end-0"
@@ -230,9 +230,19 @@ export default {
     },
 
     formatCurrency(value) {
-      if (!value) return "---";
-      return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
+      if (!value) return "$0";
+
+      // Giả sử tỷ giá 1 USD = 25,400 VND
+      const exchangeRate = 25400;
+      const usdValue = value / exchangeRate;
+
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 2, // Giữ lại 2 số lẻ (ví dụ: $12.50)
+      }).format(usdValue);
     },
+
     getStatusBadgeClass(status) {
       switch (status) {
         case 1:
@@ -245,11 +255,11 @@ export default {
     },
     convertStatus(status) {
       switch (status) {
-        case 0:
+        case 2:
           return "Finished";
         case 1:
           return "In progress";
-        case 2:
+        case 0:
           return "Coming soon";
         default:
           return "Unknown";
@@ -257,25 +267,28 @@ export default {
     },
     getStatusClass(status) {
       switch (status) {
-        case 2:
+        case 0:
           return "bg-warning-subtle text-warning-emphasis border-warning-subtle"; // Coming soon
         case 1:
           return "bg-danger-subtle text-danger border-danger-subtle"; // Live
-        case 0:
+        case 2:
           return "bg-secondary-subtle text-secondary border-secondary-subtle"; // Ended
         default:
           return "bg-light text-dark border";
       }
     },
     formatDate(dateString) {
-      if (!dateString) return "---";
+      if (!dateString) return "";
       const date = new Date(dateString);
-      return date.toLocaleString("vi-VN", {
+
+      // Tùy chọn định dạng (Format: Oct 22, 2025, 02:30 PM)
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short", // "short" = Oct, "long" = October, "numeric" = 10
+        day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
+        hour12: true, // true = AM/PM, false = 24h
       });
     },
   },

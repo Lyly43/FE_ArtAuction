@@ -94,13 +94,13 @@
                     ></small> -->
                   </div>
                   <div
-                    class="d-flex flex-column gap-1 overflow-y-auto custom-scrollbar"
+                    class="d-flex flex-column gap-1 overflow-y-auto custom-scrollbar hide-scrollbar"
                     style="max-height: 100px"
                   >
                     <div
                       v-for="event in getEventsForDate(dateObj.date)"
                       :key="event.id"
-                      class="badge text-start fw-normal text-truncate w-100 p-1 border shadow-sm event-badge"
+                      class="badge text-start fw-normal text-truncate w-100 p-1 border shadow-sm event-badge flex-shrink-0"
                       :class="getEventColorClass(event.status)"
                       @click.stop="viewEvent(event)"
                       :title="event.title"
@@ -325,9 +325,9 @@ export default {
       switch (status) {
         case 1:
           return "live"; // Đang diễn ra
-        case 2:
-          return "upcoming"; // Sắp tới
         case 0:
+          return "upcoming"; // Sắp tới
+        case 2:
           return "ended"; // Đã kết thúc
         default:
           return "ended";

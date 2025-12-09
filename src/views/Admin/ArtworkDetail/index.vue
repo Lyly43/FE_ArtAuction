@@ -97,11 +97,11 @@
           </div>
         </div>
 
-        <div class="mt-3 text-center text-muted small">
+        <!-- <div class="mt-3 text-center text-muted small">
           <i class="fa-solid fa-images me-1"></i>
           Includes {{ artworkImages.length }} artwork photos and
           {{ certImages.length }} certificates.
-        </div>
+        </div> -->
       </div>
 
       <div class="col-12 col-lg-5">
@@ -154,20 +154,29 @@
               <div class="bg-white p-3 rounded border">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <span class="text-secondary fw-medium">Starting Price</span>
-                  <small class="text-muted">Editable</small>
+                  <div class="input-group input-group-sm" style="max-width: 180px">
+                    <span class="input-group-text bg-light border-0 fw-bold text-secondary">$</span>
+                    <input
+                      type="number"
+                      class="form-control text-end fw-semibold border-0 bg-light shadow-none"
+                      v-model.number="editedStartingPrice"
+                      placeholder="0"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
                 </div>
-                <div class="d-flex flex-column flex-md-row align-items-md-center gap-2">
-                  <input
-                    type="number"
-                    class="form-control form-control-lg text-primary fw-bold bg-light border-0"
-                    v-model.number="editedStartingPrice"
-                    min="0"
-                    step="50000"
-                  />
-                  <span class="fs-5 fw-semibold text-secondary">
-                    {{ formatCurrency(editedStartingPrice) }}
-                  </span>
-                </div>
+                <small class="d-block text-end text-muted mt-1" style="font-size: 0.75rem">
+                  ≈ {{ formatVND(editedStartingPrice * exchangeRate) }}
+                </small>
+
+                <small
+                  class="d-block text-end text-success fst-italic"
+                  v-if="editedStartingPrice > 0"
+                  style="font-size: 0.7rem"
+                >
+                  Ready to approve
+                </small>
               </div>
             </div>
           </div>
@@ -205,7 +214,7 @@
             </div>
           </div>
 
-          <div class="mt-auto d-grid gap-2 d-md-flex">
+          <div class="mt-auto d-grid gap-2 d-md-flex" v-if="artwork.status === 0">
             <button
               type="button"
               class="btn btn-danger btn-lg flex-grow-1 shadow-sm"
@@ -249,7 +258,8 @@ export default {
       isLoading: false,
       error: null,
       actionLoading: "",
-      editedStartingPrice: null,
+      editedStartingPrice: 0,
+      exchangeRate: 25400,
     };
   },
   computed: {
@@ -338,8 +348,7 @@ export default {
         })
         .then((res) => {
           this.artwork = res.data;
-          this.editedStartingPrice =
-            res.data?.startedPrice ?? res.data?.price ?? this.editedStartingPrice ?? 0;
+          this.editedStartingPrice = res.data?.startedPrice ?? res.data?.price ?? 0;
         })
         .catch((err) => {
           console.error(err);
@@ -349,25 +358,24 @@ export default {
           this.isLoading = false;
         });
     },
+
     formatCurrency(value) {
-      if (!value && value !== 0) return "0 ₫";
-      return new Intl.NumberFormat("vi-VN", {
+      if (!value) return "$0.00";
+      return new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "VND",
+        currency: "USD",
       }).format(value);
     },
     convertStatus(status) {
       switch (status) {
         case 0:
-          return "Chưa duyệt";
+          return "Not approved";
         case 1:
-          return "Đã duyệt";
+          return "Approved";
         case 2:
-          return "Đang đấu giá";
+          return "In Auction";
         case 3:
-          return "Từ chối";
-        default:
-          return "Unknown";
+          return "Refused";
       }
     },
     getStatusClass(status) {
@@ -380,22 +388,28 @@ export default {
           return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
         case 3:
           return "bg-danger-subtle text-danger border-danger-subtle";
-        default:
-          return "bg-light text-muted border-light";
       }
     },
+    //CHUYỂN USD -> VND
     handleApproval(action) {
       if (!this.artwork?.id) return;
+
+      // Validate giá USD
+      if (action === "approve") {
+        const priceUSD = Number(this.editedStartingPrice);
+        if (!priceUSD || priceUSD <= 0) {
+          window.alert("Please enter a valid Starting Price (USD) greater than 0.");
+          return;
+        }
+      }
       const endpoint =
         action === "approve"
           ? `http://localhost:8081/api/admin/artworks/approve/${this.artwork.id}`
           : `http://localhost:8081/api/admin/artworks/reject/${this.artwork.id}`;
+
       const payload =
-        action === "approve"
-          ? {
-              startedPrice: Number(this.editedStartingPrice) || 0,
-            }
-          : {};
+        action === "approve" ? { startedPrice: Number(this.editedStartingPrice) } : {};
+
       this.actionLoading = action;
       axios
         .post(endpoint, payload, {
@@ -421,15 +435,15 @@ export default {
           this.actionLoading = "";
         });
     },
+
+    formatVND(value) {
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(value);
+    },
   },
 };
 </script>
 
-<style scoped>
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  background-size: 50%, 50%;
-}
-</style>
+<style scoped></style>

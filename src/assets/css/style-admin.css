@@ -96,3 +96,27 @@
 .fade-leave-active {
   transition: opacity 0.2s ease;
 }
+
+/*---------------------------------------------------------------------
+hide-scrollbar of Auction roon and Schedule
+-----------------------------------------------------------------------*/
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/*---------------------------------------------------------------------
+Artwork Detail, Add User
+-----------------------------------------------------------------------*/
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-size: 50%, 50%;
+}
+
+/*---------------------------------------------------------------------
+Add admin
+-----------------------------------------------------------------------*/
+.x-small {
+  font-size: 0.75rem;
+}

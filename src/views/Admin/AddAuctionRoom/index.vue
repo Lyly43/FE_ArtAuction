@@ -51,7 +51,7 @@
               <input
                 type="text"
                 class="form-control bg-light border-0"
-                placeholder="VD: Tranh sơn dầu..."
+                placeholder="Ex: Canvas..."
                 v-model="roomForm.type"
                 required
               />
@@ -69,16 +69,15 @@
               ></textarea>
             </div>
             <div class="col-12 col-md-6">
-              <label class="form-label fw-bold small text-secondary text-uppercase"
-                >Admin in charge</label
-              >
-              <input
-                type="text"
-                class="form-control bg-light border-0"
-                placeholder="Manager name..."
-                v-model="roomForm.adminId"
-                required
-              />
+              <label class="form-label fw-bold small text-secondary text-uppercase">
+                Admin in charge
+              </label>
+              <select class="form-select bg-light border-0" v-model="roomForm.adminId" required>
+                <option value="" disabled selected hidden>Select an admin...</option>
+                <option v-for="admin in filteredAdmins" :key="admin.id" :value="admin.id">
+                  {{ admin.fullName }} (ID: {{ admin.id }})
+                </option>
+              </select>
             </div>
           </div>
         </div>
@@ -224,9 +223,9 @@
                 >
               </div>
             </div>
-            <span class="badge bg-secondary-subtle text-primary fs-6 px-3 py-2 rounded-pill">
+            <!-- <span class="badge bg-secondary-subtle text-primary fs-6 px-3 py-2 rounded-pill">
               <i class="fa-regular fa-clock me-1"></i> Total: {{ totalDuration }} minute
-            </span>
+            </span> -->
           </div>
 
           <div class="d-flex flex-column gap-3">
@@ -282,37 +281,21 @@
                         <label class="form-label x-small fw-bold text-secondary mb-0"
                           >STARTING PRICE</label
                         >
-                        <input
-                          type="text"
-                          class="form-control form-control-sm border-0 shadow-none"
-                          placeholder="50.000đ"
-                          v-model="item.startPrice"
-                          required
-                        />
-                      </div>
-                      <div class="col-4">
-                        <label class="form-label x-small fw-bold text-secondary mb-0"
-                          >PRICE STEP</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control form-control-sm border-0 shadow-none"
-                          placeholder="10.000đ"
-                          v-model="item.stepPrice"
-                          required
-                        />
-                      </div>
-                      <div class="col-4">
-                        <label class="form-label x-small fw-bold text-secondary mb-0"
-                          >DURATION (P)</label
-                        >
-                        <input
-                          type="number"
-                          class="form-control form-control-sm border-0 shadow-none"
-                          placeholder="15"
-                          v-model="item.duration"
-                          required
-                        />
+
+                        <div class="input-group input-group-sm">
+                          <span class="input-group-text bg-white border-end-0 text-success fw-bold"
+                            >$</span
+                          >
+                          <input
+                            type="text"
+                            class="form-control form-control-sm border-start-0 shadow-none ps-0"
+                            placeholder="0.00"
+                            v-model="item.startPrice"
+                            @blur="formatCurrencyUSD(item)"
+                            @focus="unformatCurrency(item)"
+                            required
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -386,7 +369,7 @@
                   <input
                     type="datetime-local"
                     class="form-control bg-light border-0"
-                    v-model="roomForm.stoppedAt"
+                    v-model="roomForm.estimatedEndTime"
                     required
                   />
                 </div>
@@ -456,7 +439,11 @@
       </div>
 
       <div class="d-flex gap-2 mt-4 justify-content-end">
-        <button class="btn btn-danger text-light fw-bold shadow-sm px-4" type="button">
+        <button
+          class="btn btn-danger text-light fw-bold shadow-sm px-4"
+          type="button"
+          @click="handleCancel"
+        >
           Cancel
         </button>
         <button class="btn btn-primary fw-bold shadow-sm px-4" type="submit">
@@ -490,17 +477,18 @@ export default {
         depositAmount: 0,
         paymentDeadlineDays: 3,
         startedAt: "",
-        stoppedAt: "",
+        estimatedEndTime: "",
         status: 2,
         viewCount: 0,
-
         imageAuctionRoom: "",
       },
+      admins: [],
     };
   },
 
   mounted() {
     this.loadAddRoomArt();
+    this.loadAdminData();
   },
 
   computed: {
@@ -519,9 +507,16 @@ export default {
       }
       return filtered;
     },
-    totalDuration() {
-      return this.scheduleList.reduce((sum, item) => sum + (parseInt(item.duration) || 0), 0);
+    filteredAdmins() {
+      // Kiểm tra nếu chưa có dữ liệu thì trả về mảng rỗng để tránh lỗi
+      if (!Array.isArray(this.admins)) return [];
+
+      // Lọc ra những người có role = 3
+      return this.admins.filter((admin) => admin.role === 3);
     },
+    // totalDuration() {
+    //   return this.scheduleList.reduce((sum, item) => sum + (parseInt(item.duration) || 0), 0);
+    // },
   },
 
   methods: {
@@ -602,7 +597,7 @@ export default {
         ...artwork,
         startPrice: artwork.basePrice,
         stepPrice: "",
-        duration: "",
+        // duration: "",
       });
     },
 
@@ -631,12 +626,12 @@ export default {
     },
 
     submitForm() {
+      // 1. Validate dữ liệu đầu vào
       if (!this.roomForm.roomName || !this.roomForm.adminId) {
         alert("Please enter room name and Admin ID!");
         return;
       }
-
-      if (!this.roomForm.startedAt || !this.roomForm.stoppedAt) {
+      if (!this.roomForm.startedAt || !this.roomForm.estimatedEndTime) {
         alert("Please select start and end time!");
         return;
       }
@@ -647,49 +642,89 @@ export default {
 
       this.isSubmitting = true;
 
-      const parseNumber = (val) => {
-        if (!val) return 0;
-        return Number(String(val).replace(/[^0-9]/g, ""));
-      };
+      // 2. Tạo biến Promise để xác định link ảnh
+      let imageProcessPromise;
 
-      // Nếu không nhập thì mới lấy ảnh của tác phẩm đầu tiên trong danh sách (scheduleList)
-      let finalCoverImage = this.roomForm.imageAuctionRoom;
-      if (!finalCoverImage && this.scheduleList.length > 0) {
-        finalCoverImage = this.scheduleList[0].img || "";
+      if (this.selectedFile) {
+        // TRƯỜNG HỢP A: Có chọn file -> Gọi API Upload
+        const formData = new FormData();
+        formData.append("imageFile", this.selectedFile);
+
+        console.log("Đang upload ảnh...");
+
+        // Gán promise gọi API upload
+        imageProcessPromise = axios
+          .post("http://localhost:8081/api/admin/uploads/upload-image", formData, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((res) => {
+            return res.data.data.imageUrl;
+          });
+      } else {
+        // TRƯỜNG HỢP B: Không chọn file -> Lấy ảnh mặc định từ tác phẩm đầu tiên
+        let fallbackImage = "";
+        if (this.scheduleList.length > 0) {
+          fallbackImage = this.scheduleList[0].img || "";
+        }
+        // Tạo một Promise "giả" đã hoàn thành ngay lập tức với giá trị fallbackImage
+        imageProcessPromise = Promise.resolve(fallbackImage);
       }
 
-      const payload = {
-        ...this.roomForm,
-        depositAmount: parseNumber(this.roomForm.depositAmount),
-        paymentDeadlineDays: Number(this.roomForm.paymentDeadlineDays),
-        status: Number(this.roomForm.status),
-        imageAuctionRoom: finalCoverImage,
-        startedAt: this.roomForm.startedAt ? this.roomForm.startedAt + ":00" : null,
-        stoppedAt: this.roomForm.stoppedAt ? this.roomForm.stoppedAt + ":00" : null,
-        artworks: this.scheduleList.map((item) => ({
-          artworkId: item.id,
-          startingPrice: parseNumber(item.startPrice),
-          bidStep: parseNumber(item.stepPrice) > 0 ? parseNumber(item.stepPrice) : 1000,
-          duration: Number(item.duration),
-        })),
-      };
+      //Bắt đầu chuỗi xử lý (Chain)
+      imageProcessPromise
+        .then((finalImageUrl) => {
+          console.log("URL ảnh sẽ lưu:", finalImageUrl);
 
-      console.log("Payload gửi đi:", payload);
+          // Hàm helper parse số
+          const parseNumber = (val) => {
+            if (!val) return 0;
+            return Number(String(val).replace(/[^0-9]/g, ""));
+          };
 
-      axios
-        .post("http://localhost:8081/api/admin/auction-rooms/tao-phong-hoan-chinh", payload, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
+          // Chuẩn bị payload
+          const payload = {
+            ...this.roomForm,
+            depositAmount: parseNumber(this.roomForm.depositAmount),
+            paymentDeadlineDays: Number(this.roomForm.paymentDeadlineDays),
+            status: Number(this.roomForm.status),
+            imageAuctionRoom: finalImageUrl, // Dùng URL nhận được từ bước trên
+            startedAt: this.roomForm.startedAt ? this.roomForm.startedAt + ":00" : null,
+            estimatedEndTime: this.roomForm.estimatedEndTime
+              ? this.roomForm.estimatedEndTime + ":00"
+              : null,
+            artworks: this.scheduleList.map((item) => ({
+              artworkId: item.id,
+              startingPrice: parseNumber(item.startPrice),
+              bidStep: 10000,
+              duration: 15,
+            })),
+          };
+
+          console.log("Payload gửi đi:", payload);
+
+          return axios.post(
+            "http://localhost:8081/api/admin/auction-rooms/tao-phong-hoan-chinh",
+            payload,
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            }
+          );
         })
         .then((res) => {
+          // Xử lý khi Tạo phòng thành công
           alert("Auction room created successfully!");
           this.$router.push("/admin/management-auction");
         })
         .catch((err) => {
-          console.error("Error", err);
-          const message =
-            err.response?.data?.message || "An error occurred while creating the room!";
+          // Xử lý lỗi (cho cả bước Upload ảnh HOẶC bước Tạo phòng)
+          console.error("Error process:", err);
+          const message = err.response?.data?.message || "An error occurred!";
+
           if (err.response?.data?.errors) {
             alert("Data error: " + JSON.stringify(err.response.data.errors));
           } else {
@@ -699,6 +734,52 @@ export default {
         .finally(() => {
           this.isSubmitting = false;
         });
+    },
+    handleCancel() {
+      const hasData = this.roomForm.roomName || this.scheduleList.length > 0;
+
+      if (hasData) {
+        // Nếu đã nhập dữ liệu, cần xác nhận để tránh mất data
+        if (confirm("Are you sure you want to cancel? All unsaved changes will be lost.")) {
+          this.$router.push("/admin/management-auction");
+        }
+      } else {
+        this.$router.push("/admin/management-auction");
+      }
+    },
+
+    loadAdminData() {
+      axios
+        .get(`http://localhost:8081/api/admin/admins/lay-du-lieu`, {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then((res) => {
+          this.admins = res.data;
+        })
+        .catch((err) => console.error(err));
+    },
+
+    formatCurrencyUSD(item) {
+      if (!item.startPrice) return;
+
+      let val = parseFloat(String(item.startPrice).replace(/[^0-9.]/g, ""));
+
+      if (isNaN(val)) {
+        item.startPrice = "";
+        return;
+      }
+
+      // Format theo chuẩn US (ví dụ: 1,200.50)
+      item.startPrice = new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(val);
+    },
+    // Hàm bỏ format khi người dùng click vào để sửa (sự kiện focus)
+    unformatCurrency(item) {
+      if (!item.startPrice) return;
+      // Chuyển từ "1,200.50" thành "1200.50" để dễ sửa
+      item.startPrice = String(item.startPrice).replace(/,/g, "");
     },
   },
 };

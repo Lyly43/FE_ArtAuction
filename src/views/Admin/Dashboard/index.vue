@@ -7,133 +7,145 @@
 
     <div class="row g-3 mb-4">
       <div class="col-12 col-sm-6 col-xl-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
+        <div
+          class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-secondary"
+        >
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
-                <h6 class="card-subtitle text-secondary fw-bold mb-1">Total users</h6>
-
-                <h3 class="fw-bold mb-0">{{ statistics?.totalUsers?.total }}</h3>
-              </div>
-              <div
-                class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 48px; height: 48px"
-              >
-                <i class="fa-solid fa-users fs-5"></i>
-              </div>
-            </div>
-
-            <small class="text-secondary fw-medium"> Total number of users </small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-xl-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <h6 class="card-subtitle text-secondary fw-bold mb-1">Artwork</h6>
-
-                <h3 class="fw-bold mb-0">{{ statistics?.totalArtworks?.total }}</h3>
-              </div>
-              <div
-                class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 48px; height: 48px"
-              >
-                <i class="fa-solid fa-image fs-5"></i>
-              </div>
-            </div>
-
-            <small class="text-secondary fw-medium"> Total number of works </small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-xl-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <h6 class="card-subtitle text-secondary fw-bold mb-1">Auction Rooms</h6>
-
-                <h3 class="fw-bold mb-0">{{ statistics?.totalAuctionRooms }}</h3>
-              </div>
-              <div
-                class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 48px; height: 48px"
-              >
-                <i class="fa-solid fa-hammer fs-5"></i>
-              </div>
-            </div>
-            <small class="text-body-secondary">Total number of auction rooms</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-xl-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <h6 class="card-subtitle text-secondary fw-bold mb-1">Bidding</h6>
-
-                <h3 class="fw-bold mb-0">{{ statistics?.totalBids?.total }}</h3>
-              </div>
-              <div
-                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 48px; height: 48px"
-              >
-                <i class="fa-solid fa-chart-line fs-5"></i>
-              </div>
-            </div>
-
-            <small class="text-secondary fw-medium"> Total number of bids </small>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-xl-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <h6 class="card-subtitle text-secondary fw-bold mb-1">Revenue</h6>
-                <h3 class="fw-bold mb-0">
-                  {{ formatCurrency(statistics?.revenue?.currentMonth || 0) }}
+                <h6 class="text-uppercase card-subtitle text-secondary fw-bold mb-1">
+                  Total Users
+                </h6>
+                <h3 class="fw-bolder mb-0 text-dark fs-3">
+                  {{ statistics?.totalUsers?.total }}
                 </h3>
               </div>
               <div
-                class="bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 48px; height: 48px"
+                class="bg-secondary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center p-2"
+                style="width: 42px; height: 42px"
               >
-                <i class="fa-solid fa-dollar-sign fs-5"></i>
+                <i class="fa-solid fa-users fs-4"></i>
               </div>
             </div>
-            <small class="text-success fw-medium">
-              <i class="fa-solid fa-arrow-trend-up me-1"></i>
-              {{ statistics?.revenue?.percentage || 0 }}% over last month
-            </small>
+            <div class="d-flex align-items-center">
+              <small class="text-secondary fw-medium small">Total registered users</small>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-sm-6 col-xl-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-info">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
-                <h6 class="card-subtitle text-secondary fw-bold mb-1">Active Users</h6>
-                <h3 class="fw-bold mb-0">{{ statistics?.activeUsers || 0 }}</h3>
+                <h6 class="text-uppercase card-subtitle text-secondary fw-bold mb-1">Artwork</h6>
+                <h3 class="fw-bolder mb-0 text-dark fs-3">
+                  {{ statistics?.totalArtworks?.total }}
+                </h3>
               </div>
               <div
-                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 48px; height: 48px"
+                class="bg-info bg-opacity-10 text-info rounded-3 d-flex align-items-center justify-content-center p-2"
+                style="width: 42px; height: 42px"
               >
-                <i class="fa-solid fa-user-check fs-5"></i>
+                <i class="fa-solid fa-image fs-4"></i>
               </div>
             </div>
-            <small class="text-body-secondary">Number of active people</small>
+            <small class="text-secondary fw-medium small">Total number of works</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-warning">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="text-uppercase card-subtitle text-secondary fw-bold mb-1">
+                  Auction Rooms
+                </h6>
+                <h3 class="fw-bolder mb-0 text-dark fs-3">
+                  {{ statistics?.totalAuctionRooms }}
+                </h3>
+              </div>
+              <div
+                class="bg-warning bg-opacity-10 text-warning rounded-3 d-flex align-items-center justify-content-center p-2"
+                style="width: 42px; height: 42px"
+              >
+                <i class="fa-solid fa-hammer fs-4"></i>
+              </div>
+            </div>
+            <small class="text-secondary fw-medium small">Active auction rooms</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-success">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="text-uppercase card-subtitle text-secondary fw-bold mb-1">Bidding</h6>
+                <h3 class="fw-bolder mb-0 text-dark fs-3">
+                  {{ statistics?.totalBids?.total }}
+                </h3>
+              </div>
+              <div
+                class="bg-success bg-opacity-10 text-success rounded-3 d-flex align-items-center justify-content-center p-2"
+                style="width: 42px; height: 42px"
+              >
+                <i class="fa-solid fa-chart-line fs-4"></i>
+              </div>
+            </div>
+            <small class="text-secondary fw-medium small">Total bids placed</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div
+          class="card border-0 shadow-sm border-start border-4 border-secondary h-100 card-hover bg-gradient-primary"
+        >
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="text-uppercase fw-bold x-small mb-1 ls-1 opacity-75">Revenue</h6>
+                <h3 class="fw-bolder mb-0 fs-3">
+                  {{ formatCurrency(statistics?.revenue?.total) }}
+                </h3>
+              </div>
+              <div
+                class="bg-white bg-opacity-25 text-white rounded-3 d-flex align-items-center justify-content-center p-2"
+                style="width: 42px; height: 42px"
+              >
+                <i class="fa-solid fa-dollar-sign fs-4"></i>
+              </div>
+            </div>
+            <small class="fw-medium opacity-75 small">Total platform revenue</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-dark">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h6 class="text-uppercase text-secondary fw-bold x-small mb-1 ls-1">
+                  Active Users
+                </h6>
+                <h3 class="fw-bolder mb-0 text-dark fs-3">
+                  {{ statistics?.activeUsers || 0 }}
+                </h3>
+              </div>
+              <div
+                class="bg-dark bg-opacity-10 text-dark rounded-3 d-flex align-items-center justify-content-center p-2"
+                style="width: 42px; height: 42px"
+              >
+                <i class="fa-solid fa-user-check fs-4"></i>
+              </div>
+            </div>
+            <small class="text-secondary fw-medium small">Currently active</small>
           </div>
         </div>
       </div>
@@ -141,126 +153,190 @@
 
     <div class="row g-3 mb-4">
       <div class="col-12 col-xl-6">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header bg-white border-0 pt-3">
-            <h5 class="text-primary fw-bold mb-0">Nearby auction rooms</h5>
+        <div class="card border-0 rounded-4 h-100 overflow-hidden">
+          <div
+            class="card-header bg-primary bg-gradient text-white py-3 border-0 d-flex align-items-center justify-content-between"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <div
+                class="bg-white bg-opacity-25 rounded-circle p-2 d-flex justify-content-center align-items-center"
+                style="width: 32px; height: 32px"
+              >
+                <i class="fa-solid fa-gavel"></i>
+              </div>
+              <h5 class="fw-bold mb-0">Nearby Auction Rooms</h5>
+            </div>
+            <span class="badge bg-white text-primary rounded-pill"
+              >{{ topAuctionRooms ? topAuctionRooms.length : 0 }} Room</span
+            >
           </div>
+
           <div class="card-body p-0">
-            <div class="table-responsive text-nowrap overflow-y-auto" style="max-height: 400px">
+            <div class="table-responsive text-nowrap custom-scrollbar" style="max-height: 450px">
               <table class="table table-hover align-middle text-nowrap mb-0 w-100">
-                <thead class="table-light sticky-top">
+                <thead
+                  class="bg-light sticky-top shadow-sm border-bottom border-light-subtle"
+                  style="z-index: 5"
+                >
                   <tr>
-                    <th scope="col" class="ps-3 py-3 fw-bold">Room Name</th>
-                    <th scope="col" class="py-3 fw-bold">Current Artwork</th>
-                    <th scope="col" class="py-3 fw-bold">Status</th>
-                    <th scope="col" class="py-3 fw-bold text-end pe-3">Action</th>
+                    <th
+                      scope="col"
+                      class="ps-4 py-3 fw-bold text-secondary text-uppercase x-small border-0"
+                    >
+                      Room Info
+                    </th>
+                    <th
+                      scope="col"
+                      class="py-3 fw-bold text-secondary text-uppercase x-small border-0"
+                    >
+                      Featured Item
+                    </th>
+                    <th
+                      scope="col"
+                      class="py-3 fw-bold text-secondary text-uppercase x-small text-center border-0"
+                    >
+                      Status
+                    </th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr v-if="isLoading">
-                    <td colspan="4" class="text-center py-4 text-muted">Loading data...</td>
+                    <td colspan="3" class="text-center py-5 text-muted border-0">Loading...</td>
                   </tr>
-
                   <tr v-else-if="!topAuctionRooms || topAuctionRooms.length === 0">
-                    <td colspan="4" class="text-center py-4 text-muted">No rooms found.</td>
+                    <td colspan="3" class="text-center py-5 text-muted border-0">
+                      No rooms found.
+                    </td>
                   </tr>
 
                   <template v-for="(room, index) in topAuctionRooms" :key="room.id">
                     <tr
-                      class="cursor-pointer"
+                      class="cursor-pointer transition-bg border-bottom border-light-subtle"
+                      :class="{ 'bg-primary-subtle': activeRoomId === room.id }"
                       data-bs-toggle="collapse"
                       :data-bs-target="'#room-' + room.id"
                       aria-expanded="false"
+                      @click="toggleRoom(room.id)"
                     >
-                      <td class="ps-3 fw-medium text-primary">
-                        <i
-                          class="fa-solid fa-chevron-down text-muted me-2"
-                          style="font-size: 0.8rem"
-                        ></i>
-                        {{ room.roomName }}
-                      </td>
-
-                      <td>
-                        <div class="d-flex align-items-center">
-                          <img
-                            :src="room.sessions?.[0]?.avtArtwork"
-                            alt="Art"
-                            class="rounded border me-2"
-                            style="width: 40px; height: 40px; object-fit: cover"
-                            @error="$event.target.src = '/src/assets/img/default-art.png'"
-                          />
-                          <div class="d-flex flex-column">
-                            <span class="fw-medium" style="font-size: 0.9rem">
-                              {{ room.sessions?.[0]?.artworkTitle }}
-                            </span>
-                            <small class="text-muted" style="font-size: 0.7rem">
-                              Room has {{ room.sessions ? room.sessions.length : 0 }} items
-                            </small>
+                      <td class="ps-4 py-3 border-0">
+                        <div class="d-flex align-items-center gap-3">
+                          <i
+                            class="fa-solid fa-chevron-right text-muted transition-icon"
+                            :class="{ 'rotate-90 text-primary': activeRoomId === room.id }"
+                            style="font-size: 0.75rem"
+                          ></i>
+                          <div>
+                            <span class="d-block fw-bold text-dark">{{ room.roomName }}</span>
+                            <span
+                              class="badge bg-light text-secondary border border-light-subtle rounded-pill mt-1"
+                              style="font-size: 0.65rem"
+                              >ID: #{{ room.id }}</span
+                            >
                           </div>
                         </div>
                       </td>
-
-                      <td>
-                        <span
-                          class="badge rounded-pill border px-2 py-1"
-                          :class="getStatusClass(room.status)"
-                        >
-                          {{ convertStatus(room.status) }}
-                        </span>
+                      <td class="py-3 border-0">
+                        <div class="d-flex align-items-center">
+                          <div class="position-relative me-3">
+                            <img
+                              :src="room.sessions?.[0]?.avtArtwork"
+                              class="rounded-3 shadow-sm border border-light-subtle object-fit-cover"
+                              style="width: 48px; height: 48px"
+                            />
+                            <!-- <span
+                              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white"
+                              v-if="room.sessions && room.sessions.length > 1"
+                              >+{{ room.sessions.length - 1 }}</span
+                            > -->
+                          </div>
+                          <div class="d-flex flex-column" style="max-width: 150px">
+                            <span
+                              class="fw-bold text-dark text-truncate d-block"
+                              style="font-size: 0.9rem"
+                              >{{ room.sessions?.[0]?.artworkTitle || "Unknown" }}</span
+                            >
+                            <small class="text-muted" style="font-size: 0.75rem"
+                              ><i class="fa-solid fa-layer-group me-1"></i
+                              >{{ room.sessions ? room.sessions.length : 0 }} items</small
+                            >
+                          </div>
+                        </div>
                       </td>
-
-                      <td class="small text-body-secondary text-end pe-3">View details</td>
+                      <td class="text-center py-3 border-0">
+                        <span
+                          class="badge rounded-pill px-3 py-2 fw-medium shadow-sm"
+                          :class="getStatusClass(room.status)"
+                          >{{ convertStatus(room.status) }}</span
+                        >
+                      </td>
                     </tr>
 
                     <tr>
-                      <td colspan="4" class="p-0 border-0">
-                        <div class="collapse bg-light-subtle" :id="'room-' + room.id">
-                          <div class="p-3">
-                            <h6
-                              class="fw-bold text-primary mb-2 small text-uppercase ps-2 border-start border-4 border-secondary-subtle"
-                            >
-                              List of works ({{ room.sessions ? room.sessions.length : 0 }})
-                            </h6>
+                      <td colspan="3" class="p-0 border-0">
+                        <div class="collapse bg-body-tertiary" :id="'room-' + room.id">
+                          <div class="p-3 ps-5 border-start border-2 border-secondary-subtle ms-0">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <h6 class="fw-bold text-primary small text-uppercase mb-0">
+                                <i class="fa-solid fa-list-ul me-2"></i>Auction Session List
+                              </h6>
+                              <!-- <button
+                                class="btn btn-sm btn-link text-decoration-none p-0 text-secondary"
+                                style="font-size: 0.8rem"
+                              >
+                                View Room <i class="fa-solid fa-arrow-right ms-1"></i>
+                              </button> -->
+                            </div>
 
-                            <table class="table table-sm table-borderless mb-0 align-middle">
-                              <thead class="text-secondary small border-bottom">
-                                <tr>
-                                  <th class="ps-2">Artwork Info</th>
-                                  <th class="text-end pe-2">Current price</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr v-for="(session, sIndex) in room.sessions" :key="session.id">
-                                  <td class="ps-2">
-                                    <div class="d-flex align-items-center">
-                                      <span class="me-2 text-muted small fw-bold"
-                                        >#{{ sIndex + 1 }}</span
-                                      >
-                                      <img
-                                        :src="session.avtArtwork"
-                                        class="rounded border me-2"
-                                        style="width: 32px; height: 32px; object-fit: cover"
-                                        @error="
-                                          $event.target.src = '/src/assets/img/default-art.png'
-                                        "
-                                      />
-                                      <span class="fw-medium text-dark" style="font-size: 0.85rem">
-                                        {{ session.artworkTitle }}
-                                      </span>
-                                    </div>
-                                  </td>
-                                  <td class="text-end text-muted pe-2">
-                                    {{ formatCurrency(session.currentPrice) }}
-                                  </td>
-                                </tr>
-
-                                <tr v-if="!room.sessions || room.sessions.length === 0">
-                                  <td colspan="2" class="text-center text-muted small fst-italic">
-                                    There are no auctions yet.
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
+                            <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                              <table class="table table-sm table-striped mb-0 align-middle">
+                                <thead class="table-light text-secondary small">
+                                  <tr>
+                                    <th class="ps-3 py-2 border-0">Item</th>
+                                    <th class="text-end py-2 pe-3 border-0">Current Bid</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr v-for="(session, sIndex) in room.sessions" :key="session.id">
+                                    <td class="ps-3 py-2 border-0">
+                                      <div class="d-flex align-items-center">
+                                        <span
+                                          class="badge bg-white text-secondary border border-light-subtle me-2 shadow-sm"
+                                          style="width: 24px"
+                                          >{{ sIndex + 1 }}</span
+                                        >
+                                        <img
+                                          :src="session.avtArtwork"
+                                          class="rounded-circle border border-light-subtle me-2"
+                                          style="width: 28px; height: 28px; object-fit: cover"
+                                          @error="
+                                            $event.target.src = '/src/assets/img/default-art.png'
+                                          "
+                                        />
+                                        <span
+                                          class="fw-medium text-dark small text-truncate"
+                                          style="max-width: 180px"
+                                          >{{ session.artworkTitle }}</span
+                                        >
+                                      </div>
+                                    </td>
+                                    <td class="text-end py-2 pe-3 border-0">
+                                      <span class="fw-bold text-success small">{{
+                                        formatCurrency(session.currentPrice)
+                                      }}</span>
+                                    </td>
+                                  </tr>
+                                  <tr v-if="!room.sessions || room.sessions.length === 0">
+                                    <td
+                                      colspan="2"
+                                      class="text-center text-muted small py-3 border-0"
+                                    >
+                                      No items.
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -274,55 +350,106 @@
       </div>
 
       <div class="col-12 col-xl-6">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header bg-white border-0 pt-3">
-            <h5 class="text-primary fw-bold mb-0">New Users</h5>
+        <div class="card border-0 rounded-4 h-100 overflow-hidden">
+          <div
+            class="card-header bg-primary bg-gradient text-white py-3 border-0 d-flex align-items-center justify-content-between"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <div
+                class="bg-white bg-opacity-25 rounded-circle p-2 d-flex justify-content-center align-items-center"
+                style="width: 32px; height: 32px"
+              >
+                <i class="fa-solid fa-user-plus"></i>
+              </div>
+              <h5 class="fw-bold mb-0">New Users</h5>
+            </div>
+            <span class="badge bg-white text-primary rounded-pill"
+              >{{ newUsers ? newUsers.length : 0 }} Recent</span
+            >
           </div>
+
           <div class="card-body p-0">
-            <div class="table-responsive text-nowrap overflow-y-auto">
+            <div class="table-responsive text-nowrap custom-scrollbar" style="max-height: 450px">
               <table class="table table-hover align-middle text-nowrap mb-0 w-100">
-                <thead class="table-light">
-                  <tr class="align-middle">
-                    <th scope="col" class="ps-3 py-3 fw-bold align-middle">Username</th>
-                    <th scope="col" class="py-3 fw-bold align-middle">Email</th>
-                    <th scope="col" class="py-3 fw-bold align-middle">Registration date</th>
-                    <th scope="col" class="py-3 fw-bold align-middle">Status</th>
+                <thead
+                  class="bg-light sticky-top shadow-sm border-bottom border-light-subtle"
+                  style="z-index: 5"
+                >
+                  <tr>
+                    <th
+                      scope="col"
+                      class="ps-4 py-3 fw-bold text-secondary text-uppercase x-small border-0"
+                    >
+                      User Profile
+                    </th>
+                    <th
+                      scope="col"
+                      class="py-3 fw-bold text-secondary text-uppercase x-small border-0"
+                    >
+                      Joined Date
+                    </th>
+                    <th
+                      scope="col"
+                      class="py-3 fw-bold text-secondary text-uppercase x-small text-center border-0"
+                    >
+                      Status
+                    </th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr v-if="isLoading">
-                    <td colspan="4" class="text-center py-4 text-muted">Loading...</td>
+                    <td colspan="3" class="text-center py-5 text-muted border-0">
+                      <div
+                        class="spinner-border spinner-border-sm text-primary mb-2"
+                        role="status"
+                      ></div>
+                      <p class="mb-0 small">Loading users...</p>
+                    </td>
                   </tr>
 
                   <tr v-else-if="!newUsers || newUsers.length === 0">
-                    <td colspan="4" class="text-center py-4 text-muted">No new users.</td>
+                    <td colspan="3" class="text-center py-5 text-muted border-0">
+                      <i class="fa-regular fa-user fs-1 mb-2 opacity-25"></i>
+                      <p class="mb-0">No new users registered.</p>
+                    </td>
                   </tr>
 
-                  <tr v-for="user in newUsers" :key="user.id">
-                    <td class="ps-3 align-middle">
-                      <div class="d-flex align-items-center gap-2">
-                        <img
-                          :src="user.avt"
-                          alt="User Avatar"
-                          class="rounded-circle border"
-                          style="width: 32px; height: 32px; object-fit: cover"
-                        />
-
-                        <!-- <div
-                          v-else
-                          class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                          style="width: 32px; height: 32px"
-                        >
-                          {{ user.fullName ? user.fullName.charAt(0).toUpperCase() : "U" }}
-                        </div> -->
-                        <span class="fw-medium">{{ user.username }}</span>
+                  <tr
+                    v-for="user in newUsers"
+                    :key="user.id"
+                    class="transition-bg border-bottom border-light-subtle"
+                  >
+                    <td class="ps-4 py-3 border-0">
+                      <div class="d-flex align-items-center gap-3">
+                        <div class="position-relative">
+                          <img
+                            :src="user.avt"
+                            class="rounded-circle border border-light-subtle shadow-sm object-fit-cover"
+                            style="width: 40px; height: 40px"
+                          />
+                        </div>
+                        <div class="d-flex flex-column">
+                          <span class="fw-bold text-dark" style="font-size: 0.9rem">{{
+                            user.username
+                          }}</span>
+                          <small class="text-muted" style="font-size: 0.75rem">{{
+                            user.email
+                          }}</small>
+                        </div>
                       </div>
                     </td>
-                    <td class="text-muted align-middle">{{ user.email }}</td>
-                    <td class="small align-middle">{{ user.createdAt }}</td>
-                    <td class="align-middle">
+
+                    <td class="py-3 border-0">
+                      <div class="d-flex align-items-center text-secondary">
+                        <i class="fa-regular fa-calendar me-2 small opacity-50"></i>
+                        <span class="fw-medium small">{{ formatDate(user.createdAt) }}</span>
+                      </div>
+                    </td>
+
+                    <td class="text-center py-3 border-0">
                       <span
-                        class="badge rounded-pill border"
+                        class="badge rounded-pill px-3 py-2 fw-medium shadow-sm"
                         :class="getStatusClassUser(user.status)"
                       >
                         {{ convertStatusUser(user.status) }}
@@ -337,46 +464,139 @@
       </div>
     </div>
 
-    <div class="card border-0 shadow-sm">
-      <div class="card-header bg-white border-0 pt-3">
-        <h5 class="text-primary fw-bold mb-0">The most expensive works</h5>
-      </div>
-      <div class="card-body p-0">
-        <div class="table-responsive text-nowrap overflow-y-auto">
-          <table class="table table-hover align-middle text-nowrap mb-0 w-100">
-            <thead class="table-light">
-              <tr>
-                <th scope="col" class="ps-3 py-3 fw-bold align-middle">Artwork</th>
-                <th scope="col" class="py-3 fw-bold align-middle">Type</th>
-                <th scope="col" class="py-3 fw-bold align-middle">Author</th>
-                <th scope="col" class="py-3 fw-bold align-middle">Highest price</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="art in topArtworks" :key="art.id">
-                <td class="ps-3 align-middle">
-                  <div class="d-flex align-items-center gap-3">
-                    <img
-                      :src="art.artworkImageUrl"
-                      class="rounded border bg-light"
-                      style="width: 48px; height: 48px; object-fit: cover"
-                      alt="art"
-                      loading="lazy"
-                    />
-                    <div>
-                      <p class="mb-0 fww-medium">{{ art.artworkTitle }}</p>
-                      <small class="text-body-secondary">ID: {{ art.sessionId }}</small>
+    <div class="col-12">
+      <div class="card border-0 shadow rounded-4 h-100 overflow-hidden">
+        <div
+          class="card-header bg-primary bg-gradient text-white py-3 border-0 d-flex align-items-center justify-content-between"
+        >
+          <div class="d-flex align-items-center gap-2">
+            <div
+              class="bg-white bg-opacity-25 rounded-circle p-2 d-flex justify-content-center align-items-center"
+              style="width: 32px; height: 32px"
+            >
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h5 class="fw-bold mb-0">The Most Expensive Works</h5>
+          </div>
+          <span class="badge bg-white text-primary rounded-pill"
+            >Top {{ topArtworks ? topArtworks.length : 0 }}</span
+          >
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive text-nowrap custom-scrollbar" style="max-height: 450px">
+            <table class="table table-hover align-middle text-nowrap mb-0 w-100">
+              <thead
+                class="bg-light sticky-top shadow-sm border-bottom border-light-subtle"
+                style="z-index: 5"
+              >
+                <tr>
+                  <th
+                    scope="col"
+                    class="ps-4 py-3 fw-bold text-secondary text-uppercase x-small border-0"
+                  >
+                    Artwork Info
+                  </th>
+                  <th
+                    scope="col"
+                    class="py-3 fw-bold text-secondary text-uppercase x-small border-0"
+                  >
+                    Type
+                  </th>
+                  <th
+                    scope="col"
+                    class="py-3 fw-bold text-secondary text-uppercase x-small border-0"
+                  >
+                    Winner
+                  </th>
+                  <th
+                    scope="col"
+                    class="py-3 fw-bold text-secondary text-uppercase x-small text-end pe-4 border-0"
+                  >
+                    Highest Price
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr v-if="isLoading">
+                  <td colspan="4" class="text-center py-5 text-muted border-0">
+                    <div
+                      class="spinner-border spinner-border-sm text-primary mb-2"
+                      role="status"
+                    ></div>
+                    <p class="mb-0 small">Loading rankings...</p>
+                  </td>
+                </tr>
+
+                <tr v-else-if="!topArtworks || topArtworks.length === 0">
+                  <td colspan="4" class="text-center py-5 text-muted border-0">
+                    <i class="fa-solid fa-award fs-1 mb-2 opacity-25"></i>
+                    <p class="mb-0">No data available.</p>
+                  </td>
+                </tr>
+
+                <tr
+                  v-for="(art, index) in topArtworks"
+                  :key="art.id"
+                  class="transition-bg border-bottom border-light-subtle"
+                >
+                  <td class="ps-4 py-3 border-0">
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="fw-bold text-secondary opacity-50" style="width: 20px">
+                        {{ index + 1 }}
+                      </div>
+
+                      <img
+                        :src="art.artworkImageUrl"
+                        class="rounded-3 shadow-sm border border-light-subtle object-fit-cover"
+                        style="width: 48px; height: 48px"
+                        alt="art"
+                        loading="lazy"
+                      />
+                      <div class="d-flex flex-column">
+                        <span class="fw-bold text-dark text-truncate" style="max-width: 200px">{{
+                          art.artworkTitle
+                        }}</span>
+                        <span
+                          class="badge bg-light text-secondary border border-light-subtle rounded-pill mt-1"
+                          style="width: fit-content; font-size: 0.65rem"
+                        >
+                          ID: #{{ art.sessionId }}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td class="align-middle">{{ art.paintingGenre }}</td>
-                <td class="align-middle">{{ art.winnerName }}</td>
-                <td class="text-success fw-bold align-middle">
-                  {{ formatCurrency(art.totalAmount) }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+
+                  <td class="py-3 border-0">
+                    <span
+                      class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill fw-medium px-3"
+                    >
+                      {{ art.paintingGenre }}
+                    </span>
+                  </td>
+
+                  <td class="py-3 border-0">
+                    <div class="d-flex align-items-center text-dark">
+                      <div
+                        class="bg-secondary-subtle rounded-circle p-1 d-flex justify-content-center align-items-center me-2"
+                        style="width: 24px; height: 24px"
+                      >
+                        <i class="fa-regular fa-user small text-secondary"></i>
+                      </div>
+                      <span class="fw-medium">{{ art.winnerName }}</span>
+                    </div>
+                  </td>
+
+                  <td class="text-end py-3 pe-4 border-0">
+                    <span class="fw-bold text-success fs-6">
+                      {{ formatCurrency(art.totalAmount) }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -404,19 +624,33 @@ export default {
     this.loadUserData();
     this.loadArtworkData();
   },
+
   methods: {
     formatCurrency(value) {
-      if (!value) return "$0";
-
-      // Giả sử tỷ giá 1 USD = 25,400 VND
-      const exchangeRate = 25400;
-      const usdValue = value / exchangeRate;
+      if (value === null || value === undefined || value === "") {
+        return "$0.00";
+      }
 
       return new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-        maximumFractionDigits: 2, // Giữ lại 2 số lẻ (ví dụ: $12.50)
-      }).format(usdValue);
+        minimumFractionDigits: 2,
+      }).format(value);
+    },
+
+    formatDate(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+
+      // Tùy chọn định dạng (Format: Oct 22, 2025, 02:30 PM)
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short", // "short" = Oct, "long" = October, "numeric" = 10
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true, // true = AM/PM, false = 24h
+      });
     },
 
     //  card thống kê
@@ -481,20 +715,16 @@ export default {
           return "Live";
         case 2:
           return "Upcoming";
-        default:
-          return "Unknown";
       }
     },
     getStatusClass(status) {
       switch (status) {
-        case 1: // Live
+        case 1:
           return "bg-danger-subtle text-danger border-danger-subtle";
-        case 2: // Upcoming
+        case 2:
           return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
-        case 0: // Finished
+        case 0:
           return "bg-secondary-subtle text-secondary border-secondary-subtle";
-        default:
-          return "bg-light text-dark border";
       }
     },
 

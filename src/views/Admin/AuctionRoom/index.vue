@@ -11,98 +11,104 @@
         </router-link>
       </div>
     </div>
-
     <div class="row g-3 mb-4">
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div
+          class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-secondary"
+        >
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Total Rooms</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.totalRooms }}</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ statistics.totalRooms }}</h3>
               </div>
               <div
-                class="bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                class="bg-secondary-subtle text-primary rounded-4 d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
                 <i class="fa-solid fa-layer-group fs-5"></i>
               </div>
             </div>
-            <small class="text-secondary fw-medium">Total auction room</small>
+            <small class="text-secondary fw-medium">Total auction rooms</small>
           </div>
         </div>
       </div>
+
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-danger">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Live Now</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.runningRooms }}</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ statistics.runningRooms }}</h3>
               </div>
               <div
-                class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
+                class="bg-danger bg-opacity-10 text-danger rounded-4 d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
                 <i class="fa-solid fa-tower-broadcast fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">Currently active sessions</small>
+            <small class="text-danger fw-medium">
+              <i class="fa-solid fa-circle fa-2xs me-1 fa-fade"></i>Currently active
+            </small>
           </div>
         </div>
       </div>
+
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-warning">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Upcoming</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.upcomingRooms }}</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ statistics.upcomingRooms }}</h3>
               </div>
               <div
-                class="bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
+                class="bg-warning bg-opacity-10 text-warning-emphasis rounded-4 d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
                 <i class="fa-regular fa-calendar-check fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">Scheduled for today</small>
+            <small class="text-secondary fw-medium">Scheduled for today</small>
           </div>
         </div>
       </div>
+
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-success">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Finished</h6>
-                <h3 class="fw-bold mb-0">{{ statistics.completedRooms }}</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ statistics.completedRooms }}</h3>
               </div>
               <div
-                class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                class="bg-success bg-opacity-10 text-success rounded-4 d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px"
               >
                 <i class="fa-solid fa-flag-checkered fs-5"></i>
               </div>
             </div>
-            <small class="text-body-secondary">Completed sessions</small>
+            <small class="text-success fw-medium">Completed sessions</small>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card border-0 shadow-sm mb-4 rounded-pill overflow-hidden">
+    <div class="card border-0 mb-4 overflow-hidden shadow-none">
       <div class="card-body p-2">
         <div class="row g-2 align-items-center">
           <div class="col-12 col-md-8 col-lg-6">
-            <div class="input-group border-0">
-              <span class="input-group-text bg-white border-0 ps-3 text-secondary"
-                ><i class="fa-solid fa-magnifying-glass"></i
-              ></span>
+            <div class="input-group bg-light rounded-pill px-2 border-0">
+              <span class="input-group-text bg-transparent border-0 text-secondary">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
               <input
                 v-model="search"
                 type="text"
-                class="form-control border-0 shadow-none"
+                class="form-control bg-transparent border-0 shadow-none"
                 placeholder="Search for auction room..."
                 @input="handleSearch"
               />
@@ -155,7 +161,13 @@
 
                       <div class="bg-light rounded-3 p-3 border">
                         <div class="form-check mb-2">
-                          <input class="form-check-input" type="checkbox" id="stLive" value="1" />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="stLive"
+                            :value="1"
+                            v-model="filter.statuses"
+                          />
                           <label class="form-check-label text-danger fw-bold" for="stLive">
                             <i
                               class="fa-solid fa-circle fa-beat-fade me-1"
@@ -166,7 +178,13 @@
                         </div>
 
                         <div class="form-check mb-2">
-                          <input class="form-check-input" type="checkbox" id="stComing" value="2" />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="stComing"
+                            :value="0"
+                            v-model="filter.statuses"
+                          />
                           <label class="form-check-label text-primary fw-medium" for="stComing">
                             <i class="fa-regular fa-clock me-1"></i> Coming Soon
                           </label>
@@ -177,7 +195,8 @@
                             class="form-check-input"
                             type="checkbox"
                             id="stFinished"
-                            value="0"
+                            :value="2"
+                            v-model="filter.statuses"
                           />
                           <label class="form-check-label text-success fw-medium" for="stFinished">
                             <i class="fa-solid fa-flag-checkered me-1"></i> Finished
@@ -194,22 +213,42 @@
                       </label>
 
                       <div class="mb-3">
-                        <label class="form-label x-small text-secondary fw-bold">Start Time</label>
+                        <label class="form-label x-small text-secondary fw-bold"
+                          >Start Time (From - To)</label
+                        >
                         <div class="input-group input-group-sm">
-                          <input type="date" class="form-control shadow-none" />
+                          <input
+                            type="date"
+                            class="form-control shadow-none"
+                            v-model="filter.startTimeFrom"
+                          />
                           <span class="input-group-text bg-light border-0 text-secondary">-</span>
-                          <input type="date" class="form-control shadow-none" />
+                          <input
+                            type="date"
+                            class="form-control shadow-none"
+                            v-model="filter.startTimeTo"
+                          />
                         </div>
                       </div>
 
-                      <div>
-                        <label class="form-label x-small text-secondary fw-bold">End Time</label>
+                      <!-- <div>
+                        <label class="form-label x-small text-secondary fw-bold"
+                          >End Time (From - To)</label
+                        >
                         <div class="input-group input-group-sm">
-                          <input type="date" class="form-control shadow-none" />
+                          <input
+                            type="date"
+                            class="form-control shadow-none"
+                            v-model="filter.endTimeFrom"
+                          />
                           <span class="input-group-text bg-light border-0 text-secondary">-</span>
-                          <input type="date" class="form-control shadow-none" />
+                          <input
+                            type="date"
+                            class="form-control shadow-none"
+                            v-model="filter.endTimeTo"
+                          />
                         </div>
-                      </div>
+                      </div> -->
                     </div>
 
                     <hr class="border-secondary opacity-10 my-4" />
@@ -225,21 +264,43 @@
                             class="btn-check"
                             name="parti"
                             id="partiAll"
-                            checked
+                            value="all"
+                            v-model="filter.participantsRange"
                           />
                           <label class="btn btn-outline-secondary btn-sm" for="partiAll">All</label>
 
-                          <input type="radio" class="btn-check" name="parti" id="partiLow" />
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="parti"
+                            id="partiLow"
+                            value="<10"
+                            v-model="filter.participantsRange"
+                          />
                           <label class="btn btn-outline-secondary btn-sm" for="partiLow"
                             >&lt; 10</label
                           >
 
-                          <input type="radio" class="btn-check" name="parti" id="partiMid" />
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="parti"
+                            id="partiMid"
+                            value="10-50"
+                            v-model="filter.participantsRange"
+                          />
                           <label class="btn btn-outline-secondary btn-sm" for="partiMid"
                             >10-50</label
                           >
 
-                          <input type="radio" class="btn-check" name="parti" id="partiHigh" />
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="parti"
+                            id="partiHigh"
+                            value=">50"
+                            v-model="filter.participantsRange"
+                          />
                           <label class="btn btn-outline-secondary btn-sm" for="partiHigh"
                             >&gt; 50</label
                           >
@@ -249,10 +310,13 @@
                   </div>
                 </div>
 
-                <div class="offcanvas-footer border-top p-3 bg-white">
+                <div class="offcanvas-footer border-top p-3 bg-white mt-5">
                   <div class="row g-2">
                     <div class="col-4">
-                      <button class="btn btn-light border w-100 fw-bold text-secondary">
+                      <button
+                        class="btn btn-light border w-100 fw-bold text-secondary"
+                        @click="resetFilter"
+                      >
                         <i class="fa-solid fa-rotate-right me-1"></i> Reset
                       </button>
                     </div>
@@ -260,6 +324,7 @@
                       <button
                         class="btn btn-primary w-100 fw-bold shadow-sm"
                         data-bs-dismiss="offcanvas"
+                        @click="applyFilter"
                       >
                         Apply
                       </button>
@@ -273,7 +338,7 @@
       </div>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 overflow-y-auto hide-scrollbar pe-2" style="max-height: 80vh">
       <div v-if="isLoading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status"></div>
         <p class="mt-2 text-muted">Loading rooms...</p>
@@ -294,19 +359,23 @@
               data-bs-display="static"
               aria-expanded="false"
               style="width: 32px; height: 32px; background-color: rgba(255, 255, 255, 0.9)"
-              @click.stop
+              @click.stop="toggleDropdown(room.id)"
             >
               <i class="fa-solid fa-ellipsis text-secondary"></i>
             </button>
 
-            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg" style="z-index: 1000">
+            <ul
+              class="dropdown-menu dropdown-menu-end border-0 shadow-lg"
+              :class="{ show: activeDropdownId === room.id }"
+              style="z-index: 1000"
+            >
               <li v-if="room.status === 'live' || room.status === 'streaming'">
                 <a
                   class="dropdown-item py-2 fw-bold text-danger"
                   href="#"
                   @click.prevent.stop="goToLive(room.id)"
                 >
-                  <i class="fa-solid fa-video me-2 animate-pulse"></i>Vào xem Live
+                  <i class="fa-solid fa-video me-2 animate-pulse"></i>Watch Live
                 </a>
               </li>
 
@@ -321,7 +390,7 @@
               </li>
               <li>
                 <router-link
-                  v-if="room.status === 2"
+                  v-if="room.status === 0"
                   :to="`/admin/edit-auction-room/${room.id}`"
                   class="dropdown-item py-2"
                   @click.stop
@@ -359,7 +428,7 @@
               <div class="col-12 col-lg-4 mb-3 mb-lg-0 border-end-lg pe-lg-4">
                 <div class="d-flex align-items-center gap-3">
                   <img
-                    :src="room.imageAuctionRoom || '/src/assets/img/4.png'"
+                    :src="room.imageAuctionRoom"
                     alt="Art"
                     class="rounded-3 shadow-sm border object-fit-cover flex-shrink-0"
                     style="width: 80px; height: 80px"
@@ -399,13 +468,13 @@
                     <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
                       >Start Time</span
                     >
-                    <span class="fw-medium text-dark fs-6">{{ formatDate(room.startedAt) }}</span>
+                    <small class="text-secondary">{{ formatDate(room.startedAt) }}</small>
                   </div>
                   <div class="col-6 col-md-3">
                     <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
                       >End time</span
                     >
-                    <span class="fw-medium text-dark fs-6">{{ formatDate(room.stoppedAt) }}</span>
+                    <small class="text-secondary">{{ formatDate(room.stoppedAt) }}</small>
                   </div>
                   <div class="col-6 col-md-3">
                     <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
@@ -420,11 +489,9 @@
                   </div>
                   <div class="col-6 col-md-3">
                     <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
-                      >Current Price</span
+                      >Expected End Time</span
                     >
-                    <span class="fw-bold text-primary fs-5">{{
-                      formatCurrency(room.currentPrice)
-                    }}</span>
+                    <small class="text-secondary">{{ formatDate(room.estimatedEndTime) }}</small>
                   </div>
                 </div>
               </div>
@@ -451,45 +518,49 @@ export default {
       isLoading: false,
       search: "",
       statistics: "",
+      activeDropdownId: null,
+      searchTimeout: null,
+
+      // Dữ liệu cho bộ lọc
+      filter: {
+        statuses: [], // Mảng chứa các value [0, 1, 2]
+        startTimeFrom: null,
+        startTimeTo: null,
+        endTimeFrom: null,
+        endTimeTo: null,
+        participantsRange: "all",
+      },
     };
   },
   mounted() {
     this.loadAuctionData();
     this.loadAuctionStatistical();
+    document.addEventListener("click", this.closeDropdown);
   },
-  methods: {
-    loadAuctionData() {
-      this.isLoading = true;
-      axios
-        .get("http://localhost:8081/api/admin/auction-rooms/lay-du-lieu", {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then((res) => {
-          this.auctionRooms = res.data;
-          console.log("Data Loaded:", this.auctionRooms);
-        })
-        .catch((err) => {
-          console.error("Error loading rooms:", err);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
 
+  beforeUnmount() {
+    document.removeEventListener("click", this.closeDropdown);
+  },
+
+  methods: {
+    toggleDropdown(id) {
+      if (this.activeDropdownId === id) {
+        this.activeDropdownId = null;
+      } else {
+        this.activeDropdownId = id;
+      }
+    },
+    closeDropdown() {
+      this.activeDropdownId = null;
+    },
     handleSearch() {
-      // Xóa bộ đếm cũ nếu người dùng gõ tiếp khi chưa hết giờ
       if (this.searchTimeout) {
         clearTimeout(this.searchTimeout);
       }
-
-      // Thiết lập bộ đếm mới (ví dụ: chờ 500ms)
       this.searchTimeout = setTimeout(() => {
         this.performSearchApi();
       }, 500);
     },
-
     performSearchApi() {
       if (!this.search.trim()) {
         this.loadAuctionData();
@@ -498,9 +569,7 @@ export default {
       this.isLoading = true;
       axios
         .get(`http://localhost:8081/api/admin/auction-rooms/tim-kiem?q=${this.search}`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
         })
         .then((res) => {
           this.auctionRooms = res.data;
@@ -514,27 +583,123 @@ export default {
         });
     },
 
-    // handleRoomClick(id) {
-    //   this.$router.push(`/admin/auction-room/${id}`);
-    // },
+    applyFilter() {
+      this.isLoading = true;
+
+      const payload = {
+        statuses: this.filter.statuses.length > 0 ? this.filter.statuses : null,
+
+        startTimeFrom: this.filter.startTimeFrom ? `${this.filter.startTimeFrom}T00:00:00` : null,
+        startTimeTo: this.filter.startTimeTo ? `${this.filter.startTimeTo}T23:59:59` : null,
+
+        endTimeFrom: this.filter.endTimeFrom ? `${this.filter.endTimeFrom}T00:00:00` : null,
+        endTimeTo: this.filter.endTimeTo ? `${this.filter.endTimeTo}T23:59:59` : null,
+
+        participantsRange:
+          this.filter.participantsRange === "all" ? null : this.filter.participantsRange,
+      };
+
+      axios
+        .post("http://localhost:8081/api/admin/auction-rooms/loc-phong-dau-gia", payload, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          this.auctionRooms = res.data;
+          // Đóng search nếu đang search để tránh nhầm lẫn
+          this.search = "";
+        })
+        .catch((err) => {
+          console.error("Filter Error:", err);
+          alert("Failed to filter auction rooms.");
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    resetFilter() {
+      // Reset về giá trị mặc định
+      this.filter = {
+        statuses: [],
+        startTimeFrom: null,
+        startTimeTo: null,
+        endTimeFrom: null,
+        endTimeTo: null,
+        participantsRange: "all",
+      };
+
+      // Gọi lại load data gốc
+      this.loadAuctionData();
+    },
+
+    // --- CÁC HÀM API KHÁC (GIỮ NGUYÊN) ---
+    loadAuctionData() {
+      this.isLoading = true;
+      axios
+        .get("http://localhost:8081/api/admin/auction-rooms/lay-du-lieu", {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then((res) => {
+          this.auctionRooms = res.data;
+        })
+        .catch((err) => {
+          console.error("Error loading rooms:", err);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+    loadAuctionStatistical() {
+      axios
+        .get(`http://localhost:8081/api/admin/auction-rooms/thong-ke`, {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then((res) => {
+          this.statistics = res.data;
+        })
+        .catch((err) => {
+          console.error("Lỗi thống kê:", err);
+        });
+    },
+    deleteRoom(roomId) {
+      if (!confirm(`Are you sure you want to delete this room?`)) return;
+      axios
+        .delete(`http://localhost:8081/api/admin/auction-rooms/xoa/${roomId}`, {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then(() => {
+          alert("Deleted successfully!");
+          this.loadAuctionData();
+        })
+        .catch((err) => {
+          const message = err.response?.data?.message || "An error occurred while deleting!";
+          alert(message);
+        });
+    },
 
     // --- HELPER FUNCTIONS ---
-    formatCurrency(value) {
-      if (value === undefined || value === null) return "0đ";
-      return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
-    },
-    formatDate(dateStr) {
-      if (!dateStr) return "Chưa xác định";
-      // Cắt chuỗi đơn giản hoặc format lại tùy ý
-      return dateStr.replace("T", " ").slice(0, 16);
+    formatDate(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
     },
     convertStatus(status) {
       switch (status) {
-        case 0:
+        case 2:
           return "Finished";
         case 1:
-          return "In progress";
-        case 2:
+          return "Live";
+        case 0:
           return "Coming soon";
         default:
           return "Unknown";
@@ -542,14 +707,14 @@ export default {
     },
     getStatusClass(status) {
       switch (status) {
-        case 2:
-          return "bg-warning-subtle text-warning-emphasis border-warning-subtle"; // Coming soon
-        case 1:
-          return "bg-danger-subtle text-danger border-danger-subtle"; // Live
         case 0:
-          return "bg-secondary-subtle text-secondary border-secondary-subtle"; // Ended
+          return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
+        case 1:
+          return "bg-danger-subtle text-danger border-danger-subtle";
+        case 2:
+          return "bg-secondary-subtle text-secondary border-secondary-subtle";
         default:
-          return "bg-light text-dark border";
+          return "";
       }
     },
     getBorderClass(status) {
@@ -564,55 +729,13 @@ export default {
           return "";
       }
     },
-
-    //  card thống kê
-    loadAuctionStatistical() {
-      axios
-        .get(`http://localhost:8081/api/admin/auction-rooms/thong-ke`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then((res) => {
-          this.statistics = res.data;
-          console.log("Kết quả tìm kiếm:", this.statistics);
-        })
-        .catch((err) => {
-          console.error("Lỗi tìm kiếm:", err);
-          this.statistics = [];
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
-    deleteRoom(roomId) {
-      if (!confirm(`Are you sure you want to delete this room?`)) return;
-
-      axios
-        .delete(`http://localhost:8081/api/admin/auction-rooms/xoa/${roomId}`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then(() => {
-          alert("Deleted successfully!");
-          this.loadAuctionData();
-        })
-        .catch((err) => {
-          console.error("Error:", err);
-          const message = err.response?.data?.message || "An error occurred while deleting!";
-          alert(message);
-        });
-    },
   },
 
   computed: {
-    // Đảo ngược thứ tự mảng
     sortedAuctionRooms() {
       return [...this.auctionRooms].reverse();
     },
   },
 };
 </script>
-
 <style></style>
