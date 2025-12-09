@@ -60,7 +60,10 @@
               </span>
 
               <div class="d-flex justify-content-center gap-2 mt-2">
-                <button class="btn btn-outline-danger btn-sm px-4 rounded-pill w-100">
+                <button
+                  class="btn btn-outline-danger btn-sm px-4 rounded-pill w-100"
+                  @click="performLogout"
+                >
                   <i class="bi bi-box-arrow-right me-1"></i> Logout
                 </button>
               </div>
@@ -389,6 +392,36 @@ export default {
       if (!dateString) return "N/A";
       const options = { year: "numeric", month: "short", day: "numeric" };
       return new Date(dateString).toLocaleDateString("en-US", options);
+    },
+    performLogout() {
+      const token = localStorage.getItem("token");
+      const finish = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("name_admin");
+        localStorage.removeItem("email_admin");
+        localStorage.removeItem("check_admin");
+        this.user = null;
+        this.$router.push("/admin/login");
+        this.$toast.success("Log out successfully");
+      };
+
+      if (!token) {
+        finish();
+        return;
+      }
+
+      axios
+        .post(
+          "http://localhost:8081/api/auth/logout",
+          {},
+          { headers: { Authorization: "Bearer " + token } }
+        )
+        .then(() => {
+          finish();
+        })
+        .catch(() => {
+          finish();
+        });
     },
   },
 };
