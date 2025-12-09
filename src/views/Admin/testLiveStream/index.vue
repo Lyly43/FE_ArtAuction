@@ -83,34 +83,35 @@
                     </div>
                   </div>
                   <div class="col-4">
-                    <h5 class="text-info mb-1">{{ currentSession?.orderIndex ?? '-' }}</h5>
+                    <h5 class="text-info mb-1">{{ auctionCountdown.currentSession.value?.orderIndex ?? '-' }}</h5>
                     <small class="text-muted">Section</small>
                   </div>
                 </div>
 
                 <!-- Countdown Timer -->
-                <div v-if="currentSession && countdownSeconds > 0" class="mt-3">
+                <div v-if="auctionCountdown.currentSession.value && auctionCountdown.countdownSeconds.value > 0"
+                  class="mt-3">
                   <div class="alert alert-warning py-2 text-center">
                     <small class="d-block mb-1">
                       <i class="fas fa-hourglass-half me-1"></i>
                       <strong>Thời gian còn lại:</strong>
                     </small>
-                    <h4 class="text-danger mb-0 fw-bold">{{ countdownDisplay }}</h4>
+                    <h4 class="text-danger mb-0 fw-bold">{{ auctionCountdown.countdownDisplay.value }}</h4>
                   </div>
                 </div>
-                <div v-else-if="currentSession" class="mt-3">
+                <div v-else-if="auctionCountdown.currentSession.value" class="mt-3">
                   <div class="alert alert-secondary py-2 text-center">
                     <small class="text-muted">Chưa có phiên đấu giá đang chạy</small>
                   </div>
                 </div>
 
                 <!-- Thông tin session hiện tại -->
-                <div v-if="currentSession" class="mt-3">
+                <div v-if="auctionCountdown.currentSession.value" class="mt-3">
                   <div class="alert alert-info py-2">
                     <small>
                       <i class="fas fa-info-circle me-1"></i>
-                      <strong>Session:</strong> {{ currentSession.sessionId }} |
-                      <strong>Bắt đầu:</strong> {{ formatDateTime(currentSession.startedAt) }}
+                      <strong>Session:</strong> {{ auctionCountdown.currentSession.value.sessionId }} |
+                      <strong>Bắt đầu:</strong> {{ formatDateTime(auctionCountdown.currentSession.value.startedAt) }}
                     </small>
                   </div>
                 </div>
@@ -162,13 +163,13 @@
 <script>
 import axios from 'axios';
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
-import ChatSocket from '../../../socket';
+import useAuctionCountdown from '../../../composables/useAuctionCountdown';
 
 export default {
   props: ["id"],
   data() {
     return {
-      id: this.$route.params.id,
+      // id: this.$route.params.id,
       roomID: this.$route.params.id || this.id, // Lấy từ route params
 
       user: {},
@@ -184,20 +185,56 @@ export default {
       isStartingSection: false,
       isStoppingSection: false,
       isStoppingRoom: false,
-      currentSession: null,
-
 
       // Interval để refresh session data
       sessionRefreshInterval: null,
-
-      // === WEBSOCKET FOR COUNTDOWN ===
-      auctionSocket: null,
-      auctionRoomSubscription: null,
-      auctionBidsSubscription: null,
-      countdownSeconds: 0, // Số giây còn lại từ WebSocket
-      countdownInterval: null, // Interval để cập nhật countdown mỗi giây
-      sessionEndTime: null, // Thời gian kết thúc session từ WebSocket
     }
+  },
+  setup(props, { expose }) {
+    // Sử dụng composable cho auction countdown
+    const roomID = props.id || window.location.pathname.split('/').pop();
+
+    // Tạo ref để lưu instance của component (để gọi methods)
+    let componentInstance = null;
+
+    const auctionCountdown = useAuctionCountdown(roomID, {
+      onSessionStarted: (session) => {
+        console.log('✅ Session started callback:', session);
+      },
+      onSessionEnded: (message) => {
+        console.log('⏰ Session ended callback:', message);
+      },
+      onBidAccepted: (message) => {
+        console.log('💰 Bid accepted callback:', message);
+      },
+      onCountdownEnd: (session) => {
+        console.log('⏰ Countdown ended callback:', session);
+        // Gọi autoStopSession từ component methods
+        if (componentInstance && componentInstance.autoStopSession) {
+          componentInstance.autoStopSession();
+        }
+      },
+      onRoomStopped: (message) => {
+        console.log('🛑 Room stopped callback:', message);
+        // Redirect về dashboard khi phòng bị dừng
+        if (componentInstance && componentInstance.$toast) {
+          componentInstance.$toast.warning('Phòng đấu giá đã bị dừng.');
+        }
+        if (componentInstance && componentInstance.$router) {
+          setTimeout(() => {
+            componentInstance.$router.push('/admin/dashboard');
+          }, 1000);
+        }
+      },
+      toast: null, // Toast sẽ được xử lý trong component
+    });
+
+    return {
+      auctionCountdown,
+      setComponentInstance: (instance) => {
+        componentInstance = instance;
+      }
+    };
   },
   mounted() {
 
@@ -212,11 +249,13 @@ export default {
 
     this.startAsHost();
 
-    // Kết nối WebSocket cho countdown
-    this.connectAuctionWebSocket();
+    // Set component instance để composable có thể gọi methods
+    if (this.setComponentInstance) {
+      this.setComponentInstance(this);
+    }
 
-    // Load session hiện tại để lấy thông tin countdown
-    this.loadCurrentSessionForCountdown();
+    // Khởi tạo auction countdown composable
+    this.auctionCountdown.initialize();
   },
   beforeUnmount() {
     if (this.durationInterval) {
@@ -225,14 +264,10 @@ export default {
     if (this.sessionRefreshInterval) {
       clearInterval(this.sessionRefreshInterval);
     }
-    if (this.countdownInterval) {
-      clearInterval(this.countdownInterval);
-    }
     if (this.zp) {
       this.zp.destroy();
     }
-    // Disconnect WebSocket
-    this.disconnectAuctionWebSocket();
+    // Composable tự động cleanup qua onUnmounted
   },
 
   methods: {
@@ -522,188 +557,46 @@ export default {
         });
     },
 
-    // === WEBSOCKET METHODS FOR COUNTDOWN ===
-
-    connectAuctionWebSocket() {
-      console.log('🔌 Connecting to auction WebSocket...');
-      this.auctionSocket = new ChatSocket("http://localhost:8081", localStorage.getItem('token'));
-
-      this.auctionSocket.connect(() => {
-        console.log('✅ Auction WebSocket connected');
-
-        // Subscribe to auction room events
-        this.auctionRoomSubscription = this.auctionSocket.subscribeAuctionRoom(this.roomID, (message) => {
-          this.handleAuctionRoomEvent(message);
-        });
-      }, (err) => {
-        console.error('❌ Auction WebSocket error:', err);
-      });
-    },
-
-    disconnectAuctionWebSocket() {
-      if (this.auctionRoomSubscription) {
-        this.auctionRoomSubscription.unsubscribe();
-        this.auctionRoomSubscription = null;
-      }
-      if (this.auctionBidsSubscription) {
-        this.auctionBidsSubscription.unsubscribe();
-        this.auctionBidsSubscription = null;
-      }
-      if (this.auctionSocket) {
-        this.auctionSocket.deactivate();
-        this.auctionSocket = null;
-      }
-      this.stopCountdownInterval();
-    },
-
-    handleAuctionRoomEvent(message) {
-      console.log('📨 Auction room event received:', message);
-
-      if (message.eventType === 'SESSION_STARTED') {
-        console.log('✅ Session started:', message);
-        this.currentSession = {
-          sessionId: message.sessionId,
-          orderIndex: message.orderIndex,
-          startedAt: message.startTime
-        };
-
-        // Cập nhật countdown từ endTime
-        if (message.endTime) {
-          this.sessionEndTime = new Date(message.endTime);
-          this.updateCountdownFromEndTime();
-          this.startCountdownInterval();
-        }
-
-        // Subscribe to bids for this session
-        if (message.sessionId) {
-          this.subscribeToSessionBids(message.sessionId);
-        }
-      } else if (message.eventType === 'SESSION_ENDED') {
-        console.log('⏰ Session ended:', message);
-        this.stopCountdownInterval();
-        this.countdownSeconds = 0;
-        this.sessionEndTime = null;
-
-        // Unsubscribe from bids
-        if (this.auctionBidsSubscription) {
-          this.auctionBidsSubscription.unsubscribe();
-          this.auctionBidsSubscription = null;
-        }
-      }
-    },
-
-    subscribeToSessionBids(sessionId) {
-      // Unsubscribe old subscription if exists
-      if (this.auctionBidsSubscription) {
-        this.auctionBidsSubscription.unsubscribe();
+    // Tự động dừng session khi hết thời gian countdown
+    autoStopSession() {
+      // Kiểm tra có session hiện tại không (từ composable)
+      if (!this.auctionCountdown.currentSession.value || !this.auctionCountdown.currentSession.value.sessionId) {
+        console.warn('No active session to auto-stop');
+        return;
       }
 
-      // Subscribe to new session bids
-      this.auctionBidsSubscription = this.auctionSocket.subscribeAuctionBids(sessionId, (message) => {
-        this.handleBidEvent(message);
-      });
-    },
-
-    handleBidEvent(message) {
-      console.log('💰 Bid event received:', message);
-
-      if (message.eventType === 'BID_ACCEPTED') {
-        // Cập nhật countdown từ remainingSeconds hoặc endTime
-        if (message.remainingSeconds !== undefined) {
-          this.countdownSeconds = message.remainingSeconds;
-        } else if (message.endTime) {
-          this.sessionEndTime = new Date(message.endTime);
-          this.updateCountdownFromEndTime();
-        }
-
-        // Cập nhật currentPrice nếu có
-        if (message.price !== undefined) {
-          if (this.currentSession) {
-            this.currentSession.currentPrice = message.price;
-          }
-        }
-
-        // Hiển thị thông báo nếu được gia hạn
-        if (message.extended) {
-          this.$toast?.info?.('⏱️ Thời gian đã được gia hạn thêm 120 giây!');
-        }
+      // Tránh gọi API nếu đang trong quá trình dừng
+      if (this.isStoppingSection) {
+        console.warn('Session is already being stopped');
+        return;
       }
-    },
 
-    loadCurrentSessionForCountdown() {
+      console.log('🤖 Auto-stopping session:', this.auctionCountdown.currentSession.value.sessionId);
+
       axios
-        .get(`http://localhost:8081/api/stream/room/${this.roomID}/sessions/current-or-next`, {
+        .post(`http://localhost:8081/api/stream/stop-session/${this.auctionCountdown.currentSession.value.sessionId}`, {}, {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem("token")
           }
         })
         .then((res) => {
-          if (res.data && res.data.status === 1) {
-            // Session đang LIVE
-            this.currentSession = {
-              sessionId: res.data.id,
-              orderIndex: res.data.orderIndex,
-              startedAt: res.data.startTime,
-              currentPrice: res.data.currentPrice
-            };
+          console.log("✅ Session auto-stopped successfully", res.data);
+          this.$toast?.success?.('✅ Session đã tự động kết thúc!');
 
-            // Cập nhật countdown từ endedAt
-            if (res.data.endedAt) {
-              this.sessionEndTime = new Date(res.data.endedAt);
-              this.updateCountdownFromEndTime();
-              this.startCountdownInterval();
-            }
-
-            // Subscribe to bids cho session này
-            if (res.data.id) {
-              this.subscribeToSessionBids(res.data.id);
-            }
-          }
+          // Composable sẽ tự động reset khi nhận SESSION_ENDED từ WebSocket
         })
         .catch((err) => {
+          console.error('❌ Error auto-stopping session:', err);
+
+          // Chỉ hiển thị lỗi nếu không phải 404 (session đã kết thúc)
           if (err.response?.status !== 404) {
-            console.error('Error loading current session:', err);
+            this.$toast?.error?.('Lỗi tự động kết thúc session: ' + (err.response?.data?.message || err.message));
+          } else {
+            console.log('Session already ended on server side');
           }
         });
     },
 
-    updateCountdownFromEndTime() {
-      if (!this.sessionEndTime) return;
-
-      const now = new Date();
-      const endTime = new Date(this.sessionEndTime);
-      const remainingMs = endTime.getTime() - now.getTime();
-      this.countdownSeconds = Math.max(0, Math.floor(remainingMs / 1000));
-    },
-
-    startCountdownInterval() {
-      // Clear existing interval
-      if (this.countdownInterval) {
-        clearInterval(this.countdownInterval);
-      }
-
-      // Update countdown every second
-      this.countdownInterval = setInterval(() => {
-        if (this.sessionEndTime) {
-          this.updateCountdownFromEndTime();
-
-          // Nếu hết thời gian, dừng interval
-          if (this.countdownSeconds <= 0) {
-            this.stopCountdownInterval();
-            this.$toast?.warning?.('⏰ Hết thời gian đấu giá!');
-          }
-        } else {
-          this.stopCountdownInterval();
-        }
-      }, 1000);
-    },
-
-    stopCountdownInterval() {
-      if (this.countdownInterval) {
-        clearInterval(this.countdownInterval);
-        this.countdownInterval = null;
-      }
-    },
 
   },
 

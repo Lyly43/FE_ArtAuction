@@ -385,7 +385,7 @@
                   </div>
                   <div class="mt-auto">
                     <div class="">
-                      <router-link to="" class="w-100">
+                      <router-link :to="`/client/Regis-auct-room/${auction.id}`" class="w-100">
                         <button class="btn btn-outline-warning w-100">Reserve Spot</button>
                       </router-link>
                     </div>
