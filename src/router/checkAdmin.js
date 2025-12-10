@@ -6,14 +6,15 @@ export default function (from, to, next) {
   axios
     .get("http://localhost:8081/api/admin/auth/me", {
       headers: {
-        Authorization: 'Bearer ' + localStorage.getItem("token")
-      }
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
     })
     .then((res) => {
       if (res.data) {
         next();
 
-        console.log("test check:" , res.data);
+        console.log("test check:", res.data);
+
         localStorage.setItem("name_admin", res.data.name);
         localStorage.setItem("email_admin", res.data.email);
         localStorage.setItem("check_admin", res.data.status);
@@ -21,7 +22,6 @@ export default function (from, to, next) {
       } else {
         next("/admin/login");
         toaster.error("You need to log in first!");
-
       }
     })
     .catch((error) => {
@@ -34,5 +34,4 @@ export default function (from, to, next) {
       next("/admin/login");
       toaster.error("You need to log in first!");
     });
-
 }

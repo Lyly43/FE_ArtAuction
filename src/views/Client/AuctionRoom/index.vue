@@ -1,6 +1,6 @@
 <template>
   <!-- <div class="container"> -->
-  <div class="row mx-3 my-3 d-flex align-items-stretch" style="height: calc(100vh - 60px);">
+  <div class="row mx-3 my-3 d-flex align-items-stretch" style="height: calc(100vh - 60px)">
     <div class="col-lg-8 d-flex">
       <div class="card p-0">
         <div class="card-body p-0">
@@ -9,7 +9,7 @@
           <div v-if="error" class="">
             <p>{{ error }}</p>
           </div>
-          <div v-else class="" ref="chatRoomElement" style="height: 95vh; width: 100%;">
+          <div v-else class="" ref="chatRoomElement" style="height: 95vh; width: 100%">
             <!-- <p v-if="loading">Loading live stream...</p> -->
             <!-- <div v-else id="live-stream-container" style="height: 80vh; width: 100%; background-color: #000;"></div> -->
           </div>
@@ -21,9 +21,13 @@
         <div class="card-body ps-1 pe-0">
           <div class="tabs-wrapper d-flex gap-0">
             <div class="tab-content flex-grow-1 content-box" id="auctionTabsContent">
-
               <!-- Tab 1: Bidding -->
-              <div class="tab-pane fade show active" id="bidding" role="tabpanel" aria-labelledby="bidding-tab">
+              <div
+                class="tab-pane fade show active"
+                id="bidding"
+                role="tabpanel"
+                aria-labelledby="bidding-tab"
+              >
                 <div class="row px-2">
                   <!-- time-start-current -->
                   <div class="col-lg-12 mb-3 mt-3 mt-lg-0">
@@ -43,39 +47,50 @@
                           <div class="col-4 p-0">
                             <div class="border-end">
                               <p class="m-1">Start</p>
-                              <p class="fw-bold  m-0">{{ formatUSD(artworkSession.startingPrice) }}</p>
+                              <p class="fw-bold m-0">
+                                {{ formatUSD(artworkSession.startingPrice) }}
+                              </p>
                             </div>
                           </div>
                           <div class="col-4 p-0">
                             <p class="m-1">Current</p>
-                            <p class="fw-bold text-success m-0">{{ formatUSD(artworkSession.currentPrice) }}</p>
+                            <p class="fw-bold text-success m-0">
+                              {{ formatUSD(artworkSession.currentPrice) }}
+                            </p>
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </div>
                   <!-- user-hight bid -->
                   <div class="col-lg-12 mb-3">
                     <div class="card p-0">
-                      <div class="card-body ">
-                        <div class="d-flex justify-content-between ">
+                      <div class="card-body">
+                        <div class="d-flex justify-content-between">
                           <p class="m-0">Username</p>
                           <p class="m-0">Hight</p>
                         </div>
-                        <hr class="my-2 fw-bold">
-                        <div class="d-flex justify-content-between ">
+                        <hr class="my-2 fw-bold" />
+                        <div class="d-flex justify-content-between">
                           <p class="m-0">{{ artworkSession.winnerId }}</p>
-                          <p class="m-0 fw-bold text-success">{{ formatUSD(artworkSession.currentPrice) }}</p>
+                          <p class="m-0 fw-bold text-success">
+                            {{ formatUSD(artworkSession.currentPrice) }}
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
                   <!-- đặt giá nhanh -->
-                  <div v-for="(value, index) in quickBidButtons" :key="index"
-                    :class="index < 3 ? 'col-4 mb-2' : 'col-4'">
-                    <div class="card p-0 quick-bid-btn" :class="{ 'quick-bid-active': selectedQuickBid === value }"
-                      @click="setQuickBid(value)">
+                  <div
+                    v-for="(value, index) in quickBidButtons"
+                    :key="index"
+                    :class="index < 3 ? 'col-4 mb-2' : 'col-4'"
+                  >
+                    <div
+                      class="card p-0 quick-bid-btn"
+                      :class="{ 'quick-bid-active': selectedQuickBid === value }"
+                      @click="setQuickBid(value)"
+                    >
                       <div class="card-body py-2 text-center">
                         <p class="m-0">{{ formatUSD(value) }}</p>
                       </div>
@@ -84,37 +99,59 @@
                   <!-- đặt giá -->
                   <div class="col-lg-12 mt-3">
                     <div class="input-group border border-2 border-success rounded-3 shadow-sm">
-                      <input v-model="bidAmount" type="number" class="form-control"
-                        :placeholder="'minimum is ' + formatUSD(artworkSession.bidStep)" aria-label="Bid Amount"
-                        aria-describedby="button-bid">
-                      <button @click="datGia" class="btn btn-success " :disabled="isPlacingBid">
+                      <input
+                        v-model="bidAmount"
+                        type="number"
+                        class="form-control"
+                        :placeholder="'minimum is ' + formatUSD(artworkSession.bidStep)"
+                        aria-label="Bid Amount"
+                        aria-describedby="button-bid"
+                      />
+                      <button @click="datGia" class="btn btn-success" :disabled="isPlacingBid">
                         <i v-if="isPlacingBid" class="fas fa-spinner fa-spin me-2"></i>
                         <i v-else class="fas fa-gavel me-2"></i>
-                        {{ isPlacingBid ? 'Đang đặt giá...' : 'Place' }}
+                        {{ isPlacingBid ? "Đang đặt giá..." : "Place" }}
                       </button>
                     </div>
                   </div>
 
                   <!-- detail-artwork -->
                   <div class="col-lg-12 mt-3">
-                    <div class="card bg-transparent border border-2 border-success shadow-sm p-0" data-bs-toggle="modal"
-                      data-bs-target="#exampleModal">
-                      <div class="card-body d-flex justify-content-center align-items-center gap-2 p-2">
+                    <div
+                      class="card bg-transparent border border-2 border-success shadow-sm p-0"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                    >
+                      <div
+                        class="card-body d-flex justify-content-center align-items-center gap-2 p-2"
+                      >
                         <img
-                          :src="artworkSession.imageUrl || 'https://i.pinimg.com/736x/8b/a0/d6/8ba0d6ee7608f8caa427a819de41638a.jpg'"
-                          class="img-thumbnail" style="max-height: 170px;" alt="">
+                          :src="
+                            artworkSession.imageUrl ||
+                            'https://i.pinimg.com/736x/8b/a0/d6/8ba0d6ee7608f8caa427a819de41638a.jpg'
+                          "
+                          class="img-thumbnail"
+                          style="max-height: 170px"
+                          alt=""
+                        />
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
 
               <!-- Tab 2: Chat -->
-              <div class="tab-pane fade chat-tab-pane" id="chat" role="tabpanel" aria-labelledby="chat-tab">
+              <div
+                class="tab-pane fade chat-tab-pane"
+                id="chat"
+                role="tabpanel"
+                aria-labelledby="chat-tab"
+              >
                 <div class="row h-100 m-0">
                   <div class="col-lg-12 h-100 p-0">
-                    <div class="card p-0 border border-2 border-success shadow-sm h-100 d-flex flex-column">
+                    <div
+                      class="card p-0 border border-2 border-success shadow-sm h-100 d-flex flex-column"
+                    >
                       <div class="card-header bg-success text-white py-3">
                         <div class="d-flex justify-content-between align-items-center">
                           <div class="d-flex align-items-center gap-2">
@@ -128,25 +165,50 @@
                           </div>
                         </div>
                       </div>
-                      <div class="card-body chat-content p-3 flex-grow-1" ref="chatMessages"
-                        style="overflow-y: auto; background-color: #f8f9fa; display: flex; flex-direction: column;">
-                        <div style="flex: 1; min-height: 0;"></div>
+                      <div
+                        class="card-body chat-content p-3 flex-grow-1"
+                        ref="chatMessages"
+                        style="
+                          overflow-y: auto;
+                          background-color: #f8f9fa;
+                          display: flex;
+                          flex-direction: column;
+                        "
+                      >
+                        <div style="flex: 1; min-height: 0"></div>
                         <template v-for="(m, idx) in messages" :key="idx">
                           <!-- Message from others -->
                           <div v-if="!m.mine" class="mb-3">
                             <div class="d-flex align-items-start">
                               <div
                                 class="avatar-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
-                                style="width: 36px; height: 36px; min-width: 36px; border-radius: 50%; font-size: 14px; font-weight: bold;">
-                                {{ (m.senderName || 'A').charAt(0).toUpperCase() }}
+                                style="
+                                  width: 36px;
+                                  height: 36px;
+                                  min-width: 36px;
+                                  border-radius: 50%;
+                                  font-size: 14px;
+                                  font-weight: bold;
+                                "
+                              >
+                                {{ (m.senderName || "A").charAt(0).toUpperCase() }}
                               </div>
                               <div class="flex-grow-1">
                                 <div class="d-flex align-items-center gap-2 mb-1">
-                                  <small class="fw-semibold text-dark">{{ m.senderName || 'Admin' }}</small>
+                                  <small class="fw-semibold text-dark">{{
+                                    m.senderName || "Admin"
+                                  }}</small>
                                   <button
-                                    v-if="isAdmin && m.senderId && m.senderId !== adminId && m.senderId !== adminEmail"
+                                    v-if="
+                                      isAdmin &&
+                                      m.senderId &&
+                                      m.senderId !== adminId &&
+                                      m.senderId !== adminEmail
+                                    "
                                     class="btn btn-link btn-sm ms-2 p-0 text-decoration-none"
-                                    @click="replyToUser(m.senderId)" title="Reply this user">
+                                    @click="replyToUser(m.senderId)"
+                                    title="Reply this user"
+                                  >
                                     <i class="fa-solid fa-reply"></i> Reply
                                   </button>
                                 </div>
@@ -154,11 +216,10 @@
                                   <div class="chat-bubble-left">
                                     {{ m.text }}
                                   </div>
-                                  <small class="text-muted" style="font-size: 0.75rem;">{{ m.time }}</small>
-
+                                  <small class="text-muted" style="font-size: 0.75rem">{{
+                                    m.time
+                                  }}</small>
                                 </div>
-
-
                               </div>
                             </div>
                           </div>
@@ -167,22 +228,35 @@
                           <div v-else class="mb-3">
                             <div class="d-flex align-items-start justify-content-end">
                               <div class="flex-grow-1 text-end">
-                                <div class="d-flex align-items-center gap-2 justify-content-end mb-1">
-                                  <small class="fw-semibold text-dark">{{ m.senderName || 'You' }}</small>
+                                <div
+                                  class="d-flex align-items-center gap-2 justify-content-end mb-1"
+                                >
+                                  <small class="fw-semibold text-dark">{{
+                                    m.senderName || "You"
+                                  }}</small>
                                 </div>
 
                                 <div class="d-flex gap-2 align-items-end justify-content-end">
-                                  <small class="text-muted" style="font-size: 0.75rem;">{{ m.time }}</small>
+                                  <small class="text-muted" style="font-size: 0.75rem">{{
+                                    m.time
+                                  }}</small>
                                   <div class="chat-bubble-right">
                                     {{ m.text }}
                                   </div>
                                 </div>
-
                               </div>
                               <div
                                 class="avatar-circle bg-success text-white d-flex align-items-center justify-content-center ms-2"
-                                style="width: 36px; height: 36px; min-width: 36px; border-radius: 50%; font-size: 14px; font-weight: bold;">
-                                {{ (m.senderName || 'Y').charAt(0).toUpperCase() }}
+                                style="
+                                  width: 36px;
+                                  height: 36px;
+                                  min-width: 36px;
+                                  border-radius: 50%;
+                                  font-size: 14px;
+                                  font-weight: bold;
+                                "
+                              >
+                                {{ (m.senderName || "Y").charAt(0).toUpperCase() }}
                               </div>
                             </div>
                           </div>
@@ -192,27 +266,55 @@
                         <div v-if="isAdmin" class="admin-controls mb-3 p-2 bg-light rounded">
                           <div class="d-flex align-items-center gap-2 mb-2">
                             <label class="form-label mb-0 small">Reply to:</label>
-                            <select v-model="selectedUserId" class="form-select form-select-sm" style="width: auto;">
+                            <select
+                              v-model="selectedUserId"
+                              class="form-select form-select-sm"
+                              style="width: auto"
+                            >
                               <option value="">Broadcast to All</option>
                               <option v-for="user in uniqueUsers" :key="user.id" :value="user.id">
                                 {{ user.name }} ({{ user.role }})
                               </option>
                             </select>
-                            <button v-if="selectedUserId" class="btn btn-sm btn-outline-secondary"
-                              @click="selectedUserId = null" title="Switch to broadcast">Broadcast</button>
+                            <button
+                              v-if="selectedUserId"
+                              class="btn btn-sm btn-outline-secondary"
+                              @click="selectedUserId = null"
+                              title="Switch to broadcast"
+                            >
+                              Broadcast
+                            </button>
                           </div>
                           <div class="small text-muted">
                             Target:
-                            {{ selectedUserId ? getUserName(selectedUserId) + ' (direct)' : 'All users (broadcast)' }}
+                            {{
+                              selectedUserId
+                                ? getUserName(selectedUserId) + " (direct)"
+                                : "All users (broadcast)"
+                            }}
                           </div>
                         </div>
-
                       </div>
                       <div class="card-footer bg-white border-top p-3">
                         <div class="input-group">
-                          <input v-model="text" @keyup.enter="sendMsg" type="text" class="form-control "
-                            :placeholder="isAdmin ? (selectedUserId ? `Reply to ${getUserName(selectedUserId)}` : 'Broadcast to all users...') : 'Type your message...'" />
-                          <button @click="sendMsg" class="btn btn-success" :disabled="!text || !text.trim()">
+                          <input
+                            v-model="text"
+                            @keyup.enter="sendMsg"
+                            type="text"
+                            class="form-control"
+                            :placeholder="
+                              isAdmin
+                                ? selectedUserId
+                                  ? `Reply to ${getUserName(selectedUserId)}`
+                                  : 'Broadcast to all users...'
+                                : 'Type your message...'
+                            "
+                          />
+                          <button
+                            @click="sendMsg"
+                            class="btn btn-success"
+                            :disabled="!text || !text.trim()"
+                          >
                             <i class="fa-solid fa-paper-plane me-2"></i>Send
                           </button>
                         </div>
@@ -220,29 +322,37 @@
                     </div>
                   </div>
                 </div>
-
               </div>
 
               <!-- Tab 3: Members -->
-              <div class="tab-pane fade members-tab-pane" id="members" role="tabpanel" aria-labelledby="members-tab">
+              <div
+                class="tab-pane fade members-tab-pane"
+                id="members"
+                role="tabpanel"
+                aria-labelledby="members-tab"
+              >
                 <div class="row m-0 px-2">
                   <div class="col-lg-12 p-0 mb-3">
                     <div class="card p-0 d-flex flex-column border border-2 border-success">
-                      <div class="card-body d-flex justify-content-between align-items-center"
-                        style="overflow-y: auto;">
+                      <div
+                        class="card-body d-flex justify-content-between align-items-center"
+                        style="overflow-y: auto"
+                      >
                         <div class="d-flex align-items-center gap-2">
                           <i class="fa-solid fa-users fa-lg"></i>
                           <h5 class="mb-0">Members</h5>
-                          <span class="badge  border border-2 border-success text-success">
+                          <span class="badge border border-2 border-success text-success">
                             {{ members.length }} joined
                           </span>
                         </div>
-                        <button class="btn btn-outline-success btn-sm px-3 py-2 d-flex align-items-center gap-2"
-                          :disabled="membersLoading" @click="loadMembers">
+                        <button
+                          class="btn btn-outline-success btn-sm px-3 py-2 d-flex align-items-center gap-2"
+                          :disabled="membersLoading"
+                          @click="loadMembers"
+                        >
                           <i v-if="membersLoading" class="fas fa-spinner fa-spin"></i>
                           <i v-else class="fa-solid fa-rotate"></i>
                         </button>
-
                       </div>
                     </div>
                   </div>
@@ -261,17 +371,25 @@
                           <p class="m-0">No participants have joined yet.</p>
                         </div>
                         <ul v-else class="list-group list-group-flush px-2">
-                          <li v-for="member in members" :key="member.id || member.userId || member.email"
-                            class="list-group-item d-flex justify-content-between align-items-center gap-2 flex-wrap px-0">
+                          <li
+                            v-for="member in members"
+                            :key="member.id || member.userId || member.email"
+                            class="list-group-item d-flex justify-content-between align-items-center gap-2 flex-wrap px-0"
+                          >
                             <div class="me-auto">
                               <p class="m-0 fw-semibold">{{ getMemberDisplayName(member) }}</p>
-                              <small class="text-muted">{{ member.role || member.type || 'Participant' }}</small>
+                              <small class="text-muted">{{
+                                member.role || member.type || "Participant"
+                              }}</small>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                               <span class="badge bg-success" v-if="member.status">
                                 {{ member.status }}
                               </span>
-                              <button class="btn btn-outline-danger btn-sm px-3" @click="openReportModal(member)">
+                              <button
+                                class="btn btn-outline-danger btn-sm px-3"
+                                @click="openReportModal(member)"
+                              >
                                 <i class="fa-solid fa-flag"></i>
                               </button>
                             </div>
@@ -288,20 +406,47 @@
             <div class="tabs-sidebar px-3">
               <ul class="nav nav-tabs flex-column" id="auctionTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                  <button class="nav-link active" id="bidding-tab" data-bs-toggle="tab" data-bs-target="#bidding"
-                    type="button" role="tab" aria-controls="bidding" aria-selected="true" title="Đặt giá">
+                  <button
+                    class="nav-link active"
+                    id="bidding-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#bidding"
+                    type="button"
+                    role="tab"
+                    aria-controls="bidding"
+                    aria-selected="true"
+                    title="Đặt giá"
+                  >
                     <i class="fa-solid fa-gavel"></i>
                   </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat" type="button"
-                    role="tab" aria-controls="chat" aria-selected="false" title="Chat">
+                  <button
+                    class="nav-link"
+                    id="chat-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#chat"
+                    type="button"
+                    role="tab"
+                    aria-controls="chat"
+                    aria-selected="false"
+                    title="Chat"
+                  >
                     <i class="fa-solid fa-comments"></i>
                   </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="members-tab" data-bs-toggle="tab" data-bs-target="#members" type="button"
-                    role="tab" aria-controls="members" aria-selected="false" title="Members list">
+                  <button
+                    class="nav-link"
+                    id="members-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#members"
+                    type="button"
+                    role="tab"
+                    aria-controls="members"
+                    aria-selected="false"
+                    title="Members list"
+                  >
                     <i class="fa-solid fa-users"></i>
                   </button>
                 </li>
@@ -311,58 +456,91 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
-
-
 
   <!-- </div> -->
   <!-- Report Member Modal (Custom) -->
   <div v-if="showReportModal" class="custom-report-modal">
     <div class="modal-backdrop fade show" @click="closeReportModal()"></div>
-    <div class="modal fade show d-block" tabindex="-1" role="dialog" @click.self="closeReportModal()">
+    <div
+      class="modal fade show d-block"
+      tabindex="-1"
+      role="dialog"
+      @click.self="closeReportModal()"
+    >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title text-success fw-bold">
               Report {{ getMemberDisplayName(reportForm.member) }}
             </h5>
-            <button type="button" class="btn-close" @click="closeReportModal" :disabled="reportSubmitting"
-              aria-label="Close"></button>
+            <button
+              type="button"
+              class="btn-close"
+              @click="closeReportModal"
+              :disabled="reportSubmitting"
+              aria-label="Close"
+            ></button>
           </div>
           <form @submit.prevent="submitMemberReport">
             <div class="modal-body">
               <div class="mb-4">
-                <p class="form-label mb-2">
-                  Report Type <span class="text-danger">*</span>
-                </p>
-                <select class="form-select" v-model="reportForm.reportType" :disabled="reportSubmitting" required>
+                <p class="form-label mb-2">Report Type <span class="text-danger">*</span></p>
+                <select
+                  class="form-select"
+                  v-model="reportForm.reportType"
+                  :disabled="reportSubmitting"
+                  required
+                >
                   <option v-for="type in reportTypes" :key="type" :value="type">{{ type }}</option>
                 </select>
               </div>
               <div class="mb-4">
-                <p class="form-label mb-2">
-                  Reason <span class="text-danger">*</span>
-                </p>
-                <textarea class="form-control" v-model.trim="reportForm.reason" rows="4"
-                  :class="{ 'is-invalid': showReportErrors && (!reportForm.reason || !reportForm.reason.trim()) }"
-                  :disabled="reportSubmitting" placeholder="Describe the issue in detail" required></textarea>
+                <p class="form-label mb-2">Reason <span class="text-danger">*</span></p>
+                <textarea
+                  class="form-control"
+                  v-model.trim="reportForm.reason"
+                  rows="4"
+                  :class="{
+                    'is-invalid':
+                      showReportErrors && (!reportForm.reason || !reportForm.reason.trim()),
+                  }"
+                  :disabled="reportSubmitting"
+                  placeholder="Describe the issue in detail"
+                  required
+                ></textarea>
                 <div class="invalid-feedback">Please describe the issue.</div>
               </div>
               <div class="mb-4">
                 <p class="form-label mb-2">Evidence (optional)</p>
-                <input type="file" class="form-control" accept="image/*" @change="handleReportFileChange"
-                  :disabled="reportSubmitting" ref="reportEvidenceInput">
+                <input
+                  type="file"
+                  class="form-control"
+                  accept="image/*"
+                  @change="handleReportFileChange"
+                  :disabled="reportSubmitting"
+                  ref="reportEvidenceInput"
+                />
                 <small class="text-muted" v-if="reportForm.evidence">
                   Selected: {{ reportForm.evidence.name }}
                 </small>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" @click="closeReportModal"
-                :disabled="reportSubmitting">Cancel</button>
-              <button type="submit" class="btn btn-danger" :disabled="reportSubmitting || !isReportFormValid">
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                @click="closeReportModal"
+                :disabled="reportSubmitting"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="btn btn-danger"
+                :disabled="reportSubmitting || !isReportFormValid"
+              >
                 <i v-if="reportSubmitting" class="fas fa-spinner fa-spin me-2"></i>
                 Submit Report
               </button>
@@ -373,10 +551,14 @@
     </div>
   </div>
 
-
-
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <!-- <div class="modal-header">
@@ -384,20 +566,32 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div> -->
         <div class="modal-header position-relative">
-          <h1 class="modal-title fs-4 text-success text-center fw-bold w-100 m-0" id="postModalLabel">
-           Artwork Information</h1>
-          <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal"
-            aria-label="Close"></button>
+          <h1
+            class="modal-title fs-4 text-success text-center fw-bold w-100 m-0"
+            id="postModalLabel"
+          >
+            Artwork Information
+          </h1>
+          <button
+            type="button"
+            class="btn-close position-absolute end-0 me-3"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <!-- Cột hình ảnh -->
             <div class="col-lg-6 d-flex justify-content-center align-items-center">
               <img
-                :src="artworkDetail.avtArtwork || 'https://i.pinimg.com/736x/8b/a0/d6/8ba0d6ee7608f8caa427a819de41638a.jpg'"
-                class="img-thumbnail" style="max-height: 450px; object-fit: cover;" alt="Artwork">
-
-
+                :src="
+                  artworkDetail.avtArtwork ||
+                  'https://i.pinimg.com/736x/8b/a0/d6/8ba0d6ee7608f8caa427a819de41638a.jpg'
+                "
+                class="img-thumbnail"
+                style="max-height: 450px; object-fit: cover"
+                alt="Artwork"
+              />
             </div>
 
             <!-- Cột thông tin -->
@@ -409,39 +603,48 @@
                 </div>
               </div>
 
-              <h4 class="fw-bold text-success m-0">{{ artworkDetail.title || 'Untitled Artwork' }}</h4>
+              <h4 class="fw-bold text-success m-0">
+                {{ artworkDetail.title || "Untitled Artwork" }}
+              </h4>
 
               <div class="d-flex justify-content-between align-items-center">
                 <p class="m-0 text-success fw-bold">Artist</p>
-                <p class="m-0">{{ artworkDetail.ownerId || 'Unknown' }}</p>
+                <p class="m-0">{{ artworkDetail.ownerId || "Unknown" }}</p>
               </div>
 
               <div class="d-flex justify-content-between align-items-center">
                 <p class="m-0 text-success fw-bold">Category</p>
-                <p class="m-0">{{ artworkDetail.paintingGenre || 'N/A' }}</p>
+                <p class="m-0">{{ artworkDetail.paintingGenre || "N/A" }}</p>
               </div>
 
               <div class="d-flex justify-content-between align-items-center">
                 <p class="m-0 text-success fw-bold">Year Created</p>
-                <p class="m-0">{{ artworkDetail.yearOfCreation || 'N/A' }}</p>
+                <p class="m-0">{{ artworkDetail.yearOfCreation || "N/A" }}</p>
               </div>
 
               <!-- Material (optional) -->
-              <div class="d-flex justify-content-between align-items-center" v-if="artworkDetail.material">
+              <div
+                class="d-flex justify-content-between align-items-center"
+                v-if="artworkDetail.material"
+              >
                 <p class="m-0 text-success fw-bold">Material</p>
                 <p class="m-0">{{ artworkDetail.material }}</p>
               </div>
 
               <!-- Size (optional) -->
-              <div class="d-flex justify-content-between align-items-center" v-if="artworkDetail.size">
+              <div
+                class="d-flex justify-content-between align-items-center"
+                v-if="artworkDetail.size"
+              >
                 <p class="m-0 text-success fw-bold">Size</p>
                 <p class="m-0">{{ artworkDetail.size }}</p>
               </div>
 
               <div class="d-flex flex-column gap-2">
                 <p class="m-0 text-success fw-bold">Description</p>
-                <p class="m-0" style="text-align: justify;">
-                  {{ artworkDetail.description || 'No description available.' }}
+
+                <p class="m-0" style="text-align: justify">
+                  {{ artworkDetail.description || "No description available." }}
                 </p>
               </div>
             </div>
@@ -452,13 +655,13 @@
   </div>
 </template>
 <script>
-import axios from 'axios';
-import ChatSocket from '../../../socket'
-import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
+import axios from "axios";
+import ChatSocket from "../../../socket";
+import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 // const auctionId = ref('auction-001');
 
 export default {
-  name: 'AuctionRoom',
+  name: "AuctionRoom",
   inheritAttrs: false,
   // props: ["id"],
   data() {
@@ -483,12 +686,10 @@ export default {
       error: null,
       inviteLink: "",
 
-
       client: null,
       connected: false,
       messages: [],
       text: "",
-
 
       // === USER INFO ===
       currentUserId: null,
@@ -517,23 +718,23 @@ export default {
       showReportErrors: false,
       reportForm: {
         member: null,
-        reportType: '',
-        reason: '',
-        evidence: null
+        reportType: "",
+        reason: "",
+        evidence: null,
       },
       reportTypes: [
-        'Fake Identity',
-        'Suspicious Activity',
-        'Scam / Fraud',
-        'Harassment / Abusive Behavior',
-        'Policy Violation',
-        'Spam / Unwanted Ads',
-        'Unauthorized Access',
-        'Other'
+        "Fake Identity",
+        "Suspicious Activity",
+        "Scam / Fraud",
+        "Harassment / Abusive Behavior",
+        "Policy Violation",
+        "Spam / Unwanted Ads",
+        "Unauthorized Access",
+        "Other",
       ],
 
       // === BID STATE ===
-      bidAmount: '', // Giá trị bid người dùng nhập
+      bidAmount: "", // Giá trị bid người dùng nhập
       isPlacingBid: false, // Trạng thái đang đặt giá
       selectedQuickBid: null, // Nút đặt giá nhanh được chọn
 
@@ -541,13 +742,14 @@ export default {
       countdownSeconds: 0, // Số giây còn lại (từ WebSocket)
       countdownInterval: null, // Interval cho countdown
       lastBidPrice: 0, // Giá bid cuối cùng để detect bid mới
+
       sessionEndTime: null, // Thời gian kết thúc session từ WebSocket
 
       // === AUCTION WEBSOCKET ===
       auctionSocket: null,
       auctionRoomSubscription: null,
       auctionBidsSubscription: null,
-    }
+    };
   },
 
   async mounted() {
@@ -580,7 +782,6 @@ export default {
         this.scrollToBottom();
       }, 500);
     });
-
   },
   beforeUnmount() {
     // Clear interval check status phòng
@@ -599,7 +800,6 @@ export default {
 
     // Cleanup auction WebSocket
     this.disconnectAuctionWebSocket();
-
   },
   watch: {
     // Tự động scroll xuống khi có tin nhắn mới
@@ -609,24 +809,29 @@ export default {
           this.scrollToBottom();
         });
       },
-      deep: true
+      deep: true,
     },
 
     // Detect bid mới để hiển thị thông báo
-    'artworkSession.currentPrice': function (newPrice, oldPrice) {
+
+    "artworkSession.currentPrice": function (newPrice, oldPrice) {
       // Kiểm tra nếu giá thay đổi và lớn hơn giá cũ (có bid mới)
       if (newPrice && oldPrice && newPrice > oldPrice) {
-        console.log('🔥 Bid mới! Giá tăng từ', this.formatUSD(oldPrice), 'lên', this.formatUSD(newPrice));
+        console.log(
+          "🔥 Bid mới! Giá tăng từ",
+          this.formatUSD(oldPrice),
+          "lên",
+          this.formatUSD(newPrice)
+        );
       }
-    }
+    },
   },
   methods: {
-
     // formatVND(number) {
     //   return new Intl.NumberFormat("vi-VI", { style: "currency", currency: "VND" }).format(number,);
     // },
     formatUSD(number) {
-      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(number,);
+      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(number);
     },
 
     // === COUNTDOWN METHODS ===
@@ -637,36 +842,39 @@ export default {
       if (this.artworkSession.endedAt) {
         this.sessionEndTime = new Date(this.artworkSession.endedAt);
         this.updateCountdownFromEndTime();
+
         this.startCountdownInterval();
-        console.log('✅ Countdown initialized from endedAt:', this.countdownSeconds, 'seconds');
+        console.log("✅ Countdown initialized from endedAt:", this.countdownSeconds, "seconds");
         return;
       }
 
       // Fallback: Dùng startTime + durationSeconds
-      const timeField = this.artworkSession.startTime ||
+      const timeField =
+        this.artworkSession.startTime ||
         this.artworkSession.start_time ||
         this.artworkSession.createdAt ||
         this.artworkSession.created_at;
 
       if (!timeField) {
-        console.warn('⚠️ Không tìm thấy trường startTime hoặc endedAt trong session!');
-        console.log('Session object:', this.artworkSession);
+        console.warn("⚠️ Không tìm thấy trường startTime hoặc endedAt trong session!");
+        console.log("Session object:", this.artworkSession);
         // Không khởi tạo countdown, đợi WebSocket
         return;
       }
 
       // Tính endTime từ startTime + durationSeconds
-      const durationSeconds = this.artworkSession.durationSeconds || (this.COUNTDOWN_DURATION_MINUTES * 60);
+      const durationSeconds =
+        this.artworkSession.durationSeconds || this.COUNTDOWN_DURATION_MINUTES * 60;
       const startTime = new Date(timeField).getTime();
-      const endTime = startTime + (durationSeconds * 1000); // milliseconds
+      const endTime = startTime + durationSeconds * 1000; // milliseconds
 
       this.sessionEndTime = new Date(endTime);
       this.updateCountdownFromEndTime();
       this.lastBidPrice = this.artworkSession.currentPrice || 0;
 
-      console.log('✅ Countdown initialized:', this.countdownSeconds, 'seconds');
-      console.log('Start time:', new Date(timeField).toLocaleString('vi-VN'));
-      console.log(`End time:`, this.sessionEndTime.toLocaleString('vi-VN'));
+      console.log("✅ Countdown initialized:", this.countdownSeconds, "seconds");
+      console.log("Start time:", new Date(timeField).toLocaleString("vi-VN"));
+      console.log(`End time:`, this.sessionEndTime.toLocaleString("vi-VN"));
 
       // Bắt đầu countdown interval
       this.startCountdownInterval();
@@ -684,7 +892,7 @@ export default {
     // Kéo dài countdown - Giờ được xử lý bởi WebSocket từ server
     extendCountdown() {
       // Method này giữ lại để tương thích, nhưng logic extend được xử lý bởi WebSocket
-      console.log('⏱️ Countdown extension handled by WebSocket');
+      console.log("⏱️ Countdown extension handled by WebSocket");
     },
 
     // Tính lại countdown theo thời gian thực từ server
@@ -701,7 +909,7 @@ export default {
         clearInterval(this.countdownInterval);
       }
 
-      console.log('🚀 Starting countdown interval...');
+      console.log("🚀 Starting countdown interval...");
 
       // Tạo interval mới - cập nhật từ sessionEndTime
       this.countdownInterval = setInterval(() => {
@@ -709,15 +917,16 @@ export default {
           this.updateCountdownFromEndTime();
 
           // Log mỗi 10 giây để theo dõi
+
           if (this.countdownSeconds > 0 && this.countdownSeconds % 10 === 0) {
-            console.log('⏱️ Countdown:', this.countdownSeconds, 'seconds remaining');
+            console.log("⏱️ Countdown:", this.countdownSeconds, "seconds remaining");
           }
 
           // Hết thời gian
           if (this.countdownSeconds <= 0) {
             this.stopCountdownInterval();
-            console.log('⏰ Hết thời gian đấu giá!');
-            this.$toast?.warning?.('⏰ Hết thời gian đấu giá!');
+            console.log("⏰ Hết thời gian đấu giá!");
+            this.$toast?.warning?.("⏰ Hết thời gian đấu giá!");
           }
         } else {
           // Không có sessionEndTime, dừng interval
@@ -740,22 +949,26 @@ export default {
       const sessionId = this.artworkSession?.sessionId || this.artworkSession?.id;
 
       if (!sessionId) {
-        console.error('❌ Không tìm thấy sessionId để dừng session');
-        this.$toast?.error?.('Không thể dừng session: Thiếu sessionId');
+        console.error("❌ Không tìm thấy sessionId để dừng session");
+        this.$toast?.error?.("Không thể dừng session: Thiếu sessionId");
         return;
       }
 
-      console.log('🛑 Đang dừng session:', sessionId);
+      console.log("🛑 Đang dừng session:", sessionId);
 
       axios
-        .post(`http://localhost:8081/api/stream/stop-session/${sessionId}`, {}, {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem("token")
+        .post(
+          `http://localhost:8081/api/stream/stop-session/${sessionId}`,
+          {},
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
           }
-        })
+        )
         .then((res) => {
-          console.log('✅ Session đã dừng thành công:', res.data);
-          this.$toast?.success?.('Session đấu giá đã kết thúc!');
+          console.log("✅ Session đã dừng thành công:", res.data);
+          this.$toast?.success?.("Session đấu giá đã kết thúc!");
 
           // Có thể redirect về trang kết quả hoặc làm gì đó khác
           // setTimeout(() => {
@@ -763,11 +976,12 @@ export default {
           // }, 2000);
         })
         .catch((err) => {
-          console.error('❌ Lỗi khi dừng session:', err);
-          this.$toast?.error?.('Lỗi khi dừng session: ' + (err.response?.data?.message || err.message));
+          console.error("❌ Lỗi khi dừng session:", err);
+          this.$toast?.error?.(
+            "Lỗi khi dừng session: " + (err.response?.data?.message || err.message)
+          );
         });
     },
-
 
     loadAuctionRoom() {
       axios
@@ -778,20 +992,20 @@ export default {
         })
         .then((res) => {
           this.detail_auction = res.data;
-          console.log('Room details loaded:', this.detail_auction);
+          console.log("Room details loaded:", this.detail_auction);
           // Load artwork nếu có sessionId trong detail_auction
           if (res.data.sessionId) {
-            console.log('Session ID:', res.data.sessionId);
-            this.loadArtworkBySession('Artwork session loaded:', res.data.sessionId);
+            console.log("Session ID:", res.data.sessionId);
+            this.loadArtworkBySession("Artwork session loaded:", res.data.sessionId);
           }
         })
         .catch((err) => {
-          console.error('Error loading room details:', err);
+          console.error("Error loading room details:", err);
           if (err.response?.status === 404) {
-            this.$toast?.error?.('Không tìm thấy phòng đấu giá');
-            this.$router?.push?.('/');
+            this.$toast?.error?.("Không tìm thấy phòng đấu giá");
+            this.$router?.push?.("/");
           } else {
-            this.$toast?.error?.(err.response?.data?.message || 'Lỗi khi tải thông tin phòng');
+            this.$toast?.error?.(err.response?.data?.message || "Lỗi khi tải thông tin phòng");
           }
         });
     },
@@ -799,12 +1013,12 @@ export default {
       axios
         .get("http://localhost:8081/api/stream/room/" + this.roomID + "/sessions/current-or-next", {
           headers: {
-            Authorization: 'Bearer ' + localStorage.getItem("token")
-          }
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
         })
         .then((res) => {
           this.artworkSession = res.data;
-          console.log('📦 Artwork session loaded:', this.artworkSession);
+          console.log("📦 Artwork session loaded:", this.artworkSession);
 
           // Lấy thông tin chi tiết artwork từ API mới
           if (res.data.id) {
@@ -822,39 +1036,38 @@ export default {
           });
         })
         .catch((err) => {
-          console.error('Error loading artwork session:', err);
+          console.error("Error loading artwork session:", err);
           if (err.response?.status !== 404) {
-            this.$toast?.error?.(err.response?.data?.message || 'Lỗi khi tải thông tin artwork');
+            this.$toast?.error?.(err.response?.data?.message || "Lỗi khi tải thông tin artwork");
           }
         });
     },
 
     // === LOAD CHI TIẾT ARTWORK TỪ API MỚI ===
     loadArtworkDetailBySessionId(sessionId) {
-      console.log('🎨 Loading artwork detail for session:', sessionId);
+      console.log("🎨 Loading artwork detail for session:", sessionId);
 
       axios
         .get(`http://localhost:8081/api/artwork/by-session/${sessionId}`, {
           headers: {
-            Authorization: 'Bearer ' + localStorage.getItem("token")
-          }
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
         })
         .then((res) => {
           this.artworkDetail = res.data;
-          console.log('✅ Artwork detail loaded:', this.artworkDetail);
-          console.log('📝 Title:', this.artworkDetail.title);
-          console.log('🖼️ Image URL:', this.artworkDetail.artworkUrl);
-          console.log('💰 Started Price:', this.artworkDetail.startedPrice);
-          console.log('🎨 Genre:', this.artworkDetail.paintingGenre);
-          console.log('📅 Year:', this.artworkDetail.yearOfCreation);
-          console.log('🧑‍🎨 Owner ID:', this.artworkDetail.ownerId);
+          console.log("✅ Artwork detail loaded:", this.artworkDetail);
+          console.log("📝 Title:", this.artworkDetail.title);
+          console.log("🖼️ Image URL:", this.artworkDetail.artworkUrl);
+          console.log("💰 Started Price:", this.artworkDetail.startedPrice);
+          console.log("🎨 Genre:", this.artworkDetail.paintingGenre);
+          console.log("📅 Year:", this.artworkDetail.yearOfCreation);
+          console.log("🧑‍🎨 Owner ID:", this.artworkDetail.ownerId);
           console.log(this.artworkDetail, "sdvsdv");
-
         })
         .catch((err) => {
-          console.error('❌ Error loading artwork detail:', err);
+          console.error("❌ Error loading artwork detail:", err);
           if (err.response?.status !== 404) {
-            this.$toast?.error?.('Không thể tải thông tin chi tiết tác phẩm');
+            this.$toast?.error?.("Không thể tải thông tin chi tiết tác phẩm");
           }
         });
     },
@@ -866,11 +1079,14 @@ export default {
       this.membersError = null;
 
       try {
-        const response = await axios.get(`http://localhost:8081/api/auctionroom/${this.roomID}/members`, {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem("token")
+        const response = await axios.get(
+          `http://localhost:8081/api/auctionroom/${this.roomID}/members`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
           }
-        });
+        );
 
         const payload = response.data;
 
@@ -884,29 +1100,31 @@ export default {
           this.members = [];
         }
       } catch (error) {
-        console.error('Error loading members:', error);
-        this.membersError = error.response?.data?.message || 'Không thể tải danh sách thành viên';
+        console.error("Error loading members:", error);
+        this.membersError = error.response?.data?.message || "Không thể tải danh sách thành viên";
       } finally {
         this.membersLoading = false;
       }
     },
 
     getMemberDisplayName(member) {
-      if (!member) return 'Unknown user';
+      if (!member) return "Unknown user";
 
-      return member.displayName ||
+      return (
+        member.displayName ||
         member.username ||
         member.fullName ||
         member.name ||
         member.email ||
         member.userId ||
-        'Unknown user';
+        "Unknown user"
+      );
     },
 
     openReportModal(member) {
       this.reportForm.member = member;
-      this.reportForm.reportType = this.reportTypes[0] || 'Other';
-      this.reportForm.reason = '';
+      this.reportForm.reportType = this.reportTypes[0] || "Other";
+      this.reportForm.reason = "";
       this.reportForm.evidence = null;
       this.reportingMemberId = member?.id || member?.userId || member?.email || null;
       this.showReportErrors = false;
@@ -926,45 +1144,44 @@ export default {
     async submitMemberReport() {
       if (!this.reportForm.member || !this.roomID) return;
 
-      const memberIdentifier = this.reportForm.member.id ||
-        this.reportForm.member.userId ||
-        this.reportForm.member.email;
+      const memberIdentifier =
+        this.reportForm.member.id || this.reportForm.member.userId || this.reportForm.member.email;
 
       if (!memberIdentifier) {
-        this.$toast?.error?.('Không xác định được người cần báo cáo');
+        this.$toast?.error?.("Không xác định được người cần báo cáo");
         return;
       }
 
       if (!this.isReportFormValid) {
         this.showReportErrors = true;
-        this.$toast?.warning?.('Vui lòng điền đầy đủ thông tin báo cáo');
+        this.$toast?.warning?.("Vui lòng điền đầy đủ thông tin báo cáo");
         return;
       }
 
       const formData = new FormData();
-      formData.append('reportType', this.reportForm.reportType || 'Other');
-      formData.append('reportedEntityId', memberIdentifier);
-      formData.append('reason', this.reportForm.reason.trim());
-      formData.append('entityType', 'USER');
+      formData.append("reportType", this.reportForm.reportType || "Other");
+      formData.append("reportedEntityId", memberIdentifier);
+      formData.append("reason", this.reportForm.reason.trim());
+      formData.append("entityType", "USER");
       if (this.reportForm.evidence) {
-        formData.append('image', this.reportForm.evidence);
+        formData.append("image", this.reportForm.evidence);
       }
 
       this.reportSubmitting = true;
 
       try {
-        await axios.post('http://localhost:8081/api/reports/user', formData, {
+        await axios.post("http://localhost:8081/api/reports/user", formData, {
           headers: {
-            Authorization: 'Bearer ' + localStorage.getItem("token"),
-            'Content-Type': 'multipart/form-data'
-          }
+            Authorization: "Bearer " + localStorage.getItem("token"),
+            "Content-Type": "multipart/form-data",
+          },
         });
 
-        this.$toast?.success?.('Đã gửi báo cáo người dùng');
+        this.$toast?.success?.("Đã gửi báo cáo người dùng");
         this.closeReportModal(true);
       } catch (error) {
-        console.error('Error reporting member:', error);
-        this.$toast?.error?.(error.response?.data?.message || 'Không thể báo cáo người dùng');
+        console.error("Error reporting member:", error);
+        this.$toast?.error?.(error.response?.data?.message || "Không thể báo cáo người dùng");
       } finally {
         this.reportSubmitting = false;
       }
@@ -974,12 +1191,12 @@ export default {
       this.showReportModal = false;
       this.reportingMemberId = null;
       this.reportForm.member = null;
-      this.reportForm.reportType = this.reportTypes[0] || 'Other';
-      this.reportForm.reason = '';
+      this.reportForm.reportType = this.reportTypes[0] || "Other";
+      this.reportForm.reason = "";
       this.reportForm.evidence = null;
       this.showReportErrors = false;
       if (this.$refs.reportEvidenceInput) {
-        this.$refs.reportEvidenceInput.value = '';
+        this.$refs.reportEvidenceInput.value = "";
       }
     },
 
@@ -992,7 +1209,11 @@ export default {
       this.bidAmount = newBidAmount;
       this.selectedQuickBid = amount; // Lưu nút được chọn để highlight
 
-      console.log(`🚀 Quick bid: ${this.formatUSD(currentPrice)} + ${this.formatUSD(amount)} = ${this.formatUSD(newBidAmount)}`);
+      console.log(
+        `🚀 Quick bid: ${this.formatUSD(currentPrice)} + ${this.formatUSD(
+          amount
+        )} = ${this.formatUSD(newBidAmount)}`
+      );
     },
 
     datGia() {
@@ -1000,44 +1221,46 @@ export default {
 
       // Kiểm tra có nhập giá không
       if (!this.bidAmount || this.bidAmount <= 0) {
-        this.$toast.error('Vui lòng nhập giá đấu giá hợp lệ!');
+        this.$toast.error("Vui lòng nhập giá đấu giá hợp lệ!");
         return;
       }
 
       // Kiểm tra có room ID không
       if (!this.roomID) {
-        this.$toast.error('Chưa có phòng đấu giá. Vui lòng kiểm tra lại.');
+        this.$toast.error("Chưa có phòng đấu giá. Vui lòng kiểm tra lại.");
         return;
       }
 
       this.isPlacingBid = true;
 
       axios
-        .post("http://localhost:8081/api/bids/" + this.roomID + "/place", {
-          amount: Number(this.bidAmount)
-        }, {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem("token")
+        .post(
+          "http://localhost:8081/api/bids/" + this.roomID + "/place",
+          {
+            amount: Number(this.bidAmount),
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
           }
-        })
+        )
         .then((res) => {
           if (res.data.result) {
             console.log("Bid placed successfully", res.data);
             this.$toast.success(res.data.message);
-            this.bidAmount = ''; // Reset giá sau khi đặt thành công
+            this.bidAmount = ""; // Reset giá sau khi đặt thành công
             this.selectedQuickBid = null; // Reset nút được chọn
 
             // Kéo dài countdown nếu còn dưới 2 phút
             this.extendCountdown();
-          }
-          else {
+          } else {
             this.$toast.error(res.data.message);
           }
-
         })
         .catch((err) => {
           console.error(err);
-          this.$toast.error('Lỗi đặt giá: ' + (err.response?.data?.message || err.message));
+          this.$toast.error("Lỗi đặt giá: " + (err.response?.data?.message || err.message));
         })
         .finally(() => {
           this.isPlacingBid = false;
@@ -1071,32 +1294,32 @@ export default {
 
           // Check status của phòng
           if (res.data && res.data.status === 0) {
-            console.log('🔴 Phòng đã kết thúc (status = 0)');
+            console.log("Phòng đã kết thúc (status = 0)");
             // Clear interval để không check nữa
             if (this.roomStatusInterval) {
               clearInterval(this.roomStatusInterval);
               this.roomStatusInterval = null;
             }
             // Hiển thị thông báo và redirect
-            this.$toast?.warning?.('Phòng đấu giá đã kết thúc. Đang chuyển về trang chủ...');
+            this.$toast?.warning?.("Phòng đấu giá đã kết thúc. Đang chuyển về trang chủ...");
             setTimeout(() => {
-              this.$router.push('/');
+              this.$router.push("/");
             }, 2000); // Delay 2 giây để user đọc thông báo
           }
         })
         .catch((err) => {
           // Nếu API lỗi 404, phòng có thể đã bị xóa
           if (err.response?.status === 404) {
-            console.log('🔴 Không tìm thấy phòng (404)');
+            console.log("Không tìm thấy phòng (404)");
             // Clear interval
             if (this.roomStatusInterval) {
               clearInterval(this.roomStatusInterval);
               this.roomStatusInterval = null;
             }
             // Redirect về home
-            this.$toast?.error?.('Không tìm thấy phòng đấu giá. Đang chuyển về trang chủ...');
+            this.$toast?.error?.("Không tìm thấy phòng đấu giá. Đang chuyển về trang chủ...");
             setTimeout(() => {
-              this.$router.push('/');
+              this.$router.push("/");
             }, 2000);
           }
           // Các lỗi khác không làm gì (có thể là lỗi mạng tạm thời)
@@ -1111,17 +1334,20 @@ export default {
           // Cập nhật dữ liệu mới
           this.artworkSession = res.data;
 
-          console.log('🔄 Data refreshed - Current Price:', this.formatUSD(res.data.currentPrice), '- Winner:', res.data.winnerId);
+          console.log(
+            "🔄 Data refreshed - Current Price:",
+            this.formatUSD(res.data.currentPrice),
+            "- Winner:",
+            res.data.winnerId
+          );
         })
         .catch((err) => {
           // Không log lỗi 404 vì có thể chưa có session
           if (err.response?.status !== 404) {
-            console.error('Error refreshing artwork session:', err);
+            console.error("Error refreshing artwork session:", err);
           }
         });
     },
-
-
 
     //livestream
     copyInvite() {
@@ -1151,12 +1377,13 @@ export default {
           serverSecret = res.data?.token; // Use token as serverSecret for generateKitTokenForTest
           zegoRole = res.data?.role || "audience"; // Get role from API response
         } catch (e) {
-          console.error('Fetch credentials failed', e);
+          console.error("Fetch credentials failed", e);
         }
       }
 
       if (!appID || !serverSecret) {
-        this.error = "Thiếu Zego appID/serverSecret từ backend. Vui lòng cấu hình .env hoặc VITE_API_URL.";
+        this.error =
+          "Thiếu Zego appID/serverSecret từ backend. Vui lòng cấu hình .env hoặc VITE_API_URL.";
         return;
       }
 
@@ -1194,7 +1421,6 @@ export default {
         videoResolutionDefault: ZegoUIKitPrebuilt.VideoResolution_720P, // Client dùng chất lượng thấp hơn
       };
 
-
       const zp = ZegoUIKitPrebuilt.create(kitToken);
       zp.joinRoom({
         container: this.$refs.chatRoomElement,
@@ -1202,17 +1428,19 @@ export default {
           mode: ZegoUIKitPrebuilt.LiveStreaming,
           config: {
             role,
-          }
+          },
         },
         sharedLinks: [
           {
-            name: 'Join as Audience',
+            name: "Join as Audience",
             url: window.location.origin + "/client/auction-room/" + this.roomID + "?role=Audience",
-          }],
+          },
+        ],
         ...config,
       });
 
-      this.inviteLink = window.location.origin + "/client/auction-room/" + this.roomID + "?role=Audience";
+      this.inviteLink =
+        window.location.origin + "/client/auction-room/" + this.roomID + "?role=Audience";
 
       // this.loading = true;
       // setTimeout(() => {
@@ -1220,10 +1448,6 @@ export default {
       //     this.loading = false;
       // }, 3000);
     },
-
-
-
-
 
     // === INITIALIZATION ===
     initializeUser() {
@@ -1268,40 +1492,49 @@ export default {
 
     // === SOCKET CONNECTION ===
     connectSocket() {
-      this.socket = new ChatSocket("http://localhost:8081", localStorage.getItem('token'));
-      this.socket.connect(() => {
-        this.connected = true;
-        this.subscription = this.socket.subscribeRoom(this.roomId, (body) => {
-          // Với user: chỉ nhận thread của mình với admin
-          if (!this.isAdmin && !this.shouldShowMessage(body)) return;
+      this.socket = new ChatSocket("http://localhost:8081", localStorage.getItem("token"));
+      this.socket.connect(
+        () => {
+          this.connected = true;
+          this.subscription = this.socket.subscribeRoom(this.roomId, (body) => {
+            // Với user: chỉ nhận thread của mình với admin
+            if (!this.isAdmin && !this.shouldShowMessage(body)) return;
 
-          this.messages.push(this.normalizeIncoming(body));
-          this.saveToCache();
-          this.$nextTick(() => this.scrollToBottom());
-        });
-      }, (err) => {
-        console.error('STOMP error:', err);
-      });
+            this.messages.push(this.normalizeIncoming(body));
+            this.saveToCache();
+            this.$nextTick(() => this.scrollToBottom());
+          });
+        },
+        (err) => {
+          console.error("STOMP error:", err);
+        }
+      );
     },
 
     // === AUCTION WEBSOCKET FOR COUNTDOWN ===
     connectAuctionWebSocket() {
-      console.log('🔌 Connecting to auction WebSocket for countdown...');
-      this.auctionSocket = new ChatSocket("http://localhost:8081", localStorage.getItem('token'));
+      console.log("🔌 Connecting to auction WebSocket for countdown...");
+      this.auctionSocket = new ChatSocket("http://localhost:8081", localStorage.getItem("token"));
 
-      this.auctionSocket.connect(() => {
-        console.log('✅ Auction WebSocket connected');
+      this.auctionSocket.connect(
+        () => {
+          console.log("✅ Auction WebSocket connected");
 
-        // Subscribe to auction room events
-        this.auctionRoomSubscription = this.auctionSocket.subscribeAuctionRoom(this.roomID, (message) => {
-          this.handleAuctionRoomEvent(message);
-        });
+          // Subscribe to auction room events
+          this.auctionRoomSubscription = this.auctionSocket.subscribeAuctionRoom(
+            this.roomID,
+            (message) => {
+              this.handleAuctionRoomEvent(message);
+            }
+          );
 
-        // Load current session để lấy countdown ban đầu
-        this.loadCurrentSessionForCountdown();
-      }, (err) => {
-        console.error('❌ Auction WebSocket error:', err);
-      });
+          // Load current session để lấy countdown ban đầu
+          this.loadCurrentSessionForCountdown();
+        },
+        (err) => {
+          console.error("❌ Auction WebSocket error:", err);
+        }
+      );
     },
 
     disconnectAuctionWebSocket() {
@@ -1320,10 +1553,10 @@ export default {
     },
 
     handleAuctionRoomEvent(message) {
-      console.log('📨 Auction room event received:', message);
+      console.log("📨 Auction room event received:", message);
 
-      if (message.eventType === 'SESSION_STARTED') {
-        console.log('✅ Session started:', message);
+      if (message.eventType === "SESSION_STARTED") {
+        console.log("✅ Session started:", message);
 
         // Cập nhật artworkSession
         if (message.sessionId) {
@@ -1341,8 +1574,8 @@ export default {
         if (message.sessionId) {
           this.subscribeToSessionBids(message.sessionId);
         }
-      } else if (message.eventType === 'SESSION_ENDED') {
-        console.log('⏰ Session ended:', message);
+      } else if (message.eventType === "SESSION_ENDED") {
+        console.log("⏰ Session ended:", message);
         this.stopCountdownInterval();
         this.countdownSeconds = 0;
         this.sessionEndTime = null;
@@ -1354,12 +1587,12 @@ export default {
         }
 
         // Show notification that session ended
-        this.$toast?.warning?.('Session đấu giá đã kết thúc!');
+        this.$toast?.warning?.("Session đấu giá đã kết thúc!");
 
         // DON'T auto-load next session - let admin start new session manually
         // User will see countdown at 0:00 and can wait for admin to start next session
-      } else if (message.eventType === 'ROOM_STOPPED') {
-        console.log('🛑 Room stopped by admin:', message);
+      } else if (message.eventType === "ROOM_STOPPED") {
+        console.log("🛑 Room stopped by admin:", message);
 
         // Cleanup countdown
         this.stopCountdownInterval();
@@ -1379,10 +1612,10 @@ export default {
         }
 
         // Hiển thị thông báo và redirect
-        this.$toast?.warning?.('Phòng đấu giá đã bị dừng bởi admin. Đang chuyển về trang chủ...');
+        this.$toast?.warning?.("Phòng đấu giá đã bị dừng bởi admin. Đang chuyển về trang chủ...");
 
         setTimeout(() => {
-          this.$router.push('/');
+          this.$router.push("/");
         }, 2000); // Delay 2 giây để user đọc thông báo
       }
     },
@@ -1394,21 +1627,24 @@ export default {
       }
 
       // Subscribe to new session bids
-      this.auctionBidsSubscription = this.auctionSocket.subscribeAuctionBids(sessionId, (message) => {
-        this.handleBidEvent(message);
-      });
+      this.auctionBidsSubscription = this.auctionSocket.subscribeAuctionBids(
+        sessionId,
+        (message) => {
+          this.handleBidEvent(message);
+        }
+      );
     },
 
     handleBidEvent(message) {
-      console.log('💰 Bid event received:', message);
+      console.log("💰 Bid event received:", message);
 
-      if (message.eventType === 'BID_ACCEPTED') {
+      if (message.eventType === "BID_ACCEPTED") {
         // Cập nhật countdown từ remainingSeconds hoặc endTime
         if (message.remainingSeconds !== undefined) {
           this.countdownSeconds = message.remainingSeconds;
           // Cập nhật sessionEndTime từ remainingSeconds
           const now = new Date();
-          this.sessionEndTime = new Date(now.getTime() + (message.remainingSeconds * 1000));
+          this.sessionEndTime = new Date(now.getTime() + message.remainingSeconds * 1000);
         } else if (message.endTime) {
           this.sessionEndTime = new Date(message.endTime);
           this.updateCountdownFromEndTime();
@@ -1426,7 +1662,7 @@ export default {
 
         // Hiển thị thông báo nếu được gia hạn
         if (message.extended) {
-          this.$toast?.info?.('⏱️ Thời gian đã được gia hạn thêm 120 giây!');
+          this.$toast?.info?.("⏱️ Thời gian đã được gia hạn thêm 120 giây!");
         }
       }
     },
@@ -1435,8 +1671,8 @@ export default {
       axios
         .get(`http://localhost:8081/api/stream/room/${this.roomID}/sessions/current-or-next`, {
           headers: {
-            Authorization: 'Bearer ' + localStorage.getItem("token")
-          }
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
         })
         .then((res) => {
           if (res.data && res.data.status === 1) {
@@ -1456,7 +1692,7 @@ export default {
         })
         .catch((err) => {
           if (err.response?.status !== 404) {
-            console.error('Error loading current session for countdown:', err);
+            console.error("Error loading current session for countdown:", err);
           }
         });
     },
@@ -1474,7 +1710,7 @@ export default {
           content: this.text,
           type: "SUPPORT",
           receiverId: this.selectedUserId || null, // null = broadcast đến tất cả
-          auctionId: this.roomId
+          auctionId: this.roomId,
         };
       } else {
         // User gửi cho admin
@@ -1482,7 +1718,7 @@ export default {
           content: this.text,
           type: "SUPPORT",
           receiverId: this.adminId, // gửi trực tiếp tới admin
-          auctionId: this.roomId
+          auctionId: this.roomId,
         };
       }
 
@@ -1520,7 +1756,7 @@ export default {
         // Admin -> User (direct reply)
         const adminToUser = isSenderAdmin && String(rId) === String(this.currentUserId);
         // Admin broadcast (receiverId = null)
-        const adminBroadcast = isSenderAdmin && (rId == null || rId === '');
+        const adminBroadcast = isSenderAdmin && (rId == null || rId === "");
 
         return userToAdmin || adminToUser || adminBroadcast;
       });
@@ -1536,19 +1772,31 @@ export default {
 
       const userToAdmin = String(sId) === String(this.currentUserId) && isReceiverAdmin;
       const adminToUser = isSenderAdmin && String(rId) === String(this.currentUserId);
-      const adminBroadcast = isSenderAdmin && (rId == null || rId === '');
+      const adminBroadcast = isSenderAdmin && (rId == null || rId === "");
 
       return userToAdmin || adminToUser || adminBroadcast;
     },
 
     // Extract sender ID từ message object
     extractSenderId(m) {
-      return m.senderId || m.sender_id || (m.sender && (m.sender.id || m.sender.userId || m.sender.user_id)) || m.userId || m.user_id || null;
+      return (
+        m.senderId ||
+        m.sender_id ||
+        (m.sender && (m.sender.id || m.sender.userId || m.sender.user_id)) ||
+        m.userId ||
+        m.user_id ||
+        null
+      );
     },
 
     // Extract receiver ID từ message object
     extractReceiverId(m) {
-      return m.receiverId || m.receiver_id || (m.receiver && (m.receiver.id || m.receiver.userId || m.receiver.user_id)) || null;
+      return (
+        m.receiverId ||
+        m.receiver_id ||
+        (m.receiver && (m.receiver.id || m.receiver.userId || m.receiver.user_id)) ||
+        null
+      );
     },
 
     // Kiểm tra user có phải admin không (by ID hoặc email)
@@ -1564,13 +1812,7 @@ export default {
         const parts = token.split(".");
         if (parts.length < 2) return null;
         const payloadJson = JSON.parse(decodeURIComponent(escape(window.atob(parts[1]))));
-        return (
-          payloadJson.userId ||
-          payloadJson.id ||
-          payloadJson._id ||
-          payloadJson.sub ||
-          null
-        );
+        return payloadJson.userId || payloadJson.id || payloadJson._id || payloadJson.sub || null;
       } catch (e) {
         return null;
       }
@@ -1599,13 +1841,13 @@ export default {
     checkIfAdmin(info) {
       try {
         // Check localStorage trước (có thể admin được set ở đây)
-        const localEmail = localStorage.getItem('email_kh');
-        const localName = localStorage.getItem('name_kh');
+        const localEmail = localStorage.getItem("email_kh");
+        const localName = localStorage.getItem("name_kh");
         const byLocalEmail = localEmail === this.adminEmail;
         const byLocalName = localName === this.adminUsername;
 
         // Check JWT token
-        const tokenUserId = info && (info.id);
+        const tokenUserId = info && info.id;
         const byRole = info && info.role === 1;
         const byId = tokenUserId && String(tokenUserId) === String(this.adminId);
         const byUsername = info && info.username === this.adminUsername;
@@ -1632,7 +1874,7 @@ export default {
       try {
         const key = `chat:${this.roomId}`;
         sessionStorage.setItem(key, JSON.stringify(this.messages));
-      } catch (_) { }
+      } catch (_) {}
     },
     loadFromCache() {
       try {
@@ -1644,20 +1886,31 @@ export default {
             this.messages = cached;
           }
         }
-      } catch (_) { }
+      } catch (_) {}
     },
 
     // Chuẩn hoá dữ liệu tin nhắn từ API
     normalizeMessage(m) {
-      const senderId = m.senderId || m.sender_id || (m.sender && (m.sender.id || m.sender.userId || m.sender.user_id)) || m.userId || m.user_id || null;
-      const receiverId = m.receiverId || m.receiver_id || (m.receiver && (m.receiver.id || m.receiver.userId || m.receiver.user_id)) || null;
-      const text = m.content ?? m.message ?? m.text ?? '';
-      const senderNameRaw = m.senderName || m.sender_name || (m.sender && (m.sender.name || m.sender.username)) || null;
+      const senderId =
+        m.senderId ||
+        m.sender_id ||
+        (m.sender && (m.sender.id || m.sender.userId || m.sender.user_id)) ||
+        m.userId ||
+        m.user_id ||
+        null;
+      const receiverId =
+        m.receiverId ||
+        m.receiver_id ||
+        (m.receiver && (m.receiver.id || m.receiver.userId || m.receiver.user_id)) ||
+        null;
+      const text = m.content ?? m.message ?? m.text ?? "";
+      const senderNameRaw =
+        m.senderName || m.sender_name || (m.sender && (m.sender.name || m.sender.username)) || null;
       const senderEmail = m.senderEmail || m.sender_email || (m.sender && m.sender.email) || null;
 
       let senderName;
       if (String(senderId) === String(this.adminId) || senderId === this.adminEmail) {
-        senderName = 'john_sins'; // tên admin theo dữ liệu test
+        senderName = "john_sins"; // tên admin theo dữ liệu test
       } else if (senderNameRaw) {
         senderName = senderNameRaw;
       } else if (senderEmail) {
@@ -1665,29 +1918,32 @@ export default {
         senderName = senderEmail;
       } else {
         // Fallback về senderId nếu không có email
-        senderName = senderId || 'Unknown';
+        senderName = senderId || "Unknown";
       }
 
       const senderRole = m.senderRole || m.sender_role || (m.sender && m.sender.role) || null;
       const time = this.formatTime(m.sentAt || m.createdAt || m.created_at || m.timestamp);
 
       // Xác định role và tên hiển thị
-      let displayName = senderName || 'Unknown';
-      let role = 'user';
+      let displayName = senderName || "Unknown";
+      let role = "user";
 
       if (senderRole === 1) {
-        role = 'admin';
+        role = "admin";
       } else {
-        role = 'user';
+        role = "user";
       }
 
       return {
         text,
-        mine: senderId != null && this.currentUserId != null ? String(senderId) === String(this.currentUserId) : false,
+        mine:
+          senderId != null && this.currentUserId != null
+            ? String(senderId) === String(this.currentUserId)
+            : false,
         senderName: `${displayName} (${role})`,
         time: time,
         senderId: senderId,
-        receiverId: receiverId
+        receiverId: receiverId,
       };
     },
     // --- Chuẩn hoá tin từ socket ---
@@ -1704,7 +1960,8 @@ export default {
     },
     // --- Giá trị so sánh (thời gian hoặc id) ---
     getComparableValue(m) {
-      const tRaw = m.createdAt || m.created_at || m.timestamp || m.createdDate || m.created_date || null;
+      const tRaw =
+        m.createdAt || m.created_at || m.timestamp || m.createdDate || m.created_date || null;
       const t = tRaw ? Date.parse(tRaw) : NaN;
       if (!Number.isNaN(t)) return t;
       const idRaw = m.id || m.messageId || m.message_id || null;
@@ -1715,23 +1972,23 @@ export default {
 
     // Format thời gian
     formatTime(timestamp) {
-      if (!timestamp) return '';
+      if (!timestamp) return "";
       try {
         const date = new Date(timestamp);
-        return date.toLocaleTimeString('vi-VN', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false // 24h format như Zalo
+        return date.toLocaleTimeString("vi-VN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false, // 24h format như Zalo
         });
       } catch (e) {
-        return '';
+        return "";
       }
     },
 
     // Lấy tên user từ ID
     getUserName(userId) {
-      const user = this.uniqueUsers.find(u => u.id === userId);
-      return user ? user.name : 'Unknown';
+      const user = this.uniqueUsers.find((u) => u.id === userId);
+      return user ? user.name : "Unknown";
     },
 
     // Reply to user (từ Reply button)
@@ -1739,27 +1996,30 @@ export default {
       this.selectedUserId = userId;
       // Auto-focus vào input để admin có thể gõ ngay
       this.$nextTick(() => {
-        const input = this.$el.querySelector('.chat-input input');
+        const input = this.$el.querySelector(".chat-input input");
         if (input) input.focus();
       });
     },
-
-
-
   },
 
   computed: {
     // Lấy danh sách user duy nhất từ messages
     uniqueUsers() {
       const users = new Map();
-      this.messages.forEach(msg => {
-        if (msg.senderId && msg.senderId !== this.currentUserId && msg.senderId !== this.adminId && msg.senderId !== this.adminEmail) {
-          const role = msg.senderId === this.adminId || msg.senderId === this.adminEmail ? "admin" : "user";
-          const name = msg.senderName ? msg.senderName.split(' (')[0] : msg.senderId; // Dùng senderId (email) làm tên
+      this.messages.forEach((msg) => {
+        if (
+          msg.senderId &&
+          msg.senderId !== this.currentUserId &&
+          msg.senderId !== this.adminId &&
+          msg.senderId !== this.adminEmail
+        ) {
+          const role =
+            msg.senderId === this.adminId || msg.senderId === this.adminEmail ? "admin" : "user";
+          const name = msg.senderName ? msg.senderName.split(" (")[0] : msg.senderId; // Dùng senderId (email) làm tên
           users.set(msg.senderId, {
             id: msg.senderId,
             name: name,
-            role: role
+            role: role,
           });
         }
       });
@@ -1768,37 +2028,29 @@ export default {
 
     // Hiển thị countdown dạng MM:SS
     countdownDisplay() {
-      if (this.countdownSeconds <= 0) return '0:00';
+      if (this.countdownSeconds <= 0) return "0:00";
       const minutes = Math.floor(this.countdownSeconds / 60);
       const seconds = this.countdownSeconds % 60;
-      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      return `${minutes}:${seconds.toString().padStart(2, "0")}`;
     },
 
     isReportFormValid() {
       return Boolean(
         this.reportForm.member &&
-        this.reportForm.reportType &&
-        this.reportForm.reportType.trim() &&
-        this.reportForm.reason &&
-        this.reportForm.reason.trim()
+          this.reportForm.reportType &&
+          this.reportForm.reportType.trim() &&
+          this.reportForm.reason &&
+          this.reportForm.reason.trim()
       );
     },
 
     // Tính toán các nút đặt giá nhanh dựa trên bước giá
     quickBidButtons() {
       const bidStep = this.artworkSession.bidStep || 100; // Mặc định 100 nếu không có bidStep
-      return [
-        bidStep * 1,
-        bidStep * 2,
-        bidStep * 3,
-        bidStep * 4,
-        bidStep * 5,
-        bidStep * 6
-      ];
-    }
+      return [bidStep * 1, bidStep * 2, bidStep * 3, bidStep * 4, bidStep * 5, bidStep * 6];
+    },
   },
-
-}
+};
 </script>
 <style scoped>
 /* Tabs Wrapper */
@@ -2037,7 +2289,6 @@ export default {
 
 /* Responsive */
 @media (max-width: 768px) {
-
   .chat-bubble-left,
   .chat-bubble-right {
     max-width: 85%;

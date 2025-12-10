@@ -16,7 +16,8 @@
         </div>
       </div>
     </div>
-    <div id="sidebar-scrollbar" class="d-flex flex-column" style="height: calc(100vh - 80px);">
+
+    <div id="sidebar-scrollbar" class="d-flex flex-column" style="height: calc(100vh - 80px)">
       <nav class="iq-sidebar-menu d-flex flex-column h-100">
         <ul id="iq-sidebar-toggle" class="iq-menu flex-grow-1 overflow-auto custom-scrollbar">
           <li class="iq-menu-title">
@@ -74,6 +75,14 @@
                   ><i class="fa-solid fa-user"></i>User</router-link
                 >
               </li>
+              <li :class="{ active: $route.path === '/admin/seller-requests' }">
+                <router-link to="/admin/seller-requests">
+                  <i class="fa-solid fa-user-shield"></i> Seller Requests
+                  <span class="badge bg-danger rounded-pill" v-if="pendingCount > 0">{{
+                    pendingCount
+                  }}</span>
+                </router-link>
+              </li>
               <li :class="{ active: $route.path === '/admin/management-artwork' }">
                 <router-link to="/admin/management-artwork"
                   ><i class="fa-solid fa-image"></i>Artwork</router-link
@@ -100,11 +109,6 @@
                 >
               </li>
 
-              <!-- <li :class="{ active: $route.path === '/admin/management-admin' }">
-                <router-link to="/admin/management-admin"
-                  ><i class="fa-solid fa-shield-halved"></i>Admin</router-link
-                >
-              </li> -->
               <li :class="{ active: $route.path === '/admin/management-setting/general-setting' }">
                 <router-link to="/admin/management-setting/general-setting"
                   ><i class="fa-solid fa-gear"></i>Setting</router-link
@@ -112,7 +116,13 @@
               </li>
             </ul>
           </li>
-          <li class="text-danger ms-3"><i class="bi bi-box-arrow-right me-3"></i>Logout</li>
+          <button
+            class="btn border-0 bg-transparent text-danger ms-3 text-start"
+            @click="performLogout"
+            data-bs-dismiss="modal"
+          >
+            <i class="bi bi-box-arrow-right me-3"></i>Logout
+          </button>
           <!-- <li>
             <a href="dashboard-2.html" class="iq-waves-effect"><i class="ri-home-8-line"></i><span>Dashboard
                 3</span></a>
@@ -124,16 +134,18 @@
         </ul>
         <div v-if="admin.check" class="p-3 mt-auto border-top">
           <!-- cá nhân ở đây -->
-          <div class="d-flex align-items-center gap-3">
-            <img
-              :src="admin.avt"
-              class="img-avatar"
-              alt=""
-              style="width: 40px; height: 40px; border-radius: 50%"
-            />
+          <div class="d-flex align-items-center gap-2">
+            <router-link to="/admin/profile">
+              <img
+                :src="info.avatar"
+                class="img-avatar"
+                alt=""
+                style="width: 40px; height: 40px; border-radius: 50%"
+              />
+            </router-link>
             <div class="ms-2">
-              <p class="fw-bold mb-0">{{ admin.name }}</p>
-              <p class="text-muted small mb-0">{{ admin.email }}</p>
+              <p class="fw-bold mb-0">{{ info.name }}</p>
+              <p class="text-muted small mb-0">{{ info.email }}</p>
             </div>
           </div>
         </div>
@@ -142,10 +154,12 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
       admin: {},
+      info: {},
     };
   },
   mounted() {
@@ -156,10 +170,54 @@ export default {
       avt: localStorage.getItem("avatar_admin"),
     };
     console.log("menu", this.admin);
+
+    this.loadInfo();
   },
-  methods: {},
+  methods: {
+    performLogout() {
+      const token = localStorage.getItem("token");
+      const finish = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("name_admin");
+        localStorage.removeItem("email_admin");
+        localStorage.removeItem("check_admin");
+        this.user = null;
+        this.$router.push("/admin/login");
+        this.$toast.success("Log out successfully");
+      };
+
+      if (!token) {
+        finish();
+        return;
+      }
+
+      axios
+        .post(
+          "http://localhost:8081/api/auth/logout",
+          {},
+          { headers: { Authorization: "Bearer " + token } }
+        )
+        .then(() => {
+          finish();
+        })
+        .catch(() => {
+          finish();
+        });
+    },
+
+    loadInfo() {
+      axios
+        .get(`http://localhost:8081/api/admin/auth/me`, {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then((res) => {
+          this.info = res.data;
+        })
+        .catch((err) => {
+          console.error("Lỗi khi xóa:", err);
+        });
+    },
+  },
 };
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>
