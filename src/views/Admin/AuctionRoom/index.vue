@@ -345,11 +345,11 @@
       </div>
 
       <div v-else class="col-12" v-for="room in sortedAuctionRooms" :key="room.id">
-        <div
+        <router-link
+          :to="`/admin/testlivestream/${room.id}`"
           class="card border-0 shadow-sm h-100 text-decoration-none position-relative"
           :class="getBorderClass(room.status)"
           style="cursor: pointer; overflow: visible"
-          @click="$router.push(`/admin/testlivestream/${room.id}`)"
         >
           <div class="dropdown position-absolute top-0 end-0 mt-3 me-3" style="z-index: 100">
             <button
@@ -497,7 +497,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </router-link>
       </div>
 
       <div v-if="!isLoading && auctionRooms.length === 0" class="text-center py-5">
@@ -732,6 +732,12 @@ export default {
   },
 
   computed: {
+    sortedAuctionRooms() {
+      return [...this.auctionRooms].reverse();
+    },
+  },
+  computed: {
+    // Đảo ngược thứ tự mảng
     sortedAuctionRooms() {
       return [...this.auctionRooms].reverse();
     },

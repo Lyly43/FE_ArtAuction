@@ -191,13 +191,15 @@ a[to]:has(button):hover {
 
 /* Form controls success */
 .form-control:focus {
-  border-color: #044a42 !important;
-  box-shadow: 0 0 0 0.25rem rgba(4, 74, 66, 0.25) !important;
+  border-color: #dee2e6 !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .form-select:focus {
-  border-color: #044a42 !important;
-  box-shadow: 0 0 0 0.25rem rgba(4, 74, 66, 0.25) !important;
+  border-color: #dee2e6 !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 /* Checkbox và radio success */

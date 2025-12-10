@@ -166,7 +166,7 @@
                     />
                   </div>
                 </div>
-                <small class="d-block text-end text-muted mt-1" style="font-size: 0.75rem">
+                <!-- <small class="d-block text-end text-muted mt-1" style="font-size: 0.75rem">
                   ≈ {{ formatVND(editedStartingPrice * exchangeRate) }}
                 </small>
 
@@ -176,7 +176,7 @@
                   style="font-size: 0.7rem"
                 >
                   Ready to approve
-                </small>
+                </small> -->
               </div>
             </div>
           </div>

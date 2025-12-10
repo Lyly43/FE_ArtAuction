@@ -14,6 +14,7 @@ export default function (from, to, next) {
         next();
 
         console.log("test check:", res.data);
+
         localStorage.setItem("name_admin", res.data.name);
         localStorage.setItem("email_admin", res.data.email);
         localStorage.setItem("check_admin", res.data.status);

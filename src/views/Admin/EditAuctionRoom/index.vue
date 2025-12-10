@@ -371,13 +371,13 @@
 
             <div class="card border-0 shadow-sm rounded-4 mb-4">
               <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
-                <h6 class="fw-bold mb-0 text-uppercase text-secondary">
+                <!-- <h6 class="fw-bold mb-0 text-uppercase text-secondary">
                   <i class="fa-solid fa-coins me-2"></i>Finance
-                </h6>
+                </h6> -->
               </div>
               <div class="card-body p-4">
                 <div class="row g-3">
-                  <div class="col-12">
+                  <!-- <div class="col-12">
                     <label class="form-label small fw-bold text-secondary">DEPOSIT</label>
                     <div class="input-group">
                       <span class="input-group-text bg-light border-0 fw-bold text-secondary"
@@ -389,8 +389,8 @@
                         v-model="roomForm.depositAmount"
                       />
                     </div>
-                  </div>
-                  <div class="col-12">
+                  </div> -->
+                  <!-- <div class="col-12">
                     <label class="form-label small fw-bold text-secondary"
                       >PAYMENT DUE (Days)</label
                     >
@@ -399,7 +399,7 @@
                       class="form-control bg-light border-0"
                       v-model="roomForm.paymentDeadlineDays"
                     />
-                  </div>
+                  </div> -->
                   <div class="col-12">
                     <label class="form-label small fw-bold text-secondary"
                       >ADMIN MANAGEMENT (ID)</label

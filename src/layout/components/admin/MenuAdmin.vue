@@ -132,7 +132,7 @@
                 4</span></a>
           </li> -->
         </ul>
-        <div class="p-3 mt-auto">
+        <div v-if="admin.check" class="p-3 mt-auto border-top">
           <!-- cá nhân ở đây -->
           <div class="d-flex align-items-center gap-2">
             <router-link to="/admin/profile">
@@ -170,6 +170,7 @@ export default {
       avt: localStorage.getItem("avatar_admin"),
     };
     console.log("menu", this.admin);
+
     this.loadInfo();
   },
   methods: {

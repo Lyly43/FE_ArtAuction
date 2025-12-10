@@ -504,7 +504,7 @@
                           class="dropdown-item py-2 text-danger"
                           @click="handleDelete(item.id, item.title)"
                         >
-                          <i class="fa-regular fa-trash-can me-2"></i>Delete Artwork
+                          <i class="fa-regular fa-trash-can me-2"></i>Delete
                         </button>
                       </li>
                     </ul>

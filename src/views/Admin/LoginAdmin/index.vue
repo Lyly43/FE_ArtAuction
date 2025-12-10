@@ -41,6 +41,7 @@
                   id="floatingInput"
                   placeholder="name@example.com"
                 />
+
                 <label for="floatingInput" class="text-secondary">Username or Email</label>
               </div>
 
@@ -118,6 +119,7 @@ export default {
               email: "",
               password: "",
             };
+
             this.$router.push("/admin/dashboard");
           } else {
             this.$toast.error(res.data.message);

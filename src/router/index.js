@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"; // cài vue-router: npm install vue-router@next --save
 
-// import checkAdmin from "./checkAdmin";
+import checkAdmin from "./checkAdmin";
 import checkUser from "./checkUser";
 
 const routes = [
@@ -102,6 +102,15 @@ const routes = [
     path: "/client/auction-room/:id",
     name: "auction-room",
     component: () => import("../views/Client/AuctionRoom/index.vue"),
+    meta: { layout: "blank" },
+    // meta: { layout: "client" },
+    props: true,
+    beforeEnter: checkUser,
+  },
+  {
+    path: "/client/Regis-auct-room/:id",
+    name: "Regis-auct-room",
+    component: () => import("../views/Client/RegisAuction/index.vue"),
     meta: { layout: "client" },
     props: true,
     beforeEnter: checkUser,
@@ -124,13 +133,16 @@ const routes = [
     beforeEnter: checkUser,
   },
 
+
+
+
   // ADMIN
   {
     path: "/admin/dashboard",
     name: "ad-dashboard",
     component: () => import("../views/Admin/Dashboard/index.vue"),
     meta: { layout: "default" },
-    // beforeEnter: checkUser,
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/management-employees",
@@ -163,7 +175,7 @@ const routes = [
   //   meta: { layout: "default" },
   // },
   {
-    path: "/admin/testlivestream",
+    path: "/admin/testlivestream/:id",
     name: "admin-test-livestream",
     component: () => import("../views/Admin/testLiveStream/index.vue"),
     meta: { layout: "default" },

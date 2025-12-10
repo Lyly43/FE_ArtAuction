@@ -127,13 +127,15 @@
 
 /* Form controls */
 .wrapper.admin-theme .form-control:focus {
-  border-color: var(--bs-primary) !important;
-  box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.25) !important;
+  border-color: #dee2e6 !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .wrapper.admin-theme .form-select:focus {
-  border-color: var(--bs-primary) !important;
-  box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.25) !important;
+  border-color: #dee2e6 !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .wrapper.admin-theme .form-check-input:checked {

@@ -158,6 +158,74 @@ export class ChatSocket {
     if (this.client) this.client.deactivate();
     this.connected = false;
   }
+
+  // === AUCTION WEBSOCKET METHODS ===
+
+  /**
+   * Subscribe to auction room events (SESSION_STARTED, SESSION_ENDED)
+   * @param {string} roomId - Auction room ID
+   * @param {function} handler - Callback function to handle messages
+   * @returns {object|null} Subscription object or null if failed
+   */
+  subscribeAuctionRoom(roomId, handler) {
+    console.log('=== SUBSCRIBE AUCTION ROOM DEBUG ===');
+    console.log('Client exists:', !!this.client);
+    console.log('Connected:', this.connected);
+    console.log('Room ID:', roomId);
+    console.log('Topic:', `/topic/auction-room/${roomId}`);
+
+    if (!this.client || !this.connected) {
+      console.log('❌ Cannot subscribe - client or connection not ready');
+      return null;
+    }
+
+    const subscription = this.client.subscribe(`/topic/auction-room/${roomId}`, (msg) => {
+      console.log('📨 Received auction room event:', msg);
+      try {
+        const body = JSON.parse(msg.body);
+        console.log('📨 Parsed auction room event:', body);
+        if (typeof handler === "function") handler(body);
+      } catch (e) {
+        console.error('❌ Error parsing auction room message:', e);
+      }
+    });
+
+    console.log('✅ Subscribed to auction room topic successfully');
+    return subscription;
+  }
+
+  /**
+   * Subscribe to auction session bid events (BID_ACCEPTED)
+   * @param {string} sessionId - Auction session ID
+   * @param {function} handler - Callback function to handle messages
+   * @returns {object|null} Subscription object or null if failed
+   */
+  subscribeAuctionBids(sessionId, handler) {
+    console.log('=== SUBSCRIBE AUCTION BIDS DEBUG ===');
+    console.log('Client exists:', !!this.client);
+    console.log('Connected:', this.connected);
+    console.log('Session ID:', sessionId);
+    console.log('Topic:', `/topic/auction.${sessionId}.bids`);
+
+    if (!this.client || !this.connected) {
+      console.log('❌ Cannot subscribe - client or connection not ready');
+      return null;
+    }
+
+    const subscription = this.client.subscribe(`/topic/auction.${sessionId}.bids`, (msg) => {
+      console.log('📨 Received auction bid event:', msg);
+      try {
+        const body = JSON.parse(msg.body);
+        console.log('📨 Parsed auction bid event:', body);
+        if (typeof handler === "function") handler(body);
+      } catch (e) {
+        console.error('❌ Error parsing auction bid message:', e);
+      }
+    });
+
+    console.log('✅ Subscribed to auction bids topic successfully');
+    return subscription;
+  }
 }
 
 export default ChatSocket;
