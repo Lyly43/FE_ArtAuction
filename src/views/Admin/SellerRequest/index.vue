@@ -17,7 +17,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Pending Review</h6>
-                <h3 class="fw-bold mb-0 text-dark">{{ pendingCount }}</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ stats.pending }}</h3>
               </div>
               <div
                 class="bg-warning bg-opacity-10 text-warning-emphasis rounded-4 d-flex align-items-center justify-content-center"
@@ -37,7 +37,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Approved Today</h6>
-                <h3 class="fw-bold mb-0 text-dark">12</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ stats.approved }}</h3>
               </div>
               <div
                 class="bg-success bg-opacity-10 text-success rounded-4 d-flex align-items-center justify-content-center"
@@ -57,7 +57,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="card-subtitle text-secondary fw-bold mb-1">Rejected</h6>
-                <h3 class="fw-bold mb-0 text-dark">5</h3>
+                <h3 class="fw-bold mb-0 text-dark">{{ stats.rejected }}</h3>
               </div>
               <div
                 class="bg-danger bg-opacity-10 text-danger rounded-4 d-flex align-items-center justify-content-center"
@@ -155,14 +155,14 @@
             <thead class="bg-light">
               <tr>
                 <th class="ps-4 text-secondary text-uppercase x-small fw-bold">User</th>
-                <th class="text-secondary text-uppercase x-small fw-bold">Update Date</th>
+                <th class="text-secondary text-uppercase x-small fw-bold">Created Date</th>
                 <th class="text-secondary text-uppercase x-small fw-bold">Summary</th>
                 <th class="text-secondary text-uppercase x-small fw-bold">Status</th>
                 <th class="pe-4 text-secondary text-uppercase x-small fw-bold">Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="req in sortedRequests" :key="req.id">
+              <tr v-for="req in tableData" :key="req.id">
                 <td class="ps-4">
                   <div class="d-flex align-items-center gap-3">
                     <img
@@ -485,6 +485,33 @@ export default {
     };
   },
   computed: {
+    //Tính toán số lượng trực tiếp từ mảng gốc (FE Calculation)
+    stats() {
+      return {
+        pending: this.requests.filter((r) => r.status === "PENDING").length,
+        approved: this.requests.filter((r) => r.status === "APPROVED").length,
+        rejected: this.requests.filter((r) => r.status === "REJECTED").length,
+      };
+    },
+
+    // Lọc dữ liệu để hiển thị ra bảng (Kết hợp tìm kiếm + Trạng thái đang chọn)
+    tableData() {
+      //Lọc theo Tab đang chọn (PENDING/APPROVED...)
+      let data = this.requests.filter((r) => r.status === this.currentStatus);
+
+      // Lọc theo ô tìm kiếm (Search) nếu có
+      if (this.searchQuery) {
+        const lowerSearch = this.searchQuery.toLowerCase();
+        data = data.filter(
+          (r) =>
+            (r.userName && r.userName.toLowerCase().includes(lowerSearch)) ||
+            (r.userId && r.userId.toLowerCase().includes(lowerSearch))
+        );
+      }
+
+      //  Đảo ngược để mới nhất lên đầu
+      return data.reverse();
+    },
     filteredRequests() {
       if (!this.searchQuery) return this.requests;
       const lowerSearch = this.searchQuery.toLowerCase();
@@ -497,31 +524,32 @@ export default {
     pendingCount() {
       return this.requests.filter((r) => r.status === "PENDING").length;
     },
-
-    // Đảo ngược thứ tự mảng
-    sortedRequests() {
-      return [...this.filteredRequests].reverse();
-    },
   },
   mounted() {
-    this.fetchRequests();
+    this.fetchAllData();
   },
   methods: {
-    fetchRequests() {
+    fetchAllData() {
       this.isLoading = true;
-      axios
-        .get(`http://localhost:8081/api/admin/seller-request`, {
-          params: { status: this.currentStatus },
-          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-        })
-        .then((res) => {
-          this.requests = res.data.map((item) => ({
+      const headers = { Authorization: "Bearer " + localStorage.getItem("token") };
+      const url = "http://localhost:8081/api/admin/seller-request";
+
+      // Tạo 3 request lấy riêng lẻ từng trạng thái
+      const reqPending = axios.get(url, { params: { status: "PENDING" }, headers });
+      const reqApproved = axios.get(url, { params: { status: "APPROVED" }, headers });
+      const reqRejected = axios.get(url, { params: { status: "REJECTED" }, headers });
+
+      Promise.all([reqPending, reqApproved, reqRejected])
+        .then(([resPending, resApproved, resRejected]) => {
+          // Gộp 3 mảng lại thành 1 mảng tổng duy nhất
+          const allRawData = [...resPending.data, ...resApproved.data, ...resRejected.data];
+
+          // Map dữ liệu
+          this.requests = allRawData.map((item) => ({
             id: item.id,
             userId: item.userId,
-            userName: item.userId,
-            userEmail: null,
-            userPhone: null,
-            userAvt: null,
+            userName: item.userId, // Hoặc item.userName nếu backend có
+            userAvt: item.userAvt || null,
             reason: item.description,
             status: item.status,
             adminNote: item.adminNote,
@@ -530,7 +558,7 @@ export default {
           }));
         })
         .catch((err) => {
-          console.error("Error fetching requests:", err);
+          console.error("Error fetching data:", err);
           this.requests = [];
         })
         .finally(() => {
@@ -540,7 +568,7 @@ export default {
 
     changeStatus(status) {
       this.currentStatus = status;
-      this.fetchRequests();
+      // this.fetchRequests();
     },
 
     openReviewModal(request) {
@@ -568,7 +596,6 @@ export default {
 
     handleApprove() {
       if (!confirm("Confirm approve this user to become a seller?")) return;
-
       this.isProcessing = true;
       const payload = { note: this.adminNote };
 
@@ -576,31 +603,23 @@ export default {
         .put(
           `http://localhost:8081/api/admin/seller-request/${this.selectedRequest.id}/approve`,
           payload,
-          {
-            headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-          }
+          { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
         )
-        .then((res) => {
+        .then(() => {
           alert("Approved successfully!");
           this.modalInstance.hide();
-          this.fetchRequests();
+          this.fetchAllData(); // Load lại để cập nhật thống kê
         })
-        .catch((err) => {
-          console.error(err);
-          alert("Failed to approve. Check console for details.");
-        })
-        .finally(() => {
-          this.isProcessing = false;
-        });
+        .catch((err) => alert("Failed to approve."))
+        .finally(() => (this.isProcessing = false));
     },
 
     handleReject() {
       if (!this.adminNote.trim()) {
-        alert("Please provide a reason for rejection in the note field.");
+        alert("Please provide a reason.");
         return;
       }
       if (!confirm("Confirm reject this request?")) return;
-
       this.isProcessing = true;
       const payload = { note: this.adminNote };
 
@@ -608,22 +627,15 @@ export default {
         .put(
           `http://localhost:8081/api/admin/seller-request/${this.selectedRequest.id}/reject`,
           payload,
-          {
-            headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-          }
+          { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
         )
-        .then((res) => {
+        .then(() => {
           alert("Rejected successfully!");
           this.modalInstance.hide();
-          this.fetchRequests();
+          this.fetchAllData(); // Load lại để cập nhật thống kê
         })
-        .catch((err) => {
-          console.error(err);
-          alert("Failed to reject. Check console for details.");
-        })
-        .finally(() => {
-          this.isProcessing = false;
-        });
+        .catch((err) => alert("Failed to reject."))
+        .finally(() => (this.isProcessing = false));
     },
 
     formatDate(dateString) {
