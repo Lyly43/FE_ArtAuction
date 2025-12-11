@@ -5,7 +5,7 @@
       <p class="text-body-secondary mb-0">Overview of the painting auction system</p>
     </div>
 
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mb-4 animate-fade-in">
       <div class="col-12 col-sm-6 col-xl-4">
         <div
           class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-secondary"
@@ -151,7 +151,7 @@
       </div>
     </div>
 
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mb-4 animate-fade-in">
       <div class="col-12 col-xl-6">
         <div class="card border-0 rounded-4 h-100 overflow-hidden">
           <div
@@ -349,7 +349,7 @@
         </div>
       </div>
 
-      <div class="col-12 col-xl-6">
+      <div class="col-12 col-xl-6 animate-fade-in">
         <div class="card border-0 rounded-4 h-100 overflow-hidden">
           <div
             class="card-header bg-primary bg-gradient text-white py-3 border-0 d-flex align-items-center justify-content-between"

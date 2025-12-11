@@ -5,7 +5,7 @@
       <p class="text-body-secondary mb-0">Track and manage all invoices in the system</p>
     </div>
 
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mb-4 animate-fade-in">
       <div class="col-12 col-sm-6 col-xl-3">
         <div
           class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-secondary"

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid py-4 bg-light min-vh-100">
+  <div class="container-fluid py-4 bg-light min-vh-100 animate-fade-in">
     <div
       v-if="isLoading"
       class="d-flex justify-content-center align-items-center"
