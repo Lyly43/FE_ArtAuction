@@ -736,12 +736,6 @@ export default {
       return [...this.auctionRooms].reverse();
     },
   },
-  computed: {
-    // Đảo ngược thứ tự mảng
-    sortedAuctionRooms() {
-      return [...this.auctionRooms].reverse();
-    },
-  },
 };
 </script>
 <style></style>
