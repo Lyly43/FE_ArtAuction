@@ -1,250 +1,284 @@
 <template>
-  <div class="container py-5">
-    <div class="mb-4">
-      <router-link to="/admin/management-artwork" class="btn btn-outline-secondary border-0 ps-0">
-        <i class="fa-solid fa-arrow-left me-2"></i>Back to Artwork List
-      </router-link>
+  <div class="container-fluid py-5 bg-light min-vh-100">
+    <div
+      v-if="isLoading"
+      class="d-flex flex-column align-items-center justify-content-center py-5"
+      style="height: 80vh"
+    >
+      <div
+        class="spinner-border text-primary"
+        role="status"
+        style="width: 3rem; height: 3rem"
+      ></div>
+      <p class="mt-3 text-secondary fw-medium">Loading artwork details...</p>
     </div>
 
-    <div v-if="isLoading" class="py-5 text-center text-secondary">
-      <div class="spinner-border text-primary mb-3" role="status"></div>
-      <p class="mb-0">Loading artwork...</p>
+    <div v-else-if="error" class="container">
+      <div class="alert alert-danger border-0 shadow-sm rounded-4 p-4 text-center">
+        <i class="fa-solid fa-circle-exclamation fa-2x mb-3 text-danger"></i>
+        <h5 class="fw-bold">{{ error }}</h5>
+        <button class="btn btn-outline-danger mt-2 rounded-pill px-4" @click="$router.back()">
+          Go Back
+        </button>
+      </div>
     </div>
 
-    <div v-else-if="error" class="alert alert-danger border-0 shadow-sm">
-      <i class="fa-solid fa-circle-exclamation me-2"></i>{{ error }}
-    </div>
+    <div v-else-if="artwork" class="container-xl">
+      <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3"
+      >
+        <div>
+          <button
+            @click="$router.back()"
+            class="btn btn-link text-decoration-none text-secondary p-0 mb-2 fw-medium"
+          >
+            <i class="fa-solid fa-arrow-left me-2"></i>Back to List
+          </button>
+          <div class="d-flex align-items-center gap-3">
+            <h3 class="fw-bold text-dark mb-0">Artwork Review</h3>
+            <span
+              class="badge rounded-pill px-3 py-2 border"
+              :class="getStatusClass(artwork.status)"
+            >
+              {{ convertStatus(artwork.status) }}
+            </span>
+          </div>
+        </div>
+      </div>
 
-    <div v-else-if="artwork" class="row g-5">
-      <div class="col-12 col-lg-7">
-        <div class="card border-0 shadow-sm overflow-hidden">
-          <div id="artworkCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-            <div class="carousel-indicators" v-if="allImages.length > 1">
-              <button
-                v-for="(img, index) in allImages"
-                :key="'ind-' + index"
-                type="button"
-                data-bs-target="#artworkCarousel"
-                :data-bs-slide-to="index"
-                :class="{ active: index === 0 }"
-                :aria-current="index === 0"
-              ></button>
+      <div class="row g-4">
+        <div class="col-lg-7 col-xl-8">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 bg-dark">
+            <div
+              class="card-body p-0 d-flex align-items-center justify-content-center position-relative"
+              style="min-height: 600px; background-color: #1a1a1a"
+            >
+              <div id="artworkCarousel" class="carousel slide w-100 h-100" data-bs-ride="false">
+                <div class="carousel-inner h-100">
+                  <div
+                    v-for="(img, index) in allImages"
+                    :key="'slide-' + index"
+                    class="carousel-item h-100"
+                    :class="{ active: index === 0 }"
+                  >
+                    <div class="d-flex align-items-center justify-content-center h-100 p-4">
+                      <img
+                        :src="img.src"
+                        class="d-block mw-100 mh-100 shadow-lg rounded"
+                        :alt="img.alt"
+                        style="max-height: 400px; object-fit: contain"
+                      />
+                    </div>
+
+                    <div class="carousel-caption pb-4" v-if="img.type === 'cert'">
+                      <span
+                        class="badge bg-warning text-dark border border-warning shadow fw-bold px-3 py-2"
+                      >
+                        <i class="fa-solid fa-certificate me-2"></i>Certificate / Document
+                      </span>
+                    </div>
+                  </div>
+
+                  <div
+                    v-if="!allImages.length"
+                    class="d-flex flex-column align-items-center justify-content-center h-100 text-secondary"
+                  >
+                    <i class="fa-regular fa-image fa-4x mb-3 opacity-50"></i>
+                    <p>No images available</p>
+                  </div>
+                </div>
+
+                <button
+                  class="carousel-control-prev"
+                  type="button"
+                  data-bs-target="#artworkCarousel"
+                  data-bs-slide="prev"
+                  v-if="allImages.length > 1"
+                >
+                  <span
+                    class="carousel-control-prev-icon bg-black bg-opacity-50 rounded-circle p-3"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button
+                  class="carousel-control-next"
+                  type="button"
+                  data-bs-target="#artworkCarousel"
+                  data-bs-slide="next"
+                  v-if="allImages.length > 1"
+                >
+                  <span
+                    class="carousel-control-next-icon bg-black bg-opacity-50 rounded-circle p-3"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+
+              <div
+                class="position-absolute bottom-0 start-0 w-100 p-3 d-flex justify-content-center gap-2"
+                v-if="allImages.length > 1"
+              >
+                <button
+                  v-for="(img, index) in allImages"
+                  :key="'ind-' + index"
+                  type="button"
+                  data-bs-target="#artworkCarousel"
+                  :data-bs-slide-to="index"
+                  class="btn p-0 border-2 rounded overflow-hidden opacity-75 hover-opacity-100 transition-base"
+                  :class="{ 'border-primary opacity-100': index === 0 }"
+                  style="width: 40px; height: 40px"
+                >
+                  <img :src="img.src" class="w-100 h-100 object-fit-cover" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5 col-xl-4">
+          <div class="d-flex flex-column gap-4 h-100">
+            <div class="card border-0 shadow-sm rounded-4">
+              <div class="card-body p-4">
+                <h5 class="fw-bold text-dark mb-1">{{ artwork.title || "Untitled" }}</h5>
+                <p class="text-secondary mb-3">
+                  by
+                  <span class="fw-bold text-primary">{{ artwork.author || "Unknown Artist" }}</span>
+                </p>
+
+                <div class="d-flex gap-2 mb-4">
+                  <span class="badge bg-light text-dark border fw-medium px-3 py-2">
+                    <i class="fa-solid fa-palette me-1 text-secondary"></i>
+                    {{ artwork.paintingGenre || "N/A" }}
+                  </span>
+                  <span class="badge bg-light text-dark border fw-medium px-3 py-2">
+                    <i class="fa-regular fa-clock me-1 text-secondary"></i>
+                    {{ artwork.yearOfCreation || "N/A" }}
+                  </span>
+                </div>
+
+                <div class="bg-light-subtle rounded-3 p-3 border border-light-subtle">
+                  <div class="row g-3 text-center">
+                    <div class="col-6 border-end">
+                      <small class="text-uppercase text-muted x-small fw-bold">Material</small>
+                      <div class="fw-semibold text-dark">{{ artwork.material || "—" }}</div>
+                    </div>
+                    <div class="col-6">
+                      <small class="text-uppercase text-muted x-small fw-bold">Dimensions</small>
+                      <div class="fw-semibold text-dark">{{ artwork.size || "—" }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4">
+                  <h6 class="fw-bold text-uppercase text-secondary x-small mb-2">Description</h6>
+                  <p
+                    class="text-muted small mb-0 lh-base"
+                    style="text-align: justify; max-height: 150px; overflow-y: auto"
+                  >
+                    {{ artwork.description || "No description provided." }}
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div class="carousel-inner bg-light" v-if="allImages.length">
-              <div
-                v-for="(img, index) in allImages"
-                :key="'slide-' + index"
-                class="carousel-item"
-                :class="{ active: index === 0 }"
-              >
-                <div
-                  class="d-flex align-items-center justify-content-center"
-                  style="height: 500px; background-color: #f8f9fa"
-                >
-                  <img
-                    :src="img.src"
-                    class="d-block mw-100 mh-100 shadow-sm"
-                    :alt="img.alt"
-                    style="object-fit: contain"
-                  />
+            <div class="card border-0 shadow-sm rounded-4 flex-fill">
+              <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
+                <h6 class="fw-bold text-uppercase text-primary small mb-0">
+                  <i class="fa-solid fa-gavel me-2"></i>Admin Processing
+                </h6>
+              </div>
+              <div class="card-body p-4">
+                <div class="mb-4">
+                  <div
+                    class="alert d-flex align-items-center border-0 mb-0 py-3"
+                    :class="
+                      artwork.aiVerified
+                        ? 'alert-success bg-success-subtle text-success-emphasis'
+                        : 'alert-danger bg-danger-subtle text-danger-emphasis'
+                    "
+                  >
+                    <i
+                      class="fa-solid fs-4 me-3"
+                      :class="artwork.aiVerified ? 'fa-shield-check' : 'fa-shield-xmark'"
+                    ></i>
+                    <div class="flex-grow-1">
+                      <h6 class="fw-bold mb-0">
+                        {{ artwork.aiVerified ? "Verified by AI" : "AI Rejected" }}
+                      </h6>
+                      <small class="opacity-75" style="font-size: 0.75rem"
+                        >System Authenticity Check</small
+                      >
+                    </div>
+                  </div>
                 </div>
-                <div class="carousel-caption d-none d-md-block" v-if="img.type === 'cert'">
-                  <span class="badge bg-dark bg-opacity-75 fs-6">
-                    <i class="fa-solid fa-file-contract me-2"></i>Certificate / Confirmation
+
+                <div class="mb-4">
+                  <label class="form-label fw-bold text-secondary x-small text-uppercase"
+                    >Starting Price (USD)</label
+                  >
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-white border-end-0 text-success fw-bold"
+                      >$</span
+                    >
+                    <input
+                      type="number"
+                      class="form-control border-start-0 ps-0 fw-bold text-dark fs-4 shadow-none"
+                      v-model.number="editedStartingPrice"
+                      placeholder="0.00"
+                      min="0"
+                      step="0.01"
+                      :disabled="artwork.status !== 0"
+                    />
+                  </div>
+                  <!-- <div class="text-end mt-1">
+                    <small class="text-muted fst-italic"
+                      >≈ {{ formatVND(editedStartingPrice * exchangeRate) }}</small
+                    >
+                  </div> -->
+                </div>
+
+                <hr class="border-secondary opacity-10 my-4" />
+
+                <div v-if="artwork.status === 0" class="d-grid gap-3">
+                  <button
+                    class="btn btn-primary btn-lg fw-bold shadow-sm"
+                    @click="handleApproval('approve')"
+                    :disabled="actionLoading === 'approve' || actionLoading === 'reject'"
+                  >
+                    <span
+                      v-if="actionLoading === 'approve'"
+                      class="spinner-border spinner-border-sm me-2"
+                    ></span>
+                    <i class="fa-solid fa-check me-2" v-else></i> Approve Artwork
+                  </button>
+
+                  <button
+                    class="btn btn-outline-danger fw-bold"
+                    @click="handleApproval('reject')"
+                    :disabled="actionLoading === 'approve' || actionLoading === 'reject'"
+                  >
+                    <span
+                      v-if="actionLoading === 'reject'"
+                      class="spinner-border spinner-border-sm me-2"
+                    ></span>
+                    <i class="fa-solid fa-xmark me-2" v-else></i> Reject
+                  </button>
+                </div>
+
+                <div v-else class="text-center py-2">
+                  <span class="text-muted small fst-italic">
+                    This artwork has been processed. Current status:
+                    <strong>{{ convertStatus(artwork.status) }}</strong>
                   </span>
                 </div>
               </div>
             </div>
-
-            <div
-              v-else
-              class="bg-light d-flex align-items-center justify-content-center"
-              style="height: 500px"
-            >
-              <div class="text-center text-secondary">
-                <i class="fa-regular fa-image fa-3x mb-3"></i>
-                <p class="fw-semibold mb-0">No images available</p>
-              </div>
-            </div>
-
-            <button
-              class="carousel-control-prev"
-              type="button"
-              data-bs-target="#artworkCarousel"
-              data-bs-slide="prev"
-              v-if="allImages.length > 1"
-            >
-              <span
-                class="carousel-control-prev-icon bg-dark rounded-circle p-3"
-                aria-hidden="true"
-              ></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button
-              class="carousel-control-next"
-              type="button"
-              data-bs-target="#artworkCarousel"
-              data-bs-slide="next"
-              v-if="allImages.length > 1"
-            >
-              <span
-                class="carousel-control-next-icon bg-dark rounded-circle p-3"
-                aria-hidden="true"
-              ></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- <div class="mt-3 text-center text-muted small">
-          <i class="fa-solid fa-images me-1"></i>
-          Includes {{ artworkImages.length }} artwork photos and
-          {{ certImages.length }} certificates.
-        </div> -->
-      </div>
-
-      <div class="col-12 col-lg-5">
-        <div class="h-100 d-flex flex-column">
-          <div class="mb-3">
-            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-              <span class="badge text-primary border rounded-pill px-3">
-                {{ artwork.paintingGenre || "Original Work" }}
-              </span>
-              <span class="badge rounded-pill px-3" :class="getStatusClass(artwork.status)">
-                {{ convertStatus(artwork.status) }}
-              </span>
-            </div>
-            <h2 class="fw-bold text-dark mb-1">{{ artwork.title || "Artwork" }}</h2>
-            <p class="text-secondary fs-5 mb-0">
-              Artist: <span class="fw-semibold text-dark">{{ artwork.author || "N/A" }}</span>
-            </p>
-          </div>
-
-          <div class="card border-0 shadow-sm bg-light mb-4">
-            <div class="card-body p-4">
-              <div class="row g-3 text-center mb-4">
-                <div class="col-4 border-end">
-                  <small class="text-uppercase text-secondary" style="font-size: 0.75rem"
-                    >Year</small
-                  >
-                  <div class="fw-bold fs-5 text-dark">{{ artwork.yearOfCreation || "—" }}</div>
-                </div>
-                <div class="col-4 border-end">
-                  <small class="text-uppercase text-secondary" style="font-size: 0.75rem"
-                    >Material</small
-                  >
-                  <div class="fw-bold fs-5 text-dark">{{ artwork.material || "—" }}</div>
-                </div>
-                <div class="col-4">
-                  <small class="text-uppercase text-secondary" style="font-size: 0.75rem"
-                    >Size</small
-                  >
-                  <div class="fw-bold fs-5 text-dark">{{ artwork.size || "—" }}</div>
-                </div>
-              </div>
-
-              <div class="mb-4">
-                <h6 class="fw-bold text-secondary text-uppercase small">Description</h6>
-                <p class="text-body-secondary mb-0" style="text-align: justify">
-                  {{ artwork.description || "No description provided." }}
-                </p>
-              </div>
-
-              <div class="bg-white p-3 rounded border">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                  <span class="text-secondary fw-medium">Starting Price</span>
-                  <div class="input-group input-group-sm" style="max-width: 180px">
-                    <span class="input-group-text bg-light border-0 fw-bold text-secondary">$</span>
-                    <input
-                      type="number"
-                      class="form-control text-end fw-semibold border-0 bg-light shadow-none"
-                      v-model.number="editedStartingPrice"
-                      placeholder="0"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
-                </div>
-                <!-- <small class="d-block text-end text-muted mt-1" style="font-size: 0.75rem">
-                  ≈ {{ formatVND(editedStartingPrice * exchangeRate) }}
-                </small>
-
-                <small
-                  class="d-block text-end text-success fst-italic"
-                  v-if="editedStartingPrice > 0"
-                  style="font-size: 0.7rem"
-                >
-                  Ready to approve
-                </small> -->
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="alert d-flex align-items-center shadow-sm mb-4"
-            :class="
-              artwork.aiVerified ? 'alert-success border-success' : 'alert-danger border-danger'
-            "
-            role="alert"
-          >
-            <div class="fs-1 me-3" :class="artwork.aiVerified ? 'text-success' : 'text-danger'">
-              <i
-                class="fa-solid"
-                :class="artwork.aiVerified ? 'fa-shield-check' : 'fa-shield-xmark'"
-              ></i>
-            </div>
-            <div>
-              <h6 class="alert-heading fw-bold mb-0">
-                {{ artwork.aiVerified ? "AI Verification Passed" : "AI Verification Failed" }}
-              </h6>
-              <small>
-                {{
-                  artwork.aiVerified
-                    ? "Confirmed by Artist & System AI Analysis"
-                    : "Rejected by Artist & System AI Analysis"
-                }}
-              </small>
-            </div>
-            <div class="ms-auto">
-              <i
-                class="fa-solid fs-3"
-                :class="artwork.aiVerified ? 'fa-check-circle' : 'fa-circle-xmark'"
-              ></i>
-            </div>
-          </div>
-
-          <div class="mt-auto d-grid gap-2 d-md-flex" v-if="artwork.status === 0">
-            <button
-              type="button"
-              class="btn btn-danger btn-lg flex-grow-1 shadow-sm"
-              @click="handleApproval('reject')"
-              :disabled="actionLoading === 'reject'"
-            >
-              <span
-                v-if="actionLoading === 'reject'"
-                class="spinner-border spinner-border-sm me-2"
-              ></span>
-              <i class="fa-solid fa-xmark me-2" v-else></i>Reject
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary btn-lg flex-grow-1 shadow-sm"
-              @click="handleApproval('approve')"
-              :disabled="actionLoading === 'approve'"
-            >
-              <span
-                v-if="actionLoading === 'approve'"
-                class="spinner-border spinner-border-sm me-2"
-              ></span>
-              <i class="fa-solid fa-check me-2" v-else></i>Approve
-            </button>
           </div>
         </div>
       </div>
     </div>
-
-    <div v-else class="text-center py-5 text-secondary">No artwork data found.</div>
   </div>
 </template>
 
@@ -263,6 +297,7 @@ export default {
     };
   },
   computed: {
+    // Logic gộp ảnh không đổi
     artworkImages() {
       if (!this.artwork) return [];
       const gallery =
@@ -270,51 +305,25 @@ export default {
       if (Array.isArray(gallery) && gallery.length) {
         return gallery.map((img, index) => {
           if (typeof img === "string") {
-            return {
-              src: img,
-              alt: `${this.artwork.title || "Artwork"} - ${index + 1}`,
-              type: "art",
-            };
+            return { src: img, alt: `${this.artwork.title} - ${index + 1}`, type: "art" };
           }
-          return {
-            src: img.src || img.url,
-            alt: img.alt || img.description || `Artwork - ${index + 1}`,
-            type: "art",
-          };
+          return { src: img.src || img.url, alt: img.alt || `Artwork - ${index + 1}`, type: "art" };
         });
       }
       if (this.artwork.avtArtwork) {
-        return [
-          {
-            src: this.artwork.avtArtwork,
-            alt: this.artwork.title || "Artwork thumbnail",
-            type: "art",
-          },
-        ];
+        return [{ src: this.artwork.avtArtwork, alt: this.artwork.title, type: "art" }];
       }
       return [];
     },
     certImages() {
       if (!this.artwork) return [];
-      const certificates =
-        this.artwork.certImages ||
-        this.artwork.certificateImages ||
-        this.artwork.certificates ||
-        [];
+      const certificates = this.artwork.certImages || this.artwork.certificates || [];
       if (!Array.isArray(certificates)) return [];
       return certificates.map((img, index) => {
         if (typeof img === "string") {
-          return {
-            src: img,
-            alt: `Certificate - ${index + 1}`,
-            type: "cert",
-          };
+          return { src: img, alt: `Certificate - ${index + 1}`, type: "cert" };
         }
-        return {
-          src: img.src || img.url,
-          alt: img.alt || img.description || `Certificate - ${index + 1}`,
-          type: "cert",
-        };
+        return { src: img.src || img.url, alt: `Certificate - ${index + 1}`, type: "cert" };
       });
     },
     allImages() {
@@ -342,12 +351,11 @@ export default {
       this.error = null;
       axios
         .get(`http://localhost:8081/api/admin/artworks/${artworkId}`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
         })
         .then((res) => {
           this.artwork = res.data;
+          // Set giá mặc định để hiển thị
           this.editedStartingPrice = res.data?.startedPrice ?? res.data?.price ?? 0;
         })
         .catch((err) => {
@@ -359,42 +367,8 @@ export default {
         });
     },
 
-    formatCurrency(value) {
-      if (!value) return "$0.00";
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(value);
-    },
-    convertStatus(status) {
-      switch (status) {
-        case 0:
-          return "Not approved";
-        case 1:
-          return "Approved";
-        case 2:
-          return "In Auction";
-        case 3:
-          return "Refused";
-      }
-    },
-    getStatusClass(status) {
-      switch (status) {
-        case 0:
-          return "bg-secondary-subtle text-secondary border-secondary-subtle";
-        case 1:
-          return "bg-success-subtle text-success border-success-subtle";
-        case 2:
-          return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
-        case 3:
-          return "bg-danger-subtle text-danger border-danger-subtle";
-      }
-    },
-    //CHUYỂN USD -> VND
     handleApproval(action) {
       if (!this.artwork?.id) return;
-
-      // Validate giá USD
       if (action === "approve") {
         const priceUSD = Number(this.editedStartingPrice);
         if (!priceUSD || priceUSD <= 0) {
@@ -413,9 +387,7 @@ export default {
       this.actionLoading = action;
       axios
         .post(endpoint, payload, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
         })
         .then(() => {
           window.alert(
@@ -427,9 +399,7 @@ export default {
         })
         .catch((err) => {
           console.error(err);
-          window.alert(
-            err.response?.data?.message || `Failed to ${action} the artwork. Please try again.`
-          );
+          window.alert(err.response?.data?.message || `Failed to ${action} the artwork.`);
         })
         .finally(() => {
           this.actionLoading = "";
@@ -437,10 +407,35 @@ export default {
     },
 
     formatVND(value) {
-      return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(value);
+      return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
+    },
+    convertStatus(status) {
+      switch (status) {
+        case 0:
+          return "Pending Review";
+        case 1:
+          return "Approved";
+        case 2:
+          return "In Auction";
+        case 3:
+          return "Rejected";
+        default:
+          return "Unknown";
+      }
+    },
+    getStatusClass(status) {
+      switch (status) {
+        case 0:
+          return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
+        case 1:
+          return "bg-success-subtle text-success border-success-subtle";
+        case 2:
+          return "bg-primary-subtle text-primary border-primary-subtle";
+        case 3:
+          return "bg-danger-subtle text-danger border-danger-subtle";
+        default:
+          return "bg-light text-secondary";
+      }
     },
   },
 };
