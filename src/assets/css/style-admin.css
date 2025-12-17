@@ -119,4 +119,41 @@ Add admin
 -----------------------------------------------------------------------*/
 .x-small {
   font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+/*---------------------------------------------------------------------
+Animation
+-----------------------------------------------------------------------*/
+
+.animate-fade-in {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Định nghĩa chuyển động */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px); /* Dịch xuống 20px ban đầu */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); /* Trở về vị trí cũ */
+  }
+}
+
+/*---------------------------------------------------------------------
+Artwork Detail
+-----------------------------------------------------------------------*/
+
+.hover-opacity-100:hover {
+  opacity: 1 !important;
+}
+.transition-base {
+  transition: all 0.2s ease;
+}
+
+/* Card Hover Effect */
+.card {
+  transition: transform 0.2s ease-in-out;
 }

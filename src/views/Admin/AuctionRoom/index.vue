@@ -11,7 +11,7 @@
         </router-link>
       </div>
     </div>
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mb-4 animate-fade-in">
       <div class="col-12 col-md-6 col-xl-3">
         <div
           class="card border-0 shadow-sm h-100 card-hover border-start border-4 border-secondary"
@@ -338,7 +338,10 @@
       </div>
     </div>
 
-    <div class="row g-4 overflow-y-auto hide-scrollbar pe-2" style="max-height: 80vh">
+    <div
+      class="row g-4 overflow-y-auto hide-scrollbar pe-2 animate-fade-in"
+      style="max-height: 80vh"
+    >
       <div v-if="isLoading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status"></div>
         <p class="mt-2 text-muted">Loading rooms...</p>
