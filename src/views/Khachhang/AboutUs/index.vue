@@ -15,7 +15,7 @@ export default {
               <img
                 src="/src/assets/img/tranhphongcanh.png"
                 alt="aboutus"
-                class="img-fluid rounded img"
+                class="img-fluid w-100 rounded img"
               />
             </div>
             <div class="col-12 col-lg-8 order-1 order-lg-2">

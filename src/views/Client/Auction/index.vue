@@ -144,7 +144,7 @@
           <li class="nav-item col-lg-5">
             <button class="nav-link w-100 fw-semibold auction-tab" :class="{ 'active': activeAuctionTab === 'ongoing' }"
               @click="activeAuctionTab = 'ongoing'">
-              <i class="fa-solid fa-broadcast-tower me-2"></i>Đang diễn ra
+              <i class="fa-solid fa-broadcast-tower me-2"></i>Ongoing
               <!-- <span class="badge ms-2"
                 :class="activeAuctionTab === 'ongoing' ? 'text-bg-success text-light' : 'bg-light text-secondary'">
                 {{ ongoingAuctions.length }}
@@ -154,7 +154,7 @@
           <li class="nav-item col-lg-5">
             <button class="nav-link w-100 fw-semibold auction-tab"
               :class="{ 'active': activeAuctionTab === 'upcoming' }" @click="activeAuctionTab = 'upcoming'">
-              <i class="fa-solid fa-clock me-2"></i>Sắp diễn ra
+              <i class="fa-solid fa-clock me-2"></i>Upcoming
               <!-- <span class="badge ms-2"
                 :class="activeAuctionTab === 'upcoming' ? 'text-bg-success text-light' : 'bg-light text-secondary'">
                 {{ upcomingAuctions.length }}
@@ -214,18 +214,15 @@
                 <p class="m-0 small description-clamp"> {{ auction.description }} </p>
               </div>
               <div class="mt-auto">
-                <div class="" v-if="auction.status === 1">
-                  <router-link :to="`/client/auction-room/${auction.id}`" class="w-100">
-                    <button class="btn btn-success w-100">Join AuctAuction</button>
+                <router-link v-if="auction.status === 1" :to="`/client/auction-room/${auction.id}`" class="w-100">
+                    <button class="btn btn-success w-100">Join ArtAuction</button>
                   </router-link>
-                </div>
 
-                <div class="" v-else-if="auction.status === 2">
-                  <router-link :to="`/client/Regis-auct-room/${auction.id}`" class="w-100">
-                    <button class="btn btn-outline-warning w-100">Reserve Spot</button>
+                <router-link v-else-if="auction.status === 2" :to="`/client/Regis-auct-room/${auction.id}`" class="w-100">
+                  <button class="btn btn-warning w-100">Reserve Spot</button>
                   </router-link>
-                </div>
-                <!-- <button class="btn btn-success">Join AuctAuction</button> -->
+
+                <button v-else class="btn btn-secondary w-100 disabled">View Auction</button>
               </div>
 
 
@@ -237,33 +234,27 @@
 
     <!-- Pagination Controls -->
     <div class="row my-4" v-if="totalPages > 1">
-      <div class="col-12">
+      <div class="col-12 d-flex justify-content-center">
         <nav aria-label="Auction pagination">
-          <ul class="pagination justify-content-center">
+          <ul class="pagination">
             <li class="page-item" :class="{ disabled: currentPage === 0 }">
-              <button class="page-link" @click="prevPage" :disabled="currentPage === 0">
-                <i class="fa-solid fa-chevron-left"></i> Previous
-              </button>
+              <a class="page-link px-4" href="#" @click.prevent="prevPage">
+                <i class="fa-solid fa-angle-left"></i>
+              </a>
             </li>
-
             <li class="page-item" v-for="page in displayedPageNumbers" :key="page"
               :class="{ active: page === currentPage + 1 }">
-              <button class="page-link" @click="goToPage(page - 1)">
+              <a class="page-link" href="#" @click.prevent="goToPage(page - 1)">
                 {{ page }}
-              </button>
+              </a>
             </li>
-
             <li class="page-item" :class="{ disabled: currentPage >= totalPages - 1 }">
-              <button class="page-link" @click="nextPage" :disabled="currentPage >= totalPages - 1">
-                Next <i class="fa-solid fa-chevron-right"></i>
-              </button>
+              <a class="page-link px-4" href="#" @click.prevent="nextPage">
+                <i class="fa-solid fa-angle-right"></i>
+              </a>
             </li>
           </ul>
         </nav>
-
-        <!-- <div class="text-center text-muted small mt-3">
-          Trang {{ currentPage + 1 }} / {{ totalPages }}
-        </div> -->
       </div>
     </div>
   </div>
@@ -477,18 +468,29 @@ export default {
 
     goToPage(pageNumber) {
       if (this.activeAuctionTab === 'ongoing') {
-        if (pageNumber >= 0 && pageNumber < this.ongoingTotalPages) {
+        if (pageNumber >= 0 && pageNumber <= this.ongoingTotalPages - 1) {
           this.ongoingCurrentPage = pageNumber;
           this.getOngoingAuctions();
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       } else {
-        if (pageNumber >= 0 && pageNumber < this.upcomingTotalPages) {
+        if (pageNumber >= 0 && pageNumber <= this.upcomingTotalPages - 1) {
           this.upcomingCurrentPage = pageNumber;
           this.getUpcomingAuctions();
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       }
+    },
+
+    goToFirstPage() {
+      this.goToPage(0);
+    },
+
+    goToLastPage() {
+      const lastPage = this.activeAuctionTab === 'ongoing'
+        ? this.ongoingTotalPages - 1
+        : this.upcomingTotalPages - 1;
+      this.goToPage(lastPage);
     },
     goToRoom(id) {
       if (!id) return;

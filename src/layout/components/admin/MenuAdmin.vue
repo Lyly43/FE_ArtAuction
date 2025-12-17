@@ -29,7 +29,7 @@
               <i class="fa-regular fa-house"></i><span>Dashboard</span>
             </router-link>
           </li>
-          <li :class="{ active: $route.path === '/admin/livestream' }">
+          <!-- <li :class="{ active: $route.path === '/admin/livestream' }">
             <router-link to="/admin/livestream" class="iq-waves-effect">
               <i class="fa-regular fa-house"></i><span>LiveStream</span>
             </router-link>
@@ -38,7 +38,7 @@
             <router-link to="/admin/testlivestream" class="iq-waves-effect">
               <i class="fa-regular fa-house"></i><span>test</span>
             </router-link>
-          </li>
+          </li> -->
           <li :class="{ active: $route.path === '/admin/management-statistical' }">
             <router-link to="/admin/management-statistical"
               ><i class="fa-solid fa-square-poll-vertical"></i>Statistical</router-link

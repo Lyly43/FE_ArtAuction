@@ -26,7 +26,19 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <!-- Loading Overlay -->
+  <div v-if="loading" class="row">
+    <div class="col-12 d-flex justify-content-center align-items-center py-5">
+      <div class="text-center">
+        <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Đang tải dữ liệu...</p>
+      </div>
+    </div>
+  </div>
+
+  <div v-else class="row">
     <template v-for="(v, k) in list" :key="k">
       <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
         <div class="card p-0">
@@ -70,7 +82,9 @@
                 <!-- <p class="m-0">{{ auction.artwork.currentPrice }}</p> -->
               </div>
             </div>
-            <button class="btn btn-success">Join AuctAuction</button>
+            <button v-if="v.status === 1" class="btn btn-success">Join AuctAuction</button>
+            <button v-else-if="v.status === 2" class="btn btn-warning">Reverve Spot</button>
+            <button v-else class="btn btn-danger disabled">View Auction</button>
 
           </div>
 
@@ -82,187 +96,32 @@
 
 
 
+  </div>
 
-
-
-
-
-
-
-
-    <!-- <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-      <div class="card p-0">
-        <div class="badge p-0">
-          <img src="../../../../assets/img/user_test.jpg" class="img-auction" alt="">
-          <div class="badge-live d-flex align-items-center gap-2"><i
-              class="fa-solid fa-circle fa-sm fw-bold text-white"></i>
-            <p class="m-0  fw-bold text-white">LIVE</p>
-          </div>
-          <div class="badge-success1 d-flex align-items-center gap-2">12:35</div>
-          <div class="badge-success2 d-flex align-items-center gap-2">12:35</div>
-
-        </div>
-
-        <div class="card-body">
-          <h5 class="fw-bold text-success">Modern Asian Expressions</h5>
-          <p class="card-text">Contemporary Asian artists redefining tradition</p>
-          <div class="d-flex justify-content-between">
-            <p class="m-0 text-secondary">Current product</p>
-            <p class="m-0 text-secondary">High Bid</p>
-          </div>
-          <div class="d-flex justify-content-between">
-            <p class="fw-bold">Product 7 of 10</p>
-            <p class="fw-bold">$12M</p>
-          </div>
-          <button class="btn btn-success w-100 fw-bold">Join ArtAuction</button>
-        </div>
-      </div>
-    </div> -->
-
-    <!-- mẫu 02 -->
-    <!-- <div class="col-lg-12 col-md-12 col-sm-12">
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="row mb-3 gap-2">
-            <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-between align-items-center">
-              <h4 class="text-success fw-bold m-0">Tên phòng đấu giá</h4>
-              <div class="alert alert-accent2 fw-bold m-0 px-5" role="alert">Won</div>
-
-            </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-between align-items-center">
-              <p class="text-secondary fw-bold m-0">Jan 15, 2025</p>
-              <p class="text-success fw-bold m-0">My Bid: $15,750</p>
-            </div>
-
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <div class=" bg-light p-3 rounded-3">
-                <div class="row">
-                  <div class="col-lg-3 col-md-6 col-sm-12 d-flex align-items-center">
-                    <img src="https://picsum.photos/200/300" class="card-img-top" style="height: 120px;" alt="...">
-                  </div>
-
-                  <div class="col-lg-9">
-                    <div class="row mt-3">
-                      <div
-                        class="col-lg-12 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4 ">
-                        <h5 class="m-0 fw-bold">Starry Night Over the Rhône</h5>
-                      </div>
-                      <div
-                        class="col-lg-12 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 ">Vincent van Gogh</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Participants
-                        </p>
-                        <p class="m-0 ">15</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Total Bids
-                        </p>
-                        <p class="m-0 ">24</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Starting Bid</p>
-                        <p class="m-0 ">$12,000</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Final Price</p>
-                        <p class="m-0 ">$15,750</p>
-                      </div>
-
-                    </div>
-
-
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-
-      </div>
+  <!-- Pagination -->
+  <div class="row mt-4">
+    <div class="col-12 d-flex justify-content-center">
+      <nav aria-label="Page navigation">
+        <ul class="pagination" :class="{ 'opacity-50 pe-none': loading }">
+          <li class="page-item" :class="{ disabled: currentPage === 0 || loading }">
+            <a class="page-link px-4" href="#" @click.prevent="goToPage(currentPage - 1)">
+              <i class="fa-solid fa-angle-left"></i>
+            </a>
+          </li>
+          <li v-for="page in visiblePages" :key="page" class="page-item" :class="{ active: page === currentPage, disabled: loading }">
+            <a class="page-link" href="#" @click.prevent="goToPage(page)">
+              <span v-if="loading && page === currentPage" class="spinner-border spinner-border-sm" role="status"></span>
+              <span v-else>{{ page + 1 }}</span>
+            </a>
+          </li>
+          <li class="page-item" :class="{ disabled: currentPage >= totalPages - 1 || loading }">
+            <a class="page-link px-4" href="#" @click.prevent="goToPage(currentPage + 1)">
+              <i class="fa-solid fa-angle-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
-
-
-
-    <div class="col-lg-12 col-md-12 col-sm-12">
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="row mb-3 gap-2">
-            <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-between align-items-center">
-              <h4 class="text-success fw-bold m-0">Tên phòng đấu giá</h4>
-              <div class="alert alert-accent2 fw-bold m-0 px-5" role="alert">Won</div>
-
-            </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-between align-items-center">
-              <p class="text-secondary fw-bold m-0">Jan 15, 2025</p>
-              <p class="text-success fw-bold m-0">My Bid: $15,750</p>
-            </div>
-
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <div class=" bg-light p-3 rounded-3">
-                <div class="row">
-                  <div class="col-lg-3 col-md-6 col-sm-12 d-flex align-items-center">
-                    <img src="https://picsum.photos/200/300" class="card-img-top" style="height: 120px;" alt="...">
-
-                  </div>
-                  <div class="col-lg-9">
-                    <div class="row mt-3">
-                      <div
-                        class="col-lg-5 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4 ">
-                        <p class="m-0 fw-bold">Artwork</p>
-                        <p class="m-0 ">Starry Night Over the Rhône</p>
-                      </div>
-                      <div
-                        class="col-lg-4 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Artist</p>
-                        <p class="m-0 ">Vincent van Gogh</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Participants
-                        </p>
-                        <p class="m-0 ">15</p>
-                      </div>
-                      <div
-                        class="col-lg-5 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Starting Bid</p>
-                        <p class="m-0 ">$12,000</p>
-                      </div>
-                      <div
-                        class="col-lg-4 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Final Price</p>
-                        <p class="m-0 ">$15,750</p>
-                      </div>
-                      <div
-                        class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between gap-2 mb-4">
-                        <p class="m-0 fw-bold">Total Bids
-                        </p>
-                        <p class="m-0 ">24</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </div> -->
-
   </div>
 
 </template>
@@ -274,30 +133,108 @@ export default {
   data() {
     return {
       list: [],
+      currentPage: 0,
+      totalPages: 1,
+      pageSize: 9,
+      loading: false,
+    }
+  },
+  computed: {
+    visiblePages() {
+      const pages = [];
+      const maxVisible = 5;
+      let start = Math.max(0, this.currentPage - Math.floor(maxVisible / 2));
+      let end = Math.min(this.totalPages, start + maxVisible);
+
+      if (end - start < maxVisible) {
+        start = Math.max(0, end - maxVisible);
+      }
+
+      for (let i = start; i < end; i++) {
+        pages.push(i);
+      }
+      return pages;
     }
   },
   mounted() {
     this.loadData();
   },
   methods: {
-    loadData() {
+    loadData(page = this.currentPage) {
+      this.loading = true;
       axios
-        .get('http://localhost:8081/api/auctionroom/history', {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem("token")
+        .post('http://localhost:8081/api/auctionroom/history',
+          { page: page, size: this.pageSize },
+          {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem("token")
+            }
           }
-        })
+        )
         .then((res) => {
-          this.list = res.data;
+          // Nếu API trả về object với content và totalPages
+          if (res.data && res.data.content) {
+            this.list = res.data.content;
+            this.totalPages = res.data.totalPages || 1;
+          } else {
+            // Nếu API trả về array trực tiếp
+            this.list = res.data || [];
+            // Ước tính totalPages dựa trên số lượng item
+            if (this.list.length < this.pageSize) {
+              this.totalPages = page + 1;
+            } else {
+              this.totalPages = page + 2; // Có thể còn trang tiếp
+            }
+          }
+          // Cập nhật currentPage sau khi load xong
+          this.currentPage = page;
           console.log("data loaded history", this.list);
-
+          // Scroll lên đầu
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         })
         .catch((err) => {
           console.error(err);
+        })
+        .finally(() => {
+          this.loading = false;
         });
+    },
+
+    goToPage(page) {
+      if (page < 0 || page >= this.totalPages || page === this.currentPage || this.loading) return;
+      this.loadData(page);
     },
 
   }
 }
 </script>
-<style></style>
+<style scoped>
+.pagination .page-link {
+  color: var(--bs-success);
+  border-color: var(--bs-success);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--bs-success) !important;
+  border-color: var(--bs-success) !important;
+  color: white !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.pagination .page-link:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.pagination .page-link:hover {
+  background-color: var(--bs-success);
+  border-color: var(--bs-success);
+  color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #6c757d;
+  border-color: #dee2e6;
+}
+</style>

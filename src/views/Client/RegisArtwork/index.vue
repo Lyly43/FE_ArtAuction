@@ -2,7 +2,7 @@
   <div class="container mb-5">
     <div class="row">
       <div class="col-lg-12 d-flex justify-content-between align-items-center mt-4 mb-3">
-        <div class=""  data-aos="fade-right" data-aos-duration="800">
+        <div class="" data-aos="fade-right" data-aos-duration="800">
           <h3 class="fw-bold">
             <!-- <i class="fas fa-palette me-2"></i> -->
             Register Artwork for Auction
@@ -12,11 +12,11 @@
             All fields marked with <span class="text-danger">*</span> are required.
           </p>
         </div>
-        <div class=" d-flex gap-3"  data-aos="fade-left" data-aos-duration="800">
+        <div class=" d-flex gap-3" data-aos="fade-left" data-aos-duration="800">
           <button type="button" class="btn btn-secondary" @click="resetForm" :disabled="isSubmitting">
             <i class="fas fa-redo me-2"></i>Reset
           </button>
-          <button type="submit" class="btn btn-success btn-lg px-5" :disabled="isSubmitting">
+          <button type="button" class="btn btn-success btn-lg px-5" :disabled="isSubmitting" @click="submitArtwork">
             <i v-if="isSubmitting" class="fas fa-spinner fa-spin me-2"></i>
             <i v-else class="fas fa-paper-plane me-2"></i>
             {{ isSubmitting ? 'Submitting...' : 'Register Artwork' }}
@@ -24,8 +24,8 @@
         </div>
       </div>
     </div>
-    <div class="row"  data-aos="fade-up" data-aos-duration="800">
-      <div class="col-lg-7">
+    <div class="row" data-aos="fade-up" data-aos-duration="800">
+      <div class="col-lg-7 d-flex">
         <div class="card border-top border-4 border-success">
           <div class="card-body">
             <div class="row">
@@ -113,7 +113,7 @@
 
         </div>
       </div>
-      <div class="col-lg-5">
+      <div class="col-lg-5 d-flex">
         <div class="card border-top border-4 border-success">
           <div class="card-body">
             <div class="row">
@@ -121,7 +121,7 @@
               <div class="col-lg-12 mb-3">
                 <div class="d-flex justify-content-between align-items-center">
                   <label class="form-label fw-bold">
-                    Starting Price (VND) <span class="text-danger">*</span>
+                  Starting Price (USD) <span class="text-danger">*</span>
                   </label>
                   <small class="text-muted">
                     Price: {{ formatCurrency(formData.startedPrice) }}
@@ -129,7 +129,7 @@
                 </div>
 
                 <input v-model.number="formData.startedPrice" type="number" class="form-control"
-                  :class="{ 'is-invalid': errors.startedPrice }" placeholder="Enter starting price" min="0" step="1000"
+                  :class="{ 'is-invalid': errors.startedPrice }" placeholder="Enter starting price" min="0" step="100"
                   required />
                 <div v-if="errors.startedPrice" class="invalid-feedback">{{ errors.startedPrice }}</div>
 
@@ -181,10 +181,10 @@
       </div>
     </div>
     <div class="row ">
-      <div class="col-lg-7">
+      <div class="col-lg-12">
 
         <!-- Info Card -->
-        <div class="card border-info mt-4">
+        <!-- <div class="card border-info mt-4">
           <div class="card-body">
             <h6 class="text-info mb-2">
               <i class="fas fa-info-circle me-2"></i>
@@ -198,7 +198,7 @@
               <li>Artwork will be reviewed within 24-48 hours</li>
             </ul>
           </div>
-        </div>
+        </div> -->
 
         <!-- AI Detection Result Card -->
         <div v-if="showAIDetectionResult" class="card border-danger mt-4 shadow-lg">
@@ -264,6 +264,75 @@
         </div>
       </div>
     </div>
+
+    <!-- Report AI Modal -->
+    <div v-if="showReportModal" class="modal-backdrop fade show"></div>
+    <div v-if="showReportModal" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true"
+      @click.self="closeReportModal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-danger fw-bold">Report AI Result</h5>
+            <button type="button" class="btn-close" @click="closeReportModal" :disabled="reportSubmitting"></button>
+          </div>
+          <form @submit.prevent="submitReportAI">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Report Type</label>
+                <select class="form-select" v-model="reportForm.reportType" :disabled="reportSubmitting" required>
+                  <option value="Inaccurate AI Result">Inaccurate AI Result</option>
+                  <option value="Wrong Classification">Wrong Classification</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label>
+                <textarea class="form-control" rows="4" v-model.trim="reportForm.reason"
+                  :class="{ 'is-invalid': showReportErrors && !reportForm.reason.trim() }"
+                  :disabled="reportSubmitting" placeholder="Describe the issue" required></textarea>
+                <div class="invalid-feedback">Please enter a detailed reason.</div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Attached Image</label>
+                <div class="alert alert-info py-2 mb-0" v-if="imageFile">
+                  <i class="fas fa-image me-2"></i>{{ imageFile.name }}
+                  <span class="badge bg-secondary ms-2">Using uploaded image</span>
+                </div>
+                <div class="alert alert-warning py-2 mb-0" v-else>
+                  No image found. Please upload artwork image before reporting.
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" @click="closeReportModal"
+                :disabled="reportSubmitting">Cancel</button>
+              <button type="submit" class="btn btn-danger" :disabled="reportSubmitting || !canSubmitReport">
+                <i v-if="reportSubmitting" class="fas fa-spinner fa-spin me-2"></i>
+                Submit Report
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Loading Modal -->
+    <div v-if="isSubmitting" class="modal-backdrop fade show"></div>
+    <div v-if="isSubmitting" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+          <div class="modal-body text-center py-5">
+            <div class="mb-3">
+              <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <h5 class="fw-bold text-success mb-2">Registering Artwork</h5>
+            <p class="text-muted mb-1">Please wait while we process your submission...</p>
+            <small class="text-muted">Do not close this window.</small>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -292,7 +361,16 @@ export default {
       currentYear: new Date().getFullYear(),
       // AI Detection Result
       showAIDetectionResult: false,
-      aiDetectionResult: null
+      aiDetectionResult: null,
+
+      // Report AI modal
+      showReportModal: false,
+      reportSubmitting: false,
+      reportForm: {
+        reportType: 'Inaccurate AI Result',
+        reason: ''
+      },
+      showReportErrors: false
     }
   },
 
@@ -420,10 +498,10 @@ export default {
 
     // Format currency
     formatCurrency(value) {
-      if (!value) return '0 VND';
-      return new Intl.NumberFormat('vi-VN', {
+      if (!value) return '$0.00';
+      return new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'VND'
+        currency: 'USD'
       }).format(value);
     },
 
@@ -433,8 +511,13 @@ export default {
       return Number(value).toFixed(2);
     },
 
+    canSubmitReport() {
+      return this.imageFile && this.reportForm.reason && this.reportForm.reason.trim();
+    },
+
     // Submit form
     submitArtwork() {
+      console.log('Register Artwork');
       // Validate
       if (!this.validateForm()) {
         this.$toast?.error?.('Please check the information you entered');
@@ -582,14 +665,60 @@ export default {
 
     // Handle Report AI Image
     handleReportAI() {
-      // Feature under development
-      this.$toast?.info?.('Report feature is under development. Please try again later!');
-      console.log('Report AI detection:', this.aiDetectionResult);
+      this.showReportErrors = false;
+      this.reportForm.reportType = 'Inaccurate AI Result';
+      this.reportForm.reason = '';
+      this.showReportModal = true;
+    },
 
-      // Đóng result card sau khi thông báo
-      setTimeout(() => {
+    closeReportModal() {
+      if (this.reportSubmitting) return;
+      this.showReportModal = false;
+      this.reportForm.reason = '';
+      this.showReportErrors = false;
+    },
+
+    async submitReportAI() {
+      if (!this.imageFile) {
+        this.$toast?.error?.('Không tìm thấy ảnh đã tải lên để gửi báo cáo.');
+        return;
+      }
+
+      if (!this.reportForm.reason.trim()) {
+        this.showReportErrors = true;
+        return;
+      }
+
+      this.reportSubmitting = true;
+
+      const formData = new FormData();
+      formData.append('reportType', this.reportForm.reportType || 'Inaccurate AI Result');
+      formData.append('reason', this.reportForm.reason.trim());
+      formData.append('image', this.imageFile);
+
+      try {
+        console.log('AI report payload:', {
+          reportType: this.reportForm.reportType,
+          reason: this.reportForm.reason.trim(),
+          image: this.imageFile?.name
+        });
+
+        const res = await axios.post('http://localhost:8081/api/reports/ai-artwork', formData, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+
+        console.log('AI report response:', res.data);
+        this.$toast?.success?.('Đã gửi báo cáo AI thành công.');
+        this.closeReportModal();
         this.closeAIDetectionResult();
-      }, 1000);
+      } catch (error) {
+        console.error('Error reporting AI artwork:', error);
+        this.$toast?.error?.(error.response?.data?.message || 'Không thể gửi báo cáo AI.');
+      } finally {
+        this.reportSubmitting = false;
+      }
     }
   }
 }
@@ -712,5 +841,165 @@ export default {
 .card-header.bg-danger {
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(4, 74, 66, 0.95);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.loading-content {
+  text-align: center;
+  color: white;
+}
+
+.logo-spinner {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-circle {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  animation: float 3s ease-in-out infinite;
+}
+
+.logo-circle i {
+  font-size: 2.5rem;
+  color: #044a42;
+  animation: rotate 5s linear infinite;
+}
+
+.ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  animation: ripple 2s ease-out infinite;
+}
+
+.delay-1 {
+  animation-delay: 1s;
+}
+
+.loading-title {
+  font-weight: 700;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+}
+
+.loading-text {
+  font-size: 1.1rem;
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+}
+
+.loading-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.loading-dots span {
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    width: 80px;
+    height: 80px;
+    opacity: 0.8;
+  }
+
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+
+  40% {
+    transform: scale(1);
+  }
 }
 </style>

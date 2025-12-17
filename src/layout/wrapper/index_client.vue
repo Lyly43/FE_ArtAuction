@@ -32,6 +32,7 @@ export default {
 @import "../../assets/css/pages.css";
 @import "../../assets/css/bootstrap.min.css";
 
+
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap';
 /* @import '@fortawesome/fontawesome-free/css/all.min.css'; */
