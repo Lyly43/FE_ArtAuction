@@ -30,10 +30,10 @@
             <a href="#home">Auction</a>
           </div>
           <div class="col-lg-12 mb-4 footer-links">
-            <a href="#home">About Us</a>
+            <a href="#home">Launch</a>
           </div>
           <div class="col-lg-12 mb-4 footer-links">
-            <a href="#home">Help</a>
+            <a href="#home">About us</a>
           </div>
         </div>
       </div>

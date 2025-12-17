@@ -49,23 +49,21 @@
                 <p class="m-0">Payment Time</p>
                 <p class="m-0">{{ item.createdAt }}</p>
               </div>
-              <div class="col-12 d-flex align-items-center justify-content-between mb-2">
-                <p class="fs-6  m-0">Id Artwork</p>
-                <p class=" m-0">{{ item.artworkId }}</p>
+              <div class="col-6">
+                <img :src="item.artworkAvt" alt="" class="img-thumbnail img-invoice w-100 object-fit-cover" style="height: 150px;">
               </div>
-              <div class="col-5">
-                <img :src="item.artworkAvt" alt="" class="img-thumbnail img-invoice w-100">
-              </div>
-              <div class="col-7">
+              <div class="col-6">
+                <p class=" m-0 small text-truncate">{{ item.artworkId }}</p>
 
                 <p class="m-0 fw-bold">{{ item.artworkTitle }}</p>
+
               </div>
             </div>
             <hr>
             <div class="row mt-auto">
               <div class="col-12 d-flex align-items-center justify-content-between mb-3">
                 <p class="m-0 fw-bold text-success">Total </p>
-                <p class="m-0 fw-bold">{{ item.totalAmount }}</p>
+                <p class="m-0 fw-bold">{{ formatCurrency(item.totalAmount) }}</p>
               </div>
               <div class="col-12">
                 <div v-if="item.paymentStatus === 1" class="d-flex gap-2">
@@ -81,35 +79,34 @@
 
           </div>
         </div>
-        <!-- <div class="card border-0 shadow-sm m-3 w-100">
-          <div class="row g-0 align-items-center p-3 card-items">
-            <li class="list-group-item border-0 d-flex justify-content-between">
-              <p class="fs-6 fw-bold">ID Phòng: {{ item.auctionRoom }}</p>
-              <p class="fs-6 fw-bold">ID Phòng: {{ item.auctionRoomId }}</p>
-            </li>
-          </div>
-          <hr class="my-2" />
-          <ul class="list-group list-group-flush small">
-            <li class="list-group-item border-0 d-flex justify-content-between fw-bold">
-              <p class="total">Total Payment</p>
-              <p class="priceTotal">{{ item.totalAmount }}</p>
-            </li>
 
-            <li class="list-group-item border-0 d-flex justify-content-between">
-              <p>Payment Status</p>
-              <p class="px-2 py-1 rounded pay-status-inv"
-                :class="item.status === 'Paid' ? 'bg-success text-white' : 'bg-warning text-dark'">
-                {{ item.paymentStatus }}
-              </p>
-            </li>
-
-            <li class="list-group-item border-0 d-flex justify-content-between">
-              <p>Payment Time</p>
-              <p>{{ item.createdAt }}</p>
-            </li>
-          </ul>
-        </div> -->
       </div>
+    </div>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="row my-4" v-if="totalPages > 1">
+    <div class="col-12 d-flex justify-content-center">
+      <nav aria-label="Invoice pagination">
+        <ul class="pagination">
+          <li class="page-item" :class="{ disabled: currentPage === 0 }">
+            <a class="page-link px-4" href="#" @click.prevent="prevPage">
+              <i class="fa-solid fa-angle-left"></i>
+            </a>
+          </li>
+          <li class="page-item" v-for="page in displayedPageNumbers" :key="page"
+            :class="{ active: page === currentPage + 1 }">
+            <a class="page-link" href="#" @click.prevent="goToPage(page - 1)">
+              {{ page }}
+            </a>
+          </li>
+          <li class="page-item" :class="{ disabled: currentPage >= totalPages - 1 }">
+            <a class="page-link px-4" href="#" @click.prevent="nextPage">
+              <i class="fa-solid fa-angle-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 </template>
@@ -124,50 +121,94 @@ export default {
       invoices: [],
       loading: false,
       error: null,
+      currentPage: 0,
+      totalPages: 1,
+      pageSize: 6,
     };
   },
 
+  computed: {
+    displayedPageNumbers() {
+      const pages = [];
+      const maxPagesToShow = 5;
+      let startPage = Math.max(1, this.currentPage + 1 - Math.floor(maxPagesToShow / 2));
+      let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
+
+      if (endPage - startPage < maxPagesToShow - 1) {
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      return pages;
+    }
+  },
+
   methods: {
+    formatCurrency(value) {
+      const num = Number(value || 0);
+      return num.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    },
+
     fetchInvoices() {
+      this.loading = true;
       axios
-        .get("http://localhost:8081/api/invoice/my-invoice", {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem("token")
+        .post("http://localhost:8081/api/invoice/my-invoice",
+          { page: this.currentPage, size: this.pageSize },
+          {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem("token")
+            }
           }
-        })
+        )
         .then((res) => {
-          this.invoices = res.data;
-          // console.log(list);
+          this.invoices = res.data || [];
+          // Ước tính totalPages
+          if (this.invoices.length < this.pageSize) {
+            this.totalPages = this.currentPage + 1;
+          } else {
+            this.totalPages = this.currentPage + 2;
+          }
           console.log("data loaded invoice", this.invoices);
         })
         .catch((err) => {
           this.error = err.message;
+          console.error("Fetch invoices error:", err);
+        })
+        .finally(() => {
+          this.loading = false;
         });
     },
 
-    // Thêm hóa đơn
-    addInvoice() {
-      axios
-        .post("http://localhost:8081/addInvoice", this.newInvoice, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("key_admin"),
-          },
-        })
-        .then((res) => {
-          this.invoices.unshift(res.data);
-          this.newInvoice = {
-            auctionRoom: "",
-            amount: 0,
-            paymentStatus: "Pending",
-            createdAt: new Date().toISOString().slice(0, 10),
-          };
-        })
-        .catch((err) => {
-          this.error = err.message;
-        });
+    prevPage() {
+      if (this.currentPage > 0) {
+        this.currentPage--;
+        this.fetchInvoices();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     },
 
+    nextPage() {
+      if (this.currentPage < this.totalPages - 1) {
+        this.currentPage++;
+        this.fetchInvoices();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    },
 
+    goToPage(pageNumber) {
+      if (pageNumber >= 0 && pageNumber < this.totalPages && pageNumber !== this.currentPage) {
+        this.currentPage = pageNumber;
+        this.fetchInvoices();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    },
   },
 
   mounted() {
@@ -179,16 +220,30 @@ export default {
 
 
 <style scoped>
-/* .priceTotal,
-.total {
-  color: #044a42;
-  font-weight: bold;
-  font-size: 16px;
+.pagination .page-link {
+  color: var(--bs-success);
+  border-color: var(--bs-success);
 }
-.card {
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) !important;
+
+.pagination .page-item.active .page-link {
+  background-color: var(--bs-success) !important;
+  border-color: var(--bs-success) !important;
+  color: white !important;
 }
-.pay-status-inv {
-  font-size: 12px;
-} */
+
+.pagination .page-link:hover {
+  background-color: var(--bs-success);
+  border-color: var(--bs-success);
+  color: white;
+}
+
+.pagination .page-link:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #6c757d;
+  border-color: #dee2e6;
+}
 </style>

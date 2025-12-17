@@ -26,7 +26,7 @@ export default {
 </script>
 <style>
 @import "../../assets/css/custom-purple-theme.css";
-
+@import "../../assets/css/triangles.css";
 @import "../../assets/css/responsive.css";
 @import "../../assets/css/remixicon.css";
 @import "../../assets/css/style.css";
