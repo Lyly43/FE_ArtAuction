@@ -106,7 +106,7 @@
                 v-model="search"
                 type="text"
                 class="form-control bg-transparent border-0 shadow-none"
-                placeholder="Search by name, email..."
+                placeholder="Search by id, name..."
                 @input="handleSearch"
               />
             </div>

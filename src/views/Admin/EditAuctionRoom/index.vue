@@ -694,8 +694,20 @@ export default {
     saveChanges() {
       // 1. Kiểm tra dữ liệu bắt buộc
       if (!this.roomForm.roomName || !this.roomForm.adminId)
-        return alert("Vui lòng nhập Tên phòng và ID Admin!");
-      if (this.scheduleList.length === 0) return alert("Phòng đấu giá cần ít nhất 1 tác phẩm!");
+        return alert("Please enter the Room Name and Administrator ID!");
+      if (this.scheduleList.length === 0)
+        return alert("The auction house needs at least one artwork!");
+
+      //time bắt đầu phải nhỏ hơn time kết thúc dự kiến
+      if (this.roomForm.startedAt && this.roomForm.estimatedEndTime) {
+        const startTime = new Date(this.roomForm.startedAt);
+        const endTime = new Date(this.roomForm.estimatedEndTime);
+
+        if (startTime >= endTime) {
+          alert("The start time must be shorter than the expected end time!");
+          return; // Dừng hàm lại, không lưu
+        }
+      }
 
       this.isSaving = true;
 
@@ -728,18 +740,22 @@ export default {
         .then((uploadRes) => {
           if (uploadRes) {
             // Lấy phần data bên trong (chứa imageUrl)
-            const resData = uploadRes.data.data || uploadRes.data;
+            const responseData = uploadRes.data;
+            const resDate = responseData.date || responseData.data; // Dùng resDate để chứa đối tượng { imageUrl: ... } // Lấy URL từ key "imageUrl" như trong Postman đã hiện
 
-            // Lấy URL từ key "imageUrl" như trong Postman đã hiện
             let finalUrl = "";
-            if (typeof resData === "object" && resData.imageUrl) {
-              finalUrl = resData.imageUrl;
-            } else if (typeof resData === "string") {
-              finalUrl = resData;
+            if (typeof resDate === "object" && resDate.imageUrl) {
+              finalUrl = resDate.imageUrl;
+            } else if (typeof resDate === "string") {
+              // Giữ lại logic string nếu cần
+              finalUrl = resDate;
+            } else if (typeof responseData.imageUrl === "string") {
+              // Fallback nếu server trả thẳng imageUrl
+              finalUrl = responseData.imageUrl;
             }
 
             if (!finalUrl) {
-              alert("Error: 'imageUrl' not found in API response!");
+              alert("Error: 'imageUrl' not found in API response! Check server structure.");
               throw new Error("Cannot extract Image URL");
             }
 
@@ -784,13 +800,11 @@ export default {
           );
         })
         .then((updateRes) => {
-          // --- BƯỚC D: XỬ LÝ KHI UPDATE THÀNH CÔNG ---
-          console.log("Update thành công:", updateRes);
-          alert("Cập nhật phòng đấu giá thành công!");
+          console.log("Update successful:", updateRes);
+          alert("Update the successful auction room!");
           this.$router.push("/admin/management-auction");
         })
         .catch((err) => {
-          // --- BƯỚC E: BẮT LỖI (Upload lỗi hoặc Update lỗi đều vào đây) ---
           console.error("Lỗi trong quá trình lưu:", err);
 
           let errorMsg = "Đã có lỗi xảy ra!";
@@ -799,7 +813,7 @@ export default {
             errorMsg = err.response.data.message || "Lỗi dữ liệu từ Server";
             console.log("Chi tiết lỗi Server:", err.response.data);
           }
-          alert("Cập nhật thất bại: " + errorMsg);
+          alert("Update failed:" + errorMsg);
         })
         .finally(() => {
           // Tắt trạng thái loading

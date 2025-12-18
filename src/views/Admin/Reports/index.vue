@@ -158,7 +158,7 @@
                               type="radio"
                               name="statusFilter"
                               id="statusPaid"
-                              :value="1"
+                              :value="2"
                               v-model="filter.reportStatuses"
                             />
                             <label class="form-check-label text-success" for="statusActive"
@@ -184,7 +184,7 @@
                               type="radio"
                               name="statusFilter"
                               id="statusOverdue"
-                              :value="2"
+                              :value="1"
                               v-model="filter.reportStatuses"
                             />
                             <label class="form-check-label text-danger" for="statusLocked"
@@ -426,13 +426,13 @@
                       <i class="fa-solid fa-ellipsis-vertical text-secondary"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
-                      <li>
+                      <!-- <li>
                         <button class="dropdown-item py-2">
                           <i class="fa-regular fa-eye me-2 text-primary"></i>See details
                         </button>
                       </li>
-                      <li><hr class="dropdown-divider my-1" /></li>
-                      <li>
+                      <li><hr class="dropdown-divider my-1" /></li> -->
+                      <!-- <li>
                         <button class="dropdown-item py-2">
                           <i class="fa-solid fa-triangle-exclamation me-2"></i>Warning
                         </button>
@@ -441,13 +441,13 @@
                         <button class="dropdown-item py-2 text-danger">
                           <i class="fa-solid fa-ban me-2"></i>Block User
                         </button>
-                      </li>
+                      </li> -->
                       <li>
                         <button
                           class="dropdown-item py-2 text-danger"
                           @click="handleDelete(item.id)"
                         >
-                          <i class="fa-regular fa-trash-can me-2"></i>Delete Report
+                          <i class="fa-regular fa-trash-can me-2"></i>Delete
                         </button>
                       </li>
                     </ul>
@@ -471,7 +471,7 @@ export default {
       isLoading: false,
       statistics: [],
       filter: {
-        reportStatuses: [],
+        reportStatuses: null,
         objectTypes: [],
         createdAtFrom: "",
         createdAtTo: "",
@@ -520,9 +520,9 @@ export default {
       switch (status) {
         case 0:
           return "bg-warning-subtle text-warning-emphasis border-warning-subtle";
-        case 2:
-          return "bg-danger-subtle text-danger border-danger-subtle";
         case 1:
+          return "bg-danger-subtle text-danger border-danger-subtle";
+        case 2:
           return "bg-success-subtle text-success border-success-subtle";
         default:
           return "bg-light text-dark border-light";
@@ -619,10 +619,11 @@ export default {
     },
 
     handleFilter() {
-      this.isLoading = true;
+      let statusValue = this.filter.reportStatuses;
+      let statusesToSend = statusValue !== null && statusValue !== undefined ? [statusValue] : null;
 
       const payload = {
-        reportStatuses: this.filter.reportStatuses.length > 0 ? this.filter.reportStatuses : null,
+        reportStatuses: statusesToSend,
         objectTypes: this.filter.objectTypes.length > 0 ? this.filter.objectTypes : null,
         createdAtFrom: this.filter.createdAtFrom || null,
         createdAtTo: this.filter.createdAtTo || null,
@@ -650,7 +651,7 @@ export default {
 
     resetFilter() {
       this.filter = {
-        reportStatuses: [],
+        reportStatuses: null,
         objectTypes: [],
         createdAtFrom: "",
         createdAtTo: "",

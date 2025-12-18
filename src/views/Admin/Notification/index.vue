@@ -198,7 +198,7 @@
                   <li>
                     <button
                       class="dropdown-item text-danger"
-                      @click="deleteNotification(notification.id)"
+                      @click="handleDelete(notification.id)"
                     >
                       <i class="fa-solid fa-trash me-2"></i>
                       Delete
@@ -408,6 +408,25 @@ export default {
         })
         .finally(() => {
           this.isLoading = false;
+        });
+    },
+    // Xóa
+    handleDelete(notiId) {
+      if (!confirm(`Are you sure you want to delete this notification?`)) return;
+      axios
+        .delete(`http://localhost:8081/api/admin/notifications/xoa/${notiId}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then(() => {
+          alert("Deleted successfully!");
+          this.loadNotificationData();
+        })
+        .catch((err) => {
+          console.error("Lỗi khi xóa:", err);
+          const message = err.response?.data?.message || "Có lỗi xảy ra khi xóa!";
+          alert(message);
         });
     },
   },

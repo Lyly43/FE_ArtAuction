@@ -666,8 +666,8 @@ export default {
     },
 
     // Xóa
-    handleDelete(artworkId, artworkName) {
-      if (!confirm(`Bạn có chắc chắn muốn xóa artwork: ${artworkName}?`)) return;
+    handleDelete(artworkId) {
+      if (!confirm(`Are you sure you want to delete this artwork?`)) return;
       axios
         .delete(`http://localhost:8081/api/admin/artworks/xoa-tac-pham/${artworkId}`, {
           headers: {
@@ -675,7 +675,7 @@ export default {
           },
         })
         .then(() => {
-          alert("Đã xóa thành công!");
+          alert("Deleted successfully!");
           this.loadArtworkData();
         })
         .catch((err) => {

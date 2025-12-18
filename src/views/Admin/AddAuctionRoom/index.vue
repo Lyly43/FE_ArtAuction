@@ -635,6 +635,15 @@ export default {
         alert("Please select start and end time!");
         return;
       }
+
+      //time bắt đầu phải nhỏ hơn time kết thúc dự kiến
+      const startTime = new Date(this.roomForm.startedAt);
+      const endTime = new Date(this.roomForm.estimatedEndTime);
+
+      if (startTime >= endTime) {
+        alert("The start time must be shorter than the expected end time!");
+        return;
+      }
       if (this.scheduleList.length === 0) {
         alert("Please add at least 1 piece to the auction!");
         return;
