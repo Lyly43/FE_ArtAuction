@@ -51,7 +51,7 @@
           <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 bg-dark">
             <div
               class="card-body p-0 d-flex align-items-center justify-content-center position-relative"
-              style="min-height: 600px; background-color: #1a1a1a"
+              style="min-height: 450px; background-color: #1a1a1a"
             >
               <div id="artworkCarousel" class="carousel slide w-100 h-100" data-bs-ride="false">
                 <div class="carousel-inner h-100">
@@ -66,7 +66,7 @@
                         :src="img.src"
                         class="d-block mw-100 mh-100 shadow-lg rounded"
                         :alt="img.alt"
-                        style="max-height: 400px; object-fit: contain"
+                        style="max-height: 320px; object-fit: contain"
                       />
                     </div>
 
@@ -232,39 +232,64 @@
                       :disabled="artwork.status !== 0"
                     />
                   </div>
-                  <!-- <div class="text-end mt-1">
-                    <small class="text-muted fst-italic"
-                      >≈ {{ formatVND(editedStartingPrice * exchangeRate) }}</small
-                    >
-                  </div> -->
                 </div>
 
                 <hr class="border-secondary opacity-10 my-4" />
 
-                <div v-if="artwork.status === 0" class="d-grid gap-3">
-                  <button
-                    class="btn btn-primary btn-lg fw-bold shadow-sm"
-                    @click="handleApproval('approve')"
-                    :disabled="actionLoading === 'approve' || actionLoading === 'reject'"
-                  >
-                    <span
-                      v-if="actionLoading === 'approve'"
-                      class="spinner-border spinner-border-sm me-2"
-                    ></span>
-                    <i class="fa-solid fa-check me-2" v-else></i> Approve Artwork
-                  </button>
+                <div v-if="artwork.status === 0">
+                  <div class="d-grid gap-3" v-if="!showRejectReasonInput">
+                    <button
+                      class="btn btn-primary btn-lg fw-bold shadow-sm"
+                      @click="handleApproval('approve')"
+                      :disabled="actionLoading === 'approve'"
+                    >
+                      <span
+                        v-if="actionLoading === 'approve'"
+                        class="spinner-border spinner-border-sm me-2"
+                      ></span>
+                      <i class="fa-solid fa-check me-2" v-else></i> Approve Artwork
+                    </button>
 
-                  <button
-                    class="btn btn-outline-danger fw-bold"
-                    @click="handleApproval('reject')"
-                    :disabled="actionLoading === 'approve' || actionLoading === 'reject'"
-                  >
-                    <span
-                      v-if="actionLoading === 'reject'"
-                      class="spinner-border spinner-border-sm me-2"
-                    ></span>
-                    <i class="fa-solid fa-xmark me-2" v-else></i> Reject
-                  </button>
+                    <button
+                      class="btn btn-outline-danger fw-bold"
+                      @click="showRejectReasonInput = true"
+                    >
+                      <i class="fa-solid fa-xmark me-2"></i> Reject
+                    </button>
+                  </div>
+
+                  <div v-else class="animate__animated animate__fadeIn">
+                    <label class="form-label fw-bold text-danger small">
+                      Reason for Rejection <span class="text-danger">*</span>
+                    </label>
+                    <textarea
+                      class="form-control mb-3 shadow-none bg-light"
+                      rows="3"
+                      v-model="rejectionReason"
+                      placeholder="Please enter the reason why this artwork is rejected..."
+                    ></textarea>
+
+                    <div class="d-flex gap-2">
+                      <button
+                        class="btn btn-light text-secondary flex-fill fw-bold"
+                        @click="cancelReject"
+                        :disabled="actionLoading === 'reject'"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        class="btn btn-danger flex-fill fw-bold shadow-sm"
+                        @click="handleApproval('reject')"
+                        :disabled="actionLoading === 'reject' || !rejectionReason.trim()"
+                      >
+                        <span
+                          v-if="actionLoading === 'reject'"
+                          class="spinner-border spinner-border-sm me-2"
+                        ></span>
+                        <i class="fa-solid fa-paper-plane me-2" v-else></i> Confirm Reject
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 <div v-else class="text-center py-2">
@@ -294,10 +319,13 @@ export default {
       actionLoading: "",
       editedStartingPrice: 0,
       exchangeRate: 25400,
+
+      // Thêm biến cho chức năng từ chối
+      showRejectReasonInput: false,
+      rejectionReason: "",
     };
   },
   computed: {
-    // Logic gộp ảnh không đổi
     artworkImages() {
       if (!this.artwork) return [];
       const gallery =
@@ -307,7 +335,11 @@ export default {
           if (typeof img === "string") {
             return { src: img, alt: `${this.artwork.title} - ${index + 1}`, type: "art" };
           }
-          return { src: img.src || img.url, alt: img.alt || `Artwork - ${index + 1}`, type: "art" };
+          return {
+            src: img.src || img.url,
+            alt: img.alt || `Artwork - ${index + 1}`,
+            type: "art",
+          };
         });
       }
       if (this.artwork.avtArtwork) {
@@ -323,7 +355,11 @@ export default {
         if (typeof img === "string") {
           return { src: img, alt: `Certificate - ${index + 1}`, type: "cert" };
         }
-        return { src: img.src || img.url, alt: `Certificate - ${index + 1}`, type: "cert" };
+        return {
+          src: img.src || img.url,
+          alt: `Certificate - ${index + 1}`,
+          type: "cert",
+        };
       });
     },
     allImages() {
@@ -355,7 +391,6 @@ export default {
         })
         .then((res) => {
           this.artwork = res.data;
-          // Set giá mặc định để hiển thị
           this.editedStartingPrice = res.data?.startedPrice ?? res.data?.price ?? 0;
         })
         .catch((err) => {
@@ -367,22 +402,37 @@ export default {
         });
     },
 
+    cancelReject() {
+      this.showRejectReasonInput = false;
+      this.rejectionReason = "";
+    },
+
     handleApproval(action) {
       if (!this.artwork?.id) return;
+
+      const endpoint =
+        action === "approve"
+          ? `http://localhost:8081/api/admin/artworks/approve/${this.artwork.id}`
+          : `http://localhost:8081/api/admin/artworks/reject/${this.artwork.id}`;
+
+      let payload = {};
+
       if (action === "approve") {
         const priceUSD = Number(this.editedStartingPrice);
         if (!priceUSD || priceUSD <= 0) {
           window.alert("Please enter a valid Starting Price (USD) greater than 0.");
           return;
         }
+        payload = { startedPrice: priceUSD };
+      } else {
+        // Trường hợp từ chối
+        if (!this.rejectionReason.trim()) {
+          window.alert("Please enter a rejection reason.");
+          return;
+        }
+        // Gửi lý do lên server (API cần hỗ trợ nhận field reason)
+        payload = { reason: this.rejectionReason };
       }
-      const endpoint =
-        action === "approve"
-          ? `http://localhost:8081/api/admin/artworks/approve/${this.artwork.id}`
-          : `http://localhost:8081/api/admin/artworks/reject/${this.artwork.id}`;
-
-      const payload =
-        action === "approve" ? { startedPrice: Number(this.editedStartingPrice) } : {};
 
       this.actionLoading = action;
       axios
@@ -395,6 +445,9 @@ export default {
               ? "Artwork approved successfully."
               : "Artwork rejected successfully."
           );
+          // Reset form và load lại dữ liệu
+          this.showRejectReasonInput = false;
+          this.rejectionReason = "";
           this.fetchArtwork();
         })
         .catch((err) => {
@@ -441,4 +494,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.transition-base {
+  transition: all 0.2s ease-in-out;
+}
+</style>
