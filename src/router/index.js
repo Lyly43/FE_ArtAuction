@@ -85,7 +85,7 @@ const routes = [
     ],
   },
   {
-    path: "/client/payment",
+    path: "/client/payment/:roomId/:invoiceId",
     name: "payment",
     component: () => import("../views/Client/Payment/index.vue"),
     meta: { layout: "client" },

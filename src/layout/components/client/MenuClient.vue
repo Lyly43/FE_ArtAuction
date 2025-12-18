@@ -102,16 +102,14 @@
                 aria-expanded="false">
                 <div class="d-flex gap-3 align-items-center">
                   <!-- <img src="../../../assets/img/avt.png" class="img-avatar" alt="" /> -->
-                  <img v-bind:src="user.avt ||
-                    '../../../assets/img/avt.png'" class="img-avatar" alt="" />
+                  <img :src="avatarSrc" class="img-avatar" alt="" />
                 </div>
               </div>
               <ul class="dropdown-menu dropdown-menu-end mt-2 p-3 border-2 border-success shadow overflow-hidden">
                 <li>
                   <div class="card bg-accent shadow-sm mb-2">
                     <div class="card-body p-2 d-flex align-items-center gap-3">
-                      <img v-bind:src="user.avt ||
-                        '../../../assets/img/avt.png'" class="img-avatar" alt="" />
+                      <img :src="avatarSrc" class="img-avatar" alt="" />
                       <div class="d-flex align-content-center flex-column">
                         <p class="fw-bold text-success mb-1">
                           {{ user.name }}
@@ -128,13 +126,13 @@
                     <p class="m-0">Profile</p>
                   </router-link>
                 </li>
-                <li>
+                <!-- <li>
                   <router-link to="/client/payment"
                     class="dropdown-item d-flex align-items-center gap-3 py-2 px-4 mt-2 mb-1">
                     <i class="bi bi-credit-card fa-xl me-2"></i>
                     <p class="m-0">Payment</p>
                   </router-link>
-                </li>
+                </li> -->
                 <li>
                   <router-link to="" class="dropdown-item d-flex align-items-center gap-3 py-2 px-4 mt-2 mb-1">
                     <i class="bi bi-gear fa-xl me-2"></i>
@@ -191,6 +189,7 @@
 <script>
 import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
+import defaultAvatar from "../../../assets/img/avt.png";
 const toaster = createToaster({ position: "bottom-right" });
 
 export default {
@@ -205,16 +204,25 @@ export default {
 
       loading: false,
       error: null,
+      defaultAvatar: defaultAvatar,
     };
+  },
+  computed: {
+    avatarSrc() {
+      return this.user.avt || this.defaultAvatar;
+    },
   },
   mounted() {
     this.fetchNotificationsbyId();
+
+    const rawAvt = localStorage.getItem("avatar_kh");
+    const avt = (!rawAvt || rawAvt === "null" || rawAvt === "undefined") ? "" : rawAvt;
 
     this.user = {
       name: localStorage.getItem("name_kh"),
       email: localStorage.getItem("email_kh"),
       check: localStorage.getItem("check_kh"),
-      avt: localStorage.getItem("avatar_kh"),
+      avt: avt,
     };
     console.log("menu", this.user);
 

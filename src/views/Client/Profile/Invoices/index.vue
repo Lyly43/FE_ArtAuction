@@ -27,10 +27,27 @@
     </div>
   </div>
   <div class="">
-    <div v-if="loading" class="text-center">Loading...</div>
+    <div v-if="loading" class="text-center py-5">
+      <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 text-muted">Loading data...</p>
+    </div>
     <!-- <div v-else-if="error" class="text-danger">{{ error }}</div> -->
-    <div v-else class="row">
-      <div v-for="item in invoices" :key="item.id" class="col-12 col-lg-6 col-md-6 d-flex">
+    <div v-else class="row mb-5">
+      <!-- Empty state -->
+      <div v-if="invoices.length === 0" class="col-12">
+        <div class="card">
+          <div class="card-body text-center py-5">
+            <i class="fa-regular fa-inbox fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted mb-2">No data</h5>
+            <p class="text-muted m-0">You don't have any invoices yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- List data -->
+      <div v-else v-for="item in invoices" :key="item.id" class="col-12 col-lg-6 col-md-6 d-flex">
         <div class="card w-100 overflow-hidden mb-4">
           <div class="card-body d-flex flex-column">
             <div class="row gap-2">
@@ -50,7 +67,8 @@
                 <p class="m-0">{{ item.createdAt }}</p>
               </div>
               <div class="col-6">
-                <img :src="item.artworkAvt" alt="" class="img-thumbnail img-invoice w-100 object-fit-cover" style="height: 150px;">
+                <img :src="item.artworkAvt" alt="" class="img-thumbnail img-invoice w-100 object-fit-cover"
+                  style="height: 150px;">
               </div>
               <div class="col-6">
                 <p class=" m-0 small text-truncate">{{ item.artworkId }}</p>
@@ -67,11 +85,15 @@
               </div>
               <div class="col-12">
                 <div v-if="item.paymentStatus === 1" class="d-flex gap-2">
-                  <button class="btn btn-outline-success w-100">View Details</button>
-                  <button class="btn btn-success w-100">Paid</button>
+                  <router-link :to="`/client/payment/${item.auctionRoomId}/${item.id}`" class="w-100">
+                    <button class="btn btn-outline-success w-100">View Details</button>
+                  </router-link>
+                  <button class="btn btn-success w-100" disabled>Paid</button>
                 </div>
                 <div v-else class="d-flex gap-2">
-                  <button class="btn btn-outline-danger w-100">View Details</button>
+                  <router-link :to="`/client/payment/${item.auctionRoomId}/${item.id}`" class="w-100">
+                    <button class="btn btn-outline-danger w-100">View Details</button>
+                  </router-link>
                   <button class="btn btn-danger w-100">Unpaid</button>
                 </div>
               </div>
@@ -85,7 +107,7 @@
   </div>
 
   <!-- Pagination Controls -->
-  <div class="row my-4" v-if="totalPages > 1">
+  <div class="row my-4" v-if="invoices.length > 0 && totalPages > 1">
     <div class="col-12 d-flex justify-content-center">
       <nav aria-label="Invoice pagination">
         <ul class="pagination">
@@ -148,11 +170,11 @@ export default {
   methods: {
     formatCurrency(value) {
       const num = Number(value || 0);
-      return num.toLocaleString('en-US', {
+      return num.toLocaleString('vi-VN', {
         style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        currency: 'VND',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
       });
     },
 
