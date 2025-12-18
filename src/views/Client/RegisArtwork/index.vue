@@ -121,7 +121,7 @@
               <div class="col-lg-12 mb-3">
                 <div class="d-flex justify-content-between align-items-center">
                   <label class="form-label fw-bold">
-                  Starting Price (USD) <span class="text-danger">*</span>
+                  Starting Price (VND) <span class="text-danger">*</span>
                   </label>
                   <small class="text-muted">
                     Price: {{ formatCurrency(formData.startedPrice) }}
@@ -498,10 +498,12 @@ export default {
 
     // Format currency
     formatCurrency(value) {
-      if (!value) return '$0.00';
-      return new Intl.NumberFormat('en-US', {
+      if (!value) return '0 ₫';
+      return new Intl.NumberFormat('vi-VN', {
         style: 'currency',
-        currency: 'USD'
+        currency: 'VND',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
       }).format(value);
     },
 

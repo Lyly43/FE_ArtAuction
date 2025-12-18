@@ -9,7 +9,7 @@
               <div
                 class="col-lg-4 col-md-12 d-flex flex-column justify-content-center align-items-center mb-lg-0 mb-xs-4">
                 <!-- <img src="../../../assets/img/user_test.jpg" class="avatar mb-4" alt="" /> -->
-                <img :src="userData.avt" class="avatar m-0 mb-4 " alt="" />
+                <img :src="userData.avt || '/src/assets/img/avt.png'" class="avatar m-0 mb-4 " alt="" />
 
 
 

@@ -33,13 +33,25 @@
         <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
           <span class="visually-hidden">Loading...</span>
         </div>
-        <p class="mt-3 text-muted">Đang tải dữ liệu...</p>
+        <p class="mt-3 text-muted">Loading data...</p>
       </div>
     </div>
   </div>
 
-  <div v-else class="row">
-    <template v-for="(v, k) in list" :key="k">
+  <div v-else class="row mb-5">
+    <!-- Empty state -->
+    <div v-if="list.length === 0" class="col-12">
+      <div class="card">
+        <div class="card-body text-center py-5">
+          <i class="fa-regular fa-inbox fa-3x text-muted mb-3"></i>
+          <h5 class="text-muted mb-2">No data</h5>
+          <p class="text-muted m-0">You haven't participated in any auction sessions yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- List data -->
+    <template v-else v-for="(v, k) in list" :key="k">
       <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
         <div class="card p-0">
           <!-- <div class="badge p-0">
@@ -99,7 +111,7 @@
   </div>
 
   <!-- Pagination -->
-  <div class="row mt-4">
+  <div v-if="list.length > 0" class="row mt-4">
     <div class="col-12 d-flex justify-content-center">
       <nav aria-label="Page navigation">
         <ul class="pagination" :class="{ 'opacity-50 pe-none': loading }">

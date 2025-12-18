@@ -6,7 +6,7 @@
           <div class="card-body ">
             <div class="row">
               <div class="col-4 d-flex align-items-center flex-column gap-3">
-                <img v-bind:src="thong_tin.avt" class="rounded-circle border border-3 border-success" alt="avt"
+                <img v-bind:src="thong_tin.avt || '/src/assets/img/avt.png'" class="rounded-circle border border-3 border-success" alt="avt"
                   style="width: 150px; aspect-ratio: 1/1;" />
                 <p class="m-0">{{ thong_tin.email }}</p>
 

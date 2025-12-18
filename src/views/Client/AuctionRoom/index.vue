@@ -656,11 +656,14 @@ export default {
     },
   },
   methods: {
-    // formatVND(number) {
-    //   return new Intl.NumberFormat("vi-VI", { style: "currency", currency: "VND" }).format(number,);
-    // },
     formatUSD(number) {
-      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(number);
+      // Đổi sang format tiền Việt (VND)
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(number || 0);
     },
 
     // === COUNTDOWN METHODS ===

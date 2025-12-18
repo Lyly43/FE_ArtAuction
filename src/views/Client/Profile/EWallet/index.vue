@@ -2,13 +2,13 @@
   <div class="container">
     <!-- card balance -->
     <div class="row">
-      <div class="col-12 col-lg-6 d-flex">
+      <div class="col-lg-9 col-md-12 d-flex">
         <div class="card">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
               <h6 class="card-subtitle text-secondary">Số dư khả dụng</h6>
               <i @click="toggleHidden"
-                :class="isHidden ? 'fa-solid fa-eye-slash text-body-secondary' : 'fa-solid fa-eye text-body-secondary'" ></i>
+                :class="isHidden ? 'fa-solid fa-eye-slash text-body-secondary' : 'fa-solid fa-eye text-body-secondary'"></i>
             </div>
             <div class="mt-2 fs-5">
               <span v-if="isHidden">*******</span>
@@ -17,38 +17,21 @@
           </div>
         </div>
       </div>
-
-      <div class="col-12 col-lg-6 d-flex">
+      <div class="col-3">
         <div class="card">
           <div class="card-body">
-            <h6 class="card-subtitle text-body-secondary">Số tiền đang chờ thanh toán</h6>
-            <div class="mt-2 fs-5"></div>
+            <button type="button"
+              class="btn btn-light btn-transaction border border-success w-100 d-flex flex-column align-items-center justify-content-center"
+              data-bs-toggle="modal" data-bs-target="#NapModal">
+              <i class="fa-solid fa-plus"></i>
+              <p class="mb-0">Nạp tiền</p>
+            </button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- hành động -->
-    <div class="card mt-3">
-      <div class="card-body d-flex gap-1">
-        <div class="col-6 col-lg-3 d-flex gap-1">
-          <button type="button"
-            class="btn btn-light btn-transaction border border-success w-100 d-flex flex-column align-items-center justify-content-center"
-            data-bs-toggle="modal" data-bs-target="#NapModal">
-            <i class="fa-solid fa-plus"></i>
-            <p class="mb-0">Nạp tiền</p>
-          </button>
-        </div>
-        <div class="col-6 col-lg-3">
-          <button type="button"
-            class="btn btn-light btn-transaction border border-success w-100 d-flex flex-column align-items-center justify-content-center"
-            disabled title="Sắp ra mắt">
-            <i class="fa-solid fa-minus"></i>
-            <p class="mb-0">Rút tiền</p>
-          </button>
-        </div>
-      </div>
-    </div>
 
     <!-- history (demo) -->
     <div class="card mt-3">
@@ -130,7 +113,30 @@
             </template>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+            <!-- <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button> -->
+            <button type="button" class="btn btn-success w-100 fs-6" @click="checkTransaction" :disabled="checking">
+              <span v-if="checking" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ checking ? 'Đang kiểm tra...' : 'check' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Status 0 Modal -->
+    <div class="modal fade" id="StatusModal" tabindex="-1" aria-labelledby="StatusModalLabel" aria-hidden="true"
+      @hidden.bs.modal="onStatusModalClosed">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-6" id="StatusModalLabel">Thông báo</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body text-center">
+            <i class="bi bi-exclamation-triangle text-warning fs-1 mb-3"></i>
+            <p class="mb-0">{{ statusMessage || "Giao dịch chưa được xác nhận" }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
           </div>
         </div>
       </div>
@@ -228,7 +234,9 @@ export default {
         note: "",
         qrUrl: "",
         transactionId: ""
-      }
+      },
+      statusMessage: "",
+      checking: false
     };
   },
   computed: {
@@ -336,6 +344,57 @@ export default {
       localStorage.setItem("wallet_Hidden", String(this.isHidden));
     },
 
+    checkTransaction() {
+      if (!this.nap.transactionId) {
+        this.$toast.error("Không tìm thấy mã giao dịch");
+        return;
+      }
+
+      axios
+        .post(
+          `http://localhost:8081/api/wallets/${this.nap.transactionId}/verify-capture`,
+          {},
+          {
+            headers: {
+              Authorization: "Bearer " + (localStorage.getItem("token") || ""),
+            },
+          }
+        )
+        .then((res) => {
+          const data = res && res.data ? res.data : {};
+          if (data.status === 1) {
+            this.$toast.success(data.message || "Nạp tiền thành công");
+            // Đóng modal và refresh wallet balance
+            this.$nextTick(() => {
+              const modalElement = document.getElementById('QRModal');
+              if (modalElement) {
+                // eslint-disable-next-line no-undef
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                  modal.hide();
+                }
+              }
+            });
+            this.fetchWallet();
+          } else {
+            // Hiển thị modal thông báo khi status = 0
+            this.statusMessage = data.message || "Giao dịch chưa được xác nhận";
+            this.$nextTick(() => {
+              const modalElement = document.getElementById('StatusModal');
+              if (modalElement) {
+                // eslint-disable-next-line no-undef
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+              }
+            });
+          }
+        })
+        .catch((error) => {
+          const errorMessage = error.response?.data?.message || "Không thể kiểm tra giao dịch. Vui lòng thử lại.";
+          this.$toast.error(errorMessage);
+        });
+    },
+
   }
 };
 </script>
@@ -365,4 +424,3 @@ export default {
   object-fit: contain;
 }
 </style>
-

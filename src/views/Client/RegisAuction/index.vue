@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid bg-light mb-5">
+  <div class="container-fluid mb-5">
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-success" role="status">
@@ -122,8 +122,8 @@
                       <div class="flex-shrink-0 position-relative">
                         <img :src="session.imageUrl || 'https://via.placeholder.com/80x80?text=No+Image'"
                           class="rounded" style="width: 80px; height: 80px; object-fit: cover;" alt="Artwork">
-                        <span class="position-absolute top-0 start-0 badge bg-success rounded-circle m-1"
-                          style="width: 25px; height: 25px; font-size: 0.7rem; padding: 0; display: flex; align-items: center; justify-content: center;">
+                        <span class="position-absolute top-0 start-0 badge bg-light text-success border border-2 border-success rounded-circle m-1"
+                          style="width: 25px; height: 25px; font-size: 0.8rem; padding: 0; display: flex; align-items: center; justify-content: center;">
                           {{ index + 1 }}
                         </span>
                       </div>
@@ -167,128 +167,187 @@
 
       <!-- Session Detail Modal -->
       <div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-xl">
           <div class="modal-content" v-if="selectedSession">
             <div class="modal-header bg-success text-white">
               <h5 class="modal-title" id="sessionModalLabel">
-                <i class="fa-solid fa-image me-2"></i>Artwork Details
+                <i class="fa-solid fa-image me-2"></i>Artwork Information
               </h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                 aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <div class="row g-4">
-                <!-- Artwork Image -->
-                <div class="col-6">
-                  <div class="card p-0 mb-4">
+              <div class="row g-4 align-items-stretch">
+                <!-- Left: Artwork preview card -->
+                <div class="col-lg-6 d-flex">
+                  <!-- <div class="card p-0"> -->
+                  <div class="position-relative ">
                     <img
-                      :src="selectedSession.artwork?.avtArtwork || selectedSession.imageUrl || selectedSession.artwork?.imageUrls?.[0] || 'https://via.placeholder.com/400x400?text=No+Image'"
-                      class="img-fluid rounded shadow-sm w-100" style="max-height: 300px; object-fit: cover;">
+                      :src="selectedSession.artwork?.avtArtwork || selectedSession.imageUrl || selectedSession.artwork?.imageUrls?.[0] || 'https://via.placeholder.com/600x400?text=No+Image'"
+                       class="w-100 rounded-3"
+                       style="object-fit: cover; cursor: zoom-in;"
+                       alt="Artwork preview"
+                       @click="openArtworkZoom"
+                      >
+                    <div class="position-absolute top-0 start-0">
+                      <div class="px-3 py-2 text-muted">
+                        <span class="badge px-3 py-1" :class="getSessionStatusClass(selectedSession.status)">
+                          {{ getSessionStatusText(selectedSession.status) }}
+                        </span>
+                      </div>
+                    </div>
                   </div>
+                  <!-- </div> -->
+                </div>
 
-                  <!-- <div class="mt-3 d-flex flex-wrap gap-2">
-                    <span class="badge" :class="getSessionStatusClass(selectedSession.status)">
-                      {{ getSessionStatusText(selectedSession.status) }}
-                    </span>
-                    <span class="badge bg-info">{{ selectedSession.type }}</span>
-                    <span v-if="selectedSession.artwork?.aiVerified" class="badge bg-success">
-                      AI Verified
-                    </span>
-                  </div> -->
-                  <div class="mb-4">
-                    <h6 class="text-success fw-bold mb-2">Price Information</h6>
-                    <div class="row g-2">
-                      <div class="col-6">
-                        <div class="card p-0">
-                          <div class="card-body">
-                            <small class="text-muted d-block">Starting Price</small>
-                            <strong class="text-success">{{ formatUSD(selectedSession.startingPrice) }}</strong>
-                          </div>
-
+                <!-- Middle: Artwork detail info -->
+                <div class="col-lg-6 d-flex">
+                  <div class="row">
+                    <div class="col-lg-12 mb-3">
+                      <div class="card">
+                        <div class="card-body">
+                          <h5 class="fw-bold mb-3 text-success">
+                            {{ selectedSession.artwork?.title || selectedSession.artworkTitle ||
+                              selectedSession.artworkId
+                            }}
+                          </h5>
+                          <p class="text-muted small mb-0">
+                            {{ selectedSession.artwork?.description || 'No description available.' }}
+                          </p>
                         </div>
                       </div>
-                      <div class="col-6">
-                        <div class="card p-0">
-                          <div class="card-body">
-                            <small class="text-muted d-block">Bid Step</small>
-                            <strong class="text-warning">{{ formatUSD(selectedSession.bidStep) }}</strong>
+                    </div>
+                    <div class="col-lg-6 d-flex">
+                      <div class="card p-0">
+                        <div class="card-body">
+                          <h6 class="text-success fw-bold mb-3">Artwork Details</h6>
+                          <div class=" d-flex flex-column gap-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <span class="text-muted small">Owner</span>
+                              <strong class="small">
+                                {{ selectedSession.ownerName || 'N/A' }}
+                              </strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                              <span class="text-muted small">Genre</span>
+                              <strong class="small text-end">
+                                {{ selectedSession.artwork?.paintingGenre || 'N/A' }}
+                              </strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                              <span class="text-muted small">Year</span>
+                              <strong class="small text-end">
+                                {{ selectedSession.artwork?.yearOfCreation || 'N/A' }}
+                              </strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                              <span class="text-muted small">Material</span>
+                              <strong class="small text-end">
+                                {{ selectedSession.artwork?.material || 'N/A' }}
+                              </strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                              <span class="text-muted small">Size</span>
+                              <strong class="small text-end">
+                                {{ selectedSession.artwork?.size || 'N/A' }}
+                              </strong>
+                            </div>
+                            <div v-if="selectedSession.artwork?.certificateId"
+                              class="d-flex justify-content-between align-items-center">
+                              <span class="text-muted small">Certificate</span>
+                              <strong class="small text-end">
+                                {{ selectedSession.artwork.certificateId }}
+                              </strong>
+                            </div>
                           </div>
+
+
 
                         </div>
                       </div>
                     </div>
-                  </div>
+
+                    <!-- Right: Price information -->
+                    <div class="col-lg-6 d-flex">
+                      <div class="card p-0">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                          <div class="">
+                            <h6 class="text-success fw-bold mb-3 ">Time Information</h6>
+                            <div class="d-flex flex-column gap-3">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted small">Start</span>
+                                <span class="small">
+                                  {{ formatTime(selectedSession.startTime) }}
+                                </span>
+                              </div>
+                              <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted small">End</span>
+                                <span class="small">
+                                  {{ formatTime(selectedSession.endedAt) }}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+                          <div class="">
+                            <h6 class="text-success fw-bold mb-3">Price Information</h6>
+                            <div class=" d-flex flex-column gap-2">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted small d-block">Starting Price</span>
+                                <span class="fw-bold text-success">
+                                  {{ formatUSD(selectedSession.startingPrice) }}
+                                </span>
+                              </div>
+                              <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted small d-block">Bid Step</span>
+                                <span class="fw-bold text-warning">
+                                  {{ formatUSD(selectedSession.bidStep) }}
+                                </span>
+                              </div>
 
 
+                            </div>
+                          </div>
 
-                  <div>
-                    <h6 class="text-success fw-bold mb-2">Time Information </h6>
-                    <div class="d-flex justify-content-between mb-2">
-                      <span class="text-muted">Start:</span>
-                      <p class="m-0">{{ formatTime(selectedSession.startTime) }}</p>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <span class="text-muted">End:</span>
-                      <p class="m-0">{{ formatTime(selectedSession.endedAt) }}</p>
+
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <!-- Artwork Details -->
-                <div class="col-6">
-                  <h5 class="fw-bold text-success alert alert-success mb-4">
-                    {{ selectedSession.artwork?.title || selectedSession.artworkTitle || selectedSession.artworkId }}
-                  </h5>
-
-
-                  <!-- Artwork Info -->
-                  <div class="mb-3" v-if="selectedSession.artwork">
-                    <div class="row mb-3">
-                      <div class="col-12">
-                        <h6 class="text-success fw-bold mb-2">Artwork Information</h6>
-
-                      </div>
-                      <div class="col-12 mb-2 d-flex justify-content-between">
-                        <span class="text-muted">Owner</span>
-                        <strong>{{ selectedSession.artwork.ownerId }}</strong>
-                      </div>
-                      <div class="col-12 mb-2 d-flex justify-content-between">
-                        <span class="text-muted">Genre</span>
-                        <strong>{{ selectedSession.artwork.paintingGenre || 'N/A' }}</strong>
-                      </div>
-                      <div class="col-12 mb-2 d-flex justify-content-between">
-                        <span class="text-muted">Year of Creation</span>
-                        <strong>{{ selectedSession.artwork.yearOfCreation || 'N/A' }}</strong>
-                      </div>
-                      <div class="col-12 mb-2 d-flex justify-content-between">
-                        <span class="text-muted">Material</span>
-                        <strong>{{ selectedSession.artwork.material || 'N/A' }}</strong>
-                      </div>
-                      <div class="col-12 mb-2 d-flex justify-content-between">
-                        <span class="text-muted">Size</span>
-                        <strong>{{ selectedSession.artwork.size || 'N/A' }}</strong>
-                      </div>
-                      <div class="col-12 mb-2 d-flex justify-content-between"
-                        v-if="selectedSession.artwork.certificateId">
-                        <span class="text-muted">Certificate</span>
-                        <strong>{{ selectedSession.artwork.certificateId }}</strong>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mb-3">
-                    <h6 class="text-success fw-bold mb-1">Description</h6>
-                    <p class="text-muted small mb-0">
-                      {{ selectedSession.artwork?.description || 'No description available.' }}
-                    </p>
-                  </div>
-
-
-
-                </div>
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zoomed Artwork Modal -->
+      <div
+        v-if="showZoomImage && selectedSession"
+        class="modal fade show d-block"
+        tabindex="-1"
+        role="dialog"
+        aria-modal="true"
+        @click.self="closeArtworkZoom"
+      >
+        <div class="modal-backdrop fade show"></div>
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+          <div class="modal-content bg-dark border-0">
+            <div class="modal-header bg-transparent border-0 justify-content-center">
+              <h5 class="modal-title text-white text-center w-100">
+                {{ selectedSession.artwork?.title || selectedSession.artworkTitle || selectedSession.artworkId }}
+              </h5>
+              <button type="button" class="btn-close btn-close-white" @click="closeArtworkZoom"></button>
+            </div>
+            <div class="modal-body text-center">
+              <img
+                :src="selectedSession.artwork?.avtArtwork || selectedSession.imageUrl || selectedSession.artwork?.imageUrls?.[0] || 'https://via.placeholder.com/1200x800?text=No+Image'"
+                class="img-fluid w-100 h-100"
+                style="max-height: 90vh; object-fit: contain;"
+                alt="Artwork zoomed"
+              >
             </div>
           </div>
         </div>
@@ -299,18 +358,21 @@
         <div class="row ">
           <div class="col-lg-6">
             <!-- Profile Summary -->
-            <div class="card shadow-md border-0 mb-4 p-0">
-              <div class="card-header bg-success text-white">
+            <div class="card shadow-md border-4 border-success border-top mb-4 p-0">
+              <!-- <div class="card-header">
                 <h5 class="m-1"><i class="fa-solid fa-clipboard-check me-3"></i>Registration Profile</h5>
-              </div>
+              </div> -->
               <div class="card-body">
+                <h5 class="m-1 fw-bold text-success"><i class="fa-solid fa-clipboard-check me-3 fa-lg"></i>Registration
+                  Profile</h5>
+                <hr>
                 <div class="row g-3">
                   <div class="col-md-6">
                     <div class="d-flex align-items-center gap-3">
-                      <div class="bg-success text-white rounded p-2">
-                        <i class="fa-solid fa-user"></i>
+                      <div class="border border-2 border-success rounded p-2">
+                        <i class="text-success fa-solid fa-user"></i>
                       </div>
-                      <div>
+                      <div class="d-flex flex-column gap-1">
                         <small class="text-muted d-block">User ID</small>
                         <strong>{{ userId }}</strong>
                       </div>
@@ -318,10 +380,10 @@
                   </div>
                   <div class="col-md-6">
                     <div class="d-flex align-items-center gap-3">
-                      <div class="bg-success text-white rounded p-2">
-                        <i class="fa-solid fa-door-open"></i>
+                      <div class="border border-2 border-success rounded p-2">
+                        <i class="text-success fa-solid fa-door-open"></i>
                       </div>
-                      <div>
+                      <div class="d-flex flex-column gap-1">
                         <small class="text-muted d-block">Auction Room</small>
                         <strong>{{ auctionRoom.roomName }}</strong>
                       </div>
@@ -329,10 +391,10 @@
                   </div>
                   <div class="col-md-6">
                     <div class="d-flex align-items-center gap-3">
-                      <div class="bg-success text-white rounded p-2">
-                        <i class="fa-solid fa-images"></i>
+                      <div class="border border-2 border-success rounded p-2">
+                        <i class="text-success fa-solid fa-images"></i>
                       </div>
-                      <div>
+                      <div class="d-flex flex-column gap-1">
                         <small class="text-muted d-block">Number of Items</small>
                         <strong>{{ sessions.length }} items</strong>
                       </div>
@@ -340,10 +402,10 @@
                   </div>
                   <div class="col-md-6">
                     <div class="d-flex align-items-center gap-3">
-                      <div class="bg-success text-white rounded p-2">
-                        <i class="fa-solid fa-calendar-check"></i>
+                      <div class="border border-2 border-success rounded p-2">
+                        <i class="text-success fa-solid fa-calendar-check"></i>
                       </div>
-                      <div>
+                      <div class="d-flex flex-column gap-1">
                         <small class="text-muted d-block">Payment Deadline</small>
                         <strong>{{ auctionRoom.paymentDeadlineDays }} days</strong>
                       </div>
@@ -354,17 +416,17 @@
             </div>
 
             <!-- Deposit Card -->
-            <div class="card shadow-md border-0 mb-4 p-0 border-warning">
-              <div class="card-header bg-warning text-dark">
+            <div class="card shadow-md  border-4 border-success border-top mb-4 p-0">
+
+              <div class="card-body">
                 <div class="d-flex align-items-center">
-                  <i class="fa-solid fa-money-bill-wave fa-xl me-2"></i>
+                  <i class="fa-solid fa-money-bill-wave fa-xl text-success me-3"></i>
                   <div class="m-1 ">
-                    <h5 class="fw-bold m-0">Participation Deposit</h5>
+                    <h5 class="fw-bold m-0 text-success">Participation Deposit</h5>
                     <small>Amount required for registration</small>
                   </div>
                 </div>
-              </div>
-              <div class="card-body">
+                <hr>
                 <div class="text-center my-3">
                   <h2 class="fw-bold text-success mb-0">{{ formatUSD(auctionRoom.depositAmount) }}</h2>
                 </div>
@@ -387,7 +449,7 @@
             <form @submit.prevent="handleRegister">
               <div class="card shadow-md border-0 mb-4 p-0">
                 <div class="card-header bg-success text-white">
-                  <h5 class="m-1"><i class="fa-solid fa-credit-card me-3"></i>Payment Information</h5>
+                  <h5 class="m-1 fw-bold"><i class="fa-solid fa-credit-card me-3 fa-lg"></i>Payment Information</h5>
                 </div>
                 <div class="card-body">
                   <!-- Payment Breakdown -->
@@ -413,85 +475,125 @@
                     </div>
                   </div>
 
-                  <div class="mb-3">
-                    <p class="form-label fw-semibold">Payment Method <span class="text-danger">*</span></p>
-                    <select v-model="formData.paymentMethod" class="form-select " required>
-                      <option value="">-- Select Method --</option>
-                      <option value="bank_transfer">🏦 Bank Transfer</option>
-                      <option value="e_wallet">💳 E-Wallet</option>
-                    </select>
-                  </div>
-
-                  <div class="mb-3">
-                    <p class="form-label fw-semibold">Notes (optional)</p>
-                    <textarea v-model="formData.notes" class="form-control" rows="3"
-                      placeholder="Enter notes if any..."></textarea>
-                  </div>
 
                   <div class="form-check">
                     <input v-model="formData.agreedToTerms" class="form-check-input" type="checkbox" id="termsCheck"
-                      required>
+                      @change="onOuterTermsChange" required>
                     <label class="form-check-label" for="termsCheck">
                       I have read and agree to the
-                      <a href="#" class="text-success fw-semibold">Terms & Conditions</a>
+                      <a href="#" class="text-success fw-semibold" @click.prevent="openTermsModal">
+                        Terms &amp; Conditions
+                      </a>
                     </label>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="d-grid gap-2 d-md-flex justify-content-center mt-4">
+                    <button type="button" class="btn btn-outline-secondary btn-lg flex-md-fill" @click="currentStep = 1"
+                      :disabled="isSubmitting">
+                      <i class="fa-solid fa-arrow-left me-2"></i>Back
+                    </button>
+                    <button type="button" class="btn btn-success btn-lg flex-md-fill" @click="fetchPaymentInfo"
+                      data-bs-toggle="modal" data-bs-target="#exampleModal"
+                      :disabled="isSubmitting || !formData.agreedToTerms">
+                      <span v-if="isSubmitting">
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        Processing...
+                      </span>
+                      <span v-else>
+                        <i class="fa-solid fa-check-circle me-2"></i>
+                        mở qr
+                      </span>
+                    </button>
                   </div>
                 </div>
               </div>
 
-              <!-- Action Buttons -->
-              <div class="d-grid gap-2 d-md-flex justify-content-center mt-4">
-                <button type="button" class="btn btn-outline-secondary btn-lg flex-md-fill" @click="currentStep = 1"
-                  :disabled="isSubmitting">
-                  <i class="fa-solid fa-arrow-left me-2"></i>Back
-                </button>
-                <button type="submit" class="btn btn-success btn-lg flex-md-fill"
-                  :disabled="isSubmitting || !formData.agreedToTerms">
-                  <span v-if="isSubmitting">
-                    <span class="spinner-border spinner-border-sm me-2"></span>
-                    Processing...
-                  </span>
-                  <span v-else>
-                    <i class="fa-solid fa-check-circle me-2"></i>
-                    Confirm Registration
-                  </span>
-                </button>
-              </div>
+
             </form>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Payment QR Modal -->
-    <div v-if="showPaymentModal">
+    <!-- Terms & Conditions Modal -->
+    <div v-if="showTermsModal">
       <div class="modal-backdrop fade show"></div>
-      <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" @click.self="closePaymentModal">
-        <div class="modal-dialog modal-dialog-centered">
+      <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" @click.self="closeTermsModal">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
           <div class="modal-content">
-            <div class="modal-header bg-success text-white">
-              <h5 class="modal-title">
-                <i class="fa-solid fa-qrcode me-2"></i>Payment QR
-              </h5>
-              <button type="button" class="btn-close btn-close-white" @click="closePaymentModal"></button>
+            <div class="modal-header">
+              <h5 class="modal-title">Terms &amp; Conditions</h5>
+              <button type="button" class="btn-close" @click="closeTermsModal"></button>
             </div>
-            <div class="modal-body text-center">
-              <div v-if="paymentInfo.qrUrl" class="mb-3">
-                <img :src="paymentInfo.qrUrl" alt="Payment QR" class="img-fluid rounded shadow-sm">
+            <div class="modal-body p-0">
+              <div class="px-3 py-3" style="height: 70vh; overflow-y: auto;" @scroll="handleTermsScroll"
+                ref="termsScroll">
+                <div v-if="termsHtml" v-html="termsHtml"></div>
+                <p v-else class="text-center text-muted my-4">
+                  Loading terms &amp; conditions...
+                </p>
               </div>
-              <h6 class="fw-bold text-success mb-2">{{ paymentInfo.note }}</h6>
-              <p class="text-muted mb-1">{{ paymentInfo.message }}</p>
-              <span class="badge" :class="paymentInfo.paid ? 'bg-success' : 'bg-warning text-dark'">
-                {{ paymentInfo.paid ? 'Paid' : 'Pending' }}
-              </span>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" @click="closePaymentModal">Close</button>
+            <div class="modal-footer flex-column align-items-start align-items-md-center">
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="modalAgreeCheck" v-model="modalAgree"
+                  :disabled="!canAgreeInModal" @change="onModalAgreeChange">
+                <label class="form-check-label" for="modalAgreeCheck">
+                  I have read and agree to the Terms &amp; Conditions
+                  <span v-if="!canAgreeInModal" class="text-muted small ms-1">
+                    (Scroll to the bottom to enable)
+                  </span>
+                </label>
+              </div>
+              <button type="button" class="btn btn-secondary ms-md-auto" @click="closeTermsModal">
+                Close
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Payment QR Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h1 class="modal-title fs-6" id="exampleModalLabel">
+              <i class="fa-solid fa-qrcode me-2"></i>Scan the QR code to pay the registration fee &amp; deposit.
+            </h1>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <template v-if="paymentInfo.qrUrl">
+              <img :src="paymentInfo.qrUrl" alt="Payment QR" class="img-fluid rounded mb-3" style="max-width:320px;" />
+              <div class="small text-muted mb-1">
+                Nội dung chuyển khoản:
+                <strong>{{ paymentInfo.note || '—' }}</strong>
+              </div>
+              <div class="small text-muted mb-2">
+                {{ paymentInfo.message }}
+              </div>
+              <span class="badge" :class="paymentInfo.paid ? 'bg-success' : 'bg-warning text-dark'">
+                {{ paymentInfo.paid ? 'Đã thanh toán' : 'Chưa thanh toán' }}
+              </span>
+            </template>
+            <template v-else>
+              <div class="d-flex justify-content-center py-5">
+                <div class="spinner-border text-success" role="status"></div>
+              </div>
+              <div class="small text-muted">Generating payment QR…</div>
+            </template>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </template>
 
@@ -526,20 +628,27 @@ export default {
         notes: '',
         agreedToTerms: false
       },
+      showTermsModal: false,
+      termsHtml: '',
+      canAgreeInModal: false,
+      modalAgree: false,
       // Payment
       showPaymentModal: false,
       paymentInfo: {
         qrUrl: '',
+        transactionId: '',
         note: '',
         paid: false,
         message: ''
-      }
+      },
+      showZoomImage: false
     };
   },
 
   computed: {
     registrationFee() {
-      return 7.60; // Phí hồ sơ đăng ký cố định: $1.50 USD
+      // Phí hồ sơ đăng ký cố định (VNĐ)
+      return 100000;
     },
     totalRegistration() {
       return (this.registrationFee || 0) + (this.auctionRoom.depositAmount || 0);
@@ -553,6 +662,46 @@ export default {
   },
 
   methods: {
+    openTermsModal() {
+      this.showTermsModal = true;
+      this.canAgreeInModal = false;
+      this.modalAgree = false;
+
+      if (!this.termsHtml) {
+        // Load terms content once from public HTML
+        fetch('/QuyChe_ArtAuction.html')
+          .then((res) => res.text())
+          .then((html) => {
+            this.termsHtml = html;
+          })
+          .catch((err) => {
+            console.error('Failed to load terms:', err);
+          });
+      }
+    },
+    closeTermsModal() {
+      this.showTermsModal = false;
+    },
+    handleTermsScroll(event) {
+      const el = event.target;
+      if (!el) return;
+      const bottomReached = el.scrollTop + el.clientHeight >= el.scrollHeight - 10;
+      if (bottomReached) {
+        this.canAgreeInModal = true;
+      }
+    },
+    onModalAgreeChange() {
+      // Khi tick trong modal -> tự tick checkbox bên ngoài
+      this.formData.agreedToTerms = !!this.modalAgree;
+      // Không tự đóng modal, để người dùng tự quyết định
+    },
+    onOuterTermsChange() {
+      // Nếu user cố tick khi chưa scroll hết trong modal thì không cho
+      if (this.formData.agreedToTerms && !this.canAgreeInModal) {
+        this.formData.agreedToTerms = false;
+        this.openTermsModal();
+      }
+    },
     getUserId() {
       const token = localStorage.getItem('token');
       if (token) {
@@ -590,7 +739,9 @@ export default {
                 // Use artwork's image if session imageUrl is null
                 imageUrl: item.session.imageUrl || item.artwork?.avtArtwork,
                 // Add artwork title for display
-                artworkTitle: item.artwork?.title
+                artworkTitle: item.artwork?.title,
+                // Owner display name
+                ownerName: item.ownerName
               }));
             }
           }
@@ -604,47 +755,47 @@ export default {
         });
     },
 
-    handleRegister() {
-      if (!this.formData.agreedToTerms) {
-        this.$toast.warning('Please agree to the terms!');
-        return;
-      }
+    // handleRegister() {
+    //   if (!this.formData.agreedToTerms) {
+    //     this.$toast.warning('Please agree to the terms!');
+    //     return;
+    //   }
 
-      this.isSubmitting = true;
-      const token = localStorage.getItem('token');
+    //   this.isSubmitting = true;
+    //   const token = localStorage.getItem('token');
 
-      const requestData = {
-        auctionRoomId: this.auctionRoomId,
-        userId: this.userId,
-        paymentMethod: this.formData.paymentMethod,
-        notes: this.formData.notes,
-        depositAmount: this.auctionRoom.depositAmount
-      };
+    //   const requestData = {
+    //     auctionRoomId: this.auctionRoomId,
+    //     userId: this.userId,
+    //     paymentMethod: this.formData.paymentMethod,
+    //     notes: this.formData.notes,
+    //     depositAmount: this.auctionRoom.depositAmount
+    //   };
 
-      console.log('Registering with data:', requestData);
+    //   console.log('Registering with data:', requestData);
 
-      axios
-        .post('http://localhost:8081/api/auctionroom/register', requestData, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        })
-        .then((res) => {
-          console.log('Registration success:', res.data);
-          this.$toast.success('Successfully registered for auction!');
-          // After register, fetch payment QR
-          this.fetchPaymentInfo();
-        })
-        .catch((err) => {
-          console.error('Registration error:', err);
-          const errorMsg = err.response?.data?.message || 'Registration failed!';
-          this.$toast.error(errorMsg);
-        })
-        .finally(() => {
-          this.isSubmitting = false;
-        });
-    },
+    //   axios
+    //     .post('http://localhost:8081/api/auctionroom/register', requestData, {
+    //       headers: {
+    //         'Authorization': `Bearer ${token}`,
+    //         'Content-Type': 'application/json'
+    //       }
+    //     })
+    //     .then((res) => {
+    //       console.log('Registration success:', res.data);
+    //       this.$toast.success('Successfully registered for auction!');
+    //       // After register, fetch payment QR
+    //       this.fetchPaymentInfo();
+    //     })
+    //     .catch((err) => {
+    //       console.error('Registration error:', err);
+    //       const errorMsg = err.response?.data?.message || 'Registration failed!';
+    //       this.$toast.error(errorMsg);
+    //     })
+    //     .finally(() => {
+    //       this.isSubmitting = false;
+    //     });
+    // },
 
     fetchPaymentInfo() {
       const token = localStorage.getItem('token');
@@ -653,30 +804,59 @@ export default {
         return;
       }
 
+      this.isSubmitting = true;
+
+      // Mở modal ngay, hiển thị trạng thái loading QR
+      this.showPaymentModal = true;
+      this.paymentInfo = {
+        qrUrl: '',
+        transactionId: '',
+        note: '',
+        paid: false,
+        message: 'Generating payment QR…'
+      };
+
       axios
-        .get(`http://localhost:8081/api/payment/${this.auctionRoomId}/application-fee-and-deposit`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
+        .post(
+          `http://localhost:8081/api/payment/${this.auctionRoomId}/application-fee-and-deposit`,
+          {},
+          {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : ''
+            }
           }
-        })
+        )
         .then((res) => {
           console.log('Payment info:', res.data);
           this.paymentInfo = {
             qrUrl: res.data.qrUrl,
+            transactionId: res.data.transactionId || '',
             note: res.data.note,
             paid: res.data.paid,
             message: res.data.message
           };
-          this.showPaymentModal = true;
         })
         .catch((err) => {
           console.error('Payment info error:', err);
           this.$toast.error(err.response?.data?.message || 'Không thể tải QR thanh toán');
+          // Nếu lỗi, đóng modal lại
+          this.showPaymentModal = false;
+        })
+        .finally(() => {
+          this.isSubmitting = false;
         });
     },
 
     closePaymentModal() {
       this.showPaymentModal = false;
+    },
+
+    openArtworkZoom() {
+      this.showZoomImage = true;
+    },
+
+    closeArtworkZoom() {
+      this.showZoomImage = false;
     },
 
     goBack() {
@@ -711,10 +891,17 @@ export default {
     },
 
     formatUSD(amount) {
-      if (!amount && amount !== 0) return '$0.00';
-      return new Intl.NumberFormat('en-US', {
+      // Giữ lại để tránh lỗi nếu còn chỗ cũ dùng, nhưng chuyển sang định dạng VNĐ
+      return this.formatVND(amount);
+    },
+
+    formatVND(amount) {
+      if (!amount && amount !== 0) return '0 ₫';
+      return new Intl.NumberFormat('vi-VN', {
         style: 'currency',
-        currency: 'USD'
+        currency: 'VND',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
       }).format(amount);
     },
 
