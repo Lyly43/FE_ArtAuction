@@ -182,14 +182,14 @@
                               <div class="input-group input-group-sm">
                                 <span
                                   class="input-group-text bg-white border-end-0 text-success fw-bold"
-                                  >$</span
+                                  >đ</span
                                 >
                                 <input
                                   type="text"
                                   class="form-control form-control-sm border-start-0 shadow-none ps-0"
                                   placeholder="0.00"
                                   v-model="item.startPrice"
-                                  @blur="formatCurrencyUSD(item)"
+                                  @blur="formatCurrencyVND(item)"
                                   @focus="unformatCurrency(item)"
                                   required
                                 />
@@ -763,13 +763,13 @@ export default {
             this.roomForm.imageAuctionRoom = finalUrl;
           }
 
-          const parseNum = (v) => Number(String(v).replace(/[^0-9]/g, ""));
+          const parseVND = (v) => {
+            if (typeof v === "number") return v;
+            return Number(String(v).replace(/\./g, "")); // Xóa dấu chấm phân cách hàng nghìn
+          };
 
           const payload = {
             ...this.roomForm, // Copy các trường roomName, description, status...
-
-            // Xử lý tiền cọc
-            depositAmount: parseNum(this.roomForm.depositAmount),
 
             // Xử lý ngày tháng (Thêm :00 giây nếu form thiếu)
             startedAt:
@@ -784,8 +784,8 @@ export default {
             // Map danh sách tác phẩm
             artworks: this.scheduleList.map((item) => ({
               artworkId: item.id,
-              startingPrice: parseNum(item.startPrice),
-              bidStep: parseNum(item.stepPrice),
+              startingPrice: parseVND(item.startPrice),
+              bidStep: parseVND(item.stepPrice),
               duration: Number(item.duration) || 15,
             })),
           };
@@ -868,10 +868,7 @@ export default {
       if (g.includes("landscape")) return "phong-canh";
       return "son-dau";
     },
-    formatCurrency(value) {
-      if (!value) return "0 ₫";
-      return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
-    },
+
     getStatusBadgeClass(status) {
       switch (status) {
         case 1:
@@ -902,30 +899,36 @@ export default {
       return "text-secondary";
     },
 
-    // Hàm format hiển thị khi người dùng nhập xong (sự kiện blur)
-    formatCurrencyUSD(item) {
+    // 1. Hàm format hiển thị chung
+    formatVND(value) {
+      if (value === null || value === undefined || value === "") return "0 ₫";
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(value);
+    },
+
+    // 2. Hàm format khi người dùng nhập xong (sự kiện blur) cho input
+    formatCurrencyVND(item) {
       if (!item.startPrice) return;
 
-      // Giữ lại số và dấu chấm
-      let val = parseFloat(String(item.startPrice).replace(/[^0-9.]/g, ""));
+      // Loại bỏ các ký tự không phải số
+      let val = parseInt(String(item.startPrice).replace(/[^0-9]/g, ""));
 
       if (isNaN(val)) {
         item.startPrice = "";
         return;
       }
 
-      // Format theo chuẩn US (ví dụ: 1,200.50)
-      item.startPrice = new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(val);
+      // Format theo chuẩn VN (ví dụ: 1.200.000)
+      item.startPrice = new Intl.NumberFormat("vi-VN").format(val);
     },
 
-    // Hàm bỏ format khi người dùng click vào để sửa (sự kiện focus)
+    // 3. Hàm bỏ format khi focus vào để sửa (sự kiện focus)
     unformatCurrency(item) {
       if (!item.startPrice) return;
-      // Chuyển từ "1,200.50" thành "1200.50" để dễ sửa
-      item.startPrice = String(item.startPrice).replace(/,/g, "");
+      // Chuyển từ "1.200.000" thành "1200000" để dễ sửa
+      item.startPrice = String(item.startPrice).replace(/\./g, "");
     },
   },
 };

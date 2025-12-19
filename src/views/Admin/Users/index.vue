@@ -694,7 +694,7 @@
                         </div>
                       </div>
 
-                      <div class="col-md-6">
+                      <!-- <div class="col-md-6">
                         <div class="form-floating">
                           <input
                             type="date"
@@ -705,7 +705,7 @@
                           />
                           <label for="floatDob">Date of Birth</label>
                         </div>
-                      </div>
+                      </div> -->
                       <div class="col-md-6">
                         <div class="form-floating">
                           <select
@@ -890,17 +890,14 @@ export default {
         });
     },
     formatCurrency(value) {
-      if (!value) return "$0";
-
-      // Giả sử tỷ giá 1 USD = 25,400 VND
-      const exchangeRate = 25400;
-      const usdValue = value / exchangeRate;
-
-      return new Intl.NumberFormat("en-US", {
+      if (value === null || value === undefined || value === "") {
+        return "0 ₫";
+      }
+      // Trả về định dạng: 100.000 ₫
+      return new Intl.NumberFormat("vi-VN", {
         style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 2, // Giữ lại 2 số lẻ (ví dụ: $12.50)
-      }).format(usdValue);
+        currency: "VND",
+      }).format(value);
     },
 
     formatDate(dateString) {

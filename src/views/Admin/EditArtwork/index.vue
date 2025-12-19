@@ -189,19 +189,16 @@
               <div class="mb-3">
                 <label class="form-label small fw-bold text-secondary">STARTING PRICE</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-0 text-success fw-bold">$</span>
+                  <span class="input-group-text bg-light border-0 text-success fw-bold">₫</span>
                   <input
                     type="number"
                     class="form-control bg-light border-0 fw-bold fs-5 text-end"
-                    v-model.number="priceUSD"
+                    v-model.number="priceVND"
                     min="0"
-                    step="0.01"
-                    placeholder="0.00"
+                    step="1000"
+                    placeholder="0"
                   />
                 </div>
-                <small v-if="errors.price" class="text-danger mt-1 d-block">
-                  {{ errors.price }}
-                </small>
               </div>
 
               <hr class="border-secondary opacity-10 my-3" />
@@ -238,13 +235,13 @@ export default {
         yearOfCreation: "",
         material: "",
         size: "",
-        price: 0,
+        priceVND: 0,
         status: 0,
         description: "",
         avtArtwork: "",
         createdAt: "",
       },
-      priceUSD: 0,
+      priceVND: 0,
     };
   },
   mounted() {
@@ -254,6 +251,13 @@ export default {
     }
   },
   methods: {
+    formatCurrencyVND(value) {
+      if (!value) return "0 ₫";
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(value);
+    },
     // Load dữ liệu chi tiết
     loadArtworkDetail() {
       this.isLoading = true;
@@ -275,7 +279,7 @@ export default {
               yearOfCreation: artworkData.yearOfCreation || "",
               material: artworkData.material || "",
               size: artworkData.size || "",
-              price: artworkData.startedPrice || 0,
+              priceVND: artworkData.startedPrice || 0,
 
               status: artworkData.status !== undefined ? artworkData.status : 0,
               description: artworkData.description || "",
@@ -284,7 +288,7 @@ export default {
               createdAt: artworkData.createdAt || "",
             };
 
-            this.priceUSD = artworkData.startedPrice || 0;
+            this.priceVND = artworkData.startedPrice || 0;
           }
         })
         .catch((err) => {
@@ -305,9 +309,9 @@ export default {
         return;
       }
 
-      // Validate Giá USD
-      if (this.priceUSD <= 0) {
-        this.errors.price = "Starting price must be greater than $0.";
+      // Validate Giá VND
+      if (this.priceVND <= 0) {
+        this.errors.price = "Starting price must be greater than 0 ₫.";
         return;
       }
 
@@ -324,7 +328,7 @@ export default {
         yearOfCreation: this.artworkForm.yearOfCreation,
         material: this.artworkForm.material,
         size: this.artworkForm.size,
-        startedPrice: Number(this.priceUSD),
+        startedPrice: Math.round(Number(this.priceVND)),
         status: this.artworkForm.status,
         description: this.artworkForm.description,
       };
