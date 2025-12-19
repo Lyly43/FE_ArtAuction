@@ -97,34 +97,27 @@
         <div class="row">
           <div class="col-12 mb-3">
             <div class="input-group">
-              <input type="text" class="form-control border-success" placeholder="Enter auction room ID">
-              <button class="btn btn-success px-4 fw-bold">Search</button>
+              <input type="text" class="form-control border-success"
+                placeholder="Search by ID, name, or type (Landscape/Portrait/Folk)"
+                v-model="searchForm.searchText" @keydown.enter.prevent="searchAuctions">
+              <button class="btn btn-success px-4 fw-bold" @click="searchAuctions" :disabled="isSearching">
+                <span v-if="isSearching" class="spinner-border spinner-border-sm me-2"></span>
+                Search
+              </button>
             </div>
           </div>
           <div class="col-8 mt-3">
-            <div class=" d-flex gap-3">
-              <input type="date" class="form-control">
+            <div class=" d-flex gap-3 align-items-center">
+              <input type="date" class="form-control" v-model="searchForm.dateFrom" placeholder="From date">
               <b>_</b>
-              <input type="date" class="form-control">
+              <input type="date" class="form-control" v-model="searchForm.dateTo" placeholder="To date">
             </div>
           </div>
-          <!-- <div class="col-4">
-            <div class=" d-flex flex-column">
-              <label for="">From date</label>
-              <input type="date" class="form-control">
-            </div>
-          </div>
-          <div class="col-4">
-            <div class=" d-flex flex-column">
-              <label for="">To date</label>
-              <input type="date" class="form-control">
-            </div>
-          </div> -->
           <div class="col-4 d-flex align-items-end gap-3">
-            <button class="btn btn-success w-100">
+            <button class="btn btn-success w-100" @click="searchAuctions" :disabled="isSearching">
               <i class="fa-solid fa-filter"></i>
             </button>
-            <button class="btn btn-secondary w-100">
+            <button class="btn btn-secondary w-100" @click="resetSearch" :disabled="isSearching">
               <i class="fa-solid fa-rotate-left"></i>
             </button>
           </div>
@@ -181,7 +174,20 @@
 
     <!-- Danh sách buổi đấu giá -->
     <div class="row">
-      <template v-for="auction in displayedAuctions" :key="auction.id">
+      <!-- Hiển thị thông báo khi không tìm thấy kết quả -->
+      <div v-if="isSearchMode && displayedAuctions.length === 0" class="col-12">
+        <div class="text-center py-5">
+          <i class="fa-solid fa-magnifying-glass fa-3x text-muted mb-3"></i>
+          <h4 class="text-muted mb-2">No matching results found</h4>
+          <p class="text-muted">Please try again with different search criteria</p>
+          <button class="btn btn-success mt-3" @click="resetSearch">
+            <i class="fa-solid fa-rotate-left me-2"></i>View all
+          </button>
+        </div>
+      </div>
+
+      <!-- Danh sách auction cards -->
+      <template v-else v-for="auction in displayedAuctions" :key="auction.id">
         <!-- Card đấu giá -->
         <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex">
           <div class="card p-0 overflow-hidden auction-card">
@@ -233,7 +239,8 @@
     </div>
 
     <!-- Pagination Controls -->
-    <div class="row my-4" v-if="totalPages > 1">
+    <!-- Chỉ hiển thị pagination khi không ở chế độ tìm kiếm và có nhiều hơn 1 trang -->
+    <div class="row my-4" v-if="!isSearchMode && totalPages > 1">
       <div class="col-12 d-flex justify-content-center">
         <nav aria-label="Auction pagination">
           <ul class="pagination">
@@ -270,6 +277,16 @@ export default {
       upcomingAuctions: [],
       tags: ["Landscape", "Portrait", "Folk"],
       activeAuctionTab: 'ongoing',
+      selectedTag: null,
+
+      // Form tìm kiếm
+      searchForm: {
+        searchText: "", // Input duy nhất cho id, name, và type
+        dateFrom: "",
+        dateTo: ""
+      },
+      isSearching: false,
+      isSearchMode: false, // Đánh dấu đang ở chế độ tìm kiếm
 
       // Pagination cho ongoing
       ongoingCurrentPage: 0,
@@ -281,12 +298,29 @@ export default {
       upcomingCurrentPage: 0,
       upcomingPageSize: 12,
       upcomingTotalPages: 0,
-      upcomingTotalElements: 0
+      upcomingTotalElements: 0,
+
+      // Kết quả tìm kiếm
+      searchResults: []
     };
   },
 
   computed: {
     displayedAuctions() {
+      // Nếu đang ở chế độ tìm kiếm, filter kết quả theo tab đang chọn
+      if (this.isSearchMode) {
+        // Tab Ongoing: chỉ hiển thị status = 1 (đang diễn ra)
+        if (this.activeAuctionTab === 'ongoing') {
+          return this.searchResults.filter(auction => auction.status === 1);
+        }
+        // Tab Upcoming: chỉ hiển thị status = 2 (sắp diễn ra)
+        else if (this.activeAuctionTab === 'upcoming') {
+          return this.searchResults.filter(auction => auction.status === 2);
+        }
+        // Mặc định trả về tất cả kết quả
+        return this.searchResults;
+      }
+      // Ngược lại hiển thị theo tab (không search)
       if (this.activeAuctionTab === 'upcoming') return this.upcomingAuctions;
       return this.ongoingAuctions;
     },
@@ -318,6 +352,10 @@ export default {
 
   watch: {
     activeAuctionTab(newTab) {
+      // Nếu đang ở chế độ tìm kiếm, không cần reload vì đã filter trong computed
+      if (this.isSearchMode) {
+        return;
+      }
       // Khi chuyển tab, reset về trang đầu nếu chưa có dữ liệu
       if (newTab === 'ongoing' && this.ongoingAuctions.length === 0) {
         this.getOngoingAuctions();
@@ -498,6 +536,153 @@ export default {
         name: 'auction-room',
         params: { id }
       });
+    },
+
+    // ========== TÌM KIẾM AUCTION ROOM ==========
+    searchAuctions() {
+      // Kiểm tra nếu đang tìm kiếm thì không làm gì
+      if (this.isSearching) {
+        return;
+      }
+
+      // Lấy token từ localStorage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        this.$toast.error("Please login to search");
+        return;
+      }
+
+      // Chuẩn bị dữ liệu tìm kiếm
+      // Một input duy nhất cho id, name, và type
+      const searchText = this.searchForm.searchText?.trim() || "";
+
+      // Kiểm tra xem searchText có phải là tag (Landscape/Portrait/Folk) không
+      const tagList = ["Landscape", "Portrait", "Folk"];
+      const isTag = tagList.some(tag => tag.toLowerCase() === searchText.toLowerCase());
+
+      const searchData = {};
+
+      // Nếu là tag thì gửi vào type
+      if (isTag) {
+        searchData.type = searchText;
+      }
+      // Nếu không phải tag và có nhập text, gửi vào cả id, name, và type
+      // (để server tự tìm trong cả 3 trường này)
+      else if (searchText) {
+        searchData.id = searchText;
+        searchData.name = searchText;
+        searchData.type = searchText;
+      }
+
+      // Thêm dateFrom và dateTo nếu có
+      if (this.searchForm.dateFrom) {
+        searchData.dateFrom = this.searchForm.dateFrom;
+      }
+      if (this.searchForm.dateTo) {
+        searchData.dateTo = this.searchForm.dateTo;
+      }
+
+      // Nếu có selectedTag từ button tag thì ưu tiên dùng selectedTag
+      if (this.selectedTag) {
+        searchData.type = this.selectedTag;
+      }
+
+      // Loại bỏ các trường undefined để không gửi lên server
+      Object.keys(searchData).forEach(key => {
+        if (searchData[key] === undefined || searchData[key] === '') {
+          delete searchData[key];
+        }
+      });
+
+      // Kiểm tra xem có ít nhất một điều kiện tìm kiếm không
+      if (Object.keys(searchData).length === 0) {
+        this.$toast.info("Please enter at least one search criteria");
+        return;
+      }
+
+      // Bắt đầu tìm kiếm
+      this.isSearching = true;
+      this.isSearchMode = true;
+
+      console.log('🔍 [SEARCH] Sending search request:', searchData);
+
+      axios
+        .post("http://localhost:8081/api/auctionroom/search", searchData, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then((res) => {
+          console.log('✅ [SEARCH] API Response received:', res.data);
+
+          // Kiểm tra cấu trúc response
+          if (res.data && res.data.success !== undefined) {
+            // Response có dạng { success, message, data }
+            if (res.data.success && Array.isArray(res.data.data)) {
+              this.searchResults = res.data.data.filter(room => room.status !== 0);
+              this.$toast.success(res.data.message || `Found ${this.searchResults.length} auction room(s)`);
+            } else {
+              this.searchResults = [];
+              this.$toast.info(res.data.message || "No results found");
+            }
+          } else if (Array.isArray(res.data)) {
+            // Response trực tiếp là array
+            this.searchResults = res.data.filter(room => room.status !== 0);
+            this.$toast.success(`Found ${this.searchResults.length} auction room(s)`);
+          } else {
+            this.searchResults = [];
+            this.$toast.info("No results found");
+          }
+
+          console.log('✅ [SEARCH] Final results:', this.searchResults.length, 'items');
+        })
+        .catch((err) => {
+          console.error('❌ [SEARCH] API Error:', err);
+          this.searchResults = [];
+          const errorMessage = err.response?.data?.message || "Search failed. Please try again.";
+          this.$toast.error(errorMessage);
+        })
+        .finally(() => {
+          this.isSearching = false;
+        });
+    },
+
+    // Reset tìm kiếm và quay về danh sách ban đầu
+    resetSearch() {
+      // Reset form tìm kiếm
+      this.searchForm = {
+        searchText: "",
+        dateFrom: "",
+        dateTo: ""
+      };
+      this.selectedTag = null;
+      this.isSearchMode = false;
+      this.searchResults = [];
+
+      // Reload lại danh sách ban đầu
+      if (this.activeAuctionTab === 'ongoing') {
+        this.ongoingCurrentPage = 0;
+        this.getOngoingAuctions();
+      } else {
+        this.upcomingCurrentPage = 0;
+        this.getUpcomingAuctions();
+      }
+
+      this.$toast.info("Search reset. Showing all auctions");
+    },
+
+    // Chọn tag để filter
+    selectTag(tag) {
+      if (this.selectedTag === tag) {
+        // Nếu click lại tag đang chọn thì bỏ chọn
+        this.selectedTag = null;
+        // Reset search khi bỏ chọn tag
+        this.resetSearch();
+      } else {
+        this.selectedTag = tag;
+        // Tự động tìm kiếm khi chọn tag
+        this.searchAuctions();
+      }
     }
   }
 };
@@ -596,3 +781,4 @@ export default {
   color: #adb5bd !important;
 }
 </style>
+

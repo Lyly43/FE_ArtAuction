@@ -37,20 +37,20 @@
                 <div class="d-flex flex-column gap-3">
                   <!-- Username -->
                   <div class="group-input col-lg-12 col-md-12">
-                    <input v-model="tai_khoan.username" type="text" class="form-control" id="username" required>
+                    <input v-model="tai_khoan.username" type="text" class="form-control" id="username" required @keydown.enter.prevent="DangKy">
                     <label for="username">Username</label>
                     <i class="bi bi-person fa-xl text-success"></i>
                   </div>
                   <!-- Email -->
                   <div class="group-input col-lg-12 col-md-12">
-                    <input v-model="tai_khoan.email" type="email" class="form-control" id="email" required>
+                    <input v-model="tai_khoan.email" type="email" class="form-control" id="email" required @keydown.enter.prevent="DangKy">
                     <label for="email">Email</label>
                     <i class="bi bi-envelope fa-xl text-success"></i>
                   </div>
                   <!-- Password -->
                   <div class="group-input col-lg-12 col-md-12">
                     <input v-model="tai_khoan.password" :type="showPassword ? 'text' : 'password'" class="form-control"
-                      id="password" required>
+                      id="password" required @keydown.enter.prevent="DangKy">
                     <label for="password">Password</label>
                     <i class="bi fa-xl" :class="showPassword ? 'bi-eye' : 'bi-eye-slash'" @click="togglePassword"
                       style="cursor: pointer;"></i>
@@ -58,7 +58,7 @@
                   <!-- RePassword -->
                   <div class="group-input col-lg-12 col-md-12">
                     <input v-model="tai_khoan.confirmPassword" :type="showRePassword ? 'text' : 'password'"
-                      class="form-control" id="repassword" required>
+                      class="form-control" id="repassword" required @keydown.enter.prevent="DangKy">
                     <label for="repassword">RePassword</label>
                     <i class="bi fa-xl" :class="showRePassword ? 'bi-eye' : 'bi-eye-slash'" @click="toggleRePassword"
                       style="cursor: pointer;"></i>
@@ -76,7 +76,10 @@
                 </div>
 
                 <div class="d-flex flex-column align-items-center gap-3 mt-2">
-                  <button class="btn btn-success fw-bold w-100" @click="DangKy()">Sign Up</button>
+                  <button class="btn btn-success fw-bold w-100" @click="DangKy()" :disabled="loading">
+                    <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    {{ loading ? 'Signing up...' : 'Sign Up' }}
+                  </button>
 
 
                   <p class="m-0">Already have an account?
@@ -102,6 +105,7 @@ export default {
       showPassword: false,
       showRePassword: false,
       acceptTerms: false,
+      loading: false,
       tai_khoan: {},
     }
   },
@@ -110,6 +114,126 @@ export default {
   },
   methods: {
     DangKy() {
+      // Prevent double click
+      if (this.loading) {
+        return;
+      }
+
+      // Check all required fields
+      if (!this.tai_khoan.username || !this.tai_khoan.username.trim()) {
+        this.$toast.error("Please enter Username");
+        this.tai_khoan.username = "";
+        this.$nextTick(() => {
+          document.getElementById('username')?.focus();
+        });
+        return;
+      }
+
+      // Validate Username length: ít nhất 3 ký tự và nhỏ hơn 20 ký tự
+      const trimmedUsername = this.tai_khoan.username.trim();
+      if (trimmedUsername.length < 3) {
+        this.$toast.error("Username must be at least 3 characters");
+        this.tai_khoan.username = "";
+        this.$nextTick(() => {
+          document.getElementById('username')?.focus();
+        });
+        return;
+      }
+      if (trimmedUsername.length >= 20) {
+        this.$toast.error("Username must be less than 20 characters");
+        this.tai_khoan.username = "";
+        this.$nextTick(() => {
+          document.getElementById('username')?.focus();
+        });
+        return;
+      }
+      // Cập nhật username đã được trim
+      this.tai_khoan.username = trimmedUsername;
+
+      if (!this.tai_khoan.email || !this.tai_khoan.email.trim()) {
+        this.$toast.error("Please enter Email");
+        this.tai_khoan.email = "";
+        this.$nextTick(() => {
+          document.getElementById('email')?.focus();
+        });
+        return;
+      }
+
+      // Check email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.tai_khoan.email)) {
+        this.$toast.error("Invalid email format");
+        this.tai_khoan.email = "";
+        this.$nextTick(() => {
+          document.getElementById('email')?.focus();
+        });
+        return;
+      }
+
+      if (!this.tai_khoan.password || !this.tai_khoan.password.trim()) {
+        this.$toast.error("Please enter Password");
+        this.tai_khoan.password = "";
+        this.$nextTick(() => {
+          document.getElementById('password')?.focus();
+        });
+        return;
+      }
+
+      // Validate Password length: ít nhất 6 ký tự
+      const trimmedPassword = this.tai_khoan.password.trim();
+      if (trimmedPassword.length < 6) {
+        this.$toast.error("Password must be at least 6 characters");
+        this.tai_khoan.password = "";
+        this.tai_khoan.confirmPassword = "";
+        this.$nextTick(() => {
+          document.getElementById('password')?.focus();
+        });
+        return;
+      }
+      if (trimmedPassword.length >= 15) {
+        this.$toast.error("Password must be less than 15 characters");
+        this.tai_khoan.password = "";
+        this.tai_khoan.confirmPassword = "";
+        this.$nextTick(() => {
+          document.getElementById('password')?.focus();
+        });
+        return;
+      }
+      // Cập nhật password đã được trim
+      this.tai_khoan.password = trimmedPassword;
+
+      if (!this.tai_khoan.confirmPassword || !this.tai_khoan.confirmPassword.trim()) {
+        this.$toast.error("Please enter RePassword");
+        this.tai_khoan.confirmPassword = "";
+        this.$nextTick(() => {
+          document.getElementById('repassword')?.focus();
+        });
+        return;
+      }
+
+      // Check if password and confirmPassword match
+      const trimmedConfirmPassword = this.tai_khoan.confirmPassword.trim();
+      if (this.tai_khoan.password !== trimmedConfirmPassword) {
+        this.$toast.error("Password and RePassword do not match");
+        this.tai_khoan.password = "";
+        this.tai_khoan.confirmPassword = "";
+        this.$nextTick(() => {
+          document.getElementById('password')?.focus();
+        });
+        return;
+      }
+      // Cập nhật confirmPassword đã được trim
+      this.tai_khoan.confirmPassword = trimmedConfirmPassword;
+
+      // Check Terms & Conditions checkbox
+      if (!this.acceptTerms) {
+        this.$toast.error("Please agree to Terms & Conditions");
+        return;
+      }
+
+      // If all fields are valid, call register API
+      this.loading = true;
+
       axios.post('http://localhost:8081/register', this.tai_khoan)
         .then(response => {
           if (response.data.status == 1) {
@@ -124,10 +248,30 @@ export default {
 
         })
         .catch((res) => {
-          const list = Object.values(res.response.data.errors);
-          list.forEach((v) => {
-            this.$toast.error(v[0]);
-          });
+          if (res.response && res.response.data && res.response.data.errors) {
+            const errors = res.response.data.errors;
+            // Clear fields that have errors
+            if (errors.username) {
+              this.tai_khoan.username = "";
+            }
+            if (errors.email) {
+              this.tai_khoan.email = "";
+            }
+            if (errors.password) {
+              this.tai_khoan.password = "";
+              this.tai_khoan.confirmPassword = "";
+            }
+
+            const list = Object.values(errors);
+            list.forEach((v) => {
+              this.$toast.error(v[0]);
+            });
+          } else {
+            this.$toast.error("An error occurred during registration");
+          }
+        })
+        .finally(() => {
+          this.loading = false;
         })
 
     },
