@@ -4,33 +4,21 @@
       <div class="card">
         <div class="card-body">
           <div class="row">
-            <div class="col-lg-12 col-md-6 col-sm-12 d-flex align-items-center">
+            <div class="col-lg-12 col-md-6 col-sm-12 d-flex justify-content-between align-items-center">
               <h4 class="text-success fw-bold m-0">Artwork Management</h4>
-            </div>
-          </div>
-          <hr class="text-success ">
-          <div class="row d-flex align-items-center justify-content-between mt-3 ">
-            <div class="col-lg-6 col-md-12 col-sm-12 d-flex align-items-center gap-3 mb-lg-0 mb-3">
-              <input type="date" class="form-control" v-model="searchForm.dateFrom" placeholder="From date">
-              <p class="fw-bold">_</p>
-              <input type="date" class="form-control" v-model="searchForm.dateTo" placeholder="To date">
-            </div>
-            <div class="col-lg-5 col-md-12 col-sm-12">
-              <div class="input-group">
-                <input type="text" class="form-control border border-2 border-success"
-                  placeholder="Search by ID, name, or type (Landscape/Portrait/Folk)"
-                  v-model="searchForm.searchText"
-                  @keydown.enter.prevent="searchArtworks">
-                <button class="btn btn-success input-group-text" @click="searchArtworks" :disabled="isSearching">
-                  <span v-if="isSearching" class="spinner-border spinner-border-sm me-2"></span>
-                  <i v-else class="fa-solid fa-magnifying-glass"></i>
+              <div class=" d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3 mb-lg-0 mb-3">
+                  <input type="date" class="form-control" v-model="searchForm.dateFrom" placeholder="From date"
+                    @change="onDateChange">
+                  <p class="fw-bold">_</p>
+                  <input type="date" class="form-control" v-model="searchForm.dateTo" placeholder="To date"
+                    @change="onDateChange">
+                </div>
+                <button class="btn btn-outline-secondary" @click="resetSearch" :disabled="isSearching" title="Reset search">
+                  <i class="fa-solid fa-rotate-left"></i>
                 </button>
               </div>
-            </div>
-            <div class="col-lg-1 col-md-12 col-sm-12 d-flex justify-content-end">
-              <button class="btn btn-secondary" @click="resetSearch" :disabled="isSearching" title="Reset search">
-                <i class="fa-solid fa-rotate-left"></i>
-              </button>
+
             </div>
           </div>
         </div>
@@ -183,7 +171,6 @@ export default {
       listmanage: [],
       // Form tìm kiếm
       searchForm: {
-        searchText: "", // Input duy nhất cho id, name, và type
         dateFrom: "",
         dateTo: ""
       },
@@ -238,27 +225,8 @@ export default {
         return;
       }
 
-      // Chuẩn bị dữ liệu tìm kiếm
-      // Một input duy nhất cho id, name, và type
-      const searchText = this.searchForm.searchText?.trim() || "";
-
-      // Kiểm tra xem searchText có phải là tag (Landscape/Portrait/Folk) không
-      const tagList = ["Landscape", "Portrait", "Folk"];
-      const isTag = tagList.some(tag => tag.toLowerCase() === searchText.toLowerCase());
-
+      // Chuẩn bị dữ liệu tìm kiếm - chỉ dùng dateFrom và dateTo
       const searchData = {};
-
-      // Nếu là tag thì gửi vào type
-      if (isTag) {
-        searchData.type = searchText;
-      }
-      // Nếu không phải tag và có nhập text, gửi vào cả id, name, và type
-      // (để server tự tìm trong cả 3 trường này)
-      else if (searchText) {
-        searchData.id = searchText;
-        searchData.name = searchText;
-        searchData.type = searchText;
-      }
 
       // Thêm dateFrom và dateTo nếu có
       if (this.searchForm.dateFrom) {
@@ -268,9 +236,9 @@ export default {
         searchData.dateTo = this.searchForm.dateTo;
       }
 
-      // Kiểm tra xem có ít nhất một điều kiện tìm kiếm không
+      // Kiểm tra xem có ít nhất một date được chọn không
       if (Object.keys(searchData).length === 0) {
-        this.$toast.info("Please enter at least one search criteria");
+        this.$toast.info("Please select at least one date");
         return;
       }
 
@@ -326,7 +294,6 @@ export default {
     resetSearch() {
       // Reset form tìm kiếm
       this.searchForm = {
-        searchText: "",
         dateFrom: "",
         dateTo: ""
       };
@@ -337,6 +304,14 @@ export default {
       this.loadData();
 
       this.$toast.info("Search reset. Showing all artworks");
+    },
+
+    // Tự động search khi date thay đổi
+    onDateChange() {
+      // Chỉ search nếu có ít nhất một date được chọn
+      if (this.searchForm.dateFrom || this.searchForm.dateTo) {
+        this.searchArtworks();
+      }
     },
   },
 }

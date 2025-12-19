@@ -4,21 +4,17 @@
       <div class="card">
         <div class="card-body">
           <div class="row">
-            <div class="col-lg-12 col-md-6 col-sm-12 d-flex align-items-center">
+            <div class="col-lg-12 col-md-6 col-sm-12 d-flex align-items-center justify-content-between">
               <h4 class="text-success fw-bold m-0">Artwork Management</h4>
-            </div>
-          </div>
-          <hr class="text-success ">
-          <div class="row d-flex align-items-center justify-content-between mt-3 ">
-            <div class="col-lg-6 col-md-12 col-sm-12 d-flex align-items-center gap-3 mb-lg-0 mb-3">
-              <input type="date" class="form-control">
-              <p class="fw-bold">_</p>
-              <input type="date" class="form-control">
-            </div>
-            <div class="col-lg-5 col-md-12 col-sm-12">
-              <div class="input-group">
-                <input type="text" class="form-control border border-2 border-success " placeholder="Search....">
-                <button class="btn btn-success input-group-text"><i class="fa-solid fa-magnifying-glass"></i></button>
+              <div class="d-flex align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-3 mb-lg-0 mb-3">
+                  <input type="date" class="form-control">
+                  <p class="fw-bold">_</p>
+                  <input type="date" class="form-control">
+                </div>
+                <button class="btn btn-outline-secondary"  title="Reset search">
+                  <i class="fa-solid fa-rotate-left"></i>
+                </button>
               </div>
             </div>
           </div>
