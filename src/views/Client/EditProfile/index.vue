@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-8">
         <div class="card">
-          <div class="card-body ">
+          <div class="card-body">
             <div class="row">
               <div class="col-4 d-flex align-items-center flex-column gap-3">
                 <img v-bind:src="thong_tin.avt || '/src/assets/img/avt.png'" class="rounded-circle border border-3 border-success" alt="avt"
@@ -25,11 +25,11 @@
                 <button type="button" class="btn btn-success w-100" data-bs-toggle="modal"
                   data-bs-target="#exampleModal">Change Password</button>
               </div>
-              <div class="col-8">
+              <div class="col-8 ps-3">
                 <div class="row">
                   <div class="mb-4 col-lg-12">
                     <label class="mb-2 text-success">Full name</label>
-                    <input type="text" class="form-control" v-model="thong_tin.username" />
+                    <input type="text" class="form-control" id="fullname" v-model="thong_tin.username" />
                   </div>
 
                   <div class="mb-4 col-lg-6">
@@ -43,12 +43,14 @@
                   </div>
                   <div class="mb-4 col-lg-6">
                     <label class="mb-2 text-success">Date of Birth</label>
-                    <input type="date" class="form-control" v-model="thong_tin.dateOfBirth" />
+                    <input type="date" class="form-control" v-model="thong_tin.dateOfBirth" :max="maxDate" />
                   </div>
 
                   <div class="mb-4 col-lg-12">
                     <label class="mb-2 text-success">Contact Number</label>
-                    <input type="text" class="form-control" v-model="thong_tin.phonenumber" />
+                    <input type="tel" class="form-control" id="phonenumber" v-model="thong_tin.phonenumber"
+                      @input="formatPhoneNumber" maxlength="10" />
+                    <small class="text-muted">Must be exactly 10 digits (numbers only)</small>
                   </div>
 
                   <div class="mb-4 col-lg-12">
@@ -84,7 +86,7 @@
       </div>
 
       <div class="col-4">
-        <div class="card shadow-sm border-0 h-100">
+        <div class="card">
           <div class="card-body d-flex flex-column gap-3">
             <div class="d-flex flex-column gap-2">
               <div class="d-flex align-items-center justify-content-between gap-2">
@@ -245,6 +247,14 @@ export default {
     },
     canSubmitKyc() {
       return Object.values(this.kycFiles).every(item => !!item.file);
+    },
+    maxDate() {
+      // Trả về ngày hiện tại dưới dạng YYYY-MM-DD
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     }
   },
 
@@ -462,6 +472,62 @@ export default {
 
     //  update thông tin
     updateProfile() {
+      // Lưu giá trị username ban đầu để restore nếu validation fail
+      const originalUsername = this.thong_tin.username;
+
+      // Validate Full name không được để trống
+      if (!this.thong_tin.username || !this.thong_tin.username.trim()) {
+        this.$toast.error("Full name cannot be empty");
+        // Restore lại giá trị ban đầu
+        this.thong_tin.username = originalUsername;
+        this.$nextTick(() => {
+          document.getElementById('fullname')?.focus();
+        });
+        return;
+      }
+
+      // Validate Full name length: ít nhất 3 ký tự và nhỏ hơn 20 ký tự
+      const trimmedUsername = this.thong_tin.username.trim();
+      if (trimmedUsername.length < 3) {
+        this.$toast.error("Full name must be at least 3 characters");
+        // Restore lại giá trị ban đầu
+        this.thong_tin.username = originalUsername;
+        this.$nextTick(() => {
+          document.getElementById('fullname')?.focus();
+        });
+        return;
+      }
+      if (trimmedUsername.length >= 20) {
+        this.$toast.error("Full name must be less than 20 characters");
+        // Restore lại giá trị ban đầu
+        this.thong_tin.username = originalUsername;
+        this.$nextTick(() => {
+          document.getElementById('fullname')?.focus();
+        });
+        return;
+      }
+      // Cập nhật username đã được trim
+      this.thong_tin.username = trimmedUsername;
+
+      // Validate Date of Birth không được quá ngày hiện tại
+      if (this.thong_tin.dateOfBirth && this.thong_tin.dateOfBirth > this.maxDate) {
+        this.$toast.error("Date of Birth cannot be in the future");
+        this.thong_tin.dateOfBirth = '';
+        return;
+      }
+
+      // Validate Contact Number: phải là số và đúng 10 ký tự
+      if (this.thong_tin.phonenumber) {
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(this.thong_tin.phonenumber)) {
+          this.$toast.error("Contact Number must be exactly 10 digits");
+          this.$nextTick(() => {
+            document.getElementById('phonenumber')?.focus();
+          });
+          return;
+        }
+      }
+
       this.loading = true;
       this.error = null;
 
@@ -533,6 +599,17 @@ export default {
         URL.revokeObjectURL(this.kycFiles[key].preview);
       }
       this.kycFiles[key] = { file: null, preview: '' };
+    },
+
+    formatPhoneNumber(event) {
+      // Chỉ cho phép nhập số và giới hạn 10 ký tự
+      let value = event.target.value.replace(/[^0-9]/g, '');
+      if (value.length > 10) {
+        value = value.substring(0, 10);
+      }
+      // Cập nhật giá trị trực tiếp vào input để tránh conflict với v-model
+      event.target.value = value;
+      this.thong_tin.phonenumber = value;
     },
 
     submitKycVerification() {

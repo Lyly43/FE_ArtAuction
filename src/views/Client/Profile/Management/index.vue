@@ -11,15 +11,26 @@
           <hr class="text-success ">
           <div class="row d-flex align-items-center justify-content-between mt-3 ">
             <div class="col-lg-6 col-md-12 col-sm-12 d-flex align-items-center gap-3 mb-lg-0 mb-3">
-              <input type="date" class="form-control">
+              <input type="date" class="form-control" v-model="searchForm.dateFrom" placeholder="From date">
               <p class="fw-bold">_</p>
-              <input type="date" class="form-control">
+              <input type="date" class="form-control" v-model="searchForm.dateTo" placeholder="To date">
             </div>
             <div class="col-lg-5 col-md-12 col-sm-12">
               <div class="input-group">
-                <input type="text" class="form-control border border-2 border-success " placeholder="Search....">
-                <button class="btn btn-success input-group-text"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <input type="text" class="form-control border border-2 border-success"
+                  placeholder="Search by ID, name, or type (Landscape/Portrait/Folk)"
+                  v-model="searchForm.searchText"
+                  @keydown.enter.prevent="searchArtworks">
+                <button class="btn btn-success input-group-text" @click="searchArtworks" :disabled="isSearching">
+                  <span v-if="isSearching" class="spinner-border spinner-border-sm me-2"></span>
+                  <i v-else class="fa-solid fa-magnifying-glass"></i>
+                </button>
               </div>
+            </div>
+            <div class="col-lg-1 col-md-12 col-sm-12 d-flex justify-content-end">
+              <button class="btn btn-secondary" @click="resetSearch" :disabled="isSearching" title="Reset search">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -82,7 +93,20 @@
 
     </div>
 
-    <template v-for="(v, k) in listmanage" :key="k">
+    <!-- Hiển thị thông báo khi không tìm thấy kết quả -->
+    <div v-if="isSearchMode && displayedArtworks.length === 0" class="col-12">
+      <div class="text-center py-5">
+        <i class="fa-solid fa-magnifying-glass fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted mb-2">No matching results found</h4>
+        <p class="text-muted">Please try again with different search criteria</p>
+        <button class="btn btn-success mt-3" @click="resetSearch">
+          <i class="fa-solid fa-rotate-left me-2"></i>View all
+        </button>
+      </div>
+    </div>
+
+    <!-- Danh sách artwork -->
+    <template v-else v-for="(v, k) in displayedArtworks" :key="k">
       <div class="col-lg-12 mb-3">
         <div class=" card p-0">
           <div class="card-body">
@@ -156,9 +180,28 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      listmanage: {},
+      listmanage: [],
+      // Form tìm kiếm
+      searchForm: {
+        searchText: "", // Input duy nhất cho id, name, và type
+        dateFrom: "",
+        dateTo: ""
+      },
+      isSearching: false,
+      isSearchMode: false, // Đánh dấu đang ở chế độ tìm kiếm
+      searchResults: [] // Kết quả tìm kiếm
     }
   },
+  computed: {
+    // Hiển thị kết quả tìm kiếm hoặc danh sách ban đầu
+    displayedArtworks() {
+      if (this.isSearchMode) {
+        return this.searchResults;
+      }
+      return this.listmanage;
+    }
+  },
+
   mounted() {
     this.loadData();
   },
@@ -171,15 +214,129 @@ export default {
           }
         })
         .then((res) => {
-          this.listmanage = res.data;
-          // console.log(list);
-          console.log("data loaded managnement", this.listmanage);
-
-
+          // Đảm bảo listmanage là array
+          this.listmanage = Array.isArray(res.data) ? res.data : [];
+          console.log("data loaded management", this.listmanage);
         })
         .catch((err) => {
           console.error(err);
+          this.$toast.error("Unable to load artworks");
         });
+    },
+
+    // ========== TÌM KIẾM ARTWORK ==========
+    searchArtworks() {
+      // Kiểm tra nếu đang tìm kiếm thì không làm gì
+      if (this.isSearching) {
+        return;
+      }
+
+      // Lấy token từ localStorage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        this.$toast.error("Please login to search");
+        return;
+      }
+
+      // Chuẩn bị dữ liệu tìm kiếm
+      // Một input duy nhất cho id, name, và type
+      const searchText = this.searchForm.searchText?.trim() || "";
+
+      // Kiểm tra xem searchText có phải là tag (Landscape/Portrait/Folk) không
+      const tagList = ["Landscape", "Portrait", "Folk"];
+      const isTag = tagList.some(tag => tag.toLowerCase() === searchText.toLowerCase());
+
+      const searchData = {};
+
+      // Nếu là tag thì gửi vào type
+      if (isTag) {
+        searchData.type = searchText;
+      }
+      // Nếu không phải tag và có nhập text, gửi vào cả id, name, và type
+      // (để server tự tìm trong cả 3 trường này)
+      else if (searchText) {
+        searchData.id = searchText;
+        searchData.name = searchText;
+        searchData.type = searchText;
+      }
+
+      // Thêm dateFrom và dateTo nếu có
+      if (this.searchForm.dateFrom) {
+        searchData.dateFrom = this.searchForm.dateFrom;
+      }
+      if (this.searchForm.dateTo) {
+        searchData.dateTo = this.searchForm.dateTo;
+      }
+
+      // Kiểm tra xem có ít nhất một điều kiện tìm kiếm không
+      if (Object.keys(searchData).length === 0) {
+        this.$toast.info("Please enter at least one search criteria");
+        return;
+      }
+
+      // Bắt đầu tìm kiếm
+      this.isSearching = true;
+      this.isSearchMode = true;
+
+      console.log('🔍 [SEARCH ARTWORK] Sending search request:', searchData);
+
+      axios
+        .post("http://localhost:8081/api/artwork/search", searchData, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then((res) => {
+          console.log('✅ [SEARCH ARTWORK] API Response received:', res.data);
+
+          // Kiểm tra cấu trúc response
+          if (res.data && res.data.success !== undefined) {
+            // Response có dạng { success, message, data, count }
+            if (res.data.success && Array.isArray(res.data.data)) {
+              this.searchResults = res.data.data;
+              const count = res.data.count || res.data.data.length;
+              this.$toast.success(res.data.message || `Found ${count} artwork(s)`);
+            } else {
+              this.searchResults = [];
+              this.$toast.info(res.data.message || "No results found");
+            }
+          } else if (Array.isArray(res.data)) {
+            // Response trực tiếp là array
+            this.searchResults = res.data;
+            this.$toast.success(`Found ${res.data.length} artwork(s)`);
+          } else {
+            this.searchResults = [];
+            this.$toast.info("No results found");
+          }
+
+          console.log('✅ [SEARCH ARTWORK] Final results:', this.searchResults.length, 'items');
+        })
+        .catch((err) => {
+          console.error('❌ [SEARCH ARTWORK] API Error:', err);
+          this.searchResults = [];
+          const errorMessage = err.response?.data?.message || "Search failed. Please try again.";
+          this.$toast.error(errorMessage);
+        })
+        .finally(() => {
+          this.isSearching = false;
+        });
+    },
+
+    // Reset tìm kiếm và quay về danh sách ban đầu
+    resetSearch() {
+      // Reset form tìm kiếm
+      this.searchForm = {
+        searchText: "",
+        dateFrom: "",
+        dateTo: ""
+      };
+      this.isSearchMode = false;
+      this.searchResults = [];
+
+      // Reload lại danh sách ban đầu
+      this.loadData();
+
+      this.$toast.info("Search reset. Showing all artworks");
     },
   },
 }

@@ -43,14 +43,14 @@
 									</div> -->
                   <!-- Email -->
                   <div class="group-input col-lg-12 col-md-12">
-                    <input v-model="user.email" type="email" class="form-control" id="email" required>
+                    <input v-model="user.email" type="email" class="form-control" id="email" required @keydown.enter.prevent="DangNhap">
                     <label for="email">Email</label>
                     <i class="bi bi-envelope fa-xl text-success"></i>
                   </div>
                   <!-- Password -->
                   <div class="group-input col-lg-12 col-md-12">
                     <input v-model="user.password" :type="showPassword ? 'text' : 'password'" class="form-control"
-                      id="password" required>
+                      id="password" required @keydown.enter.prevent="DangNhap">
                     <label for="password">Password</label>
                     <i class="bi fa-xl" :class="showPassword ? 'bi-eye' : 'bi-eye-slash'" @click="togglePassword"
                       style="cursor: pointer;"></i>
@@ -72,22 +72,25 @@
                 </div>
 
                 <div class="d-flex flex-column align-items-center gap-3 mt-3">
-                  <button v-on:click="DangNhap()" class="btn btn-success fw-bold w-100">Login</button>
+                  <button v-on:click="DangNhap()" class="btn btn-success fw-bold w-100" :disabled="loading">
+                    <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    {{ loading ? 'Logging in...' : 'Login' }}
+                  </button>
 
                   <!-- Divider -->
-                  <div class="d-flex align-items-center w-100">
+                  <!-- <div class="d-flex align-items-center w-100">
                     <hr class="flex-grow-1 border border-success">
                     <span class="px-3 text-muted">or</span>
                     <hr class="flex-grow-1 border border-success">
-                  </div>
+                  </div> -->
 
                   <!-- Google Login Button -->
-                  <button
+                  <!-- <button
                     class="btn btn-google border-2 border-success w-100 d-flex align-items-center justify-content-center gap-2"
                     @click="loginWithGoogle">
                     <i class="fab fa-google"></i>
                     <span>Continue with Google</span>
-                  </button>
+                  </button> -->
 
                   <p class="m-0">Don't have an account?
                     <router-link to="/register" href="#" class="text-success fw-bold text-decoration-none">Sign
@@ -112,6 +115,7 @@ export default {
       showPassword: false,
       showRePassword: false,
       rememberMe: false,
+      loading: false,
 
       user: {
         email: "",
@@ -125,6 +129,13 @@ export default {
   },
   methods: {
     DangNhap() {
+      // Prevent double click
+      if (this.loading) {
+        return;
+      }
+
+      this.loading = true;
+
       axios
         .post("http://localhost:8081/api/auth/login", this.user)
         .then((res) => {
@@ -158,6 +169,9 @@ export default {
           } else {
             this.$toast.error("Server error");
           }
+        })
+        .finally(() => {
+          this.loading = false;
         });
     },
 
