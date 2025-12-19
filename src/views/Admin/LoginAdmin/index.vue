@@ -32,7 +32,7 @@
               <p class="text-secondary small">Welcome back! Please login to your account.</p>
             </div>
 
-            <form>
+            <form @submit.prevent="DangNhap">
               <div class="form-floating mb-3">
                 <input
                   v-model="ad.email"
@@ -42,16 +42,17 @@
                   placeholder="name@example.com"
                 />
 
-                <label for="floatingInput" class="text-secondary">Username or Email</label>
+                <label for="floatingInput" class="text-secondary">Email</label>
               </div>
 
               <div class="form-floating mb-3">
                 <input
                   v-model="ad.password"
-                  type="password"
+                  :type="showPassword ? 'text' : 'password'"
                   class="form-control border-0 bg-light rounded-3"
                   id="floatingPassword"
                   placeholder="Password"
+                  @keyup.enter="DangNhap"
                 />
 
                 <label for="floatingPassword" class="text-secondary">Password</label>
