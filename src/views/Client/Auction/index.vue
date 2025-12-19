@@ -101,16 +101,15 @@
                 placeholder="Search by ID, name, or type (Landscape/Portrait/Folk)"
                 v-model="searchForm.searchText" @keydown.enter.prevent="searchAuctions">
               <button class="btn btn-success px-4 fw-bold" @click="searchAuctions" :disabled="isSearching">
-                <span v-if="isSearching" class="spinner-border spinner-border-sm me-2"></span>
                 Search
               </button>
             </div>
           </div>
           <div class="col-8 mt-3">
             <div class=" d-flex gap-3 align-items-center">
-              <input type="date" class="form-control" v-model="searchForm.dateFrom" placeholder="From date">
-              <b>_</b>
-              <input type="date" class="form-control" v-model="searchForm.dateTo" placeholder="To date">
+              <input type="date" class="form-control" v-model="searchForm.dateFrom" placeholder="From date" @change="handleDateChange">
+              <p class="fw-bold">_</p>
+              <input type="date" class="form-control" v-model="searchForm.dateTo" placeholder="To date" @change="handleDateChange">
             </div>
           </div>
           <div class="col-4 d-flex align-items-end gap-3">
@@ -174,8 +173,18 @@
 
     <!-- Danh sách buổi đấu giá -->
     <div class="row">
+      <!-- Hiển thị loading khi đang search -->
+      <div v-if="isSearching" class="col-12">
+        <div class="text-center py-5">
+          <div class="spinner-border text-success mb-3" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="text-muted">Searching auctions...</p>
+        </div>
+      </div>
+
       <!-- Hiển thị thông báo khi không tìm thấy kết quả -->
-      <div v-if="isSearchMode && displayedAuctions.length === 0" class="col-12">
+      <div v-else-if="isSearchMode && displayedAuctions.length === 0" class="col-12">
         <div class="text-center py-5">
           <i class="fa-solid fa-magnifying-glass fa-3x text-muted mb-3"></i>
           <h4 class="text-muted mb-2">No matching results found</h4>
@@ -287,6 +296,7 @@ export default {
       },
       isSearching: false,
       isSearchMode: false, // Đánh dấu đang ở chế độ tìm kiếm
+      dateSearchTimeout: null, // Timeout cho auto search khi thay đổi date
 
       // Pagination cho ongoing
       ongoingCurrentPage: 0,
@@ -369,6 +379,12 @@ export default {
     // Load cả 2 loại auctions khi khởi động
     this.getOngoingAuctions();
     this.getUpcomingAuctions();
+  },
+  beforeUnmount() {
+    // Cleanup timeout khi component bị hủy
+    if (this.dateSearchTimeout) {
+      clearTimeout(this.dateSearchTimeout);
+    }
   },
 
   methods: {
@@ -552,26 +568,39 @@ export default {
         return;
       }
 
-      // Chuẩn bị dữ liệu tìm kiếm
-      // Một input duy nhất cho id, name, và type
+      // Chuẩn bị dữ liệu tìm kiếm theo format API search-public
       const searchText = this.searchForm.searchText?.trim() || "";
 
       // Kiểm tra xem searchText có phải là tag (Landscape/Portrait/Folk) không
       const tagList = ["Landscape", "Portrait", "Folk"];
       const isTag = tagList.some(tag => tag.toLowerCase() === searchText.toLowerCase());
 
-      const searchData = {};
+      // Chuẩn bị searchData theo format API: { id, name, type, dateFrom, dateTo }
+      const searchData = {
+        id: "",
+        name: "",
+        type: "",
+        dateFrom: "",
+        dateTo: ""
+      };
 
-      // Nếu là tag thì gửi vào type
-      if (isTag) {
+      // Xử lý type: ưu tiên selectedTag, sau đó là searchText nếu là tag
+      if (this.selectedTag) {
+        searchData.type = this.selectedTag;
+      } else if (isTag && searchText) {
         searchData.type = searchText;
       }
-      // Nếu không phải tag và có nhập text, gửi vào cả id, name, và type
-      // (để server tự tìm trong cả 3 trường này)
-      else if (searchText) {
-        searchData.id = searchText;
-        searchData.name = searchText;
-        searchData.type = searchText;
+
+      // Xử lý id và name: nếu searchText không phải là tag
+      // Gửi vào cả id và name để server tự tìm trong cả 2 trường
+      if (searchText && !isTag) {
+        // Nếu searchText có vẻ là ID (bắt đầu bằng ACR-), ưu tiên set vào id
+        if (searchText.toUpperCase().startsWith('ACR-')) {
+          searchData.id = searchText;
+        } else {
+          // Nếu không phải ID thì set vào name (có thể là tên phòng)
+          searchData.name = searchText;
+        }
       }
 
       // Thêm dateFrom và dateTo nếu có
@@ -582,20 +611,9 @@ export default {
         searchData.dateTo = this.searchForm.dateTo;
       }
 
-      // Nếu có selectedTag từ button tag thì ưu tiên dùng selectedTag
-      if (this.selectedTag) {
-        searchData.type = this.selectedTag;
-      }
-
-      // Loại bỏ các trường undefined để không gửi lên server
-      Object.keys(searchData).forEach(key => {
-        if (searchData[key] === undefined || searchData[key] === '') {
-          delete searchData[key];
-        }
-      });
-
       // Kiểm tra xem có ít nhất một điều kiện tìm kiếm không
-      if (Object.keys(searchData).length === 0) {
+      const hasSearchCriteria = searchData.id || searchData.name || searchData.type || searchData.dateFrom || searchData.dateTo;
+      if (!hasSearchCriteria) {
         this.$toast.info("Please enter at least one search criteria");
         return;
       }
@@ -607,7 +625,7 @@ export default {
       console.log('🔍 [SEARCH] Sending search request:', searchData);
 
       axios
-        .post("http://localhost:8081/api/auctionroom/search", searchData, {
+        .post("http://localhost:8081/api/auctionroom/search-public", searchData, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -615,20 +633,14 @@ export default {
         .then((res) => {
           console.log('✅ [SEARCH] API Response received:', res.data);
 
-          // Kiểm tra cấu trúc response
-          if (res.data && res.data.success !== undefined) {
-            // Response có dạng { success, message, data }
-            if (res.data.success && Array.isArray(res.data.data)) {
-              this.searchResults = res.data.data.filter(room => room.status !== 0);
-              this.$toast.success(res.data.message || `Found ${this.searchResults.length} auction room(s)`);
-            } else {
-              this.searchResults = [];
-              this.$toast.info(res.data.message || "No results found");
-            }
-          } else if (Array.isArray(res.data)) {
-            // Response trực tiếp là array
+          // API search-public trả về array trực tiếp
+          if (Array.isArray(res.data)) {
             this.searchResults = res.data.filter(room => room.status !== 0);
-            this.$toast.success(`Found ${this.searchResults.length} auction room(s)`);
+            if (this.searchResults.length > 0) {
+              this.$toast.success(`Found ${this.searchResults.length} auction room(s)`);
+            } else {
+              this.$toast.info("No results found");
+            }
           } else {
             this.searchResults = [];
             this.$toast.info("No results found");
@@ -682,6 +694,28 @@ export default {
         this.selectedTag = tag;
         // Tự động tìm kiếm khi chọn tag
         this.searchAuctions();
+      }
+    },
+
+    // Xử lý khi thay đổi date - tự động search khi đủ cả 2 ngày
+    handleDateChange() {
+      // Chỉ tự động search nếu không đang trong quá trình search
+      if (!this.isSearching) {
+        // Delay nhỏ để tránh search quá nhiều lần khi người dùng đang chọn cả 2 ngày
+        clearTimeout(this.dateSearchTimeout);
+        this.dateSearchTimeout = setTimeout(() => {
+          // Chỉ search khi đã nhập đủ cả 2 ngày
+          const hasBothDates = this.searchForm.dateFrom && this.searchForm.dateTo;
+
+          // Kiểm tra xem có điều kiện tìm kiếm không (cả 2 ngày hoặc các điều kiện khác)
+          const hasSearchCriteria = hasBothDates ||
+                                    this.searchForm.searchText ||
+                                    this.selectedTag;
+
+          if (hasSearchCriteria) {
+            this.searchAuctions();
+          }
+        }, 300);
       }
     }
   }

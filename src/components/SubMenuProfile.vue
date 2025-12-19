@@ -16,8 +16,8 @@
             <router-link to="/client/profile/history"
               class="submenu-item aa-link text-decoration-none d-flex align-items-center gap-4 px-4 py-3 justify-content-sm-center justify-content-lg-start "
               :class="{ active: isActive('/client/profile/history') }">
-              <i class="fa-solid fa-clock-rotate-left fa-xl m-lg-0 m-2"></i>
-              <span class="fw-bold text-nowrap d-none d-lg-inline">History</span>
+              <i class="fa-solid fa-gavel fa-xl m-lg-0 m-2 flip-x "></i>
+              <span class="fw-bold text-nowrap d-none d-lg-inline">Auction</span>
             </router-link>
           </div>
           <div class="col-lg-12 col-md-3 col-sm-3 col-xs-3 mb-lg-2">

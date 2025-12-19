@@ -148,8 +148,8 @@ export default {
   data() {
     return {
       baseUrl: "http://localhost:8081",
-      roomId: this.$route.params.id || "ACR-52210299420800", // Lấy từ params
-      selectedRoomId: this.$route.params.id || "ACR-52210299420800",
+      roomId: this.$route.params.id || "ACR-33101829954600", // Lấy từ params
+      selectedRoomId: this.$route.params.id || "ACR-33101829954600",
 
       // Socket & Messages
       socket: null,
@@ -172,7 +172,7 @@ export default {
 
       // Available rooms for testing
       availableRooms: [
-        { id: "ACR-52210299420800", name: "Auction Room 1" },
+        { id: "ACR-33101829954600", name: "Auction Room 1" },
         { id: "auction-002", name: "Auction Room 2" },
         { id: "auction-003", name: "Auction Room 3" }
       ]
