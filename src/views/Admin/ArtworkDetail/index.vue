@@ -214,24 +214,25 @@
                   </div>
                 </div>
 
-                <div class="mb-4">
-                  <label class="form-label fw-bold text-secondary x-small text-uppercase"
-                    >Starting Price (USD)</label
-                  >
-                  <div class="input-group input-group-lg">
-                    <span class="input-group-text bg-white border-end-0 text-success fw-bold"
-                      >$</span
-                    >
-                    <input
-                      type="number"
-                      class="form-control border-start-0 ps-0 fw-bold text-dark fs-4 shadow-none"
-                      v-model.number="editedStartingPrice"
-                      placeholder="0.00"
-                      min="0"
-                      step="0.01"
-                      :disabled="artwork.status !== 0"
-                    />
-                  </div>
+                <label class="form-label fw-bold text-secondary x-small text-uppercase">
+                  Starting Price (VND)
+                </label>
+
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text bg-white border-end-0 text-success fw-bold">₫</span>
+                  <input
+                    type="number"
+                    class="form-control border-start-0 ps-0 fw-bold text-dark fs-4 shadow-none"
+                    v-model.number="editedStartingPrice"
+                    placeholder="0"
+                    min="0"
+                    step="1000"
+                    :disabled="artwork.status !== 0"
+                  />
+                </div>
+                <div class="mt-2 text-end">
+                  <small class="text-muted small">Preview: </small>
+                  <small class="text-muted">{{ formatCurrency(editedStartingPrice) }}</small>
                 </div>
 
                 <hr class="border-secondary opacity-10 my-4" />
@@ -418,12 +419,13 @@ export default {
       let payload = {};
 
       if (action === "approve") {
-        const priceUSD = Number(this.editedStartingPrice);
-        if (!priceUSD || priceUSD <= 0) {
-          window.alert("Please enter a valid Starting Price (USD) greater than 0.");
+        const priceVND = Number(this.editedStartingPrice);
+        if (!priceVND || priceVND <= 0) {
+          window.alert("Vui lòng nhập giá khởi điểm hợp lệ (VND).");
           return;
         }
-        payload = { startedPrice: priceUSD };
+        // Gửi giá trị VND lên server
+        payload = { startedPrice: priceVND };
       } else {
         // Trường hợp từ chối
         if (!this.rejectionReason.trim()) {
@@ -459,8 +461,12 @@ export default {
         });
     },
 
-    formatVND(value) {
-      return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
+    formatCurrency(value) {
+      if (value === null || value === undefined || value === "") return "0 ₫";
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(value);
     },
     convertStatus(status) {
       switch (status) {

@@ -281,20 +281,25 @@
                         <label class="form-label x-small fw-bold text-secondary mb-0"
                           >STARTING PRICE</label
                         >
-
                         <div class="input-group input-group-sm">
                           <span class="input-group-text bg-white border-end-0 text-success fw-bold"
-                            >$</span
+                            >₫</span
                           >
                           <input
                             type="text"
                             class="form-control form-control-sm border-start-0 shadow-none ps-0"
-                            placeholder="0.00"
+                            placeholder="0"
                             v-model="item.startPrice"
-                            @blur="formatCurrencyUSD(item)"
+                            @blur="formatCurrencyVND(item)"
                             @focus="unformatCurrency(item)"
                             required
                           />
+                        </div>
+                        <div class="mt-1">
+                          <small class="text-muted fw-bold" style="font-size: 0.7rem">
+                            Preview:
+                            {{ formatPricePreview(item.startPrice) }}
+                          </small>
                         </div>
                       </div>
                     </div>
@@ -687,10 +692,11 @@ export default {
         .then((finalImageUrl) => {
           console.log("URL ảnh sẽ lưu:", finalImageUrl);
 
-          // Hàm helper parse số
+          // Trong hàm submitForm, phần tạo payload:
           const parseNumber = (val) => {
             if (!val) return 0;
-            return Number(String(val).replace(/[^0-9]/g, ""));
+            // Xóa dấu chấm phân cách hàng nghìn của VND trước khi chuyển thành Number
+            return Number(String(val).replace(/\./g, ""));
           };
 
           // Chuẩn bị payload
@@ -707,7 +713,7 @@ export default {
             artworks: this.scheduleList.map((item) => ({
               artworkId: item.id,
               startingPrice: parseNumber(item.startPrice),
-              bidStep: 10000,
+              bidStep: 1000,
               duration: 15,
             })),
           };
@@ -768,27 +774,40 @@ export default {
         .catch((err) => console.error(err));
     },
 
-    formatCurrencyUSD(item) {
+    formatPricePreview(value) {
+      if (!value) return "0 ₫";
+
+      // Loại bỏ tất cả ký tự không phải số (đề phòng trường hợp đang focus)
+      const numericValue = parseInt(String(value).replace(/[^0-9]/g, ""));
+
+      if (isNaN(numericValue)) return "0 ₫";
+
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(numericValue);
+    },
+
+    formatCurrencyVND(item) {
       if (!item.startPrice) return;
 
-      let val = parseFloat(String(item.startPrice).replace(/[^0-9.]/g, ""));
+      // Loại bỏ tất cả ký tự không phải số
+      let val = parseInt(String(item.startPrice).replace(/[^0-9]/g, ""));
 
       if (isNaN(val)) {
         item.startPrice = "";
         return;
       }
 
-      // Format theo chuẩn US (ví dụ: 1,200.50)
-      item.startPrice = new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(val);
+      // Format theo chuẩn Việt Nam (ví dụ: 1.200.000)
+      item.startPrice = new Intl.NumberFormat("vi-VN").format(val);
     },
+
     // Hàm bỏ format khi người dùng click vào để sửa (sự kiện focus)
     unformatCurrency(item) {
       if (!item.startPrice) return;
-      // Chuyển từ "1,200.50" thành "1200.50" để dễ sửa
-      item.startPrice = String(item.startPrice).replace(/,/g, "");
+      // Chuyển từ "1.200.000" thành "1200000" (xóa dấu chấm)
+      item.startPrice = String(item.startPrice).replace(/\./g, "");
     },
   },
 };

@@ -628,13 +628,12 @@ export default {
   methods: {
     formatCurrency(value) {
       if (value === null || value === undefined || value === "") {
-        return "$0.00";
+        return "0 ₫";
       }
-
-      return new Intl.NumberFormat("en-US", {
+      // Trả về định dạng: 100.000 ₫
+      return new Intl.NumberFormat("vi-VN", {
         style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 2,
+        currency: "VND",
       }).format(value);
     },
 

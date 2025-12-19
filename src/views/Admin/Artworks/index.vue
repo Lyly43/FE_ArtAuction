@@ -561,13 +561,13 @@ export default {
   },
   methods: {
     formatCurrency(value) {
-      if (!value && value !== 0) return "$0";
-
-      return new Intl.NumberFormat("en-US", {
+      if (value === null || value === undefined || value === "") {
+        return "0 ₫";
+      }
+      // Trả về định dạng: 100.000 ₫
+      return new Intl.NumberFormat("vi-VN", {
         style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
+        currency: "VND",
       }).format(value);
     },
 
