@@ -123,8 +123,7 @@
       </div>
     </div>
     <!-- Status 0 Modal -->
-    <div class="modal fade" id="StatusModal" tabindex="-1" aria-labelledby="StatusModalLabel" aria-hidden="true"
-      @hidden.bs.modal="onStatusModalClosed">
+    <div class="modal fade" id="StatusModal" tabindex="-1" aria-labelledby="StatusModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">

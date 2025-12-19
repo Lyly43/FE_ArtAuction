@@ -125,9 +125,24 @@ export default {
     }
   },
   mounted() {
-    // Component mounted
+    // Add global Enter key listener
+    document.addEventListener('keydown', this.handleGlobalEnter);
+  },
+  beforeUnmount() {
+    // Remove event listener when component is destroyed
+    document.removeEventListener('keydown', this.handleGlobalEnter);
   },
   methods: {
+    handleGlobalEnter(event) {
+      // Trigger login when Enter is pressed anywhere (except when typing in inputs)
+      if (event.key === 'Enter' && !this.loading) {
+        const target = event.target;
+        // Only trigger if not already in an input field (inputs have their own handlers)
+        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+          this.DangNhap();
+        }
+      }
+    },
     DangNhap() {
       // Prevent double click
       if (this.loading) {
