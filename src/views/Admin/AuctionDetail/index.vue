@@ -169,7 +169,9 @@
             <div class="mt-auto pt-3 border-top">
               <div class="d-flex justify-content-between align-items-center mb-1">
                 <span class="text-secondary small">Starting price:</span>
-                <span class="fw-medium text-secondary">{{ formatCurrency(art.startPrice) }}</span>
+                <span class="fw-medium text-secondary">{{
+                  formatCurrency(art.startingPrice)
+                }}</span>
               </div>
               <div class="d-flex justify-content-between align-items-center">
                 <span class="text-dark small fw-bold">Current price:</span>
@@ -177,7 +179,7 @@
                   class="fw-bold fs-6"
                   :class="art.status === 'bidding' ? 'text-danger' : 'text-success'"
                 >
-                  {{ formatCurrency(art.currentPrice || art.startPrice) }}
+                  {{ formatCurrency(art.currentPrice) }}
                 </span>
               </div>
             </div>
@@ -230,17 +232,14 @@ export default {
     },
 
     formatCurrency(value) {
-      if (!value) return "$0";
-
-      // Giả sử tỷ giá 1 USD = 25,400 VND
-      const exchangeRate = 25400;
-      const usdValue = value / exchangeRate;
-
-      return new Intl.NumberFormat("en-US", {
+      if (value === null || value === undefined || value === "") {
+        return "0 ₫";
+      }
+      // Trả về định dạng: 100.000 ₫
+      return new Intl.NumberFormat("vi-VN", {
         style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 2, // Giữ lại 2 số lẻ (ví dụ: $12.50)
-      }).format(usdValue);
+        currency: "VND",
+      }).format(value);
     },
 
     getStatusBadgeClass(status) {
