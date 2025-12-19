@@ -426,75 +426,111 @@
             </ul>
           </div>
 
-          <div class="card-body" style="padding: 50px 20px">
-            <div class="row align-items-center">
-              <div class="col-12 col-lg-4 mb-3 mb-lg-0 border-end-lg pe-lg-4">
+          <div class="card-body p-4">
+            <div class="row align-items-center gy-4">
+              <div class="col-12 col-lg-5 border-end-lg pe-lg-4">
                 <div class="d-flex align-items-center gap-3">
-                  <img
-                    :src="room.imageAuctionRoom"
-                    alt="Art"
-                    class="rounded-3 shadow-sm border object-fit-cover flex-shrink-0"
-                    style="width: 80px; height: 80px"
-                  />
+                  <div class="position-relative">
+                    <img
+                      :src="room.imageAuctionRoom"
+                      alt="Art"
+                      class="rounded-4 shadow-sm object-fit-cover border"
+                      style="width: 100px; height: 100px"
+                    />
+                    <span
+                      class="position-absolute bottom-0 start-50 translate-middle-x badge bg-dark bg-opacity-75 rounded-pill border border-white border-opacity-25"
+                      style="font-size: 0.6rem; bottom: -8px !important"
+                    >
+                      ID: {{ room.id }}
+                    </span>
+                  </div>
 
-                  <div class="overflow-hidden w-100">
-                    <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                  <div class="overflow-hidden flex-grow-1">
+                    <div class="d-flex flex-column gap-1">
                       <h5
-                        class="fw-bold text-primary mb-0 text-truncate"
-                        style="max-width: 200px"
+                        class="fw-bold text-dark mb-0 text-truncate"
+                        style="max-width: 100%"
                         :title="room.roomName"
                       >
                         {{ room.roomName }}
                       </h5>
-                      <span
-                        class="badge rounded-pill px-2 py-1 border fw-normal"
-                        style="font-size: 0.7rem"
-                        :class="getStatusClass(room.status)"
-                      >
-                        {{ convertStatus(room.status) }}
-                      </span>
-                    </div>
 
-                    <small class="text-muted">
-                      <i class="fa-solid fa-tag me-1"></i>{{ room.type }}
-                    </small>
-                    <div>
-                      <small class="text-muted"> ID: {{ room.id }} </small>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span
+                          class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10 rounded-pill px-2"
+                        >
+                          <i class="fa-solid fa-tag me-1 text-opacity-75"></i>{{ room.type }}
+                        </span>
+
+                        <span
+                          class="badge rounded-pill px-2 py-1 fw-semibold"
+                          :class="getStatusClass(room.status)"
+                        >
+                          {{ convertStatus(room.status) }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-lg-8 ps-lg-4">
-                <div class="row g-3">
-                  <div class="col-6 col-md-3">
-                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
-                      >Start Time</span
-                    >
-                    <small class="text-secondary">{{ formatDate(room.startedAt) }}</small>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
-                      >End time</span
-                    >
-                    <small class="text-secondary">{{ formatDate(room.stoppedAt) }}</small>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
-                      >Participants</span
-                    >
-                    <span class="fw-medium text-dark fs-6">
-                      <div class="d-flex align-items-center">
-                        <i class="fa-solid fa-users text-info me-2"></i>
-                        <span class="fw-bold text-dark">{{ room.totalMembers }}</span>
+              <div class="col-12 col-lg-7 ps-lg-4">
+                <div class="bg-light bg-opacity-50 rounded-4 p-3 border border-light-subtle">
+                  <div class="row g-3 align-items-center text-center text-md-start">
+                    <div class="col-4 col-md-4 border-end border-secondary border-opacity-10">
+                      <span
+                        class="text-uppercase text-secondary fw-bold"
+                        style="font-size: 0.65rem; letter-spacing: 0.5px"
+                      >
+                        Start Time
+                      </span>
+                      <div
+                        class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mt-1"
+                      >
+                        <i class="fa-regular fa-clock text-primary opacity-75"></i>
+                        <span class="text-dark fw-medium small lh-1">
+                          {{ formatDate(room.startedAt) }}
+                        </span>
                       </div>
-                    </span>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <span class="text-secondary text-uppercase x-small fw-bold d-block mb-1"
-                      >Expected End Time</span
-                    >
-                    <small class="text-secondary">{{ formatDate(room.estimatedEndTime) }}</small>
+                    </div>
+
+                    <div class="col-4 col-md-4 border-end border-secondary border-opacity-10">
+                      <span
+                        class="text-uppercase text-secondary fw-bold"
+                        style="font-size: 0.65rem; letter-spacing: 0.5px"
+                      >
+                        Participants
+                      </span>
+                      <div
+                        class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mt-1"
+                      >
+                        <div class="position-relative">
+                          <i class="fa-solid fa-users text-info fs-5"></i>
+                          <span
+                            class="position-absolute top-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle"
+                            style="width: 8px; height: 8px"
+                          ></span>
+                        </div>
+                        <span class="fw-bold text-dark fs-5">{{ room.totalMembers }}</span>
+                      </div>
+                    </div>
+
+                    <div class="col-4 col-md-4">
+                      <span
+                        class="text-uppercase text-secondary fw-bold"
+                        style="font-size: 0.65rem; letter-spacing: 0.5px"
+                      >
+                        Estimated End Time
+                      </span>
+                      <div
+                        class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mt-1"
+                      >
+                        <i class="fa-solid fa-hourglass-half text-danger opacity-75"></i>
+                        <span class="text-dark fw-medium small lh-1">
+                          {{ formatDate(room.estimatedEndTime) }}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
