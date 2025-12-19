@@ -35,6 +35,9 @@ app.use(Toaster,{
     position: "bottom-right",
     duration: 3000
 })
+
+
+
 app.component("default-layout", Default);
 app.component("blank-layout", Blank);
 app.component("client-layout", Client);

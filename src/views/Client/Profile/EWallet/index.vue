@@ -94,7 +94,7 @@
     </div>
     <!-- QR Modal -->
     <div class="modal fade" id="QRModal" tabindex="-1" aria-labelledby="QRModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-6" id="QRModalLabel">Quét mã để nạp tiền</h1>
@@ -111,35 +111,26 @@
               </div>
               <div class="small text-muted">Đang tạo QR…</div>
             </template>
+            <p v-if="statusMessage?.status === 0" class="mb-0 text-warning mt-3">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              {{ statusMessage?.message || "Giao dịch chưa được xác nhận" }}
+            </p>
+
+
           </div>
           <div class="modal-footer">
             <!-- <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button> -->
             <button type="button" class="btn btn-success w-100 fs-6" @click="checkTransaction" :disabled="checking">
-              <span v-if="checking" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              <span v-if="checking" class="spinner-border spinner-border-sm me-2"></span>
               {{ checking ? 'Đang kiểm tra...' : 'check' }}
             </button>
           </div>
         </div>
       </div>
     </div>
-    <!-- Status 0 Modal -->
-    <div class="modal fade" id="StatusModal" tabindex="-1" aria-labelledby="StatusModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-6" id="StatusModalLabel">Thông báo</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-          </div>
-          <div class="modal-body text-center">
-            <i class="bi bi-exclamation-triangle text-warning fs-1 mb-3"></i>
-            <p class="mb-0">{{ statusMessage || "Giao dịch chưa được xác nhận" }}</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-          </div>
-        </div>
-      </div>
-    </div>
+
+
+
     <!-- FORM NHẬP TIỀN -->
     <!-- <div v-if="showDepositForm"
       class="overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50">
@@ -234,8 +225,12 @@ export default {
         qrUrl: "",
         transactionId: ""
       },
-      statusMessage: "",
-      checking: false
+      statusMessage: null,
+      checking: false,
+      modalResetHandlers: {
+        nap: null,
+        qr: null
+      }
     };
   },
   computed: {
@@ -253,6 +248,39 @@ export default {
     const saved = localStorage.getItem("wallet_Hidden");
     if (saved !== null) this.isHidden = saved === "true";
     this.fetchWallet();
+
+    // Lắng nghe sự kiện đóng modal để reset dữ liệu
+    this.$nextTick(() => {
+      const napModalElement = document.getElementById('NapModal');
+      const qrModalElement = document.getElementById('QRModal');
+
+      if (napModalElement) {
+        this.modalResetHandlers.nap = () => {
+          this.resetModalData();
+        };
+        napModalElement.addEventListener('hidden.bs.modal', this.modalResetHandlers.nap);
+      }
+
+      if (qrModalElement) {
+        this.modalResetHandlers.qr = () => {
+          this.resetModalData();
+        };
+        qrModalElement.addEventListener('hidden.bs.modal', this.modalResetHandlers.qr);
+      }
+    });
+  },
+  beforeUnmount() {
+    // Cleanup event listeners
+    const napModalElement = document.getElementById('NapModal');
+    const qrModalElement = document.getElementById('QRModal');
+
+    if (napModalElement && this.modalResetHandlers.nap) {
+      napModalElement.removeEventListener('hidden.bs.modal', this.modalResetHandlers.nap);
+    }
+
+    if (qrModalElement && this.modalResetHandlers.qr) {
+      qrModalElement.removeEventListener('hidden.bs.modal', this.modalResetHandlers.qr);
+    }
   },
   // beforeUnmount() {
   //   this.clearPoll();
@@ -344,10 +372,9 @@ export default {
     },
 
     checkTransaction() {
-      if (!this.nap.transactionId) {
-        this.$toast.error("Không tìm thấy mã giao dịch");
-        return;
-      }
+
+
+      this.checking = true;
 
       axios
         .post(
@@ -361,9 +388,13 @@ export default {
         )
         .then((res) => {
           const data = res && res.data ? res.data : {};
+
+          // Kiểm tra status (API trả về status là number: 0 hoặc 1)
           if (data.status === 1) {
+            // Status = 1: Đóng modal và hiện toast
             this.$toast.success(data.message || "Nạp tiền thành công");
-            // Đóng modal và refresh wallet balance
+            console.log("data", data);
+
             this.$nextTick(() => {
               const modalElement = document.getElementById('QRModal');
               if (modalElement) {
@@ -375,23 +406,34 @@ export default {
               }
             });
             this.fetchWallet();
-          } else {
-            // Hiển thị modal thông báo khi status = 0
-            this.statusMessage = data.message || "Giao dịch chưa được xác nhận";
-            this.$nextTick(() => {
-              const modalElement = document.getElementById('StatusModal');
-              if (modalElement) {
-                // eslint-disable-next-line no-undef
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-              }
-            });
+            // Reset statusMessage sau khi đóng modal
+            this.statusMessage = null;
+          } else if (data.status === 0) {
+            // Status = 0: Hiển thị message trong QRModal
+            this.statusMessage = data;
           }
         })
         .catch((error) => {
           const errorMessage = error.response?.data?.message || "Không thể kiểm tra giao dịch. Vui lòng thử lại.";
           this.$toast.error(errorMessage);
+        })
+        .finally(() => {
+          this.checking = false;
         });
+    },
+
+    resetModalData() {
+      // Reset dữ liệu nạp tiền
+      this.nap = {
+        amount: "",
+        note: "",
+        qrUrl: "",
+        transactionId: ""
+      };
+      // Reset status message
+      this.statusMessage = null;
+      // Reset checking state
+      this.checking = false;
     },
 
   }
