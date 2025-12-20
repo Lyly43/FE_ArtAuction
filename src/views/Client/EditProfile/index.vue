@@ -168,6 +168,7 @@ export default {
       kycStatus: 0,
       kycMessage: '',
       isSubmittingKyc: false,
+      userRole: 0,
       kycSections: [
         { key: 'cccdFront', label: 'ID card - front side', icon: 'fa-regular fa-id-card' },
         { key: 'cccdBack', label: 'ID card - back side', icon: 'fa-regular fa-id-card' },
@@ -189,9 +190,9 @@ export default {
   computed: {
     kycStatusBadge() {
       const status = Number(this.kycStatus);
-      if (status === 1) return { label: 'Verified', class: 'bg-success text-white' };
-      if (status === 2) return { label: 'Pending review', class: 'bg-warning text-dark' };
-      if (status === -1) return { label: 'Rejected', class: 'bg-danger text-white' };
+      if (status === 1) {
+        return { label: 'Verified', class: 'bg-success text-white' };
+      }
       return { label: 'Not verified', class: 'bg-secondary text-white' };
     },
     isKycVerified() {
@@ -230,8 +231,9 @@ export default {
           this.kycStatus = res.data?.kycStatus ?? 0;
           this.kycMessage = res.data?.kycNote || '';
 
-          // Cập nhật role vào localStorage nếu có
+          // Luôn sync role từ API vào localStorage
           if (res.data?.role !== undefined && res.data?.role !== null) {
+            this.userRole = res.data.role;
             localStorage.setItem("role_kh", res.data.role.toString());
           }
         })
@@ -588,16 +590,17 @@ export default {
           this.$toast.success(res.data?.message || "KYC request submitted. Please wait for review.");
 
           // Update status từ API response
-          this.kycStatus = res.data?.status ?? 2; // Default: 2 = pending
+          this.kycStatus = res.data?.kycStatus ?? res.data?.status ?? 0;
           this.kycMessage = res.data?.note || res.data?.message || "Your documents are under review.";
 
-          // Cập nhật role vào localStorage nếu API trả về
-          if (res.data?.role !== undefined && res.data?.role !== null) {
+          // Chỉ lưu role vào localStorage khi kycStatus === 1 (Verified)
+          if (this.kycStatus === 1 && res.data?.role !== undefined && res.data?.role !== null) {
+            this.userRole = res.data.role;
             localStorage.setItem("role_kh", res.data.role.toString());
           }
 
           // Reload user info để cập nhật toàn bộ
-          this.layThongTinKH();
+          this.loadUserData();
         })
         .catch((err) => {
           console.error("KYC error:", err);
