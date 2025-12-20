@@ -1018,9 +1018,9 @@ export default {
           this.showSellerRequestForm = false;
 
           // Có thể redirect hoặc reload
-          setTimeout(() => {
-            this.$router.push('/client/home');
-          }, 2000);
+          // setTimeout(() => {
+          //   this.$router.push('/client/home');
+          // }, 2000);
         })
         .catch((err) => {
           console.error("Seller request error:", err);

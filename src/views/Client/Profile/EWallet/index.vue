@@ -82,12 +82,13 @@
                 <!-- <img :src="nap.qrUrl" alt="QR Code" class="img-fluid" /> -->
               </div>
             </div>
-
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-success" v-on:click="Nap()" data-bs-toggle="modal"
-              data-bs-target="#QRModal">Xác nhận</button>
+            <button type="button" class="btn btn-success" @click="NapAndOpenQr" :disabled="isCreatingQR">
+              <span v-if="isCreatingQR" class="spinner-border spinner-border-sm me-2"></span>
+              {{ isCreatingQR ? 'Đang tạo QR...' : 'Xác nhận' }}
+            </button>
           </div>
         </div>
       </div>
@@ -194,6 +195,7 @@
 
 <script>
 import axios from "axios";
+import * as bootstrap from "bootstrap";
 
 export default {
   name: "WalletPage",
@@ -227,6 +229,7 @@ export default {
       },
       statusMessage: null,
       checking: false,
+      isCreatingQR: false,
       modalResetHandlers: {
         nap: null,
         qr: null
@@ -254,15 +257,18 @@ export default {
       const napModalElement = document.getElementById('NapModal');
       const qrModalElement = document.getElementById('QRModal');
 
-      if (napModalElement) {
-        this.modalResetHandlers.nap = () => {
-          this.resetModalData();
-        };
-        napModalElement.addEventListener('hidden.bs.modal', this.modalResetHandlers.nap);
-      }
+      // BỎ reset khi đóng NapModal - tránh xóa qrUrl khi chuyển modal
+      // if (napModalElement) {
+      //   this.modalResetHandlers.nap = () => {
+      //     this.resetModalData();
+      //   };
+      //   napModalElement.addEventListener('hidden.bs.modal', this.modalResetHandlers.nap);
+      // }
 
+      // CHỈ reset khi đóng QRModal
       if (qrModalElement) {
         this.modalResetHandlers.qr = () => {
+          console.log("🔄 QRModal closed - resetting data");
           this.resetModalData();
         };
         qrModalElement.addEventListener('hidden.bs.modal', this.modalResetHandlers.qr);
@@ -286,20 +292,32 @@ export default {
   //   this.clearPoll();
   // },
   methods: {
-    Nap() {
+    // Helper method để cleanup modal backdrop
+    cleanupModalBackdrop() {
+      // Remove all backdrops
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(backdrop => backdrop.remove());
+
+      // Reset body
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    },
+
+    async Nap() {
       const raw = (this.nap.amount || "").toString().replace(/[^\d]/g, "");
       const amount = Number(raw);
       if (!amount || amount < 10000) {
         this.$toast.error("Vui lòng nhập số tiền hợp lệ (≥ 10.000₫)");
-        return;
+        return false;
       }
 
       // Reset QR state so the modal shows a spinner while loading
       this.nap.qrUrl = "";
       this.nap.transactionId = "";
 
-      axios
-        .post(
+      try {
+        const res = await axios.post(
           "http://localhost:8081/api/wallets/topups",
           { amount, note: this.nap.note },
           {
@@ -307,17 +325,54 @@ export default {
               Authorization: "Bearer " + (localStorage.getItem("token") || ""),
             },
           }
-        )
-        .then((res) => {
-          const data = res && res.data ? res.data : {};
-          this.nap.transactionId = data.transactionId || "";
-          this.nap.qrUrl = data.qrImageUrl || data.qrUrl || "";
-          if (data.noteUsed) this.nap.note = data.noteUsed;
-        })
-        .catch(() => {
-          this.$toast.error("Không thể tạo mã QR. Vui lòng thử lại.");
+        );
+
+        const data = res?.data || {};
+        this.nap.transactionId = data.transactionId || "";
+        this.nap.qrUrl = data.qrUrl || data.qrImageUrl || "";
+        if (data.noteUsed) this.nap.note = data.noteUsed;
+
+        console.log("✅ QR created successfully:", {
+          transactionId: this.nap.transactionId,
+          qrUrl: this.nap.qrUrl
         });
 
+        return true;
+      } catch (error) {
+        console.error("❌ Error creating QR:", error);
+        this.$toast.error("Không thể tạo mã QR. Vui lòng thử lại.");
+        return false;
+      }
+    },
+
+    async NapAndOpenQr() {
+      this.isCreatingQR = true;
+
+      const ok = await this.Nap();
+      if (!ok) {
+        this.isCreatingQR = false;
+        return;
+      }
+
+      // Ẩn NapModal và cleanup backdrop
+      const napEl = document.getElementById("NapModal");
+      const napModal = bootstrap.Modal.getInstance(napEl);
+      if (napModal) {
+        napModal.hide();
+      }
+
+      // Remove backdrop và reset body
+      setTimeout(() => {
+        this.cleanupModalBackdrop();
+      }, 150);
+
+      // Đợi NapModal đóng xong rồi mở QRModal
+      setTimeout(() => {
+        const qrEl = document.getElementById("QRModal");
+        const qrModal = new bootstrap.Modal(qrEl);
+        qrModal.show();
+        this.isCreatingQR = false;
+      }, 300);
     },
 
 
@@ -404,7 +459,13 @@ export default {
                   modal.hide();
                 }
               }
+
+              // Cleanup backdrop và reset body sau khi đóng modal
+              setTimeout(() => {
+                this.cleanupModalBackdrop();
+              }, 200);
             });
+
             this.fetchWallet();
             // Reset statusMessage sau khi đóng modal
             this.statusMessage = null;
@@ -423,6 +484,7 @@ export default {
     },
 
     resetModalData() {
+      console.log("🧹 RESET MODAL DATA - clearing nap object");
       // Reset dữ liệu nạp tiền
       this.nap = {
         amount: "",
@@ -434,6 +496,11 @@ export default {
       this.statusMessage = null;
       // Reset checking state
       this.checking = false;
+
+      // Cleanup backdrop để tránh màn hình đen
+      setTimeout(() => {
+        this.cleanupModalBackdrop();
+      }, 100);
     },
 
   }

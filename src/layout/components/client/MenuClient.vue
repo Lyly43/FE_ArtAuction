@@ -133,12 +133,12 @@
                     <p class="m-0">Payment</p>
                   </router-link>
                 </li> -->
-                <li>
+                <!-- <li>
                   <router-link to="" class="dropdown-item d-flex align-items-center gap-3 py-2 px-4 mt-2 mb-1">
                     <i class="bi bi-gear fa-xl me-2"></i>
                     <p class="m-0">Setting</p>
                   </router-link>
-                </li>
+                </li> -->
                 <li>
                   <a href="#" class="dropdown-item d-flex align-items-center gap-3 py-2 px-4 mt-2 mb-1 text-danger"
                     data-bs-toggle="modal" data-bs-target="#logoutConfirmModal">

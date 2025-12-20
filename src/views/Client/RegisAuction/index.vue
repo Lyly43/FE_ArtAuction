@@ -56,7 +56,8 @@
                     <div class="row gap-3">
                       <div class="col-12">
                         <div class="position-relative overflow-hidden">
-                          <img :src="auctionRoom.imageAuctionRoom" class="w-100 rounded-3" alt="Auction Room">
+                          <img :src="auctionRoom.imageAuctionRoom" class="w-100 rounded-3"
+                            style="max-height: 50vh; object-fit: cover;" alt="Auction Room">
                           <span class="position-absolute top-0 start-0 m-3 badge bg-danger">
                             {{ getStatusText(auctionRoom.status) }}
                           </span>
@@ -122,7 +123,8 @@
                       <div class="flex-shrink-0 position-relative">
                         <img :src="session.imageUrl || 'https://via.placeholder.com/80x80?text=No+Image'"
                           class="rounded" style="width: 80px; height: 80px; object-fit: cover;" alt="Artwork">
-                        <span class="position-absolute top-0 start-0 badge bg-light text-success border border-2 border-success rounded-circle m-1"
+                        <span
+                          class="position-absolute top-0 start-0 badge bg-light text-success border border-2 border-success rounded-circle m-1"
                           style="width: 25px; height: 25px; font-size: 0.8rem; padding: 0; display: flex; align-items: center; justify-content: center;">
                           {{ index + 1 }}
                         </span>
@@ -181,22 +183,22 @@
                 <!-- Left: Artwork preview card -->
                 <div class="col-lg-6 d-flex">
                   <!-- <div class="card p-0"> -->
-                  <div class="position-relative ">
-                    <img
-                      :src="selectedSession.artwork?.avtArtwork || selectedSession.imageUrl || selectedSession.artwork?.imageUrls?.[0] || 'https://via.placeholder.com/600x400?text=No+Image'"
-                       class="w-100 rounded-3"
-                       style="object-fit: cover; cursor: zoom-in;"
-                       alt="Artwork preview"
-                       @click="openArtworkZoom"
-                      >
-                    <div class="position-absolute top-0 start-0">
-                      <div class="px-3 py-2 text-muted">
-                        <span class="badge px-3 py-1" :class="getSessionStatusClass(selectedSession.status)">
-                          {{ getSessionStatusText(selectedSession.status) }}
-                        </span>
+                  <div class="d-flex align-items-center justify-content-center w-100">
+                    <div class="position-relative ">
+                      <img
+                        :src="selectedSession.artwork?.avtArtwork || selectedSession.imageUrl || selectedSession.artwork?.imageUrls?.[0] || 'https://via.placeholder.com/600x400?text=No+Image'"
+                        class="w-100 rounded-3" style="object-fit: cover; cursor: zoom-in; max-height: 55vh;"
+                        alt="Artwork preview" @click="openArtworkZoom">
+                      <div class="position-absolute top-0 start-0">
+                        <div class="px-3 py-2 text-muted">
+                          <span class="badge px-3 py-1" :class="getSessionStatusClass(selectedSession.status)">
+                            {{ getSessionStatusText(selectedSession.status) }}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
+
                   <!-- </div> -->
                 </div>
 
@@ -324,14 +326,8 @@
       </div>
 
       <!-- Zoomed Artwork Modal -->
-      <div
-        v-if="showZoomImage && selectedSession"
-        class="modal fade show d-block"
-        tabindex="-1"
-        role="dialog"
-        aria-modal="true"
-        @click.self="closeArtworkZoom"
-      >
+      <div v-if="showZoomImage && selectedSession" class="modal fade show d-block" tabindex="-1" role="dialog"
+        aria-modal="true" @click.self="closeArtworkZoom">
         <div class="modal-backdrop fade show"></div>
         <div class="modal-dialog modal-dialog-centered modal-fullscreen">
           <div class="modal-content bg-dark border-0">
@@ -344,10 +340,7 @@
             <div class="modal-body text-center">
               <img
                 :src="selectedSession.artwork?.avtArtwork || selectedSession.imageUrl || selectedSession.artwork?.imageUrls?.[0] || 'https://via.placeholder.com/1200x800?text=No+Image'"
-                class="img-fluid w-100 h-100"
-                style="max-height: 90vh; object-fit: contain;"
-                alt="Artwork zoomed"
-              >
+                class="img-fluid w-100 h-100" style="max-height: 90vh; object-fit: contain;" alt="Artwork zoomed">
             </div>
           </div>
         </div>
