@@ -313,7 +313,7 @@
                             >₫</span
                           >
                           <input
-                            type="text"
+                            type="number"
                             class="form-control form-control-sm border-start-0 shadow-none ps-0"
                             v-model="item.stepPrice"
                             @blur="formatCurrency(item, 'stepPrice')"
