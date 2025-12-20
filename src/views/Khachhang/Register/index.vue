@@ -137,7 +137,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-success w-100 fw-bold fs-6" @click="verifyOtp" :disabled="!isOtpComplete || verifyingOtp">
+              <button type="button" class="btn btn-success w-100 fw-bold fs-6" @click="verifyOtp()" :disabled="!isOtpComplete || verifyingOtp">
                 <span v-if="verifyingOtp" class="spinner-border spinner-border-sm me-2"></span>
                 {{ verifyingOtp ? 'Verifying...' : 'Verify' }}
               </button>
@@ -150,6 +150,7 @@
   </div>
 </template>
 <script>
+import router from '@/router';
 import axios from 'axios'
 export default {
   data() {
@@ -163,9 +164,6 @@ export default {
       otpInputs: [],
       verifyingOtp: false,
     }
-  },
-  mounted() {
-
   },
   methods: {
     DangKy() {
@@ -435,6 +433,12 @@ export default {
     },
 
     verifyOtp() {
+      // Prevent double submission
+      if (this.verifyingOtp) {
+        console.log("❌ Already verifying, please wait...");
+        return;
+      }
+
       const otpCode = this.otp.join('');
       if (otpCode.length !== 6) {
         this.$toast.error("Please enter the complete 6-digit code");
@@ -448,46 +452,59 @@ export default {
 
       this.verifyingOtp = true;
 
-      // Gọi API verify OTP
-      axios.post('http://localhost:8081/api/verify-otp', {
-        otp: otpCode,
-        email: this.tai_khoan.email
+      // Gọi API verify OTP - gửi email và otp
+      axios.post('http://localhost:8081/verify-otp', {
+        email: this.tai_khoan.email,
+        otp: otpCode
       })
         .then(response => {
-          const data = response.data || {};
+          this.verifyingOtp = false;
 
-          if (data.status === 1) {
+          const data = response.data || {};
+          console.log("✅ API Response:", data);
+
+          // Nếu status = 1: Thành công
+          if (data.status == 1) {
             this.$toast.success(data.message || "OTP verified successfully");
 
-            // Đóng modal và redirect to login
-            this.$nextTick(() => {
-              const modalElement = document.getElementById('exampleModal');
-              if (modalElement) {
-                // eslint-disable-next-line no-undef
-                const modal = bootstrap.Modal.getInstance(modalElement);
-                if (modal) {
-                  modal.hide();
-                }
-              }
+            // Đóng modal
+            const modalEl = document.getElementById('exampleModal');
+            if (modalEl) {
+              // Ẩn modal
+              modalEl.classList.remove('show');
+              modalEl.style.display = 'none';
+              modalEl.setAttribute('aria-hidden', 'true');
+              modalEl.removeAttribute('aria-modal');
+              modalEl.removeAttribute('role');
 
-              // Redirect to login after successful verification
-              setTimeout(() => {
-                this.$router.push('/login');
-              }, 500);
-            });
-          } else {
-            this.$toast.error(data.message || "Invalid OTP");
+              // Xóa backdrop
+              const backdrops = document.querySelectorAll('.modal-backdrop');
+              backdrops.forEach(bd => bd.remove());
+
+              // Reset body
+              document.body.classList.remove('modal-open');
+              document.body.style.overflow = '';
+              document.body.style.paddingRight = '';
+            }
+
+            // Chuyển sang trang login sau khi modal đóng
+            setTimeout(() => {
+              this.$router.push('/login');
+            }, 200);
+          }
+          // Nếu status = 0 hoặc khác: Thất bại
+          else {
+            this.$toast.error(data.message || "Invalid OTP. Please try again.");
             this.resetOtp();
           }
         })
         .catch(error => {
-          console.error("Verify OTP error:", error);
+          this.verifyingOtp = false;
+          console.error("❌ Error:", error);
+
           const errorMessage = error.response?.data?.message || "Verification failed. Please try again.";
           this.$toast.error(errorMessage);
           this.resetOtp();
-        })
-        .finally(() => {
-          this.verifyingOtp = false;
         });
     },
 
@@ -499,7 +516,7 @@ export default {
       }
 
       // Gọi API resend OTP - gửi lại OTP qua email
-      axios.post('http://localhost:8081/api/resend-otp', {
+      axios.post('http://localhost:8081/resend-otp', {
         email: this.tai_khoan.email
       })
         .then(response => {

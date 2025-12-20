@@ -18,6 +18,7 @@ export default function (from, to, next) {
         localStorage.setItem("email_kh", res.data.email);
         localStorage.setItem("check_kh", res.data.status);
         localStorage.setItem("avatar_kh", res.data.avt);
+        localStorage.setItem("role_kh", res.data.role);
       } else {
         next("/login");
         toaster.error("Bạn cần đăng nhập trước!!!!");

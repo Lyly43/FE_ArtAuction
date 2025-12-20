@@ -42,7 +42,7 @@
                 </button>
 
                 <router-link to="/login" class="text-center text-success fs-6 text-decoration-none">
-                  <i class="fa-solid fa-arrow-left me-2"></i>Back to Login
+                  <i class="fa-solid fa-arrow-left me-2"></i>Back
                 </router-link>
               </div>
 
