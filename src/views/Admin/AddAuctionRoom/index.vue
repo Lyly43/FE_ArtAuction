@@ -276,7 +276,7 @@
                   </div>
 
                   <div class="col-12 col-lg-5">
-                    <div class="row g-2">
+                    <div class="row g-2 d-flex gap-4">
                       <div class="col-4">
                         <label class="form-label x-small fw-bold text-secondary mb-0"
                           >STARTING PRICE</label
@@ -290,8 +290,8 @@
                             class="form-control form-control-sm border-start-0 shadow-none ps-0"
                             placeholder="0"
                             v-model="item.startPrice"
-                            @blur="formatCurrencyVND(item)"
-                            @focus="unformatCurrency(item)"
+                            @blur="formatCurrency(item, 'startPrice')"
+                            @focus="unformatCurrency(item, 'startPrice')"
                             required
                           />
                         </div>
@@ -299,6 +299,33 @@
                           <small class="text-muted fw-bold" style="font-size: 0.7rem">
                             Preview:
                             {{ formatPricePreview(item.startPrice) }}
+                          </small>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <label class="form-label x-small fw-bold text-secondary mb-0"
+                          >BID STEP</label
+                        >
+
+                        <div class="input-group input-group-sm">
+                          <span
+                            class="input-group-text bg-white border-end-0 text-secondary fw-bold"
+                            >₫</span
+                          >
+                          <input
+                            type="text"
+                            class="form-control form-control-sm border-start-0 shadow-none ps-0"
+                            v-model="item.stepPrice"
+                            @blur="formatCurrency(item, 'stepPrice')"
+                            @focus="unformatCurrency(item, 'stepPrice')"
+                            placeholder="0"
+                            required
+                          />
+                        </div>
+                        <div class="mt-1">
+                          <small class="text-muted fw-bold" style="font-size: 0.7rem">
+                            Preview:
+                            {{ formatPricePreview(item.stepPrice) }}
                           </small>
                         </div>
                       </div>
@@ -710,25 +737,21 @@ export default {
             estimatedEndTime: this.roomForm.estimatedEndTime
               ? this.roomForm.estimatedEndTime + ":00"
               : null,
-            artworks: this.scheduleList.map((item) => ({
+            sessions: this.scheduleList.map((item) => ({
               artworkId: item.id,
               startingPrice: parseNumber(item.startPrice),
-              bidStep: 1000,
+              bidStep: parseNumber(item.stepPrice),
               duration: 15,
             })),
           };
 
           console.log("Payload gửi đi:", payload);
 
-          return axios.post(
-            "http://localhost:8081/api/admin/auction-rooms/tao-phong-hoan-chinh",
-            payload,
-            {
-              headers: {
-                Authorization: "Bearer " + localStorage.getItem("token"),
-              },
-            }
-          );
+          return axios.post("http://localhost:8081/api/stream/create", payload, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
         })
         .then((res) => {
           // Xử lý khi Tạo phòng thành công
@@ -788,26 +811,27 @@ export default {
       }).format(numericValue);
     },
 
-    formatCurrencyVND(item) {
-      if (!item.startPrice) return;
+    // Hàm format chung cho cả Giá khởi điểm và Bước giá
+    formatCurrency(item, field) {
+      if (!item[field]) return;
 
       // Loại bỏ tất cả ký tự không phải số
-      let val = parseInt(String(item.startPrice).replace(/[^0-9]/g, ""));
+      let val = parseInt(String(item[field]).replace(/[^0-9]/g, ""));
 
       if (isNaN(val)) {
-        item.startPrice = "";
+        item[field] = "";
         return;
       }
 
       // Format theo chuẩn Việt Nam (ví dụ: 1.200.000)
-      item.startPrice = new Intl.NumberFormat("vi-VN").format(val);
+      item[field] = new Intl.NumberFormat("vi-VN").format(val);
     },
 
-    // Hàm bỏ format khi người dùng click vào để sửa (sự kiện focus)
-    unformatCurrency(item) {
-      if (!item.startPrice) return;
-      // Chuyển từ "1.200.000" thành "1200000" (xóa dấu chấm)
-      item.startPrice = String(item.startPrice).replace(/\./g, "");
+    // Hàm bỏ format khi focus
+    unformatCurrency(item, field) {
+      if (!item[field]) return;
+
+      item[field] = String(item[field]).replace(/\./g, "");
     },
   },
 };
