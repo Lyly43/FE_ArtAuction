@@ -22,9 +22,7 @@
                 Redirecting to profile page in <strong>5 seconds</strong>...
               </p>
             </div>
-            <button
-              class="btn btn-success btn-lg fs-6 px-5 mt-3"
-              @click="$router.push('/client/edit-profile')">
+            <button class="btn btn-success btn-lg fs-6 px-5 mt-3" @click="$router.push('/client/edit-profile')">
               <i class="fas fa-arrow-right me-2"></i>
               Upgrade to Seller
             </button>
@@ -36,10 +34,8 @@
     <!-- Role 1: Buyer (người mua) -->
     <div v-else-if="userRole === '1'" class="row mt-3">
       <div :class="showSellerRequestForm ? 'col-lg-8' : 'col-lg-8 col-md-10 mx-auto'"
-           :data-aos="showSellerRequestForm ? 'fade-right' : 'fade-right'"
-           data-aos-duration="800"
-           :key="'buyer-card-' + showSellerRequestForm"
-           style="transition: all 0.5s ease;">
+        :data-aos="showSellerRequestForm ? 'fade-right' : 'fade-right'" data-aos-duration="800"
+        :key="'buyer-card-' + showSellerRequestForm" style="transition: all 0.5s ease;">
         <div class="card border-0 shadow-lg">
           <div class="card-body text-center py-5">
             <div class="mb-3">
@@ -70,9 +66,7 @@
                 </div>
               </div>
             </div>
-            <button
-              class="btn btn-success btn-lg px-5"
-              @click="toggleSellerRequestForm"
+            <button class="btn btn-success btn-lg px-5" @click="toggleSellerRequestForm"
               :disabled="isSubmittingSellerRequest">
               <!-- <i class="fas fa-paper-plane me-2"></i> -->
               {{ showSellerRequestForm ? 'Cancel Request' : 'Request Seller Upgrade' }}
@@ -82,10 +76,7 @@
       </div>
 
       <!-- Form yêu cầu trở thành seller -->
-      <div v-if="showSellerRequestForm"
-           class="col-lg-4"
-           data-aos="fade-left"
-           data-aos-duration="800">
+      <div v-if="showSellerRequestForm" class="col-lg-4" data-aos="fade-left" data-aos-duration="800">
         <div class="card border-0 shadow-lg border-top border-4 border-success">
           <div class="card-body">
             <h5 class="fw-bold text-success mb-3">
@@ -98,21 +89,15 @@
               <label class="form-label fw-bold">
                 Verification Image <span class="text-danger">*</span>
               </label>
-              <input
-                type="file"
-                class="form-control"
-                accept="image/*"
-                @change="handleSellerImageUpload"
+              <input type="file" class="form-control" accept="image/*" @change="handleSellerImageUpload"
                 :disabled="isSubmittingSellerRequest" />
               <small class="text-muted">Upload ID card or business license</small>
 
               <!-- Preview ảnh -->
               <div v-if="sellerRequestForm.imagePreview" class="mt-3">
-                <img :src="sellerRequestForm.imagePreview" class="img-thumbnail" style="max-height: 200px;" alt="Preview">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-danger mt-2 w-100"
-                  @click="removeSellerImage"
+                <img :src="sellerRequestForm.imagePreview" class="img-thumbnail" style="max-height: 200px;"
+                  alt="Preview">
+                <button type="button" class="btn btn-sm btn-danger mt-2 w-100" @click="removeSellerImage"
                   :disabled="isSubmittingSellerRequest">
                   <i class="fas fa-times me-1"></i>Remove Image
                 </button>
@@ -124,20 +109,14 @@
               <label class="form-label fw-bold">
                 Description <span class="text-danger">*</span>
               </label>
-              <textarea
-                v-model="sellerRequestForm.description"
-                class="form-control"
-                rows="5"
-                placeholder="Tell us why you want to become a seller..."
-                :disabled="isSubmittingSellerRequest"
+              <textarea v-model="sellerRequestForm.description" class="form-control" rows="5"
+                placeholder="Tell us why you want to become a seller..." :disabled="isSubmittingSellerRequest"
                 maxlength="500"></textarea>
               <small class="text-muted">{{ sellerRequestForm.description.length }}/500 characters</small>
             </div>
 
             <!-- Nút submit -->
-            <button
-              class="btn btn-success w-100 fw-bold"
-              @click="submitSellerRequest"
+            <button class="btn btn-success w-100 fw-bold" @click="submitSellerRequest"
               :disabled="!canSubmitSellerRequest || isSubmittingSellerRequest">
               <span v-if="isSubmittingSellerRequest">
                 <span class="spinner-border spinner-border-sm me-2"></span>Submitting...
@@ -153,208 +132,120 @@
 
     <!-- Form đăng ký artwork - chỉ hiển thị khi role = 2 -->
     <div v-else-if="userRole === '2'">
-      <div class="row">
-        <div class="col-lg-12 d-flex justify-content-between align-items-center mt-4 mb-3">
-          <div class="" data-aos="fade-right" data-aos-duration="800">
-            <h3 class="fw-bold">
-              <!-- <i class="fas fa-palette me-2"></i> -->
-              Register Artwork for Auction
-            </h3>
-            <p class="text-muted">
-              Please fill in all information below to register your artwork for auction.
-              All fields marked with <span class="text-danger">*</span> are required.
-            </p>
-          </div>
-          <div class=" d-flex gap-3" data-aos="fade-left" data-aos-duration="800">
-            <button type="button" class="btn btn-secondary" @click="resetForm" :disabled="isSubmitting">
-              <i class="fas fa-redo me-2"></i>Reset
-            </button>
-            <button type="button" class="btn btn-success btn-lg px-5" :disabled="isSubmitting" @click="submitArtwork">
-              <i v-if="isSubmitting" class="fas fa-spinner fa-spin me-2"></i>
-              <i v-else class="fas fa-paper-plane me-2"></i>
-              {{ isSubmitting ? 'Submitting...' : 'Register Artwork' }}
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="row" data-aos="fade-up" data-aos-duration="800">
-        <div class="col-lg-7 d-flex">
-          <div class="card border-top border-4 border-success">
-            <div class="card-body">
-              <div class="row">
-                <!-- name artwork -->
-                <div class="col-lg-12 mb-4">
-                  <label class="form-label fw-bold">
-                    Artwork Title <span class="text-danger">*</span>
-                  </label>
-                  <input v-model="formData.title" type="text" class="form-control"
-                    :class="{ 'is-invalid': errors.title }" placeholder="Enter artwork title" required />
-                  <div v-if="errors.title" class="invalid-feedback">{{ errors.title }}</div>
-                </div>
-                <!-- Painting Genre -->
-                <div class="col-lg-6 mb-4">
-                  <label class="form-label fw-bold">
-                    Genre <span class="text-danger">*</span>
-                  </label>
-                  <select v-model="formData.paintingGenre" class="form-select"
-                    :class="{ 'is-invalid': errors.paintingGenre }" required>
-                    <option value="">-- Select Genre --</option>
-                    <option value="Landscape">Landscape</option>
-                    <option value="Portrait">Portrait</option>
-                    <option value="Abstract">Abstract</option>
-                    <option value="Still Life">Still Life</option>
-                    <option value="Contemporary">Contemporary</option>
-                    <option value="Traditional">Traditional</option>
-                    <option value="Modern">Modern</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  <div v-if="errors.paintingGenre" class="invalid-feedback">{{ errors.paintingGenre }}</div>
-                </div>
-                <!-- Material -->
-                <div class="col-lg-6 mb-4">
-                  <label class="form-label fw-bold">
-                    Material <span class="text-danger">*</span>
-                  </label>
-                  <select v-model="formData.material" class="form-select" :class="{ 'is-invalid': errors.material }"
-                    required>
-                    <option value="">-- Select Material --</option>
-                    <option value="Oil">Oil</option>
-                    <option value="Acrylic">Acrylic</option>
-                    <option value="Watercolor">Watercolor</option>
-                    <option value="Ink">Ink</option>
-                    <option value="Mixed Media">Mixed Media</option>
-                    <option value="Digital">Digital</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  <div v-if="errors.material" class="invalid-feedback">{{ errors.material }}</div>
-                </div>
-                <!-- Size -->
-                <div class="col-lg-6 mb-4">
-                  <label class="form-label fw-bold">
-                    Size <span class="text-danger">*</span>
-                  </label>
-                  <input v-model="formData.size" type="text" class="form-control" :class="{ 'is-invalid': errors.size }"
-                    placeholder="E.g: 70x50cm or 100x80x5cm" required />
-                  <div v-if="errors.size" class="invalid-feedback">{{ errors.size }}</div>
-                  <small class="text-muted">Format: Length x Width (x Height if applicable)</small>
-                </div>
-                <!-- Year of Creation -->
-                <div class="col-lg-6 mb-4">
-                  <label class="form-label fw-bold">
-                    Year of Creation <span class="text-danger">*</span>
-                  </label>
-                  <input v-model.number="formData.yearOfCreation" type="number" class="form-control"
-                    :class="{ 'is-invalid': errors.yearOfCreation }" placeholder="Enter year of creation" :min="1900"
-                    :max="currentYear" required />
-                  <div v-if="errors.yearOfCreation" class="invalid-feedback">{{ errors.yearOfCreation }}</div>
-                </div>
-                <!-- Description -->
-                <div class="col-lg-12">
-                  <label class="form-label fw-bold">
-                    Description <span class="text-danger">*</span>
-                  </label>
-                  <textarea v-model="formData.description" class="form-control"
-                    :class="{ 'is-invalid': errors.description }" rows="4"
-                    placeholder="Detailed description of the artwork" required></textarea>
-                  <div v-if="errors.description" class="invalid-feedback">{{ errors.description }}</div>
+      <!-- Success View -->
+      <div v-if="showSuccessView" class="row justify-content-center mt-4">
+        <div class="col-lg-8">
+          <div class="card border-0 shadow-lg" data-aos="zoom-in" data-aos-duration="800">
+            <div class="card-body text-center py-5">
+              <!-- Success Icon -->
+              <div class="mb-4">
+                <div class="rounded-circle bg-success d-inline-flex align-items-center justify-content-center"
+                     style="width: 70px; aspect-ratio: 1/1;">
+                  <i class="fas fa-check text-white" style="font-size: 35px;"></i>
                 </div>
               </div>
 
-            </div>
+              <!-- Success Message -->
+              <h3 class="fw-bold text-success mb-3">
+                Artwork Registered Successfully!
+              </h3>
 
+              <p class="text-muted fs-6 mb-3">
+                {{ successData?.message || 'Your artwork has been submitted and is awaiting approval.' }}
+              </p>
 
+              <!-- Artwork Info -->
+              <div class="alert alert-light border d-inline-block px-5 mb-3">
+                <p class="m-0">
+                  <strong>Artwork Title:</strong> {{ successData?.artworkTitle }}
+                </p>
+                <p class="mb-0" v-if="successData?.artworkId">
+                  <strong>Artwork ID:</strong> {{ successData?.artworkId }}
+                </p>
+              </div>
 
-          </div>
-        </div>
-        <div class="col-lg-5 d-flex">
-          <div class="card border-top border-4 border-success">
-            <div class="card-body">
-              <div class="row">
-                <!-- Starting Price -->
-                <div class="col-lg-12 mb-3">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <label class="form-label fw-bold">
-                      Starting Price (VND) <span class="text-danger">*</span>
-                    </label>
-                    <small class="text-muted">
-                      Price: {{ formatCurrency(formData.startedPrice) }}
-                    </small>
-                  </div>
+              <!-- Information -->
+              <div class="alert alert-info d-inline-block px-5 py-3 mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                Your artwork will be reviewed by our team. You will be notified once it's approved.
+              </div>
 
-                  <input v-model.number="formData.startedPrice" type="number" class="form-control"
-                    :class="{ 'is-invalid': errors.startedPrice }" placeholder="Enter starting price" min="0" step="100"
-                    required />
-                  <div v-if="errors.startedPrice" class="invalid-feedback">{{ errors.startedPrice }}</div>
-
-                </div>
-                <!-- Certificate File -->
-                <div class="mb-3">
-                  <label class="form-label fw-bold">
-                    Certificate File <span class="text-danger">*</span>
-                  </label>
-                  <input type="file" class="form-control" @change="handleCertificateUpload"
-                    accept=".pdf,.jpg,.jpeg,.png" required />
-                  <small class="text-muted">Format: PDF, JPG, PNG (Max 5MB)</small>
-
-                  <!-- Certificate file name display -->
-                  <div v-if="certificateFile" class="mt-2">
-                    <div class="alert alert-success py-2 mb-0 d-flex align-items-center justify-content-between">
-                      <div>
-                        <i class="fas fa-file-check me-2"></i>
-                        <span>{{ certificateFile.name }}</span>
-                      </div>
-                      <button type="button" class="btn btn-sm btn-danger" @click="removeCertificate">
-                        <i class="fas fa-times"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div v-if="errors.certificateId" class="invalid-feedback d-block">{{ errors.certificateId }}</div>
-                </div>
-
-                <!-- Image Upload (Required) -->
-                <div class="mb-3">
-                  <label class="form-label fw-bold">
-                    Artwork Image <span class="text-danger">*</span>
-                  </label>
-                  <input type="file" class="form-control" @change="handleFileUpload" accept="image/*" required />
-                  <small class="text-muted">Format: JPG, PNG, WEBP (Max 5MB)</small>
-
-                  <!-- Preview Image -->
-                  <div v-if="imagePreview" class="mt-3">
-                    <img :src="imagePreview" class="img-thumbnail" style="max-height: 200px;" alt="Preview">
-                    <button type="button" class="btn btn-sm btn-danger mt-2" @click="removeImage">
-                      <i class="fas fa-times me-1"></i>Remove Image
-                    </button>
-                  </div>
-                </div>
+              <!-- Action Buttons -->
+              <div class="d-flex justify-content-center gap-3 mt-2">
+                <button class="btn btn-outline-success btn-lg px-5 w-100" @click="registerAnother">
+                  <i class="fas fa-plus me-2"></i>
+                  Register Another Artwork
+                </button>
+                <button class="btn btn-success btn-lg px-5 w-100" @click="goToHome">
+                  <i class="fas fa-home me-2"></i>
+                  Back to Home
+                </button>
               </div>
             </div>
-
           </div>
         </div>
       </div>
-      <div class="row ">
-        <div class="col-lg-12">
 
-          <!-- Info Card -->
-          <!-- <div class="card border-info mt-4">
-          <div class="card-body">
-            <h6 class="text-info mb-2">
-              <i class="fas fa-info-circle me-2"></i>
-            </h6>
-            <ul class="mb-0 small">
-              <li>All fields marked with <span class="text-danger">*</span> are required</li>
-              <li>Artwork image is <strong>required</strong>, should be clear and high quality</li>
-              <li>Certificate file is <strong>required</strong>, accepts PDF or images (JPG, PNG)</li>
-              <li>Starting price must be greater than 0 and a multiple of 1,000 VND</li>
-              <li>Year of creation must be from 1900 to present</li>
-              <li>Artwork will be reviewed within 24-48 hours</li>
-            </ul>
+      <!-- AI Check Upload (hiển thị nếu chưa check AI) -->
+      <div v-if="!aiChecked && !showAIDetectionResult && !showSuccessView" class="row justify-content-center mt-4">
+        <div class="col-lg-8">
+          <div class="card border-0 shadow-lg" data-aos="zoom-in" data-aos-duration="800">
+            <div class="card-body text-center py-5">
+              <div class="mb-4">
+                <i class="fas fa-robot text-success" style="font-size: 60px;"></i>
+              </div>
+              <h3 class="fw-bold text-success mb-3">AI Image Detection</h3>
+              <p class="text-muted fs-6 mb-4">
+                Please upload your artwork image to verify it's not AI-generated before registering.
+              </p>
+
+              <div class="alert alert-info d-inline-block px-5 py-3 mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Required:</strong> Only human-created artworks are allowed
+              </div>
+
+              <!-- Upload area -->
+              <div class="mb-4">
+                <input type="file" ref="aiCheckFile" class="form-control mx-auto" style="max-width: 400px;"
+                  accept="image/*" @change="handleAICheckUpload" :disabled="checkingAI" />
+                <small class="text-muted d-block mt-2">Format: JPG, PNG, WEBP (Max 5MB)</small>
+              </div>
+
+              <!-- Preview -->
+              <div v-if="aiCheckImagePreview" class="mb-4">
+                <img :src="aiCheckImagePreview" class="img-thumbnail" style="max-height: 300px;" alt="Preview">
+              </div>
+
+              <!-- Button -->
+              <button class="btn btn-success btn-lg px-5" @click="checkAIImage"
+                :disabled="!aiCheckImageFile || checkingAI || classifyingArtwork">
+                <span v-if="checkingAI">
+                  <span class="spinner-border spinner-border-sm me-2"></span>Checking AI...
+                </span>
+                <span v-else-if="classifyingArtwork">
+                  <span class="spinner-border spinner-border-sm me-2"></span>Classifying...
+                </span>
+                <span v-else>
+                  <i class="fas fa-search me-2"></i>Check Image
+                </span>
+              </button>
+
+              <!-- Loading message -->
+              <div v-if="classifyingArtwork" class="mt-3">
+                <div class="alert alert-info d-inline-block">
+                  <i class="fas fa-spinner fa-spin me-2"></i>
+                  Analyzing artwork style with AI...
+                </div>
+              </div>
+            </div>
           </div>
-        </div> -->
+        </div>
+      </div>
 
-          <!-- AI Detection Result Card -->
-          <div v-if="showAIDetectionResult" class="card border-danger mt-4 shadow-lg">
+      <!-- AI Detection Result (hiển thị nếu phát hiện AI) -->
+      <div v-if="showAIDetectionResult" class="row justify-content-center mt-4">
+        <div class="col-lg-10">
+          <div class="card border-danger shadow-lg" data-aos="zoom-in" data-aos-duration="800">
             <div class="card-header bg-danger text-white">
               <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
@@ -406,7 +297,7 @@
 
                 <div class="d-flex justify-content-center gap-2">
                   <button type="button" class="btn btn-secondary" @click="closeAIDetectionResult">
-                    <i class="fas fa-times me-2"></i>Close
+                    <i class="fas fa-upload me-2"></i>Upload Different Image
                   </button>
                   <button type="button" class="btn btn-warning" @click="handleReportAI">
                     <i class="fas fa-flag me-2"></i>Report Error
@@ -418,70 +309,379 @@
         </div>
       </div>
 
-      <!-- Report AI Modal -->
-      <div v-if="showReportModal" class="modal-backdrop fade show"></div>
-      <div v-if="showReportModal" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true"
-        @click.self="closeReportModal">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-danger fw-bold">Report AI Result</h5>
-              <button type="button" class="btn-close" @click="closeReportModal" :disabled="reportSubmitting"></button>
+      <!-- Form đăng ký (hiển thị sau khi check AI pass) -->
+      <div v-if="aiChecked && !showAIDetectionResult && !showSuccessView">
+        <div class="row">
+          <div class="col-lg-12 d-flex justify-content-between align-items-center mt-4 mb-3">
+            <div class="" data-aos="fade-right" data-aos-duration="800">
+              <h3 class="fw-bold">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                Register Artwork for Auction
+              </h3>
+              <p class="text-muted">
+                Please fill in all information below to register your artwork for auction.
+                All fields marked with <span class="text-danger">*</span> are required.
+              </p>
             </div>
-            <form @submit.prevent="submitReportAI">
-              <div class="modal-body">
-                <div class="mb-3">
-                  <label class="form-label fw-semibold">Report Type</label>
-                  <select class="form-select" v-model="reportForm.reportType" :disabled="reportSubmitting" required>
-                    <option value="Inaccurate AI Result">Inaccurate AI Result</option>
-                    <option value="Wrong Classification">Wrong Classification</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label>
-                  <textarea class="form-control" rows="4" v-model.trim="reportForm.reason"
-                    :class="{ 'is-invalid': showReportErrors && !reportForm.reason.trim() }"
-                    :disabled="reportSubmitting" placeholder="Describe the issue" required></textarea>
-                  <div class="invalid-feedback">Please enter a detailed reason.</div>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label fw-semibold">Attached Image</label>
-                  <div class="alert alert-info py-2 mb-0" v-if="imageFile">
-                    <i class="fas fa-image me-2"></i>{{ imageFile.name }}
-                    <span class="badge bg-secondary ms-2">Using uploaded image</span>
-                  </div>
-                  <div class="alert alert-warning py-2 mb-0" v-else>
-                    No image found. Please upload artwork image before reporting.
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" @click="closeReportModal"
-                  :disabled="reportSubmitting">Cancel</button>
-                <button type="submit" class="btn btn-danger" :disabled="reportSubmitting || !canSubmitReport">
-                  <i v-if="reportSubmitting" class="fas fa-spinner fa-spin me-2"></i>
-                  Submit Report
-                </button>
-              </div>
-            </form>
+            <div class=" d-flex gap-3" data-aos="fade-left" data-aos-duration="800">
+              <button type="button" class="btn btn-secondary" @click="resetForm" :disabled="isSubmitting">
+                <i class="fas fa-redo me-2"></i>Reset
+              </button>
+              <button type="button" class="btn btn-success btn-lg px-5" :disabled="isSubmitting" @click="submitArtwork">
+                <i v-if="isSubmitting" class="fas fa-spinner fa-spin me-2"></i>
+                <i v-else class="fas fa-paper-plane me-2"></i>
+                {{ isSubmitting ? 'Submitting...' : 'Register Artwork' }}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- Loading Modal -->
-      <div v-if="isSubmitting" class="modal-backdrop fade show"></div>
-      <div v-if="isSubmitting" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content border-0 shadow-lg">
-            <div class="modal-body text-center py-5">
-              <div class="mb-3">
-                <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
-                  <span class="visually-hidden">Loading...</span>
+        <div class="row" data-aos="fade-up" data-aos-duration="800">
+          <div class="col-lg-8 d-flex">
+            <div class="card border-top border-4 border-success">
+              <div class="card-body">
+                <div class="row">
+                  <!-- name artwork -->
+                  <div class="col-lg-12 mb-4">
+                    <label class="form-label fw-bold">
+                      Artwork Title <span class="text-danger">*</span>
+                    </label>
+                    <input v-model="formData.title" type="text" class="form-control"
+                      :class="{ 'is-invalid': errors.title }" placeholder="Enter artwork title" required />
+                    <div v-if="errors.title" class="invalid-feedback">{{ errors.title }}</div>
+                  </div>
+                  <!-- Painting Genre -->
+                  <div class="col-lg-6 d-flex flex-column gap-1 mb-4">
+                    <div class="p-3 rounded" style="border: 2px dashed #044A424D;">
+                      <div class="form-label fw-bold mb-3 d-flex justify-content-between align-items-center">
+                        <div class="">
+                          <i class="fas fa-palette me-2"></i>Genre <span class="text-danger">*</span>
+                        </div>
+                        <span v-if="classificationResult" class="badge bg-success ms-2">
+                          <i class="fas fa-magic"></i> AI Suggested
+                        </span>
+                      </div>
+
+                      <input v-model="formData.paintingGenre" type="text" class="form-control"
+                        placeholder="Select or type artwork genre..." :class="{ 'is-invalid': errors.paintingGenre }"
+                        list="genreList" required />
+
+                      <datalist id="genreList">
+                        <!-- AI Suggestions nếu có -->
+                        <option v-for="genre in suggestedGenres" :key="'ai-' + genre.label" :value="genre.label">
+                        </option>
+
+                        <!-- Default genres -->
+                        <option value="Landscape"></option>
+                        <option value="Portrait"></option>
+                        <option value="Abstract"></option>
+                        <option value="Still Life"></option>
+                        <option value="Contemporary"></option>
+                        <option value="Traditional"></option>
+                        <option value="Modern"></option>
+                        <option value="Impressionism"></option>
+                        <option value="Romanticism"></option>
+                        <option value="Realism"></option>
+                        <option value="Symbolism"></option>
+                        <option value="Expressionism"></option>
+                        <option value="Abstract_Expressionism"></option>
+                        <option value="Cubism"></option>
+                        <option value="Surrealism"></option>
+                        <option value="Pop_Art"></option>
+                      </datalist>
+
+                      <div v-if="errors.paintingGenre" class="invalid-feedback">{{ errors.paintingGenre }}</div>
+
+                      <!-- Đề xuất thể loại từ AI -->
+                      <div v-if="suggestedGenres.length > 0" class="mt-2">
+                        <small class="text-muted d-block mb-2 mt-2">
+                          Đề xuất thể loại:
+                        </small>
+                        <div class="d-flex flex-wrap gap-2">
+                          <button v-for="genre in suggestedGenres.slice(0, 4)" :key="'btn-' + genre.label" type="button"
+                            class="btn btn-sm w-100 d-flex justify-content-between align-items-center"
+                            :class="formData.paintingGenre === genre.label ? 'btn-success' : 'btn-outline-success'"
+                            @click="formData.paintingGenre = genre.label">
+                            <span>{{ genre.label }}</span>
+                            <span class="badge bg-white text-success">{{ genre.probability }}%</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="row d-flex align-content-between gap-2">
+                      <!-- Material -->
+                      <div class="col-lg-12 ">
+                        <label class="form-label fw-bold">
+                          Material <span class="text-danger">*</span>
+                        </label>
+                        <input v-model="formData.material"
+                               type="text"
+                               class="form-control"
+                               :class="{ 'is-invalid': errors.material }"
+                               placeholder="Select or type material..."
+                               list="materialList"
+                               required />
+
+                        <datalist id="materialList">
+                          <option value="Oil"></option>
+                          <option value="Acrylic"></option>
+                          <option value="Watercolor"></option>
+                          <option value="Gouache"></option>
+                          <option value="Tempera"></option>
+                          <option value="Ink"></option>
+                          <option value="Charcoal"></option>
+                          <option value="Pencil"></option>
+                          <option value="Pastel"></option>
+                          <option value="Oil Pastel"></option>
+                          <option value="Crayon"></option>
+                          <option value="Mixed Media"></option>
+                          <option value="Collage"></option>
+                          <option value="Digital"></option>
+                          <option value="Photography"></option>
+                          <option value="Spray Paint"></option>
+                          <option value="Canvas"></option>
+                          <option value="Paper"></option>
+                          <option value="Wood"></option>
+                          <option value="Metal"></option>
+                          <option value="Glass"></option>
+                          <option value="Fabric"></option>
+                        </datalist>
+
+                        <div v-if="errors.material" class="invalid-feedback">{{ errors.material }}</div>
+                        <small class="text-muted">
+                          <i class="fas fa-info-circle me-1"></i>
+                          Common materials available or enter custom
+                        </small>
+                      </div>
+
+                      <!-- Size -->
+                      <div class="col-lg-12 ">
+                        <label class="form-label fw-bold">
+                          Size <span class="text-danger">*</span>
+                        </label>
+                        <input v-model="formData.size"
+                               type="text"
+                               class="form-control"
+                               :class="{ 'is-invalid': errors.size }"
+                               placeholder="Select or type size..."
+                               list="sizeList"
+                               required />
+
+                        <datalist id="sizeList">
+                          <!-- Common canvas sizes -->
+                          <option value="20x25cm"></option>
+                          <option value="30x40cm"></option>
+                          <option value="40x50cm"></option>
+                          <option value="50x60cm"></option>
+                          <option value="50x70cm"></option>
+                          <option value="60x80cm"></option>
+                          <option value="70x100cm"></option>
+                          <option value="80x100cm"></option>
+                          <option value="100x120cm"></option>
+                          <option value="100x150cm"></option>
+                          <!-- Common square sizes -->
+                          <option value="20x20cm"></option>
+                          <option value="30x30cm"></option>
+                          <option value="40x40cm"></option>
+                          <option value="50x50cm"></option>
+                          <option value="60x60cm"></option>
+                          <option value="80x80cm"></option>
+                          <option value="100x100cm"></option>
+                          <!-- 3D sizes -->
+                          <option value="30x40x5cm"></option>
+                          <option value="50x70x5cm"></option>
+                          <option value="60x80x10cm"></option>
+                        </datalist>
+
+                        <div v-if="errors.size" class="invalid-feedback">{{ errors.size }}</div>
+                        <small class="text-muted">
+                          <i class="fas fa-info-circle me-1"></i>
+                          Common sizes available or enter custom (e.g: 70x50cm or 100x80x5cm)
+                        </small>
+                      </div>
+
+                      <!-- Year of Creation -->
+                      <div class="col-lg-12 ">
+                        <label class="form-label fw-bold">
+                          Year of Creation <span class="text-danger">*</span>
+                        </label>
+                        <input v-model.number="formData.yearOfCreation" type="number" class="form-control"
+                          :class="{ 'is-invalid': errors.yearOfCreation }" placeholder="Enter year of creation"
+                          :min="1900" :max="currentYear" required />
+                        <div v-if="errors.yearOfCreation" class="invalid-feedback">{{ errors.yearOfCreation }}</div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  <!-- Description -->
+                  <div class="col-lg-12">
+                    <label class="form-label fw-bold">
+                      Description <span class="text-danger">*</span>
+                    </label>
+                    <textarea v-model="formData.description" class="form-control"
+                      :class="{ 'is-invalid': errors.description }" rows="4"
+                      placeholder="Detailed description of the artwork" required></textarea>
+                    <div v-if="errors.description" class="invalid-feedback">{{ errors.description }}</div>
+                  </div>
+                </div>
+
+              </div>
+
+
+
+            </div>
+          </div>
+          <div class="col-lg-4 d-flex">
+            <div class="card border-top border-4 border-success">
+              <div class="card-body">
+                <div class="row">
+                  <!-- Starting Price -->
+                  <div class="col-lg-12 mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label class="form-label fw-bold">
+                        Starting Price (VND) <span class="text-danger">*</span>
+                      </label>
+                      <small class="text-muted">
+                        Price: {{ formatCurrency(formData.startedPrice) }}
+                      </small>
+                    </div>
+
+                    <input v-model.number="formData.startedPrice" type="number" class="form-control"
+                      :class="{ 'is-invalid': errors.startedPrice }" placeholder="Enter starting price" min="0"
+                      step="100" required />
+                    <div v-if="errors.startedPrice" class="invalid-feedback">{{ errors.startedPrice }}</div>
+
+                  </div>
+                  <!-- Certificate File -->
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">
+                      Certificate File <span class="text-danger">*</span>
+                    </label>
+                    <input type="file" class="form-control" @change="handleCertificateUpload"
+                      accept=".pdf,.jpg,.jpeg,.png" required />
+                    <small class="text-muted">Format: PDF, JPG, PNG (Max 5MB)</small>
+
+                    <!-- Certificate file name display -->
+                    <div v-if="certificateFile" class="mt-2">
+                      <div class="alert alert-success py-2 mb-0 d-flex align-items-center justify-content-between">
+                        <div>
+                          <i class="fas fa-file-check me-2"></i>
+                          <span>{{ certificateFile.name }}</span>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" @click="removeCertificate">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div v-if="errors.certificateId" class="invalid-feedback d-block">{{ errors.certificateId }}</div>
+                  </div>
+
+                  <!-- Image Upload (Required) -->
+                  <div class="">
+                    <div class="form-label fw-bold d-flex justify-content-between align-items-center mb-3">
+                      Artwork Image
+                      <span class="badge bg-success ms-2">
+                        <i class="fas fa-check-circle me-1"></i>AI Verified
+                      </span>
+                    </div>
+
+                    <!-- Verified Image Display -->
+                    <div v-if="imagePreview" class="position-relative">
+                      <div class="border rounded p-2 bg-light">
+                        <img :src="imagePreview" class="img-fluid rounded"
+                          style="max-height: 250px; width: 100%; object-fit: contain;" alt="Verified Artwork">
+                      </div>
+                      <div class="alert alert-success mt-2 py-2 mb-0 d-flex align-items-center">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        <small>This image has been verified as human-created artwork</small>
+                      </div>
+                    </div>
+
+                    <!-- Fallback nếu không có ảnh -->
+                    <div v-else class="alert alert-warning">
+                      <i class="fas fa-exclamation-triangle me-2"></i>
+                      Please complete AI image verification first
+                    </div>
+                  </div>
                 </div>
               </div>
-              <h5 class="fw-bold text-success mb-2">Registering Artwork</h5>
-              <p class="text-muted mb-1">Please wait while we process your submission...</p>
-              <small class="text-muted">Do not close this window.</small>
+
+            </div>
+          </div>
+        </div>
+        <div class="row ">
+          <div class="col-lg-12">
+          </div>
+        </div>
+
+        <!-- Report AI Modal -->
+        <div v-if="showReportModal" class="modal-backdrop fade show"></div>
+        <div v-if="showReportModal" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true"
+          @click.self="closeReportModal">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title text-danger fw-bold">Report AI Result</h5>
+                <button type="button" class="btn-close" @click="closeReportModal" :disabled="reportSubmitting"></button>
+              </div>
+              <form @submit.prevent="submitReportAI">
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Report Type</label>
+                    <select class="form-select" v-model="reportForm.reportType" :disabled="reportSubmitting" required>
+                      <option value="Inaccurate AI Result">Inaccurate AI Result</option>
+                      <option value="Wrong Classification">Wrong Classification</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label>
+                    <textarea class="form-control" rows="4" v-model.trim="reportForm.reason"
+                      :class="{ 'is-invalid': showReportErrors && !reportForm.reason.trim() }"
+                      :disabled="reportSubmitting" placeholder="Describe the issue" required></textarea>
+                    <div class="invalid-feedback">Please enter a detailed reason.</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Attached Image</label>
+                    <div class="alert alert-info py-2 mb-0" v-if="imageFile">
+                      <i class="fas fa-image me-2"></i>{{ imageFile.name }}
+                      <span class="badge bg-secondary ms-2">Using uploaded image</span>
+                    </div>
+                    <div class="alert alert-warning py-2 mb-0" v-else>
+                      No image found. Please upload artwork image before reporting.
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" @click="closeReportModal"
+                    :disabled="reportSubmitting">Cancel</button>
+                  <button type="submit" class="btn btn-danger" :disabled="reportSubmitting || !canSubmitReport">
+                    <i v-if="reportSubmitting" class="fas fa-spinner fa-spin me-2"></i>
+                    Submit Report
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Loading Modal -->
+        <div v-if="isSubmitting" class="modal-backdrop fade show"></div>
+        <div v-if="isSubmitting" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+              <div class="modal-body text-center py-5">
+                <div class="mb-3">
+                  <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+                <h5 class="fw-bold text-success mb-2">Registering Artwork</h5>
+                <p class="text-muted mb-1">Please wait while we process your submission...</p>
+                <small class="text-muted">Do not close this window.</small>
+              </div>
             </div>
           </div>
         </div>
@@ -517,6 +717,10 @@ export default {
       showAIDetectionResult: false,
       aiDetectionResult: null,
 
+      // Success view
+      showSuccessView: false,
+      successData: null,
+
       // Report AI modal
       showReportModal: false,
       reportSubmitting: false,
@@ -537,14 +741,25 @@ export default {
         imagePreview: null,
         description: ''
       },
-      redirectTimeout: null
+      redirectTimeout: null,
+
+      // AI Check states (for role 2)
+      aiChecked: false,
+      checkingAI: false,
+      aiCheckImageFile: null,
+      aiCheckImagePreview: null,
+
+      // Classification states
+      classifyingArtwork: false,
+      classificationResult: null,
+      suggestedGenres: []
     }
   },
 
   computed: {
     canSubmitSellerRequest() {
       return this.sellerRequestForm.imageFile !== null &&
-             this.sellerRequestForm.description.trim().length >= 10;
+        this.sellerRequestForm.description.trim().length >= 10;
     },
 
     canSubmitReport() {
@@ -590,6 +805,136 @@ export default {
   },
 
   methods: {
+    // AI Check Methods (for role 2)
+    handleAICheckUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          this.$toast.error("Image size must be less than 5MB");
+          event.target.value = '';
+          return;
+        }
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          this.$toast.error("Please upload an image file");
+          event.target.value = '';
+          return;
+        }
+
+        this.aiCheckImageFile = file;
+
+        // Create preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.aiCheckImagePreview = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+
+    checkAIImage() {
+      if (!this.aiCheckImageFile || this.checkingAI) return;
+
+      this.checkingAI = true;
+
+      const formData = new FormData();
+      formData.append("image", this.aiCheckImageFile);
+
+      axios.post("http://localhost:5000/predict", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then((res) => {
+          const data = res.data;
+          console.log("AI Check result:", data);
+
+          // Nếu result = "Human" hoặc prediction = "Human"
+          if (data.result === "Human" || data.prediction === "Human") {
+            this.$toast.success("✓ Image verified as human-created artwork!");
+
+            // Set ảnh đã check làm ảnh preview cho form
+            this.imageFile = this.aiCheckImageFile;
+            this.imagePreview = this.aiCheckImagePreview;
+
+            // Tự động gọi API phân loại artwork
+            this.classifyArtwork(this.aiCheckImageFile);
+          }
+          // Nếu là AI
+          else {
+            this.$toast.error("⚠ Image detected as AI-generated!");
+            this.aiDetectionResult = {
+              message: "Image detected as AI-generated",
+              aiProbability: data.ai_probability * 100 || 0,
+              humanProbability: data.human_probability || 0,
+              prediction: data.prediction,
+              confidence: data.confidence
+            };
+            this.showAIDetectionResult = true;
+          }
+        })
+        .catch((err) => {
+          console.error("AI Check error:", err);
+          const errorMessage = err.response?.data?.message || "Failed to check image. Please try again.";
+          this.$toast.error(errorMessage);
+        })
+        .finally(() => {
+          this.checkingAI = false;
+        });
+    },
+
+    classifyArtwork(imageFile) {
+      if (!imageFile || this.classifyingArtwork) return;
+
+      this.classifyingArtwork = true;
+      this.$toast.info("🎨 Classifying artwork style...");
+
+      const formData = new FormData();
+      formData.append("file", imageFile);
+
+      axios.post("http://localhost:5000/classify", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then((res) => {
+          const data = res.data;
+          console.log("Classification result:", data);
+
+          this.classificationResult = data;
+
+          // Set top1 (phân loại chính xác nhất) vào formData
+          if (data.top1) {
+            this.formData.paintingGenre = data.top1.label;
+            this.$toast.success(`✓ Artwork classified as: ${data.top1.label}`);
+          }
+
+          // Lưu topk suggestions để hiển thị trong dropdown
+          if (data.topk && Array.isArray(data.topk)) {
+            this.suggestedGenres = data.topk.map(item => ({
+              label: item.label,
+              probability: (item.probability * 100).toFixed(2)
+            }));
+          }
+
+          // Set aiChecked = true để hiển thị form
+          this.aiChecked = true;
+        })
+        .catch((err) => {
+          console.error("Classification error:", err);
+          const errorMessage = err.response?.data?.message || "Failed to classify artwork. You can select genre manually.";
+          this.$toast.warning(errorMessage);
+
+          // Vẫn cho phép user tiếp tục ngay cả khi classify fail
+          this.aiChecked = true;
+        })
+        .finally(() => {
+          this.classifyingArtwork = false;
+        });
+    },
+
     // Seller Request Methods (for role 0 and 1)
     toggleSellerRequestForm() {
       this.showSellerRequestForm = !this.showSellerRequestForm;
@@ -921,17 +1266,17 @@ export default {
             });
           } else {
             // If Human - success
-            const successMessage = res.data.message || 'Artwork registered successfully! Awaiting approval.';
-            this.$toast?.success?.(successMessage);
+            this.successData = {
+              message: res.data.message || 'Artwork registered successfully!',
+              artworkTitle: this.formData.title,
+              artworkId: res.data.artworkId || res.data.id
+            };
 
-            // Reset form
-            this.resetForm();
+            // Show success view
+            this.showSuccessView = true;
 
-
-            // Redirect về home sau 2 giây
-            // setTimeout(() => {
-            //   this.$router.push('/');
-            // }, 2000);
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         })
         .catch((err) => {
@@ -967,10 +1312,45 @@ export default {
       this.certificateFile = null;
     },
 
+    // Navigate to home
+    goToHome() {
+      this.$router.push('/client/home');
+    },
+
+    // Register another artwork
+    registerAnother() {
+      this.showSuccessView = false;
+      this.successData = null;
+      this.aiChecked = false;
+      this.aiCheckImageFile = null;
+      this.aiCheckImagePreview = null;
+      this.classificationResult = null;
+      this.suggestedGenres = [];
+      this.resetForm();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+
     // Close AI Detection Result
     closeAIDetectionResult() {
       this.showAIDetectionResult = false;
       this.aiDetectionResult = null;
+
+      // Reset AI check để cho phép upload lại (cho role 2)
+      if (this.userRole === "2") {
+        this.aiChecked = false;
+        this.aiCheckImageFile = null;
+        this.aiCheckImagePreview = null;
+
+        // Reset classification data
+        this.classificationResult = null;
+        this.suggestedGenres = [];
+        this.formData.paintingGenre = '';
+
+        // Reset file input
+        if (this.$refs.aiCheckFile) {
+          this.$refs.aiCheckFile.value = '';
+        }
+      }
     },
 
     // Handle Report AI Image
