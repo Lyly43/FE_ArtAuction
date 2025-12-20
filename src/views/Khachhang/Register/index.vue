@@ -14,7 +14,8 @@
     <!-- Nội dung chính -->
     <div class="container container-acc">
       <div class="row d-flex justify-content-around align-items-center  w-100">
-        <div class="col-lg-5 col-md-4 col-sm-12 d-flex flex-column d-none d-md-inline"  data-aos="fade-right" data-aos-duration="800">
+        <div class="col-lg-5 col-md-4 col-sm-12 d-flex flex-column d-none d-md-inline" data-aos="fade-right"
+          data-aos-duration="800">
           <div class="d-flex gap-3 align-items-center mb-auto">
             <img src="../../../assets/img/Logo_AA.png" class="logoLogin" alt="">
             <h3 class="fw-bold m-0"><span class="text-success fw-bold ">Art</span>Auction</h3>
@@ -37,13 +38,15 @@
                 <div class="d-flex flex-column gap-3">
                   <!-- Username -->
                   <div class="group-input col-lg-12 col-md-12">
-                    <input v-model="tai_khoan.username" type="text" class="form-control" id="username" required @keydown.enter.prevent="DangKy">
+                    <input v-model="tai_khoan.username" type="text" class="form-control" id="username" required
+                      @keydown.enter.prevent="DangKy">
                     <label for="username">Username</label>
                     <i class="bi bi-person fa-xl text-success"></i>
                   </div>
                   <!-- Email -->
                   <div class="group-input col-lg-12 col-md-12">
-                    <input v-model="tai_khoan.email" type="email" class="form-control" id="email" required @keydown.enter.prevent="DangKy">
+                    <input v-model="tai_khoan.email" type="email" class="form-control" id="email" required
+                      @keydown.enter.prevent="DangKy">
                     <label for="email">Email</label>
                     <i class="bi bi-envelope fa-xl text-success"></i>
                   </div>
@@ -76,10 +79,15 @@
                 </div>
 
                 <div class="d-flex flex-column align-items-center gap-3 mt-2">
-                  <button class="btn btn-success fw-bold w-100" @click="DangKy()" :disabled="loading">
-                    <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  <button class="btn btn-success fw-bold w-100 fs-6" @click="DangKy()" :disabled="loading">
+                    <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status"
+                      aria-hidden="true"></span>
                     {{ loading ? 'Signing up...' : 'Sign Up' }}
                   </button>
+
+                  <!-- Hidden button to trigger OTP modal -->
+                  <button ref="otpModalTrigger" class="d-none" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"></button>
 
 
                   <p class="m-0">Already have an account?
@@ -94,6 +102,50 @@
           </div>
         </div>
       </div>
+      <!-- OTP Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header position-relative d-flex justify-content-center align-items-center">
+              <h1 class="modal-title text-success fw-bold fs-5 m-0" id="exampleModalLabel">Enter Verification Code</h1>
+            </div>
+            <div class="modal-body">
+              <div class="text-center mb-4">
+                <p class="text-muted mb-2">We've sent a 6-digit code to your email</p>
+                <p class=" text-success fw-bold">{{ tai_khoan.email || 'your email' }}</p>
+              </div>
+              <div class="d-flex justify-content-center gap-2 mb-4">
+                <input
+                  v-for="(digit, index) in otp"
+                  :key="index"
+                  :ref="el => { if (el) otpInputs[index] = el }"
+                  v-model="otp[index]"
+                  type="text"
+                  :class="['form-control', 'text-center', 'fw-bold', { 'border-success': digit !== '' }]"
+                  style="width: 50px; height: 60px; font-size: 24px;"
+                  maxlength="1"
+                  @input="handleOtpInput(index, $event)"
+                  @keydown="handleOtpKeydown(index, $event)"
+                  @paste="handleOtpPaste($event)"
+                />
+              </div>
+              <div class="text-center">
+                <p class="text-muted small mb-0">Didn't receive the code?</p>
+                <button type="button" class="btn btn-link p-0 text-success" @click="resendOtp">
+                  Resend code
+                </button>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success w-100 fw-bold fs-6" @click="verifyOtp" :disabled="!isOtpComplete || verifyingOtp">
+                <span v-if="verifyingOtp" class="spinner-border spinner-border-sm me-2"></span>
+                {{ verifyingOtp ? 'Verifying...' : 'Verify' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -107,6 +159,9 @@ export default {
       acceptTerms: false,
       loading: false,
       tai_khoan: {},
+      otp: ['', '', '', '', '', ''],
+      otpInputs: [],
+      verifyingOtp: false,
     }
   },
   mounted() {
@@ -236,14 +291,61 @@ export default {
 
       axios.post('http://localhost:8081/register', this.tai_khoan)
         .then(response => {
-          if (response.data.status == 1) {
-            this.$toast.success(response.data.message);
-            console.log(response.data);
-             this.$router.push('/login');
+          const data = response.data || {};
+
+          if (data.status === 1) {
+            // Hiển thị thông báo thành công
+            this.$toast.success(data.message || "Registration successful! Please verify your email.");
+            console.log("Registration response:", data);
+
+            // Reset OTP trước khi mở modal
+            this.resetOtp();
+
+            // Mở modal OTP để nhập mã xác thực
+            // Sử dụng setTimeout để đảm bảo DOM đã render và toast đã hiển thị
+            setTimeout(() => {
+              // Cách 1: Dùng button trigger (đơn giản nhất)
+              if (this.$refs.otpModalTrigger) {
+                this.$refs.otpModalTrigger.click();
+                console.log("Modal opened via trigger button");
+                return;
+              }
+
+              // Cách 2: Dùng Bootstrap Modal API
+              this.$nextTick(() => {
+                const modalElement = document.getElementById('exampleModal');
+                console.log("Modal element:", modalElement);
+
+                if (modalElement) {
+                  try {
+                    // Thử dùng window.bootstrap hoặc global bootstrap
+                    const Bootstrap = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+
+                    if (Bootstrap && Bootstrap.Modal) {
+                      let modal = Bootstrap.Modal.getInstance(modalElement);
+                      if (!modal) {
+                        modal = new Bootstrap.Modal(modalElement, {
+                          backdrop: 'static',
+                          keyboard: false
+                        });
+                      }
+                      modal.show();
+                      console.log("Modal opened successfully via Bootstrap API");
+                    } else {
+                      console.error("Bootstrap Modal is not available");
+                    }
+                  } catch (error) {
+                    console.error("Error opening modal:", error);
+                  }
+                } else {
+                  console.error("OTP Modal element not found!");
+                }
+              });
+            }, 300);
 
           } else {
-            this.$toast.error(response.data.message);
-            console.log(response.data);
+            this.$toast.error(data.message || "Registration failed");
+            console.log("Registration failed:", data);
           }
 
         })
@@ -287,7 +389,158 @@ export default {
     toggleRePassword() {
       this.showRePassword = !this.showRePassword;
     },
-  }
+
+    // OTP Methods
+    handleOtpInput(index, event) {
+      const value = event.target.value.replace(/[^0-9]/g, '');
+      this.otp[index] = value;
+
+      // Auto focus next input
+      if (value && index < 5) {
+        this.$nextTick(() => {
+          this.otpInputs[index + 1]?.focus();
+        });
+      }
+    },
+
+    handleOtpKeydown(index, event) {
+      // Handle backspace
+      if (event.key === 'Backspace' && !this.otp[index] && index > 0) {
+        this.$nextTick(() => {
+          this.otpInputs[index - 1]?.focus();
+        });
+      }
+      // Handle arrow keys
+      if (event.key === 'ArrowLeft' && index > 0) {
+        this.otpInputs[index - 1]?.focus();
+      }
+      if (event.key === 'ArrowRight' && index < 5) {
+        this.otpInputs[index + 1]?.focus();
+      }
+    },
+
+    handleOtpPaste(event) {
+      event.preventDefault();
+      const pastedData = event.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+
+      for (let i = 0; i < 6; i++) {
+        this.otp[i] = pastedData[i] || '';
+      }
+
+      // Focus the last filled input or the first empty one
+      const lastFilledIndex = Math.min(pastedData.length - 1, 5);
+      this.$nextTick(() => {
+        this.otpInputs[lastFilledIndex]?.focus();
+      });
+    },
+
+    verifyOtp() {
+      const otpCode = this.otp.join('');
+      if (otpCode.length !== 6) {
+        this.$toast.error("Please enter the complete 6-digit code");
+        return;
+      }
+
+      if (!this.tai_khoan.email) {
+        this.$toast.error("Email is required");
+        return;
+      }
+
+      this.verifyingOtp = true;
+
+      // Gọi API verify OTP
+      axios.post('http://localhost:8081/api/verify-otp', {
+        otp: otpCode,
+        email: this.tai_khoan.email
+      })
+        .then(response => {
+          const data = response.data || {};
+
+          if (data.status === 1) {
+            this.$toast.success(data.message || "OTP verified successfully");
+
+            // Đóng modal và redirect to login
+            this.$nextTick(() => {
+              const modalElement = document.getElementById('exampleModal');
+              if (modalElement) {
+                // eslint-disable-next-line no-undef
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                  modal.hide();
+                }
+              }
+
+              // Redirect to login after successful verification
+              setTimeout(() => {
+                this.$router.push('/login');
+              }, 500);
+            });
+          } else {
+            this.$toast.error(data.message || "Invalid OTP");
+            this.resetOtp();
+          }
+        })
+        .catch(error => {
+          console.error("Verify OTP error:", error);
+          const errorMessage = error.response?.data?.message || "Verification failed. Please try again.";
+          this.$toast.error(errorMessage);
+          this.resetOtp();
+        })
+        .finally(() => {
+          this.verifyingOtp = false;
+        });
+    },
+
+    resendOtp() {
+      // Kiểm tra email trước khi gửi
+      if (!this.tai_khoan.email) {
+        this.$toast.error("Email is required");
+        return;
+      }
+
+      // Gọi API resend OTP - gửi lại OTP qua email
+      axios.post('http://localhost:8081/api/resend-otp', {
+        email: this.tai_khoan.email
+      })
+        .then(response => {
+          const data = response.data || {};
+          if (data.status === 1) {
+            this.$toast.success(data.message || "OTP code has been resent to your email");
+            this.resetOtp();
+          } else {
+            this.$toast.error(data.message || "Failed to resend OTP");
+          }
+        })
+        .catch(error => {
+          console.error("Resend OTP error:", error);
+          const errorMessage = error.response?.data?.message || "Failed to resend OTP. Please try again.";
+          this.$toast.error(errorMessage);
+        });
+    },
+
+    resetOtp() {
+      this.otp = ['', '', '', '', '', ''];
+      this.$nextTick(() => {
+        this.otpInputs[0]?.focus();
+      });
+    },
+  },
+  computed: {
+    isOtpComplete() {
+      return this.otp.every(digit => digit !== '');
+    }
+  },
+  mounted() {
+    // Reset OTP when modal is shown
+    this.$nextTick(() => {
+      const modalElement = document.getElementById('exampleModal');
+      if (modalElement) {
+        modalElement.addEventListener('shown.bs.modal', () => {
+          this.resetOtp();
+        });
+      }
+    });
+  },
 }
 </script>
 <style></style>

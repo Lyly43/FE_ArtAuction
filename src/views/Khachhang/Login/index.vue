@@ -15,7 +15,8 @@
     <!-- Nội dung chính -->
     <div class="container container-acc">
       <div class="row d-flex justify-content-around  align-items-center w-100">
-        <div class="col-lg-5 col-md-4  col-sm-12 d-flex flex-column d-none d-md-inline" data-aos="fade-right" data-aos-duration="800">
+        <div class="col-lg-5 col-md-4  col-sm-12 d-flex flex-column d-none d-md-inline" data-aos="fade-right"
+          data-aos-duration="800">
           <div class="d-flex gap-3 align-items-center mb-auto">
             <img src="../../../assets/img/Logo_AA.png" class="logoLogin" alt="">
             <h3 class="fw-bold m-0"><span class="text-success fw-bold ">Art</span>Auction</h3>
@@ -43,7 +44,8 @@
 									</div> -->
                   <!-- Email -->
                   <div class="group-input col-lg-12 col-md-12">
-                    <input v-model="user.email" type="email" class="form-control" id="email" required @keydown.enter.prevent="DangNhap">
+                    <input v-model="user.email" type="email" class="form-control" id="email" required
+                      @keydown.enter.prevent="DangNhap">
                     <label for="email">Email</label>
                     <i class="bi bi-envelope fa-xl text-success"></i>
                   </div>
@@ -66,14 +68,15 @@
                       Remember me
                     </label>
                   </div>
-                  <a href="#" class="text-success text-decoration-none" @click="forgotPassword">
+                  <router-link to="/client/forgot-password" class="text-center text-success fs-6 text-decoration-none">
                     Forgot password
-                  </a>
+                  </router-link>
                 </div>
 
                 <div class="d-flex flex-column align-items-center gap-3 mt-3">
                   <button v-on:click="DangNhap()" class="btn btn-success fw-bold w-100" :disabled="loading">
-                    <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status"
+                      aria-hidden="true"></span>
                     {{ loading ? 'Logging in...' : 'Login' }}
                   </button>
 

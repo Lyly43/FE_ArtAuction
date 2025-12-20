@@ -6,7 +6,8 @@
           <div class="card-body">
             <div class="row">
               <div class="col-4 d-flex align-items-center flex-column gap-3">
-                <img v-bind:src="thong_tin.avt || '/src/assets/img/avt.png'" class="rounded-circle border border-3 border-success" alt="avt"
+                <img v-bind:src="thong_tin.avt || '/src/assets/img/avt.png'"
+                  class="rounded-circle border border-3 border-success" alt="avt"
                   style="width: 150px; aspect-ratio: 1/1;" />
                 <p class="m-0">{{ thong_tin.email }}</p>
 
@@ -22,8 +23,11 @@
 
                 <!-- input file ẩn -->
                 <input type="file" ref="file" style="display: none" accept="image/*" @change="handleFileChange" />
-                <button type="button" class="btn btn-success w-100" data-bs-toggle="modal"
-                  data-bs-target="#exampleModal">Change Password</button>
+
+
+                <router-link to="/client/forgot-password" class="text-center text-success fs-6 text-decoration-none w-100">
+                  <button type="button" class="btn btn-success w-100">Change Password</button>
+                </router-link>
               </div>
               <div class="col-8 ps-3">
                 <div class="row">
