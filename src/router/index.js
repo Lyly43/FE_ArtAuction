@@ -133,6 +133,14 @@ const routes = [
     beforeEnter: checkUser,
   },
 
+  {
+    path: "/client/forgot-password",
+    // name: 'auction-room',
+    component: () => import("../views/Client/ForgotPassword/index.vue"),
+    meta: { layout: "blank" },
+    // beforeEnter: checkUser,
+  },
+
 
 
 
