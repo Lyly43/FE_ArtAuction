@@ -497,6 +497,7 @@ export default {
     return {
       // roomId: "support:auction-001-userA",
       roomID: this.$route.params.id,
+      roomId: null, // Room ID cho chat (sẽ được set = roomID)
 
       detail_auction: {},
       artworkSession: {}, // Thông tin artwork từ session
@@ -583,6 +584,13 @@ export default {
 
   async mounted() {
     // === INITIALIZATION ===
+    // Đảm bảo roomID được set từ route params trước
+    this.roomID = this.$route.params.id;
+    // Đảm bảo roomId cũng được set ngay từ đầu
+    this.roomId = this.roomID;
+
+    console.log("🚀 User Auction Room mounted with roomID:", this.roomID, "roomId:", this.roomId);
+
     this.initializeUser();
     this.loadFromCache();
     await this.loadHistory();
@@ -596,7 +604,6 @@ export default {
     const url = new URL(window.location.href);
     const params = Object.fromEntries(url.searchParams.entries());
     // Ép Zego dùng đúng id phòng theo route thay vì random/query
-    this.roomID = this.$route.params.id;
     this.role = params.role ?? "audience";
     this.loadAuctionRoom();
     this.loadMembers();
@@ -1283,10 +1290,8 @@ export default {
 
     // === INITIALIZATION ===
     initializeUser() {
-      // Lấy roomId từ params nếu có
-      if (this.$route && this.$route.params && this.$route.params.id) {
-        this.roomId = this.$route.params.id;
-      }
+      // Đảm bảo roomId = roomID từ route params
+      this.roomId = this.roomID || this.$route?.params?.id;
 
       // Extract user info từ JWT và localStorage
       const info = this.extractUserInfoFromToken();
@@ -1298,6 +1303,12 @@ export default {
 
     // === MESSAGE LOADING ===
     async loadHistory() {
+      // Đảm bảo roomId được set trước khi load
+      if (!this.roomId) {
+        this.roomId = this.roomID || this.$route?.params?.id;
+      }
+
+      console.log("📚 Loading chat history for roomId:", this.roomId);
       try {
         const res = await axios.get(
           `http://localhost:8081/api/chats/rooms/${this.roomId}/messages`,
@@ -1308,30 +1319,49 @@ export default {
           }
         );
 
+        console.log("📚 Chat history response:", res.data);
+
         let list = this.extractListFromResponse(res.data);
         list = this.sortMessages(list);
+
+        console.log("📚 Extracted and sorted messages:", list);
 
         // Lọc tin nhắn theo role: Admin xem tất cả, User chỉ xem thread với admin
         const filtered = this.isAdmin ? list : this.filterMessagesForUser(list);
 
+        console.log("📚 Filtered messages for user:", filtered);
+
         this.messages = filtered.map((m) => this.normalizeMessage(m));
+        console.log("📚 Final messages after normalization:", this.messages);
         this.saveToCache();
         this.$nextTick(() => this.scrollToBottom());
       } catch (e) {
-        console.error("Load history error:", e);
+        console.error("❌ Load history error:", e);
       }
     },
 
     // === SOCKET CONNECTION ===
     connectSocket() {
+      // Đảm bảo roomId được set trước khi connect
+      if (!this.roomId) {
+        this.roomId = this.roomID || this.$route?.params?.id;
+      }
+
+      console.log("🔌 Connecting chat socket with roomId:", this.roomId);
       this.socket = new ChatSocket("http://localhost:8081", localStorage.getItem("token"));
       this.socket.connect(
         () => {
           this.connected = true;
+          console.log("✅ Chat socket connected, subscribing to room:", this.roomId);
           this.subscription = this.socket.subscribeRoom(this.roomId, (body) => {
+            console.log("📨 Received message:", body);
             // Với user: chỉ nhận thread của mình với admin
-            if (!this.isAdmin && !this.shouldShowMessage(body)) return;
+            if (!this.isAdmin && !this.shouldShowMessage(body)) {
+              console.log("🚫 Message filtered out for user");
+              return;
+            }
 
+            console.log("✅ Adding message to chat");
             this.messages.push(this.normalizeIncoming(body));
             this.saveToCache();
             this.$nextTick(() => this.scrollToBottom());
@@ -1576,22 +1606,32 @@ export default {
 
     // Lọc tin nhắn cho user (chỉ xem thread với admin)
     filterMessagesForUser(list) {
-      return list.filter((m) => {
+      console.log("🔍 filterMessagesForUser - input list:", list);
+      const filtered = list.filter((m) => {
         const sId = this.extractSenderId(m);
         const rId = this.extractReceiverId(m);
 
-        const isSenderAdmin = this.isAdminUser(sId);
-        const isReceiverAdmin = this.isAdminUser(rId);
+        // Truyền message object vào để check role
+        const isSenderAdmin = this.isAdminUser(sId, m);
+        const isReceiverAdmin = this.isAdminUser(rId, m);
 
         // User -> Admin (direct)
         const userToAdmin = String(sId) === String(this.currentUserId) && isReceiverAdmin;
         // Admin -> User (direct reply)
         const adminToUser = isSenderAdmin && String(rId) === String(this.currentUserId);
-        // Admin broadcast (receiverId = null)
-        const adminBroadcast = isSenderAdmin && (rId == null || rId === "");
+        // Admin broadcast (receiverId = null hoặc empty)
+        const adminBroadcast = isSenderAdmin && (rId == null || rId === "" || rId === undefined);
 
-        return userToAdmin || adminToUser || adminBroadcast;
+        const shouldInclude = userToAdmin || adminToUser || adminBroadcast;
+
+        if (!shouldInclude) {
+          console.log("🚫 Message filtered out:", { sId, rId, currentUserId: this.currentUserId, isSenderAdmin, isReceiverAdmin });
+        }
+
+        return shouldInclude;
       });
+      console.log("🔍 filterMessagesForUser - filtered result:", filtered);
+      return filtered;
     },
 
     // Kiểm tra tin nhắn có nên hiển thị cho user không (cho socket)
@@ -1599,14 +1639,32 @@ export default {
       const sId = this.extractSenderId(message);
       const rId = this.extractReceiverId(message);
 
-      const isSenderAdmin = this.isAdminUser(sId);
-      const isReceiverAdmin = this.isAdminUser(rId);
+      // Truyền message object vào để check role
+      const isSenderAdmin = this.isAdminUser(sId, message);
+      const isReceiverAdmin = this.isAdminUser(rId, message);
 
+      // User -> Admin (direct)
       const userToAdmin = String(sId) === String(this.currentUserId) && isReceiverAdmin;
+      // Admin -> User (direct reply)
       const adminToUser = isSenderAdmin && String(rId) === String(this.currentUserId);
-      const adminBroadcast = isSenderAdmin && (rId == null || rId === "");
+      // Admin broadcast (receiverId = null hoặc empty)
+      const adminBroadcast = isSenderAdmin && (rId == null || rId === "" || rId === undefined);
 
-      return userToAdmin || adminToUser || adminBroadcast;
+      const shouldShow = userToAdmin || adminToUser || adminBroadcast;
+      console.log("🔍 shouldShowMessage check:", {
+        message,
+        sId,
+        rId,
+        currentUserId: this.currentUserId,
+        isSenderAdmin,
+        isReceiverAdmin,
+        userToAdmin,
+        adminToUser,
+        adminBroadcast,
+        shouldShow
+      });
+
+      return shouldShow;
     },
 
     // Extract sender ID từ message object
@@ -1631,9 +1689,34 @@ export default {
       );
     },
 
-    // Kiểm tra user có phải admin không (by ID hoặc email)
-    isAdminUser(userId) {
-      return String(userId) === String(this.adminId) || userId === this.adminEmail;
+    // Kiểm tra user có phải admin không (by ID pattern, role, hoặc email)
+    isAdminUser(userId, message = null) {
+      if (!userId) return false;
+
+      // Check theo pattern: Admin ID thực tế bắt đầu bằng "Ad-"
+      const isAdminByPattern = String(userId).startsWith("Ad-");
+
+      // Check theo role từ message nếu có
+      let isAdminByRole = false;
+      if (message) {
+        const senderRole = message.senderRole || message.sender_role || (message.sender && message.sender.role) || null;
+        isAdminByRole = senderRole === 1;
+      }
+
+      // Check theo adminId/adminEmail cũ (fallback)
+      const isAdminByOldCheck = String(userId) === String(this.adminId) || userId === this.adminEmail;
+
+      const isAdmin = isAdminByPattern || isAdminByRole || isAdminByOldCheck;
+      console.log("🔍 isAdminUser check:", {
+        userId,
+        adminId: this.adminId,
+        adminEmail: this.adminEmail,
+        isAdminByPattern,
+        isAdminByRole,
+        isAdminByOldCheck,
+        isAdmin
+      });
+      return isAdmin;
     },
 
     // === USER MANAGEMENT ===
@@ -1704,13 +1787,13 @@ export default {
     // --- Cache message theo phòng trong sessionStorage ---
     saveToCache() {
       try {
-        const key = `chat:${this.roomId}`;
+        const key = `chat:${this.roomId || this.roomID}`;
         sessionStorage.setItem(key, JSON.stringify(this.messages));
       } catch (_) { }
     },
     loadFromCache() {
       try {
-        const key = `chat:${this.roomId}`;
+        const key = `chat:${this.roomId || this.roomID}`;
         const raw = sessionStorage.getItem(key);
         if (raw) {
           const cached = JSON.parse(raw);
@@ -1740,9 +1823,22 @@ export default {
         m.senderName || m.sender_name || (m.sender && (m.sender.name || m.sender.username)) || null;
       const senderEmail = m.senderEmail || m.sender_email || (m.sender && m.sender.email) || null;
 
+      const senderRole = m.senderRole || m.sender_role || (m.sender && m.sender.role) || null;
+
+      // Check admin theo pattern "Ad-" hoặc role
+      const isAdminSender = String(senderId).startsWith("Ad-") || senderRole === 1 || String(senderId) === String(this.adminId) || senderId === this.adminEmail;
+
       let senderName;
-      if (String(senderId) === String(this.adminId) || senderId === this.adminEmail) {
-        senderName = "john_sins"; // tên admin theo dữ liệu test
+      if (isAdminSender) {
+        // Admin: ưu tiên senderNameRaw, nếu không có thì dùng senderEmail, cuối cùng mới dùng name từ localStorage
+        if (senderNameRaw) {
+          senderName = senderNameRaw; // Dùng tên thực tế từ database
+        } else if (senderEmail) {
+          senderName = senderEmail;
+        } else {
+          // Nếu không có tên, lấy từ localStorage admin hoặc dùng "Admin"
+          senderName = localStorage.getItem("name_admin") || "Admin";
+        }
       } else if (senderNameRaw) {
         senderName = senderNameRaw;
       } else if (senderEmail) {
@@ -1752,19 +1848,12 @@ export default {
         // Fallback về senderId nếu không có email
         senderName = senderId || "Unknown";
       }
-
-      const senderRole = m.senderRole || m.sender_role || (m.sender && m.sender.role) || null;
       const time = this.formatTime(m.sentAt || m.createdAt || m.created_at || m.timestamp);
 
       // Xác định role và tên hiển thị
       let displayName = senderName || "Unknown";
-      let role = "user";
-
-      if (senderRole === 1) {
-        role = "admin";
-      } else {
-        role = "user";
-      }
+      // Dùng isAdminSender để xác định role (đã check pattern "Ad-" và senderRole)
+      let role = isAdminSender ? "admin" : "user";
 
       return {
         text,
