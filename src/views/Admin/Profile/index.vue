@@ -133,7 +133,16 @@
                     <p v-if="!isEditing" class="fs-6 fw-bold text-dark border-bottom pb-2 mb-0">
                       {{ admin.email }}
                     </p>
-                    <input v-else type="email" class="form-control bg-light" v-model="form.email" />
+                    <input
+                      v-else
+                      type="email"
+                      class="form-control bg-light"
+                      :class="{ 'is-invalid': errors.email }"
+                      v-model="form.email"
+                    />
+                    <div class="invalid-feedback d-block" v-if="errors.email">
+                      {{ errors.email }}
+                    </div>
                   </div>
 
                   <div class="col-md-6">
@@ -147,8 +156,12 @@
                       v-else
                       type="tel"
                       class="form-control bg-light"
+                      :class="{ 'is-invalid': errors.phoneNumber }"
                       v-model="form.phoneNumber"
                     />
+                    <div class="invalid-feedback d-block" v-if="errors.phoneNumber">
+                      {{ errors.phoneNumber }}
+                    </div>
                   </div>
 
                   <div class="col-md-6">
@@ -233,6 +246,10 @@ export default {
 
       // Dữ liệu Form (dùng khi chỉnh sửa)
       form: {},
+      errors: {
+        email: "",
+        phoneNumber: "",
+      },
     };
   },
   mounted() {
@@ -283,19 +300,20 @@ export default {
     },
 
     saveChanges() {
+      if (!this.validateData()) {
+        return;
+      }
       this.isSaving = true;
       const token = localStorage.getItem("token");
 
-      // Payload gửi đi
+      // 1. CHỈ GỬI NHỮNG GÌ CHO PHÉP SỬA
+      // Bỏ 'role', 'status', 'email' nếu backend không cho sửa hoặc backend tự lấy từ token
       const updatePayload = {
         fullName: this.form.fullName,
         phoneNumber: this.form.phoneNumber,
         address: this.form.address,
         avatar: this.form.avatar,
-
-        email: this.admin.email,
-        role: this.admin.role,
-        status: 1,
+        email: this.form.email,
       };
 
       axios
@@ -306,37 +324,24 @@ export default {
           },
         })
         .then((response) => {
-          // Xử lý kết quả trả về
-          const success = response.data && (response.data.status === 1 || response.status === 200);
-
-          if (success) {
-            // Cập nhật lại dữ liệu hiển thị
-            this.admin = { ...this.admin, ...updatePayload };
-            this.isEditing = false;
-            alert("Profile updated successfully!");
-
-            // Bắn sự kiện để Sidebar cập nhật theo (Realtime)
-            window.dispatchEvent(
-              new CustomEvent("admin-profile-updated", {
-                detail: {
-                  avatar: this.admin.avatar,
-                  name: this.admin.name,
-                },
-              })
-            );
-          } else {
-            alert("Update failed.");
-          }
+          // ... (Giữ nguyên logic xử lý thành công)
+          // Cập nhật lại UI chuẩn xác
+          this.admin = { ...this.admin, ...updatePayload };
+          this.isEditing = false;
+          alert("Update successful!");
         })
         .catch((error) => {
           console.error("Lỗi cập nhật:", error);
-          alert("An error occurred while updating.");
+          // Log chi tiết lỗi 400 từ backend để debug
+          if (error.response && error.response.data) {
+            console.log("Chi tiết lỗi từ Server:", error.response.data);
+            alert("Lỗi: " + (error.response.data.message || "Dữ liệu không hợp lệ"));
+          }
         })
         .finally(() => {
           this.isSaving = false;
         });
     },
-
     // --- 3. UPLOAD ẢNH ---
     triggerFileInput() {
       this.$refs.fileInput.click();
@@ -360,14 +365,15 @@ export default {
           },
         })
         .then((response) => {
-          const newAvatarUrl = response.data.data || response.data;
-
+          const newAvatarUrl =
+            response.data.data && response.data.data.imageUrl
+              ? response.data.data.imageUrl
+              : response.data;
           if (newAvatarUrl) {
             // Cập nhật vào form để chuẩn bị Save
             this.form.avatar = newAvatarUrl;
             // Cập nhật tạm thời vào admin để hiện preview
             this.admin.avatar = newAvatarUrl;
-            alert("Tải ảnh lên thành công! Nhấn 'Save Changes' để lưu.");
           }
         })
         .catch((error) => {
@@ -386,6 +392,36 @@ export default {
         default:
           return "User";
       }
+    },
+
+    // [THÊM] Hàm kiểm tra định dạng
+    validateData() {
+      this.errors = { email: "", phoneNumber: "" }; // Reset lỗi cũ
+      let isValid = true;
+
+      // 1. Kiểm tra định dạng Email
+      // Regex này yêu cầu: chữ + @ + chữ + . + chữ
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!this.form.email || !emailRegex.test(this.form.email)) {
+        this.errors.email =
+          "The email address is not in the correct format (e.g., abc@domain.com).";
+        isValid = false;
+      }
+
+      // 2. Kiểm tra số lượng SĐT (Bắt buộc 10 số)
+
+      const phoneRegex = /^\d{10}$/;
+      if (!this.form.phoneNumber || !phoneRegex.test(this.form.phoneNumber)) {
+        this.errors.phoneNumber = "The phone number must consist of exactly 10 digits.";
+        isValid = false;
+      }
+
+      return isValid;
+    },
+
+    // [THÊM] Hàm xóa lỗi khi người dùng nhập lại (cho đẹp giao diện)
+    clearError(field) {
+      this.errors[field] = "";
     },
 
     formatDate(dateString) {

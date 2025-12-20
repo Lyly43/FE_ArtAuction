@@ -347,7 +347,7 @@
         <p class="mt-2 text-muted">Loading rooms...</p>
       </div>
 
-      <div v-else class="col-12" v-for="room in sortedAuctionRooms" :key="room.id">
+      <div v-else class="col-12" v-for="room in auctionRooms" :key="room.id">
         <router-link
           :to="`/admin/testlivestream/${room.id}`"
           class="card border-0 shadow-sm h-100 text-decoration-none position-relative"
@@ -767,12 +767,6 @@ export default {
         default:
           return "";
       }
-    },
-  },
-
-  computed: {
-    sortedAuctionRooms() {
-      return [...this.auctionRooms].reverse();
     },
   },
 };
