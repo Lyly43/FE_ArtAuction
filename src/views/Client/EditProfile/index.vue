@@ -102,11 +102,6 @@
               <small class="text-muted">Upload ID cards and a selfie to verify your identity</small>
             </div>
 
-
-            <div class="alert alert-warning py-2 px-3" v-if="kycMessage">
-              <i class="fa-solid fa-info-circle me-2"></i>{{ kycMessage }}
-            </div>
-
             <div class="kyc-upload" :class="{ 'disabled-upload': isKycVerified }" v-for="section in kycSections"
               :key="section.key">
               <label class="form-label fw-semibold d-flex align-items-center gap-2">
@@ -143,53 +138,6 @@
 
   </div>
 
-  <!-- Modal change password -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="d-flex flex-column">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Change Password</h1>
-            <p class="text-muted small m-0">Password management to secure your account</p>
-          </div>
-
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row mb-2">
-            <div class="col-lg-4">
-              <label>Current password</label>
-            </div>
-            <div class="col-lg-8">
-              <input placeholder="Enter current password" class="form-control">
-            </div>
-          </div>
-
-          <div class="row mb-2">
-            <div class="col-lg-4">
-              <label>New password</label>
-            </div>
-            <div class="col-lg-8">
-              <input type="password" placeholder="Enter new password" class="form-control">
-            </div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-lg-4">
-              <label>Confirm new password</label>
-            </div>
-            <div class="col-lg-8">
-              <input type="password" placeholder="Re-enter new password" class="form-control">
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-          <!-- <button type="button" class="btn btn-primary" @click="doiMatKhau()">Save changes</button> -->
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -281,6 +229,11 @@ export default {
           this.thong_tin = res.data;
           this.kycStatus = res.data?.kycStatus ?? 0;
           this.kycMessage = res.data?.kycNote || '';
+
+          // Cập nhật role vào localStorage nếu có
+          if (res.data?.role !== undefined && res.data?.role !== null) {
+            localStorage.setItem("role_kh", res.data.role.toString());
+          }
         })
         .catch((err) => {
           console.error(err);
@@ -633,8 +586,18 @@ export default {
         })
         .then((res) => {
           this.$toast.success(res.data?.message || "KYC request submitted. Please wait for review.");
-          this.kycStatus = res.data?.status || "pending";
-          this.kycMessage = res.data?.note || "Your documents are under review.";
+
+          // Update status từ API response
+          this.kycStatus = res.data?.status ?? 2; // Default: 2 = pending
+          this.kycMessage = res.data?.note || res.data?.message || "Your documents are under review.";
+
+          // Cập nhật role vào localStorage nếu API trả về
+          if (res.data?.role !== undefined && res.data?.role !== null) {
+            localStorage.setItem("role_kh", res.data.role.toString());
+          }
+
+          // Reload user info để cập nhật toàn bộ
+          this.layThongTinKH();
         })
         .catch((err) => {
           console.error("KYC error:", err);
