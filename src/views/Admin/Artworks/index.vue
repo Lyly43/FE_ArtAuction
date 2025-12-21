@@ -514,6 +514,34 @@
             </tbody>
           </table>
         </div>
+
+        <!-- Pagination UI -->
+        <div class="d-flex justify-content-between align-items-center mt-3" v-if="totalPages > 0">
+          <div class="text-secondary small">
+            Showing {{ artworks.length }} of {{ totalElements }} artworks (Page {{ currentPage + 1 }}/{{ totalPages }})
+          </div>
+          <nav>
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" :class="{ disabled: currentPage === 0 }">
+                <a class="page-link" href="#" @click.prevent="prevPage">Previous</a>
+              </li>
+              
+              <li 
+                class="page-item" 
+                v-for="page in visiblePages" 
+                :key="page"
+                :class="{ active: currentPage === page }"
+              >
+                <a class="page-link" href="#" @click.prevent="goToPage(page)">{{ page + 1 }}</a>
+              </li>
+              
+              <li class="page-item" :class="{ disabled: currentPage >= totalPages - 1 }">
+                <a class="page-link" href="#" @click.prevent="nextPage">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
       </div>
     </div>
   </div>
@@ -547,6 +575,12 @@ export default {
 
         status: null,
       },
+
+      // Pagination state
+      currentPage: 0,
+      pageSize: 20,
+      totalPages: 0,
+      totalElements: 0,
     };
   },
   mounted() {
@@ -554,9 +588,27 @@ export default {
     this.loadArtworkStatistical();
   },
   computed: {
-    // Đảo ngược thứ tự mảng
+    // Không cần reverse nữa vì backend sắp xếp rồi
     sortedArtworks() {
-      return [...this.artworks].reverse();
+      return this.artworks;
+    },
+    
+    // Hiển thị tối đa 5 trang xung quanh trang hiện tại
+    visiblePages() {
+      const pages = [];
+      const maxVisible = 5;
+      let startPage = Math.max(0, this.currentPage - Math.floor(maxVisible / 2));
+      let endPage = Math.min(this.totalPages - 1, startPage + maxVisible - 1);
+      
+      // Điều chỉnh startPage nếu endPage chạm biên
+      if (endPage - startPage + 1 < maxVisible) {
+        startPage = Math.max(0, endPage - maxVisible + 1);
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      return pages;
     },
   },
   methods: {
@@ -625,6 +677,53 @@ export default {
         .catch((err) => {
           console.error(err);
         });
+    },
+
+    // Tối ưu: Load với pagination
+    loadArtworkData() {
+      this.isLoading = true;
+      axios
+        .get(
+          `http://localhost:8081/api/admin/artworks/lay-du-lieu-tac-pham-phan-trang?page=${this.currentPage}&size=${this.pageSize}`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        )
+        .then((res) => {
+          this.artworks = res.data.content;
+          this.totalPages = res.data.totalPages;
+          this.totalElements = res.data.totalElements;
+          console.log(`Loaded page ${this.currentPage + 1}/${this.totalPages}, total: ${this.totalElements}`);
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    // Chuyển trang
+    goToPage(page) {
+      if (page < 0 || page >= this.totalPages) return;
+      this.currentPage = page;
+      this.loadArtworkData();
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages - 1) {
+        this.currentPage++;
+        this.loadArtworkData();
+      }
+    },
+
+    prevPage() {
+      if (this.currentPage > 0) {
+        this.currentPage--;
+        this.loadArtworkData();
+      }
     },
 
     handleSearch() {

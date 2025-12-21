@@ -214,7 +214,7 @@
               </div>
 
               <span v-if="auction.status === 1"
-                class="badge position-absolute top-0 end-0 m-3 bg-success px-3">12:35</span>
+                class="badge position-absolute top-0 end-0 m-3 bg-success px-3">{{ getElapsedTime(auction) }}</span>
               <span v-if="auction.status === 1" class="badge position-absolute bottom-0 end-0 m-3 bg-success">{{
                 auction.viewCount }}
                 bidders</span>
@@ -321,7 +321,11 @@ export default {
 
       // Auto-refresh intervals
       ongoingRefreshInterval: null,
-      upcomingRefreshInterval: null
+      upcomingRefreshInterval: null,
+
+      // Current time for elapsed time calculation
+      currentTime: new Date(),
+      currentTimeInterval: null
     };
   },
 
@@ -392,6 +396,11 @@ export default {
 
     // Bắt đầu auto-refresh mỗi 5 giây
     this.startAutoRefresh();
+
+    // Cập nhật thời gian hiện tại mỗi giây để tính elapsed time
+    this.currentTimeInterval = setInterval(() => {
+      this.currentTime = new Date();
+    }, 1000);
   },
   beforeUnmount() {
     // Cleanup timeout khi component bị hủy
@@ -401,6 +410,11 @@ export default {
 
     // Dừng auto-refresh khi component bị hủy
     this.stopAutoRefresh();
+
+    // Dừng current time interval
+    if (this.currentTimeInterval) {
+      clearInterval(this.currentTimeInterval);
+    }
   },
 
   methods: {
@@ -780,6 +794,83 @@ export default {
       console.log('🚀 Navigating to auction room with reload:', auctionId);
       // Sử dụng window.location.href thay vì router.push để force reload trang
       window.location.href = `/client/auction-room/${auctionId}`;
+    },
+
+    // Tính thời gian đã trôi qua từ khi phòng bắt đầu (chỉ cho status = 1)
+    getElapsedTime(auction) {
+      if (!auction || auction.status !== 1) {
+        return '0\'';
+      }
+
+      // Thử các trường có thể chứa thời gian bắt đầu (theo thứ tự ưu tiên)
+      let timeField = null;
+      let usedFieldName = '';
+      
+      if (auction.startTime) {
+        timeField = auction.startTime;
+        usedFieldName = 'startTime';
+      } else if (auction.liveStartTime) {
+        timeField = auction.liveStartTime;
+        usedFieldName = 'liveStartTime';
+      } else if (auction.actualStartTime) {
+        timeField = auction.actualStartTime;
+        usedFieldName = 'actualStartTime';
+      } else if (auction.startedAt) {
+        timeField = auction.startedAt;
+        usedFieldName = 'startedAt';
+      } else if (auction.updatedAt) {
+        timeField = auction.updatedAt;
+        usedFieldName = 'updatedAt';
+      } else if (auction.createdAt) {
+        timeField = auction.createdAt;
+        usedFieldName = 'createdAt';
+      }
+      
+      if (!timeField) {
+        // Chỉ log một lần để debug
+        if (!this._noTimeFieldLogged) {
+          this._noTimeFieldLogged = true;
+          console.error('❌ [ELAPSED TIME] No time field available. Fields:', Object.keys(auction));
+        }
+        return '0\'';
+      }
+
+      // Log một lần để thông báo field nào đang được dùng
+      if (!this._timeFieldInUse) {
+        this._timeFieldInUse = usedFieldName;
+        console.info(`ℹ️ [ELAPSED TIME] Using "${usedFieldName}" field for live timer calculation`);
+        if (usedFieldName !== 'startTime') {
+          console.warn(`⚠️ Backend không gửi field "startTime". Đang dùng "${usedFieldName}" - có thể không chính xác 100%`);
+        }
+      }
+
+      try {
+        const startTime = new Date(timeField);
+        if (isNaN(startTime.getTime())) {
+          console.error('❌ [ELAPSED TIME] Invalid date format:', timeField);
+          return '0\'';
+        }
+
+        // Sử dụng currentTime để component tự động cập nhật mỗi giây
+        const elapsedMinutes = Math.floor((this.currentTime - startTime) / 1000 / 60); // Tính số phút
+        
+        if (elapsedMinutes < 0) {
+          return '0:00';
+        }
+        
+        // Tính giờ và phút
+        const hours = Math.floor(elapsedMinutes / 60);
+        const minutes = elapsedMinutes % 60;
+        
+        // Format phút với 2 chữ số (VD: 2 → "02", 15 → "15")
+        const paddedMinutes = minutes.toString().padStart(2, '0');
+        
+        // Hiển thị theo format H:MM (VD: "3:02", "1:30", "0:45")
+        return `${hours}:${paddedMinutes}`;
+      } catch (error) {
+        console.error('❌ Error calculating elapsed time:', error);
+        return '0\'';
+      }
     }
   }
 };

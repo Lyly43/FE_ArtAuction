@@ -75,7 +75,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="card-subtitle text-body-secondary fw-bold mb-1">Super Admin</h6>
-                <h3 class="fw-bold mb-0">2</h3>
+                <h3 class="fw-bold mb-0">{{ statistics.totalSuperAdmins }}</h3>
               </div>
               <div
                 class="bg-secondary-subtle bg-opacity-25 rounded-4 d-flex align-items-center justify-content-center"
