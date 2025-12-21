@@ -366,7 +366,7 @@
                                 <div class="avatar-circle bg-primary text-white d-flex align-items-center justify-content-center"
                                   style="width: 36px; height: 36px; border-radius: 50%; font-size: 14px; font-weight: bold;">
                                   {{ (member.username || member.email || 'U').charAt(0).toUpperCase() }}
-                                </div>
+                        </div>
                                 <div>
                                   <div class="fw-semibold">{{ member.username || member.email || 'Unknown' }}</div>
                                   <small class="text-muted" v-if="member.email && member.username">{{ member.email }}</small>

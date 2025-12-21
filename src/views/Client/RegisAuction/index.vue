@@ -597,6 +597,7 @@
 
 <script>
 import axios from 'axios';
+import * as bootstrap from 'bootstrap';
 
 export default {
   data() {
@@ -853,6 +854,17 @@ export default {
       this.showPaymentModal = false;
     },
 
+    cleanupModalBackdrop() {
+      // Remove all backdrops
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(backdrop => backdrop.remove());
+
+      // Reset body
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    },
+
     checkPaymentStatus() {
       const token = localStorage.getItem('token');
       if (!this.auctionRoomId) {
@@ -884,25 +896,42 @@ export default {
         .then((res) => {
           console.log('✅ Payment verification response:', res.data);
 
+          const data = res.data;
+
           // Update payment info from response
-          if (res.data.note) {
-            this.paymentInfo.note = res.data.note;
+          if (data.qrUrl) {
+            this.paymentInfo.qrUrl = data.qrUrl;
+          }
+          if (data.note) {
+            this.paymentInfo.note = data.note;
           }
 
           // Update payment status
-          if (res.data.paid === true) {
-            this.$toast.success('Payment confirmed! Your registration is complete.');
+          if (data.paid === true) {
+            this.$toast.success(data.message || 'Payment confirmed! Your registration is complete.');
             this.paymentInfo.paid = true;
-            this.paymentInfo.message = res.data.message || 'Payment successful';
+            this.paymentInfo.message = data.message || 'Payment successful';
 
             // Close modal and redirect after 2 seconds
             setTimeout(() => {
-              this.showPaymentModal = false;
-              this.$router.push('/client/auction');
+              const modalElement = document.getElementById('exampleModal');
+              if (modalElement) {
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                  modal.hide();
+                }
+              }
+
+              // Cleanup backdrop before redirect
+              setTimeout(() => {
+                this.cleanupModalBackdrop();
+                // Redirect after cleanup
+                this.$router.push('/client/auction');
+              }, 200);
             }, 2000);
           } else {
-            this.$toast.warning(res.data.message || 'Payment not found. Please complete the transfer.');
-            this.paymentInfo.message = res.data.message;
+            this.$toast.warning(data.message || 'Payment not found. Please complete the transfer.');
+            this.paymentInfo.message = data.message;
           }
         })
         .catch((err) => {

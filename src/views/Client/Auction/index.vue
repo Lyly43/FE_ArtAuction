@@ -241,7 +241,7 @@
 
                 <router-link v-else-if="auction.status === 2" :to="`/client/Regis-auct-room/${auction.id}`" class="w-100">
                   <button class="btn btn-warning w-100">Reserve Spot</button>
-                </router-link>
+                  </router-link>
 
                 <button v-else class="btn btn-secondary w-100 disabled">View Auction</button>
               </div>

@@ -37,22 +37,32 @@
     <div class="card mt-3">
       <div class="card-body">
         <h6>Lịch sử giao dịch</h6>
-        <div class="d-flex justify-content-between align-items-center border rounded p-3 mb-2">
-          <div class="d-flex align-items-center">
-            <div class="rounded-circle bg-light d-flex justify-content-center align-items-center me-3"
-              style="width:32px;height:32px">
-              <i class="bi bi-arrow-up-right text-success"></i>
+        <template v-if="loadWallet && loadWallet.length > 0">
+          <div v-for="(v,i) in loadWallet" :key="i" class="d-flex justify-content-between align-items-center border rounded p-3 mb-2">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle bg-light d-flex justify-content-center align-items-center me-3"
+                style="width:32px;height:32px">
+                <i class="bi bi-arrow-up-right text-success"></i>
+              </div>
+              <div>
+                <div class="fw-bold">Nạp tiền từ VietQR</div>
+                <small class="text-muted d-block">{{ v.id }}</small>
+                <small class="text-muted">{{ formatDate(v.updatedAt) }}</small>
+              </div>
             </div>
-            <div>
-              <div class="fw-bold">Nạp tiền từ VietQR</div>
-              <small class="text-muted">2025-10-13</small>
+            <div class="text-end">
+              <div class="fw-bold text-success">+{{ formatCurrency(v.balance) }}</div>
+              <span v-if="v.status === 1" class="badge bg-light text-success border border-success">Thành công</span>
+              <span v-else class="badge bg-light text-warning border border-warning">Chờ xử lý</span>
             </div>
           </div>
-          <div class="text-end">
-            <div class="fw-bold text-success">+500.000 ₫</div>
-            <span class="badge bg-light text-success border border-success">Hoàn thành</span>
+        </template>
+        <template v-else>
+          <div class="text-center text-muted py-4">
+            <p class="mb-0">Chưa có giao dịch nào</p>
           </div>
-        </div>
+        </template>
+
       </div>
     </div>
     <!-- Modal -->
@@ -132,64 +142,7 @@
 
 
 
-    <!-- FORM NHẬP TIỀN -->
-    <!-- <div v-if="showDepositForm"
-      class="overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50">
-      <div class="modal-box bg-white rounded shadow" @click.stop>
-        <h5 class="text-center mb-4">Nhập số tiền cần nạp</h5>
 
-        <div class="mb-3">
-          <label class="form-label">Số tiền</label>
-          <input v-model="depositAmount" inputmode="numeric" type="" class="form-control" placeholder="Ví dụ: 200000" />
-          <small class="text-muted">Tối thiểu 10.000 ₫</small>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Nội dung chuyển khoản (tùy chọn)</label>
-          <input v-model="depositNote" type="text" class="form-control"
-            placeholder="Nếu để trống, hệ thống sẽ sinh tự động" />
-        </div>
-
-        <div class="d-flex justify-content-end gap-2">
-          <button class="btn btn-secondary" @click="closeAll" :disabled="loading">Hủy</button>
-          <button class="btn btn-success" @click="createDeposit" :disabled="loading">
-            <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-            Xác nhận
-          </button>
-        </div>
-      </div>
-    </div> -->
-
-    <!-- HIỂN THỊ QR + VERIFY -->
-    <!-- <div v-if="showQR"
-      class="qr-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
-      @click="closeAll">
-      <div class="bg-white p-3 border border-5 border-white rounded-4 shadow-lg text-center" @click.stop>
-        <img :src="qrCodeUrl" alt="QR Code" class="qr-only rounded" />
-        <div class="mt-3">
-          <div class="small text-muted">Mã giao dịch</div>
-          <div class="fw-semibold">{{ currentTransactionId }}</div>
-        </div>
-        <div class="mt-3 d-flex justify-content-center gap-2">
-          <button class="btn btn-outline-secondary" @click="copyContent">Sao chép nội dung</button>
-          <button class="btn btn-primary" @click="verifyNow" :disabled="verifying">
-            <span v-if="verifying" class="spinner-border spinner-border-sm me-2"></span>
-            Tôi đã chuyển xong
-          </button>
-        </div>
-        <div class="form-text mt-2">
-          Hệ thống đang tự động kiểm tra mỗi {{ pollIntervalSec }} giây.
-          <button class="btn btn-link p-0 ms-1" @click="togglePolling">{{ polling ? 'Tắt tự kiểm tra' : 'Bật tự kiểm
-            tra' }}</button>
-        </div>
-        <div class="mt-2">
-          <span v-if="verifyMessage" :class="verifyClass">{{ verifyMessage }}</span>
-        </div>
-        <div class="mt-3">
-          <button class="btn btn-outline-dark" @click="closeAll">Đóng</button>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -233,7 +186,8 @@ export default {
       modalResetHandlers: {
         nap: null,
         qr: null
-      }
+      },
+      loadWallet: null
     };
   },
   computed: {
@@ -251,6 +205,7 @@ export default {
     const saved = localStorage.getItem("wallet_Hidden");
     if (saved !== null) this.isHidden = saved === "true";
     this.fetchWallet();
+    this.getWallet();
 
     // Lắng nghe sự kiện đóng modal để reset dữ liệu
     this.$nextTick(() => {
@@ -292,6 +247,25 @@ export default {
   //   this.clearPoll();
   // },
   methods: {
+    formatCurrency(value) {
+      const num = Number(value || 0);
+      return num.toLocaleString('vi-VN') + ' ₫';
+    },
+    formatDate(dateString) {
+      if (!dateString) return '';
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleString('vi-VN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } catch (e) {
+        return dateString;
+      }
+    },
     // Helper method để cleanup modal backdrop
     cleanupModalBackdrop() {
       // Remove all backdrops
@@ -375,7 +349,27 @@ export default {
       }, 300);
     },
 
+    getWallet() {
+      axios
+        .get('http://localhost:8081/api/wallets/transactionHistories', {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem("token")
+          }
+        })
+        .then((res) => {
+          // API trả về mảng trực tiếp hoặc trong data
+          const data = res.data;
+          const transactions = Array.isArray(data) ? data : (data.data || []);
+          // Đảo ngược mảng để hiển thị giao dịch mới nhất trước (tạo bản sao để không thay đổi mảng gốc)
+          this.loadWallet = [...transactions].reverse();
 
+          console.log("Wallet transaction histories:", this.loadWallet);
+        })
+        .catch((error) => {
+          console.error("Error fetching transaction histories:", error);
+          this.loadWallet = [];
+        });
+    },
 
     // ====== BALANCE ======
     fetchWallet() {
@@ -449,6 +443,8 @@ export default {
             // Status = 1: Đóng modal và hiện toast
             this.$toast.success(data.message || "Nạp tiền thành công");
             console.log("data", data);
+
+            this.getWallet();
 
             this.$nextTick(() => {
               const modalElement = document.getElementById('QRModal');
