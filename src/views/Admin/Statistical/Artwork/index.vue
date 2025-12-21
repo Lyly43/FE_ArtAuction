@@ -4,31 +4,65 @@
       class="card-header bg-white border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2"
     >
       <div>
-        <h5 class="fw-bold text-success mb-1">Painting Genre Statistics</h5>
-        <p class="text-muted small mb-0">Phân bố tác phẩm theo thể loại</p>
+        <h5 class="fw-bold text-success mb-1">Artwork Statistics</h5>
+        <p class="text-muted small mb-0">Số lượng tác phẩm được thêm</p>
       </div>
-
-      <div class="input-group input-group-sm shadow-sm" style="width: 200px">
-        <span class="input-group-text bg-white border-end-0"
-          ><i class="fa-regular fa-calendar"></i
-        ></span>
-        <input
-          type="date"
-          class="form-control border-start-0 ps-0"
-          v-model="filterDate"
-          @change="updateChart"
-        />
+      <div class="d-flex gap-2 align-items-center flex-wrap">
+        <div class="input-group input-group-sm shadow-sm" style="width: 180px">
+          <span class="input-group-text bg-white border-end-0">
+            <i class="fa-regular fa-calendar"></i>
+          </span>
+          <input
+            type="date"
+            class="form-control border-start-0 ps-0"
+            v-model="startDate"
+            @change="validateDates"
+            :max="endDate || undefined"
+            placeholder="Từ ngày"
+          />
+        </div>
+        <span class="text-muted fw-bold">-</span>
+        <div class="input-group input-group-sm shadow-sm" style="width: 180px">
+          <span class="input-group-text bg-white border-end-0">
+            <i class="fa-regular fa-calendar"></i>
+          </span>
+          <input
+            type="date"
+            class="form-control border-start-0 ps-0"
+            v-model="endDate"
+            @change="validateDates"
+            :min="startDate || undefined"
+            placeholder="Đến ngày"
+          />
+        </div>
+        <button
+          class="btn btn-success btn-sm"
+          @click="updateChart"
+          :disabled="!startDate || !endDate || loading"
+        >
+          <i class="fa-solid fa-search me-1"></i>
+          Xem
+        </button>
       </div>
     </div>
 
     <div class="card-body px-4 pb-4">
-      <div v-if="!filterMonth" class="text-center py-5 text-muted bg-light rounded mt-3">
+      <div v-if="!startDate || !endDate" class="text-center py-5 text-muted bg-light rounded mt-3">
         <i class="fa-solid fa-filter fs-1 mb-3 opacity-25"></i>
-        <p class="mb-0">Vui lòng chọn tháng để xem thống kê tác phẩm</p>
+        <p class="mb-0">Vui lòng chọn khoảng thời gian để xem thống kê tác phẩm</p>
       </div>
-
+      <div v-else-if="loading" class="text-center py-5">
+        <div class="spinner-border text-success" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Đang tải dữ liệu...</p>
+      </div>
+      <div v-else-if="error" class="text-center py-5 text-danger">
+        <i class="fa-solid fa-exclamation-triangle fs-1 mb-3"></i>
+        <p>{{ error }}</p>
+      </div>
       <div v-else style="height: 400px; position: relative">
-        <canvas id="artworkGenreChart"></canvas>
+        <canvas id="artworkChart"></canvas>
       </div>
     </div>
   </div>
@@ -36,6 +70,7 @@
 
 <script>
 import { Chart, registerables } from "chart.js";
+import { getArtworksStats } from "@/services/statisticsService";
 Chart.register(...registerables);
 
 export default {
@@ -43,35 +78,73 @@ export default {
   data() {
     return {
       chart: null,
-      filterMonth: "", // Mặc định rỗng để bắt buộc chọn
+      startDate: "",
+      endDate: "",
+      loading: false,
+      error: null,
     };
   },
   methods: {
-    updateChart() {
-      if (!this.filterMonth) return;
+    validateDates() {
+      if (this.startDate && this.endDate && this.startDate > this.endDate) {
+        this.error = "Ngày bắt đầu phải trước ngày kết thúc";
+        return false;
+      }
+      this.error = null;
+      return true;
+    },
+    async updateChart() {
+      if (!this.startDate || !this.endDate) return;
+      if (!this.validateDates()) return;
 
-      // Hủy biểu đồ cũ nếu có để vẽ lại
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await getArtworksStats(this.startDate, this.endDate);
+
+        if (response && response.status === 1) {
+          const chartData = response.data || [];
+          
+          // Set loading false BEFORE rendering chart
+          this.loading = false;
+          
+          // Wait for DOM to update, then render chart
+          await this.$nextTick();
+          this.renderChart(chartData);
+        } else {
+          this.error = response?.message || "Không thể tải dữ liệu tác phẩm";
+          this.loading = false;
+        }
+      } catch (err) {
+        console.error("Error fetching artwork stats:", err);
+        this.error = err.response?.data?.message || "Có lỗi xảy ra khi tải dữ liệu";
+        this.loading = false;
+      }
+    },
+    renderChart(data) {
       if (this.chart) this.chart.destroy();
 
-      const ctx = document.getElementById("artworkGenreChart");
+      if (!data || data.length === 0) {
+        this.error = "Không có dữ liệu trong khoảng thời gian đã chọn";
+        return;
+      }
 
-      // Giả lập dữ liệu API trả về
+      const ctx = document.getElementById("artworkChart");
+      if (!ctx) return;
+
+      const labels = data.map((item) => item.date || "");
+      const counts = data.map((item) => item.count || 0);
+
       this.chart = new Chart(ctx, {
-        type: "bar", // Hoặc 'pie', 'doughnut' tùy sở thích
+        type: "bar",
         data: {
-          labels: ["Sơn dầu", "Màu nước", "Ký họa", "Trừu tượng", "Chân dung", "Điêu khắc"],
+          labels: labels,
           datasets: [
             {
               label: "Số lượng tác phẩm",
-              data: [120, 80, 45, 90, 60, 30],
-              backgroundColor: [
-                "#198754", // Success
-                "#0d6efd", // Primary
-                "#ffc107", // Warning
-                "#dc3545", // Danger
-                "#0dcaf0", // Info
-                "#6c757d", // Secondary
-              ],
+              data: counts,
+              backgroundColor: "#198754",
               borderRadius: 4,
               borderWidth: 0,
             },
@@ -81,7 +154,7 @@ export default {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: false }, // Ẩn legend nếu dùng Bar chart
+            legend: { display: false },
             tooltip: {
               callbacks: {
                 label: function (context) {
@@ -91,7 +164,13 @@ export default {
             },
           },
           scales: {
-            y: { beginAtZero: true, grid: { borderDash: [2, 4] } },
+            y: {
+              beginAtZero: true,
+              grid: { borderDash: [2, 4] },
+              ticks: {
+                stepSize: 1,
+              },
+            },
             x: { grid: { display: false } },
           },
         },

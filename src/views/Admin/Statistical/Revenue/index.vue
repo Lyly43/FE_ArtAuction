@@ -44,9 +44,9 @@
       </div>
     </div>
     <div class="card-body px-4 pb-4">
-      <div v-if="!startDate || !endDate" class="text-center py-5 bg-light text-muted">
+      <div v-if="!startDate || !endDate" class="text-center py-5 bg-light text-muted rounded">
         <i class="fa-solid fa-filter fs-1 mb-3 opacity-25"></i>
-        <p>Please select date range to view revenue chart</p>
+        <p>Vui lòng chọn khoảng thời gian để xem thống kê doanh thu</p>
       </div>
       <div v-else-if="loading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
@@ -67,7 +67,7 @@
 
 <script>
 import { Chart, registerables } from "chart.js";
-import axios from "axios";
+import { getRevenueStats } from "@/services/statisticsService";
 Chart.register(...registerables);
 
 export default {
@@ -84,7 +84,7 @@ export default {
   methods: {
     validateDates() {
       if (this.startDate && this.endDate && this.startDate > this.endDate) {
-        this.error = "Start date must be before end date";
+        this.error = "Ngày bắt đầu phải trước ngày kết thúc";
         return false;
       }
       this.error = null;
@@ -98,29 +98,24 @@ export default {
       this.error = null;
 
       try {
-        const response = await axios.post(
-          "http://localhost:8081/api/admin/statistics/revenue",
-          {
-            startDate: this.startDate,
-            endDate: this.endDate,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("key_admin"),
-            },
-          }
-        );
+        const response = await getRevenueStats(this.startDate, this.endDate);
 
-        if (response.data && response.data.status === 1) {
-          this.revenueData = response.data.data || [];
+        if (response && response.status === 1) {
+          this.revenueData = response.data || [];
+          
+          // Set loading false BEFORE rendering chart
+          this.loading = false;
+          
+          // Wait for DOM to update, then render chart
+          await this.$nextTick();
           this.renderChart();
         } else {
-          this.error = response.data?.message || "Failed to load revenue data";
+          this.error = response?.message || "Không thể tải dữ liệu doanh thu";
+          this.loading = false;
         }
       } catch (err) {
         console.error("Error fetching revenue data:", err);
-        this.error = err.response?.data?.message || "An error occurred while loading data";
-      } finally {
+        this.error = err.response?.data?.message || "Có lỗi xảy ra khi tải dữ liệu";
         this.loading = false;
       }
     },
@@ -128,7 +123,7 @@ export default {
       if (this.chart) this.chart.destroy();
 
       if (!this.revenueData || this.revenueData.length === 0) {
-        this.error = "No data available for the selected date range";
+        this.error = "Không có dữ liệu trong khoảng thời gian đã chọn";
         return;
       }
 
