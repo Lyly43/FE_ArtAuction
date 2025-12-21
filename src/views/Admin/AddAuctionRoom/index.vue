@@ -130,7 +130,7 @@
             </div>
           </div>
 
-          <div v-if="selectedCategory">
+          <div v-if="selectedCategory || search">
             <p class="fw-bold text-primary mb-2 small text-uppercase">
               <i class="fa-solid fa-list me-2"></i>List of available works
             </p>
@@ -200,7 +200,7 @@
           <div v-else class="text-center py-4 bg-light rounded border border-dashed">
             <i class="fa-solid fa-filter text-secondary fs-3 mb-2"></i>
             <p class="text-muted mb-0">
-              Please select <b>Category</b> to see the list of pictures.
+              Please <b>select a Category</b> or <b>enter keywords</b> to search for artworks.
             </p>
           </div>
         </div>
@@ -286,7 +286,7 @@
                             >₫</span
                           >
                           <input
-                            type="text"
+                            type="number"
                             class="form-control form-control-sm border-start-0 shadow-none ps-0"
                             placeholder="0"
                             v-model="item.startPrice"
@@ -313,13 +313,15 @@
                             >₫</span
                           >
                           <input
-                            type="text"
+                            type="number"
                             class="form-control form-control-sm border-start-0 shadow-none ps-0"
                             v-model="item.stepPrice"
-                            @blur="formatCurrency(item, 'stepPrice')"
+                            @blur="validateAndFormatBidStep(item)"
                             @focus="unformatCurrency(item, 'stepPrice')"
-                            placeholder="0"
+                            placeholder="Min: 1.000"
                             required
+                            step="1000"
+                            min="1000"
                           />
                         </div>
                         <div class="mt-1">
@@ -470,17 +472,27 @@
         </div>
       </div>
 
-      <div class="d-flex gap-2 mt-4 justify-content-end">
+      <div class="d-flex align-items-center justify-content-between">
         <button
-          class="btn btn-danger text-light fw-bold shadow-sm px-4"
+          class="btn btn-secondary text-light fw-bold shadow-sm px-4"
           type="button"
-          @click="handleCancel"
+          @click="resetForm"
         >
-          Cancel
+          <i class="fa-solid fa-rotate-left"></i>
+          Reset
         </button>
-        <button class="btn btn-primary fw-bold shadow-sm px-4" type="submit">
-          <i class="fa-solid fa-check me-2"></i>Completed
-        </button>
+        <div class="d-flex gap-2 mt-4 justify-content-end">
+          <button
+            class="btn btn-danger text-light fw-bold shadow-sm px-4"
+            type="button"
+            @click="handleCancel"
+          >
+            Cancel
+          </button>
+          <button class="btn btn-primary fw-bold shadow-sm px-4" type="submit">
+            <i class="fa-solid fa-check me-2"></i>Completed
+          </button>
+        </div>
       </div>
     </form>
   </div>
@@ -515,6 +527,7 @@ export default {
         imageAuctionRoom: "",
       },
       admins: [],
+      searchTimeout: null, // Biến để lưu timeout
     };
   },
 
@@ -523,21 +536,44 @@ export default {
     this.loadAdminData();
   },
 
+  watch: {
+    search(newVal) {
+      // Nếu ô search trống -> Load lại danh sách mặc định
+      if (!newVal || newVal.trim() === "") {
+        this.loadAddRoomArt();
+        return;
+      }
+
+      // Debounce: Chờ 500ms sau khi ngừng gõ mới gọi API
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = setTimeout(() => {
+        this.loadAddRoomArtSearch();
+      }, 500);
+    },
+  },
+
   computed: {
     filteredArtworks() {
-      if (!this.selectedCategory) return [];
+      let list = this.allArtworks;
 
-      let filtered = this.allArtworks.filter(
-        (art) =>
-          art.category === this.selectedCategory &&
-          !this.scheduleList.find((item) => item.id === art.id)
-      );
-
+      // 1. Lọc theo tên (Search) - Ưu tiên chạy trước
       if (this.search) {
-        const query = this.search.toLowerCase();
-        filtered = filtered.filter((art) => art.name.toLowerCase().includes(query));
+        const query = this.search.toLowerCase().trim();
+        list = list.filter(
+          (art) =>
+            art.name.toLowerCase().includes(query) || art.author.toLowerCase().includes(query) // Tìm cả tên tác giả nếu muốn
+        );
       }
-      return filtered;
+
+      // 2. Lọc theo category (Nếu có chọn)
+      if (this.selectedCategory) {
+        list = list.filter((art) => art.category === this.selectedCategory);
+      }
+
+      // 3. Loại bỏ tác phẩm đã được thêm vào schedule (Tránh trùng lặp)
+      list = list.filter((art) => !this.scheduleList.find((item) => item.id === art.id));
+
+      return list;
     },
     filteredAdmins() {
       // Kiểm tra nếu chưa có dữ liệu thì trả về mảng rỗng để tránh lỗi
@@ -679,6 +715,22 @@ export default {
       if (this.scheduleList.length === 0) {
         alert("Please add at least 1 piece to the auction!");
         return;
+      }
+      for (const item of this.scheduleList) {
+        const bidStepRaw = Number(String(item.stepPrice).replace(/\./g, ""));
+        const startPriceRaw = Number(String(item.startPrice).replace(/\./g, ""));
+
+        // Kiểm tra giá khởi điểm
+        if (!startPriceRaw || startPriceRaw <= 0) {
+          alert(`Artwork "${item.name}": The starting price must be greater than 0.`);
+          return;
+        }
+
+        // Kiểm tra bước giá < 1000
+        if (!bidStepRaw || bidStepRaw < 1000) {
+          alert(`Artwork "${item.name}": The minimum bid increment must be 1,000 VND.`);
+          return;
+        }
       }
 
       this.isSubmitting = true;
@@ -832,6 +884,91 @@ export default {
       if (!item[field]) return;
 
       item[field] = String(item[field]).replace(/\./g, "");
+    },
+    loadAddRoomArtSearch() {
+      this.isLoadingArtworks = true;
+      const query = this.search.trim();
+
+      axios
+        .get(`http://localhost:8081/api/admin/artworks/tim-kiem-tac-pham?q=${query}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          // Mapping dữ liệu trả về từ API tìm kiếm
+          this.allArtworks = res.data.map((item) => ({
+            id: item.id,
+            name: item.title,
+            author: item.author,
+            type: item.paintingGenre,
+            category: this.mapCategory(item.paintingGenre, item.material),
+            img: item.avtArtwork,
+            size: item.size,
+            basePrice: item.startedPrice,
+          }));
+        })
+        .catch((err) => {
+          console.error("Search error:", err);
+        })
+        .finally(() => {
+          this.isLoadingArtworks = false;
+        });
+    },
+    resetForm() {
+      if (!confirm("Are you sure you want to delete all the data you're currently entering?")) {
+        return;
+      }
+
+      // 1. Reset form thông tin phòng
+      this.roomForm = {
+        roomName: "",
+        type: "",
+        description: "",
+        adminId: "",
+        depositAmount: 0,
+        paymentDeadlineDays: 3,
+        startedAt: "",
+        estimatedEndTime: "",
+        status: 2,
+        viewCount: 0,
+        imageAuctionRoom: "",
+      };
+
+      // 2. Reset danh sách và các biến phụ
+      this.scheduleList = [];
+      this.selectedCategory = "";
+      this.search = "";
+      this.previewImage = null;
+      this.selectedFile = null;
+
+      // 3. Reset input file (để chọn lại ảnh cũ được nếu muốn)
+      if (this.$refs.fileInput) {
+        this.$refs.fileInput.value = "";
+      }
+
+      // 4. Load lại danh sách tranh gốc (nếu đang bị filter bởi search)
+      this.loadAddRoomArt();
+    },
+    validateAndFormatBidStep(item) {
+      if (!item.stepPrice) return;
+
+      // Lấy giá trị số (bỏ dấu chấm)
+      let val = parseInt(String(item.stepPrice).replace(/\./g, ""));
+
+      if (isNaN(val)) {
+        item.stepPrice = "";
+        return;
+      }
+
+      // LOGIC KIỂM TRA GIÁ TỐI THIỂU
+      if (val < 1000) {
+        alert(`Bước giá của tác phẩm "${item.name}" tối thiểu phải là 1.000 ₫`);
+        val = 1000; // Tự động set về 1000
+      }
+
+      // Format lại thành dạng tiền tệ (1.000)
+      item.stepPrice = new Intl.NumberFormat("vi-VN").format(val);
     },
   },
 };
