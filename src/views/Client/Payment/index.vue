@@ -409,7 +409,7 @@ export default {
         const token = localStorage.getItem('token');
         // Gọi API mới trả về { invoice, artwork }
         const res = await axios.post(
-          `http://localhost:8081/api/payment/${this.roomId}/${this.invoiceId}/payment/init`,
+          `http://localhost:8081/api/invoice/${this.invoiceId}/payment/init`,
           {},
           {
             headers: {

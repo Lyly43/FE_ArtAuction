@@ -98,7 +98,7 @@
       </div>
       <div class="col-12">
         <div class="row">
-          <template v-for="(auction, index) in hotAuctions.filter(x => x.status === 1).slice(0, 4)" :key="auction.id">
+          <template v-for="(auction, index) in ongoingAuctions" :key="auction.id">
             <!-- Card đấu giá -->
             <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex" data-aos="fade-up" :data-aos-delay="index * 100" data-aos-duration="600">
               <div class="card p-0 overflow-hidden auction-card">
@@ -361,15 +361,14 @@
             <h3 class="fw-bold mb-2 text-success">Upcoming Auctions</h3>
             <p>Mark your calendar for these exciting events</p>
           </div>
-          <template v-for="(auction, index) in hotAuctions.filter(x => x.status === 2).slice(0, 4)" :key="auction.id">
+          <template v-for="(auction, index) in upcomingAuctions" :key="auction.id">
             <!-- Card đấu giá -->
             <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex" data-aos="fade-up" :data-aos-delay="index * 100" data-aos-duration="600">
               <div class="card p-0 overflow-hidden auction-card">
                 <div class="p-0 position-relative">
                   <img :src="auction.imageAuctionRoom" class="img-auction" alt="" loading="lazy">
                   <div class="">
-                    <span class="badge position-absolute top-0 start-0 m-3 bg-warning px-3 text-dark">In a few
-                      mins</span>
+                    <span class="badge position-absolute top-0 start-0 m-3 bg-warning px-3 text-dark">Upcoming</span>
                   </div>
                 </div>
                 <!-- Nội dung card -->
@@ -414,7 +413,8 @@ export default {
       featuredList: [],
       loading: false,
       error: null,
-      hotAuctions: [],
+      ongoingAuctions: [],
+      upcomingAuctions: [],
     };
   },
 
@@ -438,27 +438,35 @@ export default {
     fetchFeatured() {
       this.loading = true;
       axios
-        .get("http://localhost:8081/api/artwork/featured")
+        .get("http://localhost:8081/api/artwork/top-4-highest-price")
         .then((res) => {
           this.featuredList = res.data;
-          console.log(this.featuredList);
-
+          console.log("✅ Top 4 highest price artworks:", this.featuredList);
         })
         .catch((err) => {
           this.error = err.message;
+          console.error("❌ Error fetching featured artworks:", err);
         });
     },
-    fetchSixRoomFeatured() {
+
+    async fetchSixRoomFeatured() {
       this.loading = true;
-      axios
-        .get("http://localhost:8081/api/auctionroom/featuredAuctionRoom")
-        .then((res) => {
-          this.hotAuctions = res.data.filter(room => room.status !== 0);
-          console.log("room home", this.hotAuctions);
-        })
-        .catch((err) => {
-          this.error = err.message;
-        });
+      try {
+        // Fetch top 4 ongoing auctions (status = 1)
+        const ongoingResponse = await axios.get("http://localhost:8081/api/auctionroom/top-4-ongoing");
+        this.ongoingAuctions = ongoingResponse.data || [];
+        console.log("✅ Top 4 ongoing auctions:", this.ongoingAuctions);
+
+        // Fetch top 4 upcoming auctions with highest price (status = 0)
+        const upcomingResponse = await axios.get("http://localhost:8081/api/auctionroom/top-4-upcoming-highest-price");
+        this.upcomingAuctions = upcomingResponse.data || [];
+        console.log("✅ Top 4 upcoming auctions:", this.upcomingAuctions);
+      } catch (err) {
+        this.error = err.message;
+        console.error("❌ Error fetching auction rooms:", err);
+      } finally {
+        this.loading = false;
+      }
     },
   },
 };

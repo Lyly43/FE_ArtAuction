@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid px-5 mt-3">
     <!-- Header với thông tin phòng và controls -->
     <div class="row mb-3">
       <div class="col-12">
@@ -16,10 +16,11 @@
                 </small>
               </div>
               <div class="d-flex gap-2">
-                <button @click="batDauPhongDauGia" class="btn btn-success btn-sm" :disabled="isStartingRoom">
+                <button @click="batDauPhongDauGia" class="btn btn-success btn-sm" :disabled="isStartingRoom || isRoomStarted">
                   <i v-if="isStartingRoom" class="fas fa-spinner fa-spin me-1"></i>
+                  <i v-else-if="isRoomStarted" class="fas fa-check-circle me-1"></i>
                   <i v-else class="fas fa-play me-1"></i>
-                  {{ isStartingRoom ? 'Đang bắt đầu...' : 'Bắt đầu phòng đấu giá' }}
+                  {{ isStartingRoom ? 'Đang bắt đầu...' : (isRoomStarted ? 'Phòng đã bắt đầu' : 'Bắt đầu phòng đấu giá') }}
                 </button>
                 <button @click="dungPhongDauGia" class="btn btn-outline-danger btn-sm" :disabled="isStoppingRoom">
                   <i v-if="isStoppingRoom" class="fas fa-spinner fa-spin me-1"></i>
@@ -74,13 +75,7 @@
                             Thống kê
                           </h6>
                           <div class="row text-center">
-                            <div class="col-4">
-                              <div class="border-end">
-                                <h5 class="text-primary mb-1">{{ viewerCount || 0 }}</h5>
-                                <small class="text-muted">Người xem</small>
-                              </div>
-                            </div>
-                            <div class="col-4">
+                            <div class="col-6">
                               <div class="border-end">
                                 <h5 class="text-success mb-1">
                                   <i class="fas fa-clock me-1"></i>{{ duration || '00:00' }}
@@ -88,10 +83,10 @@
                                 <small class="text-muted">Livestream</small>
                               </div>
                             </div>
-                            <div class="col-4">
-                              <h5 class="text-info mb-1">{{ auctionCountdown.currentSession.value?.orderIndex ?? '-' }}
+                            <div class="col-6">
+                              <h5 class="text-info mb-1">{{ auctionCountdown.currentSession.value?.sessionId || '-' }}
                               </h5>
-                              <small class="text-muted">Section</small>
+                              <small class="text-muted">Session ID</small>
                             </div>
                           </div>
 
@@ -174,10 +169,15 @@
                           </button>
                         </div>
                         <div class="col-6">
-                          <button @click="batDauSectionMoi" class="w-100 btn btn-success" :disabled="isStartingSection">
+                          <button
+                            @click="batDauSectionMoi"
+                            class="w-100 btn btn-success"
+                            :disabled="isStartingSection || auctionCountdown.isSessionActive.value">
                             <i v-if="isStartingSection" class="fas fa-spinner fa-spin me-2"></i>
+                            <i v-else-if="auctionCountdown.isSessionActive.value" class="fas fa-circle-notch fa-spin me-2"></i>
                             <i v-else class="fas fa-play me-2"></i>
-                            {{ isStartingSection ? 'Đang bắt đầu...' : 'Bắt đầu section' }}
+                            <span v-if="auctionCountdown.isSessionActive.value">Session đang chạy</span>
+                            <span v-else>{{ isStartingSection ? 'Đang bắt đầu...' : 'Bắt đầu section' }}</span>
                           </button>
                         </div>
                       </div>
@@ -461,6 +461,7 @@ export default {
       isStoppingSection: false,
       isStartingRoom: false,
       isStoppingRoom: false,
+      isRoomStarted: false, // Track if room has been started
 
       // Interval để refresh session data
       sessionRefreshInterval: null,
@@ -579,6 +580,17 @@ export default {
       }, 500);
     });
   },
+
+  beforeRouteLeave(to, from, next) {
+    // Chặn hoàn toàn nếu phòng đang chạy - chỉ cho phép thoát qua nút "Dừng phòng"
+    if (this.isRoomStarted) {
+      this.$toast.warning('⚠️ Phòng đấu giá đang chạy! Bạn phải bấm "Dừng phòng đấu giá" trước khi rời khỏi trang.');
+      next(false); // Chặn tất cả navigation
+    } else {
+      next(); // Cho phép thoát bình thường
+    }
+  },
+
   beforeUnmount() {
     if (this.durationInterval) {
       clearInterval(this.durationInterval);
@@ -606,7 +618,7 @@ export default {
 
     // Bắt đầu phòng đấu giá
     batDauPhongDauGia() {
-      if (this.isStartingRoom) return;
+      if (this.isStartingRoom || this.isRoomStarted) return;
 
       // Xác nhận trước khi bắt đầu
       if (!confirm('Bạn có chắc chắn muốn bắt đầu phòng đấu giá?')) {
@@ -624,6 +636,9 @@ export default {
         .then((res) => {
           console.log("✅ Room started successfully", res.data);
           this.$toast.success('Phòng đấu giá đã được bắt đầu thành công!');
+
+          // Set flag để không cho bấm nữa
+          this.isRoomStarted = true;
 
           // Reload lại session để cập nhật trạng thái
           this.loadCurrentSession();
@@ -972,8 +987,13 @@ export default {
           console.log("Room stopped successfully", res.data);
           this.$toast.success('Đã dừng phòng đấu giá thành công!');
 
+          // Reset flag để cho phép navigation
+          this.isRoomStarted = false;
+
           // Redirect về trang chủ hoặc trang quản lý
-          this.$router.push('/admin/dashboard');
+          setTimeout(() => {
+            this.$router.push('/admin/management-auction');
+          }, 500);
         })
         .catch((err) => {
           console.error(err);
@@ -988,17 +1008,19 @@ export default {
     autoStopSession() {
       // Kiểm tra có session hiện tại không (từ composable)
       if (!this.auctionCountdown.currentSession.value || !this.auctionCountdown.currentSession.value.sessionId) {
-        console.warn('No active session to auto-stop');
+        console.warn('⚠️ No active session to auto-stop');
         return;
       }
 
       // Tránh gọi API nếu đang trong quá trình dừng
       if (this.isStoppingSection) {
-        console.warn('Session is already being stopped');
+        console.warn('⚠️ Session is already being stopped');
         return;
       }
 
-      console.log('Auto-stopping session:', this.auctionCountdown.currentSession.value.sessionId);
+      console.log('⏰ Auto-stopping session due to countdown reaching 0:', this.auctionCountdown.currentSession.value.sessionId);
+
+      this.isStoppingSection = true;
 
       axios
         .post(`http://localhost:8081/api/stream/stop-session/${this.auctionCountdown.currentSession.value.sessionId}`, {}, {
@@ -1008,7 +1030,7 @@ export default {
         })
         .then((res) => {
           console.log("✅ Session auto-stopped successfully", res.data);
-          this.$toast?.success?.('✅ Session đã tự động kết thúc!');
+          this.$toast?.success?.('✅ Session đã tự động kết thúc do hết thời gian!');
 
           // Composable sẽ tự động reset khi nhận SESSION_ENDED từ WebSocket
         })
@@ -1019,8 +1041,11 @@ export default {
           if (err.response?.status !== 404) {
             this.$toast?.error?.('Lỗi tự động kết thúc session: ' + (err.response?.data?.message || err.message));
           } else {
-            console.log('Session already ended on server side');
+            console.log('ℹ️ Session already ended on server side');
           }
+        })
+        .finally(() => {
+          this.isStoppingSection = false;
         });
     },
 

@@ -580,7 +580,12 @@
             </template>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+            <!-- <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button> -->
+            <button type="button" class="btn btn-success w-100 btn-lg fw-bold" @click="checkPaymentStatus" :disabled="isCheckingPayment">
+              <i v-if="isCheckingPayment" class="fas fa-spinner fa-spin me-2"></i>
+              <i v-else class="fas fa-check-circle me-2"></i>
+              {{ isCheckingPayment ? 'Checking...' : 'Check Payment' }}
+            </button>
           </div>
         </div>
       </div>
@@ -598,6 +603,7 @@ export default {
     return {
       loading: true,
       isSubmitting: false,
+      isCheckingPayment: false,
       currentStep: 1,
       auctionRoomId: null,
       userId: null,
@@ -809,9 +815,11 @@ export default {
         message: 'Generating payment QR…'
       };
 
+      console.log('🔄 Fetching payment QR for room:', this.auctionRoomId);
+
       axios
         .post(
-          `http://localhost:8081/api/payment/${this.auctionRoomId}/application-fee-and-deposit`,
+          `http://localhost:8081/api/payment/${this.auctionRoomId}/registration/payment`,
           {},
           {
             headers: {
@@ -820,7 +828,7 @@ export default {
           }
         )
         .then((res) => {
-          console.log('Payment info:', res.data);
+          console.log('✅ Payment QR generated:', res.data);
           this.paymentInfo = {
             qrUrl: res.data.qrUrl,
             transactionId: res.data.transactionId || '',
@@ -830,8 +838,9 @@ export default {
           };
         })
         .catch((err) => {
-          console.error('Payment info error:', err);
-          this.$toast.error(err.response?.data?.message || 'Không thể tải QR thanh toán');
+          console.error('❌ Payment info error:', err);
+          const errorMsg = err.response?.data?.message || 'Không thể tải QR thanh toán';
+          this.$toast.error(errorMsg);
           // Nếu lỗi, đóng modal lại
           this.showPaymentModal = false;
         })
@@ -842,6 +851,68 @@ export default {
 
     closePaymentModal() {
       this.showPaymentModal = false;
+    },
+
+    checkPaymentStatus() {
+      const token = localStorage.getItem('token');
+      if (!this.auctionRoomId) {
+        this.$toast.error('Missing auction room ID');
+        return;
+      }
+
+      if (!this.paymentInfo.note) {
+        this.$toast.error('Payment note is missing');
+        return;
+      }
+
+      this.isCheckingPayment = true;
+      console.log('🔍 Checking payment status for room:', this.auctionRoomId);
+      console.log('📝 Payment note:', this.paymentInfo.note);
+
+      axios
+        .post(
+          `http://localhost:8081/api/payment/${this.auctionRoomId}/registration/verify`,
+          {
+            note: this.paymentInfo.note // ✅ Gửi nội dung chuyển khoản lên BE
+          },
+          {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : ''
+            }
+          }
+        )
+        .then((res) => {
+          console.log('✅ Payment verification response:', res.data);
+
+          // Update payment info from response
+          if (res.data.note) {
+            this.paymentInfo.note = res.data.note;
+          }
+
+          // Update payment status
+          if (res.data.paid === true) {
+            this.$toast.success('Payment confirmed! Your registration is complete.');
+            this.paymentInfo.paid = true;
+            this.paymentInfo.message = res.data.message || 'Payment successful';
+
+            // Close modal and redirect after 2 seconds
+            setTimeout(() => {
+              this.showPaymentModal = false;
+              this.$router.push('/client/auction');
+            }, 2000);
+          } else {
+            this.$toast.warning(res.data.message || 'Payment not found. Please complete the transfer.');
+            this.paymentInfo.message = res.data.message;
+          }
+        })
+        .catch((err) => {
+          console.error('❌ Payment verification error:', err);
+          const errorMsg = err.response?.data?.message || 'Unable to verify payment';
+          this.$toast.error(errorMsg);
+        })
+        .finally(() => {
+          this.isCheckingPayment = false;
+        });
     },
 
     openArtworkZoom() {

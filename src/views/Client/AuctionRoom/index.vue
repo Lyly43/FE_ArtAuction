@@ -85,6 +85,7 @@
                       </div>
                     </div>
                   </div>
+                  
                   <!-- đặt giá -->
                   <div class="col-lg-12 mt-3">
                     <div class="input-group border border-2 border-success rounded-3 shadow-sm">
@@ -322,6 +323,19 @@
 
             <!-- Tabs Navigation (Right Side) -->
             <div class="tabs-sidebar px-3">
+              <!-- Logo -->
+              <div class="logo-container text-center mb-3">
+                <img
+                  src="@/assets/img/Logo_AA.png"
+                  alt="ArtAuction Logo"
+                  @click="goToHome"
+                  style="width: 45px; cursor: pointer; transition: transform 0.2s;"
+                  @mouseover="$event.target.style.transform = 'scale(1.1)'"
+                  @mouseleave="$event.target.style.transform = 'scale(1)'"
+                  title="Về trang chủ"
+                />
+              </div>
+
               <ul class="nav nav-tabs flex-column" id="auctionTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                   <button class="nav-link active" id="bidding-tab" data-bs-toggle="tab" data-bs-target="#bidding"
@@ -673,10 +687,28 @@ export default {
       }).format(number || 0);
     },
 
+    // Navigate to home page
+    goToHome() {
+      this.$router.push('/');
+    },
+
     // === COUNTDOWN METHODS ===
 
     // Khởi tạo countdown từ WebSocket hoặc session data
     initializeCountdown() {
+      // ⚠️ CHỈ khởi tạo countdown nếu session đang LIVE (status = 1)
+      if (!this.artworkSession || this.artworkSession.status !== 1) {
+        console.log("⏸️ Session chưa bắt đầu (status !== 1), không khởi tạo countdown");
+        console.log("Session status:", this.artworkSession?.status);
+        // Dừng countdown nếu đang chạy
+        this.stopCountdownInterval();
+        this.countdownSeconds = 0;
+        this.sessionEndTime = null;
+        return;
+      }
+
+      console.log("🚀 Session đang LIVE (status = 1), khởi tạo countdown...");
+
       // Ưu tiên dùng endedAt từ session (nếu có)
       if (this.artworkSession.endedAt) {
         this.sessionEndTime = new Date(this.artworkSession.endedAt);
