@@ -12,7 +12,10 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="text-secondary fw-bold mb-1">New Users</h6>
-                <h3 class="fw-bold mb-0 text-dark">1,220</h3>
+                <h3 class="fw-bold mb-0 text-dark">
+                  <span v-if="loading" class="placeholder" style="width: 80px"></span>
+                  <span v-else>{{ formatNumber(stats.data?.totalUsers?.currentMonth || 0) }}</span>
+                </h3>
               </div>
               <div
                 class="bg-secondary-subtle bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
@@ -21,9 +24,10 @@
                 <i class="fa-solid fa-users fs-5"></i>
               </div>
             </div>
-            <small class="text-success fw-medium"
-              ><i class="fa-solid fa-arrow-trend-up"></i> 12% vs last month</small
-            >
+            <small class="fw-medium" :class="stats.data?.totalUsers?.increase ? 'text-success' : 'text-danger'">
+              <i :class="stats.data?.totalUsers?.increase ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down'"></i>
+              {{ Math.abs(stats.data?.totalUsers?.percentage || 0).toFixed(1) }}% vs last month
+            </small>
           </div>
         </div>
       </div>
@@ -33,7 +37,10 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="text-secondary fw-bold mb-1">Revenue</h6>
-                <h3 class="fw-bold mb-0 text-dark">500M</h3>
+                <h3 class="fw-bold mb-0 text-dark">
+                  <span v-if="loading" class="placeholder" style="width: 80px"></span>
+                  <span v-else>{{ formatRevenue(stats.data?.revenue?.currentMonth || 0) }}</span>
+                </h3>
               </div>
               <div
                 class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center"
@@ -42,9 +49,10 @@
                 <i class="fa-solid fa-dollar-sign fs-5"></i>
               </div>
             </div>
-            <small class="text-success fw-medium"
-              ><i class="fa-solid fa-arrow-trend-up"></i> 5% vs last month</small
-            >
+            <small class="fw-medium" :class="stats.data?.revenue?.increase ? 'text-success' : 'text-danger'">
+              <i :class="stats.data?.revenue?.increase ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down'"></i>
+              {{ Math.abs(stats.data?.revenue?.percentage || 0).toFixed(1) }}% vs last month
+            </small>
           </div>
         </div>
       </div>
@@ -54,7 +62,10 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="text-secondary fw-bold mb-1">Auctions</h6>
-                <h3 class="fw-bold mb-0 text-dark">45</h3>
+                <h3 class="fw-bold mb-0 text-dark">
+                  <span v-if="loading" class="placeholder" style="width: 60px"></span>
+                  <span v-else>{{ formatNumber(stats.data?.totalAuctionRooms || 0) }}</span>
+                </h3>
               </div>
               <div
                 class="bg-warning bg-opacity-10 text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center"
@@ -63,7 +74,7 @@
                 <i class="fa-solid fa-gavel fs-5"></i>
               </div>
             </div>
-            <small class="text-secondary">Active sessions</small>
+            <small class="text-secondary">Total auction rooms</small>
           </div>
         </div>
       </div>
@@ -73,7 +84,10 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <h6 class="text-secondary fw-bold mb-1">Total Bids</h6>
-                <h3 class="fw-bold mb-0 text-dark">8,500</h3>
+                <h3 class="fw-bold mb-0 text-dark">
+                  <span v-if="loading" class="placeholder" style="width: 80px"></span>
+                  <span v-else>{{ formatNumber(stats.data?.totalBids?.currentMonth || 0) }}</span>
+                </h3>
               </div>
               <div
                 class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center"
@@ -82,7 +96,10 @@
                 <i class="fa-solid fa-hand-holding-dollar fs-5"></i>
               </div>
             </div>
-            <small class="text-success fw-medium">+150 today</small>
+            <small class="fw-medium" :class="stats.data?.totalBids?.increase ? 'text-success' : 'text-danger'">
+              <i :class="stats.data?.totalBids?.increase ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down'"></i>
+              {{ Math.abs(stats.data?.totalBids?.percentage || 0).toFixed(1) }}% vs last month
+            </small>
           </div>
         </div>
       </div>
@@ -161,5 +178,60 @@
     </router-view>
   </div>
 </template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  name: 'StatisticalDashboard',
+  data() {
+    return {
+      stats: {
+        newUsers: 0,
+        newUsersPercentage: 0,
+        revenue: 0,
+        revenuePercentage: 0,
+        activeAuctions: 0,
+        totalBids: 0,
+        bidsToday: 0,
+      },
+      loading: true,
+    };
+  },
+  mounted() {
+    this.fetchDashboardStats();
+  },
+  methods: {
+    async fetchDashboardStats() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+          'http://localhost:8081/api/admin/dashboard/thong-ke',
+          {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : '',
+            },
+          }
+        );
+
+        if (response.data) {
+          this.stats = response.data;
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard statistics:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    formatNumber(num) {
+      return new Intl.NumberFormat('en-US').format(num);
+    },
+    formatRevenue(amount) {
+      const millions = amount / 1000000;
+      return millions >= 1 ? `${millions.toFixed(0)}M` : `${(amount / 1000).toFixed(0)}K`;
+    },
+  },
+};
+</script>
 
 <style scoped></style>
