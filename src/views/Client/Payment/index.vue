@@ -409,7 +409,7 @@ export default {
         const token = localStorage.getItem('token');
         // Gọi API mới trả về { invoice, artwork }
         const res = await axios.post(
-          `http://localhost:8081/api/payment/${this.roomId}/${this.invoiceId}/payment/init`,
+          `http://localhost:8081/api/invoice/${this.invoiceId}/payment/init`,
           {},
           {
             headers: {
@@ -599,7 +599,8 @@ export default {
 
       try {
         const response = await axios.post(
-          `http://localhost:8081/api/payment/${this.roomId}/${this.invoiceId}/payment/confirm`,
+          `http://localhost:8081/api/invoice/${this.invoiceId}/payment/confirm`,
+          {},
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -638,8 +639,8 @@ export default {
             }, 200);
 
             // Redirect hoặc reload page
-            // window.location.reload();
-            // hoặc this.$router.push('/success-page');
+            window.location.reload();
+            this.$router.push('/client/profile/invoices');
           }, 2000);
 
         } else if (data.paid === false) {

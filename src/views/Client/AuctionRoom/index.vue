@@ -68,6 +68,7 @@
                         <hr class="my-2 fw-bold" />
                         <div class="d-flex justify-content-between">
                           <p class="m-0">{{ artworkSession.winnerId }}</p>
+                          <!-- <p class="m-0">{{ winnerName }}</p> -->
                           <p class="m-0 fw-bold text-success">
                             {{ formatUSD(artworkSession.currentPrice) }}
                           </p>
@@ -75,29 +76,32 @@
                       </div>
                     </div>
                   </div>
-                  <!-- đặt giá nhanh -->
-                  <div v-for="(value, index) in quickBidButtons" :key="index"
-                    :class="index < 3 ? 'col-4 mb-2' : 'col-4'">
-                    <div class="card p-0 quick-bid-btn" :class="{ 'quick-bid-active': selectedQuickBid === value }"
-                      @click="setQuickBid(value)">
-                      <div class="card-body py-2 text-center">
-                        <p class="m-0">{{ formatUSD(value) }}</p>
+                  <!-- đặt giá nhanh - chỉ hiển thị khi user trong room (status === 1) -->
+                  <template v-if="userCheckInRoomStatus === 1">
+                    <div v-for="(value, index) in quickBidButtons" :key="index"
+                      :class="index < 3 ? 'col-4 mb-2' : 'col-4'">
+                      <div class="card p-0 quick-bid-btn" :class="{ 'quick-bid-active': selectedQuickBid === value }"
+                        @click="setQuickBid(value)">
+                        <div class="card-body py-2 text-center">
+                          <p class="m-0">{{ formatUSD(value) }}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <!-- đặt giá -->
-                  <div class="col-lg-12 mt-3">
-                    <div class="input-group border border-2 border-success rounded-3 shadow-sm">
-                      <input v-model="bidAmount" type="number" class="form-control"
-                        :placeholder="'minimum is ' + formatUSD(artworkSession.bidStep)" aria-label="Bid Amount"
-                        aria-describedby="button-bid" />
-                      <button @click="datGia" class="btn btn-success" :disabled="isPlacingBid">
-                        <i v-if="isPlacingBid" class="fas fa-spinner fa-spin me-2"></i>
-                        <i v-else class="fas fa-gavel me-2"></i>
-                        {{ isPlacingBid ? "Đang đặt giá..." : "Place" }}
-                      </button>
+
+                    <!-- đặt giá -->
+                    <div class="col-lg-12 mt-3">
+                      <div class="input-group border border-2 border-success rounded-3 shadow-sm">
+                        <input v-model="bidAmount" type="number" class="form-control"
+                          :placeholder="'minimum is ' + formatUSD(artworkSession.bidStep)" aria-label="Bid Amount"
+                          aria-describedby="button-bid" />
+                        <button @click="datGia" class="btn btn-success" :disabled="isPlacingBid">
+                          <i v-if="isPlacingBid" class="fas fa-spinner fa-spin me-2"></i>
+                          <i v-else class="fas fa-gavel me-2"></i>
+                          {{ isPlacingBid ? "Đang đặt giá..." : "Place" }}
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  </template>
 
                   <!-- detail-artwork -->
                   <div class="col-lg-12 mt-3">
@@ -113,8 +117,8 @@
                 </div>
               </div>
 
-              <!-- Tab 2: Chat -->
-              <div class="tab-pane fade chat-tab-pane" id="chat" role="tabpanel" aria-labelledby="chat-tab">
+              <!-- Tab 2: Chat - chỉ hiển thị khi user trong room (status === 1) -->
+              <div v-if="userCheckInRoomStatus === 1" class="tab-pane fade chat-tab-pane" id="chat" role="tabpanel" aria-labelledby="chat-tab">
                 <div class="row h-100 m-0">
                   <div class="col-lg-12 h-100 p-0">
                     <div class="card p-0 border border-2 border-success shadow-sm h-100 d-flex flex-column">
@@ -259,8 +263,8 @@
                 </div>
               </div>
 
-              <!-- Tab 3: Members -->
-              <div class="tab-pane fade members-tab-pane" id="members" role="tabpanel" aria-labelledby="members-tab">
+              <!-- Tab 3: Members - chỉ hiển thị khi user trong room (status === 1) -->
+              <div v-if="userCheckInRoomStatus === 1" class="tab-pane fade members-tab-pane" id="members" role="tabpanel" aria-labelledby="members-tab">
                 <div class="row m-0 px-2">
                   <div class="col-lg-12 p-0 mb-3">
                     <div class="card p-0 d-flex flex-column border border-2 border-success">
@@ -322,6 +326,19 @@
 
             <!-- Tabs Navigation (Right Side) -->
             <div class="tabs-sidebar px-3">
+              <!-- Logo -->
+              <div class="logo-container text-center mb-3">
+                <img
+                  src="@/assets/img/Logo_AA.png"
+                  alt="ArtAuction Logo"
+                  @click="goToHome"
+                  style="width: 45px; cursor: pointer; transition: transform 0.2s;"
+                  @mouseover="$event.target.style.transform = 'scale(1.1)'"
+                  @mouseleave="$event.target.style.transform = 'scale(1)'"
+                  title="Về trang chủ"
+                />
+              </div>
+
               <ul class="nav nav-tabs flex-column" id="auctionTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                   <button class="nav-link active" id="bidding-tab" data-bs-toggle="tab" data-bs-target="#bidding"
@@ -329,13 +346,13 @@
                     <i class="fa-solid fa-gavel"></i>
                   </button>
                 </li>
-                <li class="nav-item" role="presentation">
+                <li v-if="userCheckInRoomStatus === 1" class="nav-item" role="presentation">
                   <button class="nav-link" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat" type="button"
                     role="tab" aria-controls="chat" aria-selected="false" title="Chat">
                     <i class="fa-solid fa-comments"></i>
                   </button>
                 </li>
-                <li class="nav-item" role="presentation">
+                <li v-if="userCheckInRoomStatus === 1" class="nav-item" role="presentation">
                   <button class="nav-link" id="members-tab" data-bs-toggle="tab" data-bs-target="#members" type="button"
                     role="tab" aria-controls="members" aria-selected="false" title="Members list">
                     <i class="fa-solid fa-users"></i>
@@ -579,6 +596,9 @@ export default {
       auctionSocket: null,
       auctionRoomSubscription: null,
       auctionBidsSubscription: null,
+
+      // === USER CHECK IN ROOM ===
+      userCheckInRoomStatus: null, // null = chưa check, 0 = không trong room, 1 = trong room
     };
   },
 
@@ -608,6 +628,9 @@ export default {
     this.loadAuctionRoom();
     this.loadMembers();
     this.startLiveStream();
+
+    // Check user trong room
+    this.checkUserInRoom();
 
     // Bắt đầu check trạng thái phòng liên tục
     this.startRoomStatusCheck();
@@ -673,10 +696,28 @@ export default {
       }).format(number || 0);
     },
 
+    // Navigate to home page
+    goToHome() {
+      this.$router.push('/');
+    },
+
     // === COUNTDOWN METHODS ===
 
     // Khởi tạo countdown từ WebSocket hoặc session data
     initializeCountdown() {
+      // ⚠️ CHỈ khởi tạo countdown nếu session đang LIVE (status = 1)
+      if (!this.artworkSession || this.artworkSession.status !== 1) {
+        console.log("⏸️ Session chưa bắt đầu (status !== 1), không khởi tạo countdown");
+        console.log("Session status:", this.artworkSession?.status);
+        // Dừng countdown nếu đang chạy
+        this.stopCountdownInterval();
+        this.countdownSeconds = 0;
+        this.sessionEndTime = null;
+        return;
+      }
+
+      console.log("🚀 Session đang LIVE (status = 1), khởi tạo countdown...");
+
       // Ưu tiên dùng endedAt từ session (nếu có)
       if (this.artworkSession.endedAt) {
         this.sessionEndTime = new Date(this.artworkSession.endedAt);
@@ -949,6 +990,29 @@ export default {
         this.membersError = error.response?.data?.message || "Không thể tải danh sách thành viên";
       } finally {
         this.membersLoading = false;
+      }
+    },
+
+    async checkUserInRoom() {
+      if (!this.roomID) return;
+
+      try {
+        const response = await axios.get(
+          `http://localhost:8081/api/user/check-in-room/${this.roomID}`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+
+        const data = response.data;
+        this.userCheckInRoomStatus = data.status || 0;
+        console.log("✅ User check in room status:", this.userCheckInRoomStatus, data.message);
+      } catch (error) {
+        console.error("❌ Error checking user in room:", error);
+        // Nếu lỗi, mặc định là không trong room (status = 0)
+        this.userCheckInRoomStatus = 0;
       }
     },
 

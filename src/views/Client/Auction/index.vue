@@ -160,8 +160,11 @@
         <div class="row py-2">
           <template v-for="tag in tags" :key="tag">
             <div class="col-4 d-flex align-items-center">
-              <button type="button" class="btn btn-outline-success w-100 fw-bold"
-                :class="{ active: selectedTag === tag }" @click="selectTag(tag)">
+              <button type="button" class="btn w-100 fw-bold"
+                :class="selectedTag === tag ? 'btn-success' : 'btn-outline-success'"
+                :disabled="isSearching"
+                @click="selectTag(tag)">
+                <i v-if="isSearching && selectedTag === tag" class="fas fa-spinner fa-spin me-1"></i>
                 {{ tag }}
               </button>
             </div>
@@ -238,7 +241,7 @@
 
                 <router-link v-else-if="auction.status === 2" :to="`/client/Regis-auct-room/${auction.id}`" class="w-100">
                   <button class="btn btn-warning w-100">Reserve Spot</button>
-                </router-link>
+                  </router-link>
 
                 <button v-else class="btn btn-secondary w-100 disabled">View Auction</button>
               </div>
@@ -651,6 +654,11 @@ export default {
 
       console.log('🔍 [SEARCH] Sending search request:', searchData);
 
+      // Hiển thị thông báo đang lọc theo type nếu có
+      if (searchData.type) {
+        console.log(`🏷️ Filtering by type: ${searchData.type}`);
+      }
+
       axios
         .post("http://localhost:8081/api/auctionroom/search-public", searchData, {
           headers: {
@@ -664,7 +672,8 @@ export default {
           if (Array.isArray(res.data)) {
             this.searchResults = res.data.filter(room => room.status !== 0);
             if (this.searchResults.length > 0) {
-              this.$toast.success(`Found ${this.searchResults.length} auction room(s)`);
+              const filterMsg = searchData.type ? ` with type "${searchData.type}"` : '';
+              this.$toast.success(`Found ${this.searchResults.length} auction room(s)${filterMsg}`);
             } else {
               this.$toast.info("No results found");
             }
@@ -717,8 +726,10 @@ export default {
         this.selectedTag = null;
         // Reset search khi bỏ chọn tag
         this.resetSearch();
+        this.$toast.info(`Filter cleared`);
       } else {
         this.selectedTag = tag;
+        console.log(`🏷️ Tag selected: ${tag}`);
         // Tự động tìm kiếm khi chọn tag
         this.searchAuctions();
       }

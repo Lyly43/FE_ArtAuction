@@ -157,24 +157,29 @@ const routes = [
     // name: 'auction-room',
     component: () => import("../views/Admin/Employees/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
+
   },
   {
     path: "/admin/management-users",
     // name: 'auction-room',
     component: () => import("../views/Admin/Users/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/management-schedule",
     // name: 'auction-room',
     component: () => import("../views/Admin/Schedules/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/management-invoice",
     // name: 'auction-room',
     component: () => import("../views/Admin/Invoices/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   // {
   //   path: '/admin/live',
@@ -186,13 +191,16 @@ const routes = [
     path: "/admin/testlivestream/:id",
     name: "admin-test-livestream",
     component: () => import("../views/Admin/testLiveStream/index.vue"),
-    meta: { layout: "default" },
+    meta: { layout: "blank" },
+    beforeEnter: checkAdmin,
+
   },
   {
     path: "/admin/livestream",
     // name: 'admin-livestream',
     component: () => import("../views/Admin/LiveStream/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/chat/:id",
@@ -200,18 +208,21 @@ const routes = [
     component: () => import("../views/Admin/Chat/index.vue"),
     meta: { layout: "default" },
     props: true,
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/management-artwork",
     // name: 'auction-room',
     component: () => import("../views/Admin/Artworks/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/management-auction",
 
     component: () => import("../views/Admin/AuctionRoom/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/login",
@@ -224,18 +235,21 @@ const routes = [
     // name: 'auction-room',
     component: () => import("../views/Admin/Reports/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/management-notification",
     // name: 'auction-room',
     component: () => import("../views/Admin/Notification/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/management-statistical",
 
     component: () => import("../views/Admin/Statistical/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   // {
   //   path: "/admin/management-admin",
@@ -248,6 +262,7 @@ const routes = [
     // name: "admin-settings",
     component: () => import("../views/Admin/Settings/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
     children: [
       {
         path: "",
@@ -290,6 +305,7 @@ const routes = [
     // name: "admin-settings",
     component: () => import("../views/Admin/Statistical/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
     children: [
       {
         path: "",
@@ -332,60 +348,70 @@ const routes = [
     name: "add-auction-room",
     component: () => import("../views/Admin/AddAuctionRoom/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/artwork-detail/:id",
     name: "artwork-detail",
     component: () => import("../views/Admin/ArtworkDetail/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/sent-notification",
     // name: "artwork-detail",
     component: () => import("../views/Admin/SentNotification/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/seller-requests",
     // name: "artwork-detail",
     component: () => import("../views/Admin/SellerRequest/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/auction-detail/:id",
     component: () => import("../views/Admin/AuctionDetail/index.vue"),
     meta: { layout: "default" },
     props: true,
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/edit-auction-room/:id",
     // name: "artwork-detail",
     component: () => import("../views/Admin/EditAuctionRoom/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/edit-artwork/:id",
     // name: "artwork-detail",
     component: () => import("../views/Admin/EditArtwork/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/add-admin",
     // name: "artwork-detail",
     component: () => import("../views/Admin/AddAdmin/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/add-user",
     // name: "artwork-detail",
     component: () => import("../views/Admin/AddUser/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
   {
     path: "/admin/profile",
     // name: "artwork-detail",
     component: () => import("../views/Admin/Profile/index.vue"),
     meta: { layout: "default" },
+    beforeEnter: checkAdmin,
   },
 ];
 

@@ -49,11 +49,11 @@
               ><i class="fa-solid fa-calendar-days"></i>Schedule</router-link
             >
           </li>
-          <li :class="{ active: $route.path.startsWith('/admin/chat') }">
+          <!-- <li :class="{ active: $route.path.startsWith('/admin/chat') }">
             <router-link to="/admin/chat/auction-001" class="iq-waves-effect">
               <i class="fa-solid fa-comments"></i><span>Chat Support</span>
             </router-link>
-          </li>
+          </li> -->
           <li>
             <a
               href="#menu-design"

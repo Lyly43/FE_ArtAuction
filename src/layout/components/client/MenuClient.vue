@@ -59,18 +59,25 @@
           <!-- notify -->
           <div class="dropdown">
             <button
-              class="btn btn-link dropdown-toggle dropdown-toggle-no-caret d-flex justify-content-center align-items-center position-relative p-0 border-0"
-              type="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
-              <img src="/src/assets/img/icon-bell.png" class="icon-bell" style="width: 24px; height: 24px" />
+              class="btn btn-link dropdown-toggle dropdown-toggle-no-caret d-flex justify-content-center align-items-center position-relative p-2 border-0"
+              type="button"
+              :id="'notificationDropdown-' + _uid"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="text-decoration: none; min-width: 40px; min-height: 40px;"
+              @click="handleNotificationClick">
+              <img src="/src/assets/img/icon-bell.png" class="icon-bell" style="width: 24px; height: 24px; pointer-events: none;" />
               <span v-if="unreadCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                style="font-size: 10px; padding: 3px 6px;">
+                style="font-size: 10px; padding: 3px 6px; pointer-events: none; z-index: 1;">
                 {{ unreadCount > 99 ? '99+' : unreadCount }}
               </span>
             </button>
             <!-- Notification Dropdown -->
             <div
+              :id="'notificationDropdownMenu-' + _uid"
               class="dropdown-menu dropdown-menu-end dropdown-menu-lg mt-2 p-0 overflow-auto border-2 border-success shadow"
-              style="max-height: 500px; width: 380px;">
+              style="max-height: 500px; width: 380px;"
+              :aria-labelledby="'notificationDropdown-' + _uid">
               <div class="p-3 border-bottom bg-light sticky-top">
                 <h6 class="m-0 fw-bold text-success">Notifications</h6>
               </div>
@@ -246,11 +253,86 @@ export default {
     console.log("menu", this.user);
 
     window.addEventListener("avatar-updated", this.handleAvatarUpdate);
+
+    // Khởi tạo lại Bootstrap dropdown sau khi component mount
+    this.$nextTick(() => {
+      this.initDropdowns();
+    });
+  },
+  updated() {
+    // Khởi tạo lại dropdown sau khi component update (ví dụ khi notifications thay đổi)
+    this.$nextTick(() => {
+      this.initDropdowns();
+    });
   },
   beforeUnmount() {
     window.removeEventListener("avatar-updated", this.handleAvatarUpdate);
   },
   methods: {
+    // Khởi tạo lại Bootstrap dropdowns
+    initDropdowns() {
+      // Kiểm tra Bootstrap có sẵn không (có thể là window.bootstrap hoặc global bootstrap)
+      const Bootstrap = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+
+      if (Bootstrap && Bootstrap.Dropdown) {
+        const dropdownElement = document.getElementById(`notificationDropdown-${this._uid}`);
+        if (dropdownElement) {
+          try {
+            // Dispose existing instance nếu có
+            const existingInstance = Bootstrap.Dropdown.getInstance(dropdownElement);
+            if (existingInstance) {
+              existingInstance.dispose();
+            }
+            // Khởi tạo lại dropdown
+            new Bootstrap.Dropdown(dropdownElement);
+          } catch (error) {
+            console.warn('Error initializing dropdown:', error);
+          }
+        }
+      }
+    },
+
+    // Handle click để đảm bảo dropdown mở được (fallback nếu Bootstrap không hoạt động)
+    handleNotificationClick(event) {
+      // Chỉ fallback nếu Bootstrap dropdown không hoạt động
+      const Bootstrap = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+      if (Bootstrap && Bootstrap.Dropdown) {
+        // Để Bootstrap xử lý, không làm gì thêm
+        return;
+      }
+
+      // Fallback manual toggle chỉ khi Bootstrap không có
+      const dropdownElement = event.currentTarget;
+      const dropdownMenu = document.getElementById(`notificationDropdownMenu-${this._uid}`);
+
+      if (dropdownMenu) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const isShown = dropdownMenu.classList.contains('show');
+
+        // Đóng tất cả dropdowns khác trước
+        document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+          if (menu !== dropdownMenu) {
+            menu.classList.remove('show');
+            const btn = document.querySelector(`[aria-expanded="true"]`);
+            if (btn && btn !== dropdownElement) {
+              btn.setAttribute('aria-expanded', 'false');
+            }
+          }
+        });
+
+        // Toggle dropdown hiện tại
+        if (isShown) {
+          dropdownMenu.classList.remove('show');
+          dropdownElement.setAttribute('aria-expanded', 'false');
+        } else {
+          dropdownMenu.classList.add('show');
+          dropdownElement.setAttribute('aria-expanded', 'true');
+        }
+      }
+    },
+
     // Navigate to Register Artwork với force reload nếu role = 1
     navigateToRegisterArtwork() {
       const userRole = this.getUserRole();
@@ -461,10 +543,23 @@ export default {
 .icon-bell {
   cursor: pointer;
   transition: transform 0.2s ease;
+  pointer-events: none; /* Đảm bảo click vào icon không bị chặn */
 }
 
 .icon-bell:hover {
   transform: scale(1.1);
+}
+
+/* Đảm bảo notification button có đủ clickable area */
+.dropdown > button[data-bs-toggle="dropdown"] {
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dropdown > button[data-bs-toggle="dropdown"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
 }
 
 /* Notification styles */
