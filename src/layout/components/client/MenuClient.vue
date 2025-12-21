@@ -30,10 +30,13 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/client/register-artwork" class="nav-link py-0"
+            <a
+              href="#"
+              @click.prevent="navigateToRegisterArtwork"
+              class="nav-link py-0"
               :class="{ active: $route.path === '/client/register-artwork' }">
               Launch
-            </router-link>
+            </a>
           </li>
           <li class="nav-item">
             <router-link to="/about-us" class="nav-link py-0" :class="{ active: $route.path === '/about-us' }">
@@ -55,41 +58,54 @@
         <template v-if="user.check">
           <!-- notify -->
           <div class="dropdown">
-            <div
-              class="dropdown dropdown-notification dropdown-toggle dropdown-toggle-no-caret d-flex justify-content-center align-items-center"
-              type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button
+              class="btn btn-link dropdown-toggle dropdown-toggle-no-caret d-flex justify-content-center align-items-center position-relative p-0 border-0"
+              type="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
               <img src="/src/assets/img/icon-bell.png" class="icon-bell" style="width: 24px; height: 24px" />
-            </div>
+              <span v-if="unreadCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                style="font-size: 10px; padding: 3px 6px;">
+                {{ unreadCount > 99 ? '99+' : unreadCount }}
+              </span>
+            </button>
             <!-- Notification Dropdown -->
             <div
-              class="dropdown-menu dropdown-menu-end dropdown-menu-lg mt-2 p-0 overflow-hidden border-2 border-success shadow">
-              <div v-for="notification in notifications" :key="notification.id" class="d-flex p-3 border-bottom w-100"
-                :style="{ backgroundColor: notification.isRead ? '#ffffff' : '#e6fbfa' }"
-                @click="markAsRead(notification.id)" style="cursor: pointer; transition: background-color 0.2s">
-                <div class="d-flex w-100 gap-2">
+              class="dropdown-menu dropdown-menu-end dropdown-menu-lg mt-2 p-0 overflow-auto border-2 border-success shadow"
+              style="max-height: 500px; width: 380px;">
+              <div class="p-3 border-bottom bg-light sticky-top">
+                <h6 class="m-0 fw-bold text-success">Notifications</h6>
+              </div>
+              <div v-if="notifications.length === 0" class="p-4 text-center text-muted">
+                <i class="fa-regular fa-bell-slash fa-2x mb-2"></i>
+                <p class="m-0 small">No notifications yet</p>
+              </div>
+              <div v-for="notification in notifications" :key="notification.id" class="notification-item p-3 border-bottom"
+                :class="{ 'notification-unread': !notification.isRead }"
+                @click="markAsRead(notification.id)">
+                <div class="d-flex gap-2 align-items-start">
                   <!-- icon -->
                   <div
-                    class="notification-icon d-flex align-items-center justify-content-center rounded-circle text-secondary bg-light flex-shrink-0">
-                    <i class="fa-regular fa-user fs-6"></i>
+                    class="notification-icon d-flex align-items-center justify-content-center rounded-circle text-white flex-shrink-0"
+                    :class="getNotificationIconClass(notification.title)">
+                    <i :class="getNotificationIcon(notification.title)" class="fs-6"></i>
                   </div>
                   <!-- content -->
-                  <div class="d-flex flex-column w-100 gap-2">
-                    <div class="">
-                      <div class="d-flex justify-content-between">
-                        <p class="m-0 fw-bold">{{ notification.title }}</p>
+                  <div class="flex-grow-1 overflow-hidden">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                      <p class="m-0 fw-semibold notification-title">{{ notification.title }}</p>
+                      <!-- <button class="btn btn-sm p-0 text-muted" style="line-height: 1;">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
-                      </div>
-                      <p class="notification-message text-dark small m-0">
-                        {{ notification.notificationContent }}
-                      </p>
+                      </button> -->
                     </div>
-                    <div class="d-flex justify-content-between text-muted" style="font-size: 12px">
-                      <p class="notification-time mb-0">
-                        {{ formatTime(notification.notificationTime) }}
-                      </p>
-                      <p class="notification-date mb-0">
+                    <p class="notification-content text-dark small m-0 mb-2">
+                      {{ truncateText(notification.notificationContent, 120) }}
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center text-muted" style="font-size: 11px">
+                      <span class="notification-time">
+                        <i class="fa-regular fa-clock me-1"></i>{{ formatTime(notification.notificationTime) }}
+                      </span>
+                      <span class="notification-date">
                         {{ formatDate(notification.notificationTime) }}
-                      </p>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -211,6 +227,9 @@ export default {
     avatarSrc() {
       return this.user.avt || this.defaultAvatar;
     },
+    unreadCount() {
+      return this.notifications.filter(n => !n.isRead).length;
+    },
   },
   mounted() {
     this.fetchNotificationsbyId();
@@ -232,6 +251,38 @@ export default {
     window.removeEventListener("avatar-updated", this.handleAvatarUpdate);
   },
   methods: {
+    // Navigate to Register Artwork với force reload nếu role = 1
+    navigateToRegisterArtwork() {
+      const userRole = this.getUserRole();
+      console.log('👤 User role:', userRole);
+
+      // Nếu role = 1 (seller), force reload
+      if (userRole === 1) {
+        console.log('🔄 Role = 1, force reloading page...');
+        window.location.href = '/client/register-artwork';
+      } else {
+        // Role khác, dùng router bình thường
+        this.$router.push('/client/register-artwork');
+      }
+    },
+
+    // Lấy role từ token
+    getUserRole() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return null;
+
+        const parts = token.split(".");
+        if (parts.length < 2) return null;
+
+        const payload = JSON.parse(decodeURIComponent(escape(window.atob(parts[1]))));
+        return payload.role || payload.roleId || null;
+      } catch (error) {
+        console.error('Error getting user role:', error);
+        return null;
+      }
+    },
+
     handleAvatarUpdate(event) {
       const newAvatar = event.detail.avatar;
       console.log("Avatar updated:", newAvatar);
@@ -338,7 +389,180 @@ export default {
         this.fetchNotifications();
       }
     },
+
+    // Truncate text to specified length
+    truncateText(text, maxLength = 100) {
+      if (!text) return "";
+      if (text.length <= maxLength) return text;
+      return text.substring(0, maxLength) + "...";
+    },
+
+    // Get icon based on notification type
+    getNotificationIcon(title) {
+      if (!title) return "fa-regular fa-bell";
+      const lowerTitle = title.toLowerCase();
+
+      if (lowerTitle.includes("thắng") || lowerTitle.includes("win")) {
+        return "fa-solid fa-trophy";
+      } else if (lowerTitle.includes("approved") || lowerTitle.includes("chấp nhận")) {
+        return "fa-solid fa-circle-check";
+      } else if (lowerTitle.includes("seller") || lowerTitle.includes("người bán")) {
+        return "fa-solid fa-palette";
+      } else if (lowerTitle.includes("bid") || lowerTitle.includes("đấu giá")) {
+        return "fa-solid fa-gavel";
+      } else if (lowerTitle.includes("payment") || lowerTitle.includes("thanh toán")) {
+        return "fa-solid fa-credit-card";
+      }
+      return "fa-regular fa-bell";
+    },
+
+    // Get icon background class
+    getNotificationIconClass(title) {
+      if (!title) return "bg-secondary";
+      const lowerTitle = title.toLowerCase();
+
+      if (lowerTitle.includes("thắng") || lowerTitle.includes("win")) {
+        return "bg-warning";
+      } else if (lowerTitle.includes("approved") || lowerTitle.includes("chấp nhận")) {
+        return "bg-success";
+      } else if (lowerTitle.includes("seller") || lowerTitle.includes("người bán")) {
+        return "bg-info";
+      } else if (lowerTitle.includes("bid") || lowerTitle.includes("đấu giá")) {
+        return "bg-primary";
+      } else if (lowerTitle.includes("payment") || lowerTitle.includes("thanh toán")) {
+        return "bg-danger";
+      }
+      return "bg-secondary";
+    },
   },
 };
 </script>
-<style scoped></style>
+<style scoped>
+/* Bell icon button */
+.btn-link.dropdown-toggle {
+  background: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.btn-link.dropdown-toggle:hover,
+.btn-link.dropdown-toggle:focus,
+.btn-link.dropdown-toggle:active {
+  background: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Hide dropdown caret arrow */
+.dropdown-toggle-no-caret::after {
+  display: none !important;
+}
+
+.icon-bell {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.icon-bell:hover {
+  transform: scale(1.1);
+}
+
+/* Notification styles */
+.notification-item {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa;
+}
+
+.notification-unread {
+  background-color: #e6fbfa !important;
+}
+
+.notification-unread:hover {
+  background-color: #d4f4f0 !important;
+}
+
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  font-size: 18px;
+}
+
+.notification-title {
+  font-size: 14px;
+  color: #212529;
+  line-height: 1.4;
+}
+
+.notification-content {
+  font-size: 13px;
+  color: #6c757d;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.notification-time,
+.notification-date {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Dropdown menu */
+.dropdown-menu-lg {
+  min-width: 380px;
+}
+
+/* Scrollbar styling */
+.dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: #198754;
+  border-radius: 3px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #157347;
+}
+
+/* Badge for unread notifications */
+.dropdown-notification::after {
+  content: attr(data-count);
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #dc3545;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .dropdown-menu-lg {
+    min-width: 320px;
+    max-width: 90vw;
+  }
+
+  .notification-content {
+    font-size: 12px;
+  }
+}
+</style>

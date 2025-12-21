@@ -189,7 +189,7 @@
       <!-- AI Check Upload (hiển thị nếu chưa check AI) -->
       <div v-if="!aiChecked && !showAIDetectionResult && !showSuccessView" class="row justify-content-center mt-4">
         <div class="col-lg-8">
-          <div class="card border-0 shadow-lg" data-aos="zoom-in" data-aos-duration="800">
+          <div class="card border-0 p-0 shadow-lg" data-aos="zoom-in" data-aos-duration="800">
             <div class="card-body text-center py-5">
               <div class="mb-4">
                 <i class="fas fa-robot text-success" style="font-size: 60px;"></i>
@@ -245,7 +245,7 @@
       <!-- AI Detection Result (hiển thị nếu phát hiện AI) -->
       <div v-if="showAIDetectionResult" class="row justify-content-center mt-4">
         <div class="col-lg-10">
-          <div class="card border-danger shadow-lg" data-aos="zoom-in" data-aos-duration="800">
+          <div class="card border-danger p-0 shadow-lg" data-aos="zoom-in" data-aos-duration="800">
             <div class="card-header bg-danger text-white">
               <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
@@ -550,9 +550,14 @@
                     </div>
 
                     <input v-model.number="formData.startedPrice" type="number" class="form-control"
-                      :class="{ 'is-invalid': errors.startedPrice }" placeholder="Enter starting price" min="0"
-                      step="100" required />
-                    <div v-if="errors.startedPrice" class="invalid-feedback">{{ errors.startedPrice }}</div>
+                      :class="{ 'is-invalid': errors.startedPrice }" placeholder="Enter starting price" min="1000"
+                      step="1000" required />
+                    <small v-if="!errors.startedPrice" class="form-text text-muted">
+                      Minimum 1,000 VND
+                    </small>
+                    <div v-if="errors.startedPrice" class="invalid-feedback d-block">
+                      {{ errors.startedPrice }}
+                    </div>
 
                   </div>
                   <!-- Certificate File -->
@@ -560,7 +565,7 @@
                     <label class="form-label fw-bold">
                       Certificate File <span class="text-danger">*</span>
                     </label>
-                    <input type="file" class="form-control" @change="handleCertificateUpload"
+                    <input ref="certificateInput" type="file" class="form-control" @change="handleCertificateUpload"
                       accept=".pdf,.jpg,.jpeg,.png" required />
                     <small class="text-muted">Format: PDF, JPG, PNG (Max 5MB)</small>
 
@@ -867,7 +872,7 @@ export default {
             this.$toast.error("⚠ Image detected as AI-generated!");
             this.aiDetectionResult = {
               message: "Image detected as AI-generated",
-              aiProbability: data.ai_probability * 100 || 0,
+              aiProbability: data.ai_probability || 0,
               humanProbability: data.human_probability || 0,
               prediction: data.prediction,
               confidence: data.confidence
@@ -1050,8 +1055,8 @@ export default {
       }
 
       // Starting Price
-      if (!this.formData.startedPrice || this.formData.startedPrice <= 0) {
-        this.errors.startedPrice = 'Starting price must be greater than 0';
+      if (!this.formData.startedPrice || this.formData.startedPrice < 1000) {
+        this.errors.startedPrice = 'Starting price must be at least 1,000 VND';
         isValid = false;
       }
 
@@ -1307,9 +1312,17 @@ export default {
         status: 0
       };
       this.errors = {};
-      this.imageFile = null;
-      this.imagePreview = null;
+
+      // ❌ KHÔNG reset ảnh artwork (đã qua AI check)
+      // this.imageFile = null;
+      // this.imagePreview = null;
+
+      // ✅ Reset Certificate File
       this.certificateFile = null;
+      // Reset input file element
+      if (this.$refs.certificateInput) {
+        this.$refs.certificateInput.value = '';
+      }
     },
 
     // Navigate to home
