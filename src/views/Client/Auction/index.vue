@@ -229,13 +229,16 @@
                 <p class="m-0 small description-clamp"> {{ auction.description }} </p>
               </div>
               <div class="mt-auto">
-                <router-link v-if="auction.status === 1" :to="`/client/auction-room/${auction.id}`" class="w-100">
-                    <button class="btn btn-success w-100">Join ArtAuction</button>
-                  </router-link>
+                <button
+                  v-if="auction.status === 1"
+                  @click="joinAuctionRoom(auction.id)"
+                  class="btn btn-success w-100">
+                  Join ArtAuction
+                </button>
 
                 <router-link v-else-if="auction.status === 2" :to="`/client/Regis-auct-room/${auction.id}`" class="w-100">
                   <button class="btn btn-warning w-100">Reserve Spot</button>
-                  </router-link>
+                </router-link>
 
                 <button v-else class="btn btn-secondary w-100 disabled">View Auction</button>
               </div>
@@ -311,7 +314,11 @@ export default {
       upcomingTotalElements: 0,
 
       // Kết quả tìm kiếm
-      searchResults: []
+      searchResults: [],
+
+      // Auto-refresh intervals
+      ongoingRefreshInterval: null,
+      upcomingRefreshInterval: null
     };
   },
 
@@ -379,12 +386,18 @@ export default {
     // Load cả 2 loại auctions khi khởi động
     this.getOngoingAuctions();
     this.getUpcomingAuctions();
+
+    // Bắt đầu auto-refresh mỗi 5 giây
+    this.startAutoRefresh();
   },
   beforeUnmount() {
     // Cleanup timeout khi component bị hủy
     if (this.dateSearchTimeout) {
       clearTimeout(this.dateSearchTimeout);
     }
+
+    // Dừng auto-refresh khi component bị hủy
+    this.stopAutoRefresh();
   },
 
   methods: {
@@ -717,6 +730,45 @@ export default {
           }
         }, 300);
       }
+    },
+
+    // Bắt đầu auto-refresh mỗi 5 giây
+    startAutoRefresh() {
+      console.log('🔄 Starting auto-refresh every 5 seconds');
+
+      // Refresh ongoing auctions mỗi 5 giây
+      this.ongoingRefreshInterval = setInterval(() => {
+        console.log('🔄 Auto-refreshing ongoing auctions...');
+        this.getOngoingAuctions();
+      }, 5000);
+
+      // Refresh upcoming auctions mỗi 5 giây
+      this.upcomingRefreshInterval = setInterval(() => {
+        console.log('🔄 Auto-refreshing upcoming auctions...');
+        this.getUpcomingAuctions();
+      }, 5000);
+    },
+
+    // Dừng auto-refresh
+    stopAutoRefresh() {
+      console.log('⏹️ Stopping auto-refresh');
+
+      if (this.ongoingRefreshInterval) {
+        clearInterval(this.ongoingRefreshInterval);
+        this.ongoingRefreshInterval = null;
+      }
+
+      if (this.upcomingRefreshInterval) {
+        clearInterval(this.upcomingRefreshInterval);
+        this.upcomingRefreshInterval = null;
+      }
+    },
+
+    // Join auction room với force reload
+    joinAuctionRoom(auctionId) {
+      console.log('🚀 Navigating to auction room with reload:', auctionId);
+      // Sử dụng window.location.href thay vì router.push để force reload trang
+      window.location.href = `/client/auction-room/${auctionId}`;
     }
   }
 };

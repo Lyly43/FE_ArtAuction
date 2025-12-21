@@ -16,6 +16,11 @@
                 </small>
               </div>
               <div class="d-flex gap-2">
+                <button @click="batDauPhongDauGia" class="btn btn-success btn-sm" :disabled="isStartingRoom">
+                  <i v-if="isStartingRoom" class="fas fa-spinner fa-spin me-1"></i>
+                  <i v-else class="fas fa-play me-1"></i>
+                  {{ isStartingRoom ? 'Đang bắt đầu...' : 'Bắt đầu phòng đấu giá' }}
+                </button>
                 <button @click="dungPhongDauGia" class="btn btn-outline-danger btn-sm" :disabled="isStoppingRoom">
                   <i v-if="isStoppingRoom" class="fas fa-spinner fa-spin me-1"></i>
                   <i v-else class="fas fa-power-off me-1"></i>
@@ -62,52 +67,54 @@
                   <div class="row px-2" style="height: 100%; overflow-y: auto;">
                     <!-- Thống kê -->
                     <div class="col-lg-12 mb-3 mt-2">
-            <div class="card">
+                      <div class="card">
                         <div class="card-body py-2">
                           <h6 class="card-title mb-2">
-                  <i class="fas fa-users text-primary me-2"></i>
-                  Thống kê
-                </h6>
-                <div class="row text-center">
-                  <div class="col-4">
-                    <div class="border-end">
-                      <h5 class="text-primary mb-1">{{ viewerCount || 0 }}</h5>
-                      <small class="text-muted">Người xem</small>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="border-end">
-                      <h5 class="text-success mb-1">
-                        <i class="fas fa-clock me-1"></i>{{ duration || '00:00' }}
-                      </h5>
-                      <small class="text-muted">Livestream</small>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <h5 class="text-info mb-1">{{ auctionCountdown.currentSession.value?.orderIndex ?? '-' }}</h5>
-                    <small class="text-muted">Section</small>
-                  </div>
-                </div>
+                            <i class="fas fa-users text-primary me-2"></i>
+                            Thống kê
+                          </h6>
+                          <div class="row text-center">
+                            <div class="col-4">
+                              <div class="border-end">
+                                <h5 class="text-primary mb-1">{{ viewerCount || 0 }}</h5>
+                                <small class="text-muted">Người xem</small>
+                              </div>
+                            </div>
+                            <div class="col-4">
+                              <div class="border-end">
+                                <h5 class="text-success mb-1">
+                                  <i class="fas fa-clock me-1"></i>{{ duration || '00:00' }}
+                                </h5>
+                                <small class="text-muted">Livestream</small>
+                              </div>
+                            </div>
+                            <div class="col-4">
+                              <h5 class="text-info mb-1">{{ auctionCountdown.currentSession.value?.orderIndex ?? '-' }}
+                              </h5>
+                              <small class="text-muted">Section</small>
+                            </div>
+                          </div>
 
-                <!-- Countdown Timer -->
-                <div v-if="auctionCountdown.currentSession.value && auctionCountdown.countdownSeconds.value > 0"
+                          <!-- Countdown Timer -->
+                          <div
+                            v-if="auctionCountdown.currentSession.value && auctionCountdown.countdownSeconds.value > 0"
                             class="mt-2">
                             <div class="alert alert-warning py-2 text-center mb-0">
-                    <small class="d-block mb-1">
-                      <i class="fas fa-hourglass-half me-1"></i>
-                      <strong>Thời gian còn lại:</strong>
-                    </small>
+                              <small class="d-block mb-1">
+                                <i class="fas fa-hourglass-half me-1"></i>
+                                <strong>Thời gian còn lại:</strong>
+                              </small>
                               <h5 class="text-danger mb-0 fw-bold">{{ auctionCountdown.countdownDisplay.value }}</h5>
-                  </div>
-                </div>
+                            </div>
+                          </div>
                           <div v-else-if="auctionCountdown.currentSession.value" class="mt-2">
                             <div class="alert alert-secondary py-2 text-center mb-0">
-                    <small class="text-muted">Chưa có phiên đấu giá đang chạy</small>
+                              <small class="text-muted">Chưa có phiên đấu giá đang chạy</small>
                             </div>
                           </div>
                         </div>
-                  </div>
-                </div>
+                      </div>
+                    </div>
 
                     <!-- start-current -->
                     <div class="col-lg-12 mb-3">
@@ -115,8 +122,7 @@
                         <div class="card-body py-2">
                           <div class="alert alert-success mb-2 py-2 text-center" role="alert">
                             <strong>{{ roomID }}</strong>
-                  </div>
-
+                          </div>
                           <div class="row text-center">
                             <div class="col-6 p-0">
                               <div class="border-end">
@@ -124,15 +130,15 @@
                                 <p class="fw-bold m-0">
                                   {{ formatUSD(artworkSession.startingPrice || 0) }}
                                 </p>
-                </div>
-              </div>
+                              </div>
+                            </div>
                             <div class="col-6 p-0">
                               <p class="m-1">Current</p>
                               <p class="fw-bold text-success m-0">
                                 {{ formatUSD(artworkSession.currentPrice || 0) }}
                               </p>
-            </div>
-          </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -159,22 +165,23 @@
                     <!-- Control buttons -->
                     <div class="col-lg-12 mb-3">
                       <div class="row">
-          <div class="col-6">
-            <button @click="ketThucSection" class="w-100 btn btn-outline-danger" :disabled="isStoppingSection">
-              <i v-if="isStoppingSection" class="fas fa-spinner fa-spin me-2"></i>
-              <i v-else class="fas fa-stop me-2"></i>
-              {{ isStoppingSection ? 'Đang kết thúc...' : 'Kết thúc section' }}
-            </button>
-          </div>
-          <div class="col-6">
-            <button @click="batDauSectionMoi" class="w-100 btn btn-success" :disabled="isStartingSection">
-              <i v-if="isStartingSection" class="fas fa-spinner fa-spin me-2"></i>
-              <i v-else class="fas fa-play me-2"></i>
-              {{ isStartingSection ? 'Đang bắt đầu...' : 'Bắt đầu section' }}
-            </button>
+                        <div class="col-6">
+                          <button @click="ketThucSection" class="w-100 btn btn-outline-danger"
+                            :disabled="isStoppingSection">
+                            <i v-if="isStoppingSection" class="fas fa-spinner fa-spin me-2"></i>
+                            <i v-else class="fas fa-stop me-2"></i>
+                            {{ isStoppingSection ? 'Đang kết thúc...' : 'Kết thúc section' }}
+                          </button>
+                        </div>
+                        <div class="col-6">
+                          <button @click="batDauSectionMoi" class="w-100 btn btn-success" :disabled="isStartingSection">
+                            <i v-if="isStartingSection" class="fas fa-spinner fa-spin me-2"></i>
+                            <i v-else class="fas fa-play me-2"></i>
+                            {{ isStartingSection ? 'Đang bắt đầu...' : 'Bắt đầu section' }}
+                          </button>
                         </div>
                       </div>
-          </div>
+                    </div>
 
                     <!-- detail-artwork -->
                     <div class="col-lg-12 mt-2">
@@ -182,12 +189,13 @@
                         <div class="card-body d-flex justify-content-center align-items-center gap-2 p-2">
                           <img :src="artworkSession.imageUrl ||
                             'https://i.pinimg.com/736x/8b/a0/d6/8ba0d6ee7608f8caa427a819de41638a.jpg'
-                            " class="img-thumbnail" style="max-height: 150px; width: 100%; object-fit: contain;" alt="" />
+                            " class="img-thumbnail" style="max-height: 150px; width: 100%; object-fit: contain;"
+                            alt="" />
                         </div>
                       </div>
                     </div>
-        </div>
-      </div>
+                  </div>
+                </div>
 
                 <!-- Tab 2: Chat -->
                 <div class="tab-pane fade chat-tab-pane" id="chat" role="tabpanel" aria-labelledby="chat-tab">
@@ -234,7 +242,7 @@
                                   <div class="d-flex align-items-center gap-2 mb-1">
                                     <small class="fw-semibold text-dark">{{
                                       m.senderName || "User"
-                                      }}</small>
+                                    }}</small>
                                     <button v-if="
                                       m.senderId &&
                                       m.senderId !== currentUserId
@@ -249,7 +257,7 @@
                                     </div>
                                     <small class="text-muted" style="font-size: 0.75rem">{{
                                       m.time
-                                      }}</small>
+                                    }}</small>
                                   </div>
                                 </div>
                               </div>
@@ -262,13 +270,13 @@
                                   <div class="d-flex align-items-center gap-2 justify-content-end mb-1">
                                     <small class="fw-semibold text-dark">{{
                                       m.senderName || "You"
-                                      }}</small>
+                                    }}</small>
                                   </div>
 
                                   <div class="d-flex gap-2 align-items-end justify-content-end">
                                     <small class="text-muted" style="font-size: 0.75rem">{{
                                       m.time
-                                      }}</small>
+                                    }}</small>
                                     <div class="chat-bubble-right">
                                       {{ m.text }}
                                     </div>
@@ -291,32 +299,27 @@
                           </template>
                         </div>
                         <div class="card-footer bg-white border-top p-3">
-                          
+
                           <!-- Reply Preview Bar (Messenger-style) -->
-                          <div v-if="selectedUserId" class="reply-preview-bar d-flex align-items-center justify-content-between mb-2 p-2 bg-light rounded">
+                          <div v-if="selectedUserId"
+                            class="reply-preview-bar d-flex align-items-center justify-content-between mb-2 p-2 bg-light rounded">
                             <div class="d-flex align-items-center gap-2">
                               <i class="fa-solid fa-reply text-primary"></i>
                               <div>
                                 <small class="text-muted d-block" style="font-size: 0.75rem;">Replying to</small>
-                                <strong class="text-dark" style="font-size: 0.875rem;">{{ getUserName(selectedUserId) }}</strong>
+                                <strong class="text-dark" style="font-size: 0.875rem;">{{ getUserName(selectedUserId)
+                                  }}</strong>
                               </div>
                             </div>
-                            <button @click="selectedUserId = ''" class="btn btn-sm btn-link text-muted p-0" title="Cancel reply">
+                            <button @click="selectedUserId = ''" class="btn btn-sm btn-link text-muted p-0"
+                              title="Cancel reply">
                               <i class="fa-solid fa-times fa-lg"></i>
                             </button>
                           </div>
                           <div class="input-group">
-                            <input 
-                              v-model="text" 
-                              @keyup.enter="sendMsg" 
-                              type="text" 
-                              class="form-control" 
-                              :placeholder="selectedUserId ? `Reply to ${getUserName(selectedUserId)}...` : 'Type message to all users...'"
-                            />
-                            <button 
-                              @click.prevent="sendMsg" 
-                              class="btn btn-success" 
-                              type="button"
+                            <input v-model="text" @keyup.enter="sendMsg" type="text" class="form-control"
+                              :placeholder="selectedUserId ? `Reply to ${getUserName(selectedUserId)}...` : 'Type message to all users...'" />
+                            <button @click.prevent="sendMsg" class="btn btn-success" type="button"
                               :disabled="!text || !text.trim()">
                               <i class="fa-solid fa-paper-plane me-2"></i>Send
                             </button>
@@ -340,15 +343,37 @@
                               {{ members.length }} joined
                             </span>
                           </div>
+                          <button @click="loadMembers" class="btn btn-sm btn-outline-success" title="Refresh members">
+                            <i class="fas fa-sync-alt"></i>
+                          </button>
                         </div>
                       </div>
                     </div>
                     <div class="col-12 p-0">
                       <div class="card p-0">
-                        <div class="card-body">
-                          <div class="p-4 text-center text-muted">
-                            <i class="fa-solid fa-user-slash fa-2x mb-2"></i>
-                            <p class="m-0">Member list will be available soon.</p>
+                        <div class="card-body" style="max-height: 60vh; overflow-y: auto;">
+                          <!-- Loading state -->
+                          <div v-if="members.length === 0" class="p-4 text-center text-muted">
+                            <i class="fa-solid fa-users fa-2x mb-2"></i>
+                            <p class="m-0">Chưa có thành viên nào tham gia</p>
+                          </div>
+
+                          <!-- Members list -->
+                          <div v-else>
+                            <div v-for="(member, index) in members" :key="member.id || index"
+                              class="member-item d-flex align-items-center justify-content-between p-2 border-bottom">
+                              <div class="d-flex align-items-center gap-2">
+                                <div class="avatar-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                  style="width: 36px; height: 36px; border-radius: 50%; font-size: 14px; font-weight: bold;">
+                                  {{ (member.username || member.email || 'U').charAt(0).toUpperCase() }}
+                                </div>
+                                <div>
+                                  <div class="fw-semibold">{{ member.username || member.email || 'Unknown' }}</div>
+                                  <small class="text-muted" v-if="member.email && member.username">{{ member.email }}</small>
+                                </div>
+                              </div>
+                              <span class="badge bg-success">Online</span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -373,8 +398,8 @@
                     </button>
                   </li>
                   <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="members-tab" data-bs-toggle="tab" data-bs-target="#members" type="button"
-                      role="tab" aria-controls="members" aria-selected="false" title="Members list">
+                    <button class="nav-link" id="members-tab" data-bs-toggle="tab" data-bs-target="#members"
+                      type="button" role="tab" aria-controls="members" aria-selected="false" title="Members list">
                       <i class="fa-solid fa-users"></i>
                     </button>
                   </li>
@@ -434,6 +459,7 @@ export default {
       durationInterval: null,
       isStartingSection: false,
       isStoppingSection: false,
+      isStartingRoom: false,
       isStoppingRoom: false,
 
       // Interval để refresh session data
@@ -505,9 +531,16 @@ export default {
   },
   mounted() {
 
+    // Initialize user info with fallback
+    const storedName = localStorage.getItem("name_admin");
+    const storedEmail = localStorage.getItem("email_admin");
+    const tokenInfo = this.extractUserInfoFromToken();
+
     this.user = {
-      name: localStorage.getItem("name_kh"),
+      name: storedName || tokenInfo.username || storedEmail || `Admin_${Date.now()}`,
     };
+
+    console.log("👤 User initialized:", this.user);
 
     // Đảm bảo roomID được set từ route params
     if (this.$route.params.id) {
@@ -525,6 +558,9 @@ export default {
     // Load artwork session
     this.loadArtworkBySession();
     this.startSessionRefresh();
+
+    // Load members list
+    this.loadMembers();
 
     this.startAsHost();
 
@@ -568,6 +604,39 @@ export default {
       if (this.inviteLink) navigator.clipboard?.writeText(this.inviteLink);
     },
 
+    // Bắt đầu phòng đấu giá
+    batDauPhongDauGia() {
+      if (this.isStartingRoom) return;
+
+      // Xác nhận trước khi bắt đầu
+      if (!confirm('Bạn có chắc chắn muốn bắt đầu phòng đấu giá?')) {
+        return;
+      }
+
+      this.isStartingRoom = true;
+
+      axios
+        .post(`http://localhost:8081/api/stream/start/${this.roomID}`, {}, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem("token")
+          }
+        })
+        .then((res) => {
+          console.log("✅ Room started successfully", res.data);
+          this.$toast.success('Phòng đấu giá đã được bắt đầu thành công!');
+
+          // Reload lại session để cập nhật trạng thái
+          this.loadCurrentSession();
+        })
+        .catch((err) => {
+          console.error('❌ Error starting room:', err);
+          const errorMessage = err.response?.data?.message || err.message;
+          this.$toast.error('Lỗi bắt đầu phòng đấu giá: ' + errorMessage);
+        })
+        .finally(() => {
+          this.isStartingRoom = false;
+        });
+    },
 
     formatDateTime(dateString) {
       if (!dateString) return '-';
@@ -621,10 +690,50 @@ export default {
       }
     },
 
+    // Load members list
+    async loadMembers() {
+      if (!this.roomID) return;
+
+      try {
+        const response = await axios.post(
+          `http://localhost:8081/api/auctionroom/members`,
+          {
+            roomId: this.roomID
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+
+        const payload = response.data;
+
+        if (Array.isArray(payload)) {
+          this.members = payload;
+        } else if (Array.isArray(payload?.data)) {
+          this.members = payload.data;
+        } else if (Array.isArray(payload?.members)) {
+          this.members = payload.members;
+        } else {
+          this.members = [];
+        }
+
+        console.log('✅ Admin - Members loaded:', this.members.length);
+      } catch (error) {
+        console.error("Error loading members:", error);
+        this.$toast?.error?.("Không thể tải danh sách thành viên");
+      }
+    },
+
     startAsHost() {
       this.status = "Đang khởi tạo...";
-      const userName = this.user.name;
+
+      // Ensure userName is valid
+      const userName = this.user?.name || `Admin_${Date.now()}`;
       const userID = String(this.$page?.props?.auth?.user?.id ?? `h${Date.now()}`);
+
+      console.log("🚀 Starting as host with:", { userName, userID, roomID: this.roomID });
 
       let appID = this.$page?.props?.chatRoom?.appID;
       let serverSecret = this.$page?.props?.chatRoom?.serverSecret;
@@ -640,6 +749,11 @@ export default {
           .then((res) => {
             appID = res.data?.appID;
             serverSecret = res.data?.token;
+
+            if (!appID || !serverSecret) {
+              throw new Error('Invalid credentials from backend');
+            }
+
             this.continueStartAsHost(appID, serverSecret, userID, userName);
           })
           .catch((e) => {
@@ -654,17 +768,36 @@ export default {
     },
 
     continueStartAsHost(appID, serverSecret, userID, userName) {
+      console.log("🔧 continueStartAsHost called with:", { appID, serverSecret: '***', userID, userName });
+
       if (!appID || !serverSecret) {
         this.error = 'Thiếu Zego appID/serverSecret từ backend. Vui lòng kiểm tra cấu hình.';
         this.status = "Lỗi khởi tạo";
+        console.error("❌ Missing appID or serverSecret");
+        return;
+      }
+
+      if (!userName || userName === 'null' || userName === 'undefined') {
+        this.error = 'Thiếu tên người dùng. Vui lòng đăng nhập lại.';
+        this.status = "Lỗi khởi tạo";
+        console.error("❌ Invalid userName:", userName);
         return;
       }
 
       try {
         this.status = "Đang tạo token...";
-        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, this.roomID, userID, userName);
+        console.log("🔑 Generating token for:", { roomID: this.roomID, userID, userName });
+
+        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+          parseInt(appID),
+          serverSecret,
+          this.roomID,
+          userID,
+          userName
+        );
 
         this.status = "Đang kết nối...";
+        console.log("✅ Token generated, creating ZegoUIKit instance...");
         this.zp = ZegoUIKitPrebuilt.create(kitToken);
 
         // Lắng nghe event khi livestream bắt đầu
@@ -1009,10 +1142,10 @@ export default {
       console.log("📤 Admin sending message:", payload);
       this.socket && this.socket.sendRoom(this.roomID, payload);
       this.text = "";
-      
+
       // Clear reply selection after sending
       this.selectedUserId = "";
-      
+
       this.$nextTick(() => this.scrollToBottom());
     },
 
@@ -1189,7 +1322,7 @@ export default {
       });
       return Array.from(users.values());
     },
-    
+
     countdownDisplay() {
       if (this.countdownSeconds <= 0) return '0:00';
       const minutes = Math.floor(this.countdownSeconds / 60);
@@ -1409,6 +1542,7 @@ export default {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1421,9 +1555,26 @@ export default {
   background-color: #f8f9fa;
 }
 
+/* Member Item */
+.member-item {
+  transition: background-color 0.2s ease;
+}
+
+.member-item:hover {
+  background-color: #f8f9fa;
+}
+
+.member-item:last-child {
+  border-bottom: none !important;
+}
+
+.member-item .avatar-circle {
+  flex-shrink: 0;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
+
   .chat-bubble-left,
   .chat-bubble-right {
     max-width: 85%;

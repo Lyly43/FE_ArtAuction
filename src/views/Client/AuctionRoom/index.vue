@@ -106,7 +106,7 @@
                       <div class="card-body d-flex justify-content-center align-items-center gap-2 p-2">
                         <img :src="artworkSession.imageUrl ||
                           'https://i.pinimg.com/736x/8b/a0/d6/8ba0d6ee7608f8caa427a819de41638a.jpg'
-                          " class="img-thumbnail" style="max-height: 100%" alt="" />
+                          " class="img-thumbnail" style="max-height: 250px;" alt="" />
                       </div>
                     </div>
                   </div>
@@ -918,8 +918,12 @@ export default {
       this.membersError = null;
 
       try {
-        const response = await axios.get(
-          `http://localhost:8081/api/auctionroom/${this.roomID}/members`,
+        // ✅ Sửa từ GET sang POST với body chứa roomId
+        const response = await axios.post(
+          `http://localhost:8081/api/auctionroom/members`,
+          {
+            roomId: this.roomID
+          },
           {
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token"),
@@ -938,6 +942,8 @@ export default {
         } else {
           this.members = [];
         }
+
+        console.log('✅ Members loaded:', this.members.length);
       } catch (error) {
         console.error("Error loading members:", error);
         this.membersError = error.response?.data?.message || "Không thể tải danh sách thành viên";
