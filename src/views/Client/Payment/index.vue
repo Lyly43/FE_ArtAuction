@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-3">
-    <div class="row mb-4">
+    <!-- <div class="row mb-4">
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="row mb-4">
       <div class="col-lg-7 col-md-6 col-sm-12 d-flex">
         <div class="row">
@@ -40,53 +40,53 @@
               <div class="card-body">
                 <div class="row">
                   <div class="col-12">
-                    <p class="fs-5 fw-bold text-success text-center">Thông tin người nhận</p>
+                    <p class="fs-5 fw-bold text-success text-center">Recipient Information</p>
                   </div>
                   <div class="col-lg-12 col-md-12 col-sm-12 mb-3">
-                    <label for="" class="mb-1">Người nhận</label>
+                    <label for="" class="mb-1">Recipient</label>
                     <input type="text" class="form-control" v-model="shipping.receiver"
-                      placeholder="Họ và tên người nhận">
+                      placeholder="Recipient's full name" :disabled="isPaymentCompleted">
                   </div>
                   <!-- <div class="col-lg-6 col-md-12 col-sm-12 mb-3">
                     <label for="" class="mb-1">Last Name</label>
                     <input type="text" class="form-control">
                   </div> -->
                   <div class="col-lg-12 col-md-12 col-sm-12 mb-3">
-                    <label for="" class="mb-1">Địa chỉ Email</label>
-                    <input type="email" class="form-control" v-model="shipping.email" placeholder="Email người nhận">
+                    <label for="" class="mb-1">Email Address</label>
+                    <input type="email" class="form-control" v-model="shipping.email" placeholder="Recipient's email" :disabled="isPaymentCompleted">
                   </div>
-                  <!-- quốc gia -->
+                  <!-- Country -->
                   <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                    <label for="" class="mb-1">Quốc gia</label>
+                    <label for="" class="mb-1">Country</label>
                     <!-- <input type="text" class="form-control"> -->
-                    <input type="text" class="form-control" value="Việt Nam" readonly>
+                    <input type="text" class="form-control" value="Vietnam" readonly>
                   </div>
-                  <!-- tỉnh/thành phố -->
+                  <!-- Province/City -->
                   <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                    <label for="" class="mb-1">Tỉnh/Thành phố</label>
+                    <label for="" class="mb-1">Province/City</label>
                     <!-- <input type="text" class="form-control"> -->
-                    <select class="form-select" v-model="form.cityCode">
-                      <option value="" disabled>Chọn Tỉnh/Thành phố</option>
+                    <select class="form-select" v-model="form.cityCode" :disabled="isPaymentCompleted">
+                      <option value="" disabled>Select Province/City</option>
                       <option v-for="p in provinces" :key="p.code" :value="p.code">
                         {{ p.name }}
                       </option>
                     </select>
                   </div>
-                  <!-- phường/xã -->
+                  <!-- Ward/Commune -->
                   <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                    <label for="" class="mb-1">Phường/Xã</label>
+                    <label for="" class="mb-1">Ward/Commune</label>
                     <!-- <input type="text" class="form-control"> -->
-                    <select class="form-select" v-model="form.wardCode" :disabled="wards.length === 0">
-                      <option value="" disabled>Chọn Phường/Xã</option>
+                    <select class="form-select" v-model="form.wardCode" :disabled="wards.length === 0 || isPaymentCompleted">
+                      <option value="" disabled>Select Ward/Commune</option>
                       <option v-for="w in wards" :key="w.code" :value="w.code">
                         {{ w.name }}
                       </option>
                     </select>
                   </div>
                   <div class="col-lg-12 col-md-12 col-sm-12 mb-3">
-                    <label for="" class="mb-1">Địa chỉ cụ thể</label>
+                    <label for="" class="mb-1">Specific Address</label>
                     <input type="text" class="form-control" v-model="shipping.address"
-                      placeholder="Số nhà, tên đường, quận/huyện">
+                      placeholder="House number, street name, district" :disabled="isPaymentCompleted">
                   </div>
                 </div>
               </div>
@@ -178,7 +178,7 @@
                     <p class="m-0">{{ invoice.winnerName }}</p>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="m-0 text-muted">Giá trúng đấu giá</p>
+                    <p class="m-0 text-muted">Winning Bid Price</p>
                     <p class="m-0">{{ formatCurrency(invoice.amount) }}</p>
                   </div>
                 </div>
@@ -187,23 +187,23 @@
               <div class="row">
                 <div class="col-lg-12 d-flex flex-column gap-2">
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="m-0">Giá tác phẩm</p>
+                    <p class="m-0">Artwork Price</p>
                     <p class="m-0">{{ formatCurrency(invoice.amount) }}</p>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="m-0">Phí người mua</p>
+                    <p class="m-0">Buyer Premium</p>
                     <p class="m-0">{{ formatCurrency(invoice.buyerPremium) }}</p>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="m-0">Phí bảo hiểm</p>
+                    <p class="m-0">Insurance Fee</p>
                     <p class="m-0">{{ formatCurrency(invoice.insuranceFee) }}</p>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="m-0">Phí vận chuyển</p>
+                    <p class="m-0">Shipping Fee</p>
                     <p class="m-0">{{ formatCurrency(invoice.shippingFee) }}</p>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="m-0">Thuế</p>
+                    <p class="m-0">Tax</p>
                     <p class="m-0">{{ formatCurrency(invoice.salesTax) }}</p>
                   </div>
                 </div>
@@ -212,7 +212,7 @@
               <div class="row">
                 <div class="col-lg-12 d-flex flex-column gap-2">
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="text-success fw-bold m-0 fs-5">Tổng cộng</p>
+                    <p class="text-success fw-bold m-0 fs-5">Total</p>
                     <p class="text-success fw-bold m-0 fs-5">{{ formatCurrency(invoice.totalAmount) }}</p>
                   </div>
                 </div>
@@ -220,17 +220,27 @@
             </div>
             <div v-else class="">
               <p class="text-center text-muted my-4">
-                Chưa có thông tin hóa đơn. Vui lòng bấm "Xác nhận & Thanh toán" để tạo thông tin thanh toán.
+                No invoice information available. Please click "Confirm & Pay" to create payment information.
               </p>
             </div>
 
-            <!-- btn thanh toán -->
-            <div class=" mt-3">
-              <button class="btn btn-lg fw-bold fs-6 btn-success w-100" @click="payInvoice" data-bs-toggle="modal"
+            <!-- Payment button or payment completed alert -->
+            <div class="mt-3">
+              <!-- Show payment button when not completed -->
+              <button v-if="!isPaymentCompleted" class="btn btn-lg fw-bold fs-6 btn-success w-100" @click="payInvoice" data-bs-toggle="modal"
                 data-bs-target="#exampleModal" :disabled="loading.payment">
                 <span v-if="loading.payment" class="spinner-border spinner-border-sm me-2" role="status"></span>
-                <span>{{ loading.payment ? 'Đang xử lý...' : 'Xác nhận & Thanh toán' }}</span>
+                <span>{{ loading.payment ? 'Processing...' : 'Confirm & Pay' }}</span>
               </button>
+
+              <!-- Show payment completed alert when check === 1 -->
+              <div v-else class="alert alert-success d-flex align-items-center gap-2 mb-0" role="alert">
+                <i class="fa-solid fa-circle-check fs-5"></i>
+                <div class="flex-grow-1">
+                  <strong>Payment Completed!</strong>
+                  <p class="mb-0 small">You have completed payment for this invoice.</p>
+                </div>
+              </div>
             </div>
 
           </div>
@@ -241,27 +251,27 @@
 
       </div>
     </div>
-    <!-- modal qr code thanh toán -->
+    <!-- Payment QR code modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-success text-white">
             <h1 class="modal-title fs-6" id="exampleModalLabel">
-              <i class="fa-solid fa-qrcode me-2"></i>Quét mã QR để thanh toán phí đăng ký và đặt cọc
+              <i class="fa-solid fa-qrcode me-2"></i>Scan QR code to pay registration fee and deposit
             </h1>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body text-center">
             <div class="row">
               <div class="col-12 text-center">
                 <img v-if="invoice && (invoice.paymentQr || qrUrl)" :src="invoice.paymentQr || qrUrl" class="img-fluid"
-                  alt="Mã QR Thanh toán" style="max-width: 260px" />
+                  alt="Payment QR Code" style="max-width: 260px" />
                 <div v-else class="alert alert-danger mt-2 mb-0 py-2 px-3 d-inline-block">
                   <i class="fa-solid fa-triangle-exclamation me-2"></i>
-                  Mã QR không khả dụng. Vui lòng thử lại hoặc liên hệ hỗ trợ.
+                  QR code is not available. Please try again or contact support.
                 </div>
                 <p v-if="paymentNote" class="mt-3 mb-1 text-muted small">
-                  Nội dung chuyển khoản: <span class="fw-bold text-dark">{{ paymentNote }}</span>
+                  Transfer Content: <span class="fw-bold text-dark">{{ paymentNote }}</span>
                 </p>
 
                 <!-- Payment status message -->
@@ -275,18 +285,18 @@
                 </div>
 
                 <!-- Auto-check indicator -->
-                <div v-if="paymentCheckInterval && !paid" class="mt-2">
+                <!-- <div v-if="paymentCheckInterval && !paid" class="mt-2">
                   <small class="text-muted">
                     <i class="fa-solid fa-rotate fa-spin me-1"></i>
                     Đang tự động kiểm tra thanh toán mỗi 5 giây...
                   </small>
-                </div>
+                </div> -->
               </div>
 
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -309,7 +319,7 @@ export default {
         cityCode: '',  // giữ dạng string
         wardCode: ''
       },
-      // thông tin người nhận / shipping hiển thị trên form
+      // Recipient/shipping information displayed on form
       shipping: {
         receiver: '',
         email: '',
@@ -342,6 +352,10 @@ export default {
     invoiceId() {
       return this.$route.params.invoiceId;
     },
+    // Check if payment is completed (check === 1 or paymentStatus === 1)
+    isPaymentCompleted() {
+      return this.paid || this.invoice?.paymentStatus === 1 || this.invoice?.check === 1;
+    },
   },
 
   watch: {
@@ -357,7 +371,7 @@ export default {
 
   mounted() {
     this.loadProvinces();
-    // Có thể sau này gọi API để load thông tin invoice theo invoiceId nếu cần
+    // May call API later to load invoice information by invoiceId if needed
     this.payInvoice();
 
     // Add event listeners for modal
@@ -407,7 +421,7 @@ export default {
 
       try {
         const token = localStorage.getItem('token');
-        // Gọi API mới trả về { invoice, artwork }
+        // Call new API that returns { invoice, artwork }
         const res = await axios.post(
           `http://localhost:8081/api/invoice/${this.invoiceId}/payment/init`,
           {},
@@ -419,18 +433,18 @@ export default {
         );
 
         const raw = res.data || {};
-        // Một số API có thể bọc data trong thuộc tính "data"
+        // Some APIs may wrap data in "data" property
         const data = raw.data || raw;
         const invoice = data.invoice || null;
         const artwork = data.artwork || null;
 
-        // DEBUG LOG: xem dữ liệu trả về từ backend
+        // DEBUG LOG: view response data from backend
         console.log('[Payment] raw response data:', raw);
         console.log('[Payment] normalized data:', data);
         console.log('[Payment] invoice:', invoice);
         console.log('[Payment] artwork:', artwork);
 
-        // Ghép thêm thông tin artwork nếu cần
+        // Merge additional artwork information if needed
         this.invoice = invoice
           ? {
             ...invoice,
@@ -439,7 +453,7 @@ export default {
           }
           : null;
 
-        // Đổ dữ liệu vào form thông tin cá nhân / giao hàng
+        // Populate form with personal/shipping information
         if (this.invoice) {
           this.shipping.receiver = this.invoice.recipientNameText || this.invoice.winnerName || '';
           this.shipping.email = this.invoice.winnerEmail || '';
@@ -447,11 +461,11 @@ export default {
           this.shipping.phone = this.invoice.recipientPhone || '';
         }
 
-        // QR + ghi chú thanh toán
+        // QR code + payment note
         this.qrUrl = this.invoice?.paymentQr || '';
         this.paymentNote = this.invoice?.note || '';
 
-        // Thông tin trạng thái thanh toán (nếu backend có trả về)
+        // Payment status information (if backend returns it)
         this.paid = !!data.paid || this.invoice?.paymentStatus === 1;
         this.paymentMessage =
           data.message ||
@@ -467,23 +481,23 @@ export default {
       this.loading.provinces = true;
       this.errMsg = '';
 
-      // TRẢ VỀ promise để chain .finally CHỈ CHẠY SAU KHI Fallback (nếu có) xong
+      // Return promise so .finally only runs after fallback (if any) completes
       return axios.get(`${this.baseV2}/`, { params: { depth: 1 } })
         .then(res => {
           const list = Array.isArray(res.data) ? res.data : (res.data.results || res.data);
           this.provinces = list.map(p => ({ code: String(p.code), name: p.name }));
         })
         .catch(eV2 => {
-          // Return inner promise để .finally đợi
+          // Return inner promise so .finally waits
           return axios.get(`${this.baseV1}/`, { params: { depth: 1 } })
             .then(res => {
               const list = Array.isArray(res.data) ? res.data : (res.data.results || res.data);
               this.provinces = list.map(p => ({ code: String(p.code), name: p.name }));
             })
             .catch(eV1 => {
-              this.errMsg = 'Không tải được danh sách tỉnh/thành.';
+              this.errMsg = 'Could not load province/city list.';
               console.error('Load provinces failed:', eV2?.message, eV1?.message);
-              // đẩy lỗi ra ngoài nếu muốn bắt tiếp ở nơi khác
+              // Throw error if needed to catch elsewhere
               throw eV1;
             });
         })
@@ -500,13 +514,13 @@ export default {
         .then(res => {
           const pv2 = res.data;
 
-          // Case v2 đã có wards trực tiếp (sau sáp nhập)
+          // Case v2 already has wards directly (after merge)
           if (pv2 && Array.isArray(pv2.wards)) {
             this.wards = pv2.wards.map(w => ({ code: String(w.code), name: w.name }));
             return;
           }
 
-          // Case vẫn còn districts → flatten wards
+          // Case still has districts → flatten wards
           if (pv2 && Array.isArray(pv2.districts)) {
             const flat = [];
             pv2.districts.forEach(d => {
@@ -520,14 +534,14 @@ export default {
             }
           }
 
-          // Không lấy được từ v2 → RETURN fallback v1 để .finally đợi
+          // Could not get from v2 → RETURN fallback v1 so .finally waits
           return this.loadWardsByProvinceV1(provinceCode);
         })
         .catch(eV2 => {
-          // RETURN fallback v1 để .finally đợi
+          // RETURN fallback v1 so .finally waits
           return this.loadWardsByProvinceV1(provinceCode)
             .catch(eV1 => {
-              this.errMsg = 'Không tải được danh sách phường/xã.';
+              this.errMsg = 'Could not load ward/commune list.';
               console.error('Load wards failed:', eV2?.message, eV1?.message);
               throw eV1;
             });
@@ -538,7 +552,7 @@ export default {
     },
 
     loadWardsByProvinceV1(provinceCode) {
-      // HÀM NÀY PHẢI RETURN promise để nơi gọi có thể chain tiếp
+      // This function must return promise so caller can chain
       return axios.get(`${this.baseV1}/p/${provinceCode}`, { params: { depth: 2 } })
         .then(res => {
           const p = res.data;
@@ -612,19 +626,19 @@ export default {
 
         const data = response.data;
 
-        // Kiểm tra paid status (API trả về paid: true/false)
+        // Check paid status (API returns paid: true/false)
         if (data.paid === true) {
-          // Thanh toán thành công
+          // Payment successful
           this.paid = true;
-          this.paymentMessage = data.message || '✓ Thanh toán thành công!';
+          this.paymentMessage = data.message || '✓ Payment successful!';
           this.$toast.success(this.paymentMessage);
 
-          // Dừng polling
+          // Stop polling
           this.stopPaymentCheck();
 
-          // Redirect sau 2 giây
+          // Redirect after 2 seconds
           setTimeout(() => {
-            // Đóng modal
+            // Close modal
             const modalElement = document.getElementById('exampleModal');
             if (modalElement) {
               const modal = bootstrap.Modal.getInstance(modalElement);
@@ -638,21 +652,21 @@ export default {
               this.cleanupModalBackdrop();
             }, 200);
 
-            // Redirect hoặc reload page
+            // Redirect or reload page
             window.location.reload();
             this.$router.push('/client/profile/invoices');
           }, 2000);
 
         } else if (data.paid === false) {
-          // Chưa thanh toán - hiển thị message từ API
-          this.paymentMessage = data.message || 'Đang chờ thanh toán...';
+          // Payment pending - show message from API
+          this.paymentMessage = data.message || 'Waiting for payment...';
         }
 
       } catch (error) {
         console.error('❌ Payment check error:', error);
-        // Không hiện toast error để tránh spam, chỉ log
+        // Don't show toast error to avoid spam, only log
         if (error.response?.status !== 404) {
-          // Chỉ log nếu không phải 404 (invoice not found)
+          // Only log if not 404 (invoice not found)
           console.log('Payment not confirmed yet or error:', error.response?.data?.message);
         }
       } finally {

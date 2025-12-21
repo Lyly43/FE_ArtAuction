@@ -14,7 +14,8 @@
                   <input type="date" class="form-control" v-model="searchForm.dateTo" placeholder="To date"
                     @change="onDateChange">
                 </div>
-                <button class="btn btn-outline-secondary" @click="resetSearch" :disabled="isSearching" title="Reset search">
+                <button class="btn btn-outline-secondary" @click="resetSearch" :disabled="isSearching"
+                  title="Reset search">
                   <i class="fa-solid fa-rotate-left"></i>
                 </button>
               </div>
@@ -65,7 +66,7 @@
 
     <!-- List data -->
     <template v-else v-for="(v, k) in displayedList" :key="k">
-      <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+      <div class="col-lg-4 col-md-6 col-sm-12 mb-3 d-flex">
         <div class="card p-0">
           <!-- <div class="badge p-0">
             <img src="../../../../assets/img/user_test.jpg" class="img-auction" alt="">
@@ -92,24 +93,27 @@
           <div class="card-body d-flex flex-column gap-3">
             <div class="d-flex flex-column gap-1">
               <p class="fw-bold m-0 text-success fs-5"> {{ v.roomName }} </p>
-              <p class="m-0"> {{ v.description }} </p>
+              <p class="m-0 description-clamp"> {{ v.description }} </p>
             </div>
 
             <!-- Dòng thông tin -->
-            <div class="d-flex justify-content-between mb-1">
+            <!-- <div class="d-flex justify-content-between mb-1">
               <div class="d-flex flex-column gap-1">
                 <p class="fw-bold m-0">Current product</p>
-                <!-- <p class="m-0">Product {{ auction.numberOfArtwork }} of 10</p> -->
+                <p class="m-0">Product {{ auction.numberOfArtwork }} of 10</p>
               </div>
 
               <div class="d-flex flex-column gap-1 text-end">
                 <p class="fw-bold m-0">High Price</p>
-                <!-- <p class="m-0">{{ auction.artwork.currentPrice }}</p> -->
+                <p class="m-0">{{ auction.artwork.currentPrice }}</p>
               </div>
+            </div> -->
+            <div class="mt-auto">
+              <button v-if="v.status === 1" class="btn btn-success w-100">Join AuctAuction</button>
+              <button v-else-if="v.status === 2" class="btn btn-warning w-100">Reverve Spot</button>
+              <button v-else class="btn btn-danger disabled w-100">View Auction</button>
+
             </div>
-            <button v-if="v.status === 1" class="btn btn-success">Join AuctAuction</button>
-            <button v-else-if="v.status === 2" class="btn btn-warning">Reverve Spot</button>
-            <button v-else class="btn btn-danger disabled">View Auction</button>
 
           </div>
 

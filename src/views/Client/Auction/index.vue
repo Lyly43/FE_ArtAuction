@@ -55,35 +55,6 @@
       </div>
     </div>
 
-    <!-- <div class="row mb-4">
-      <div class="col-lg-8 col-md-6 col-sm-12 d-flex gap-4">
-        <div class="search-bar flex-grow-1">
-          <div class="position-relative search-bar-box">
-            <input type="text" class="form-control search-control ps-5" placeholder="Type to search..." />
-            <span class="position-absolute top-50 search-show translate-middle-y"><i
-                class="fa-solid fa-magnifying-glass px-3"></i></span>
-            <span class="position-absolute top-50 search-close translate-middle-y">
-            </span>
-          </div>
-        </div>
-        <button class="btn btn-outline-success d-flex align-items-center justify-content-center">
-          <i class="fa-solid fa-filter"></i>
-        </button>
-      </div>
-      <div class="col-lg-4 col-md-6 col-sm-12">
-        <div class="row">
-          <template v-for="tag in tags" :key="tag">
-            <div class="col-lg-4 col-md-6 col-sm-4 d-flex align-items-center">
-              <button type="button" class="btn btn-outline-success w-100 " :class="{ active: selectedTag === tag }"
-                @click="selectTag(tag)">
-                {{ tag }}
-              </button>
-            </div>
-          </template>
-</div>
-</div>
-</div> -->
-
     <div class="row mb-5">
       <!-- ========== Tiêu đề ========== -->
       <div class="col-lg-6 d-flex flex-column gap-3">
@@ -215,9 +186,9 @@
 
               <span v-if="auction.status === 1"
                 class="badge position-absolute top-0 end-0 m-3 bg-success px-3">{{ getElapsedTime(auction) }}</span>
-              <span v-if="auction.status === 1" class="badge position-absolute bottom-0 end-0 m-3 bg-success">{{
+              <!-- <span v-if="auction.status === 1" class="badge position-absolute bottom-0 end-0 m-3 bg-success">{{
                 auction.viewCount }}
-                bidders</span>
+                bidders</span> -->
             </div>
 
             <!-- Nội dung card -->
@@ -805,7 +776,7 @@ export default {
       // Thử các trường có thể chứa thời gian bắt đầu (theo thứ tự ưu tiên)
       let timeField = null;
       let usedFieldName = '';
-      
+
       if (auction.startTime) {
         timeField = auction.startTime;
         usedFieldName = 'startTime';
@@ -825,7 +796,7 @@ export default {
         timeField = auction.createdAt;
         usedFieldName = 'createdAt';
       }
-      
+
       if (!timeField) {
         // Chỉ log một lần để debug
         if (!this._noTimeFieldLogged) {
@@ -853,18 +824,18 @@ export default {
 
         // Sử dụng currentTime để component tự động cập nhật mỗi giây
         const elapsedMinutes = Math.floor((this.currentTime - startTime) / 1000 / 60); // Tính số phút
-        
+
         if (elapsedMinutes < 0) {
           return '0:00';
         }
-        
+
         // Tính giờ và phút
         const hours = Math.floor(elapsedMinutes / 60);
         const minutes = elapsedMinutes % 60;
-        
+
         // Format phút với 2 chữ số (VD: 2 → "02", 15 → "15")
         const paddedMinutes = minutes.toString().padStart(2, '0');
-        
+
         // Hiển thị theo format H:MM (VD: "3:02", "1:30", "0:45")
         return `${hours}:${paddedMinutes}`;
       } catch (error) {

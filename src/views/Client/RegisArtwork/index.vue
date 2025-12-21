@@ -16,12 +16,12 @@
               <i class="fas fa-info-circle me-2"></i>
               <strong>Upgrade Required:</strong> Please update your profile to become a seller
             </div>
-            <div class="mb-3">
+            <!-- <div class="mb-3">
               <p class="text-muted">
                 <i class="fas fa-clock me-2"></i>
                 Redirecting to profile page in <strong>5 seconds</strong>...
               </p>
-            </div>
+            </div> -->
             <button class="btn btn-success btn-lg fs-6 px-5 mt-3" @click="$router.push('/client/edit-profile')">
               <i class="fas fa-arrow-right me-2"></i>
               Upgrade to Seller
@@ -783,7 +783,7 @@ export default {
     if (this.userRole === "0") {
       this.redirectTimeout = setTimeout(() => {
         if (!this.showSellerRequestForm) {
-          this.$router.push("/client/edit-profile");
+       //   this.$router.push("/client/edit-profile");
         }
       }, 5000);
     }

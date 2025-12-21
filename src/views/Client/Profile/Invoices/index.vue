@@ -63,13 +63,29 @@
                 <p class="m-0">{{ item.createdAt }}</p>
               </div>
               <div class="col-6">
-                <img :src="item.artworkAvt || item.artworkImageUrl" alt="" class="img-thumbnail img-invoice w-100 object-fit-cover"
-                  style="height: 150px;">
+                <img :src="item.artworkAvt || item.artworkImageUrl" alt=""
+                  class="img-thumbnail img-invoice w-100 object-fit-cover" style="height: 150px;">
               </div>
-              <div class="col-6">
-                <p class=" m-0 small text-truncate">{{ item.artworkId }}</p>
+              <div class="col-6 d-flex flex-column justify-content-between gap-2">
+                <div class="d-flex flex-column gap-2">
+                  <p class="m-0 fw-bold fs-5">{{ item.artworkTitle }}</p>
+                  <p class=" m-0 small text-truncate">{{ item.artworkId }}</p>
+                </div>
+                <div class="">
+                  <div v-if="item.paymentStatus === 1" class="d-flex gap-2">
+                    <div class="alert alert-success w-100 fw-bold text-center py-2 m-0" role="alert">
+                      <!-- <i class="fa-solid fa-circle-check me-2"></i>  -->
+                      Paid
+                    </div>
+                  </div>
+                  <div v-else class="d-flex gap-2">
+                    <div class="alert alert-danger w-100 fw-bold text-center py-2 m-0" role="alert">
+                      <!-- <i class="fa-solid fa-circle-xmark me-2"></i>  -->
+                      Unpaid
+                    </div>
+                  </div>
+                </div>
 
-                <p class="m-0 fw-bold">{{ item.artworkTitle }}</p>
 
               </div>
             </div>
@@ -84,13 +100,11 @@
                   <router-link :to="`/client/payment/${item.auctionRoomId}/${item.id}`" class="w-100">
                     <button class="btn btn-outline-success w-100">View Details</button>
                   </router-link>
-                  <button class="btn btn-success w-100" disabled>Paid</button>
                 </div>
                 <div v-else class="d-flex gap-2">
                   <router-link :to="`/client/payment/${item.auctionRoomId}/${item.id}`" class="w-100">
                     <button class="btn btn-outline-danger w-100">View Details</button>
                   </router-link>
-                  <button class="btn btn-danger w-100">Unpaid</button>
                 </div>
               </div>
             </div>
