@@ -67,7 +67,8 @@
                         </div>
                         <hr class="my-2 fw-bold" />
                         <div class="d-flex justify-content-between">
-                          <p class="m-0">{{ artworkSession.winnerId }}</p>
+                          <p class="m-0">{{ artworkSession.highestBidderUsername }}</p>
+                          <!-- <p class="m-0">{{ artworkSession.winnerId }}</p> -->
                           <!-- <p class="m-0">{{ winnerName }}</p> -->
                           <p class="m-0 fw-bold text-success">
                             {{ formatUSD(artworkSession.currentPrice) }}
@@ -959,7 +960,6 @@ export default {
       this.membersError = null;
 
       try {
-        // ✅ Sửa từ GET sang POST với body chứa roomId
         const response = await axios.post(
           `http://localhost:8081/api/auctionroom/members`,
           {
@@ -972,22 +972,44 @@ export default {
           }
         );
 
+        console.log('📦 Raw API response:', response.data);
+
+        // API trả về array trực tiếp: [{ id, username, avt }]
         const payload = response.data;
+        let membersList = [];
 
         if (Array.isArray(payload)) {
-          this.members = payload;
+          // Response là array trực tiếp
+          membersList = payload;
         } else if (Array.isArray(payload?.data)) {
-          this.members = payload.data;
+          // Response có data wrapper
+          membersList = payload.data;
         } else if (Array.isArray(payload?.members)) {
-          this.members = payload.members;
+          // Response có members property
+          membersList = payload.members;
         } else {
-          this.members = [];
+          membersList = [];
         }
 
-        console.log('✅ Members loaded:', this.members.length);
+        // Map và normalize member data để đảm bảo có đầy đủ thông tin
+        this.members = membersList.map(member => ({
+          id: member.id || member.userId || member.user_id || null,
+          userId: member.id || member.userId || member.user_id || null,
+          username: member.username || member.userName || null,
+          name: member.name || member.fullName || member.displayName || member.username || null,
+          displayName: member.displayName || member.name || member.fullName || member.username || null,
+          fullName: member.fullName || member.name || member.displayName || member.username || null,
+          email: member.email || null,
+          avt: member.avt || member.avatar || member.avatarUrl || null,
+          role: member.role || member.type || "Participant",
+          status: member.status || null,
+        }));
+
+        console.log('✅ Members loaded:', this.members.length, this.members);
       } catch (error) {
-        console.error("Error loading members:", error);
-        this.membersError = error.response?.data?.message || "Không thể tải danh sách thành viên";
+        console.error("❌ Error loading members:", error);
+        this.membersError = error.response?.data?.message || "Could not load member list";
+        this.members = [];
       } finally {
         this.membersLoading = false;
       }

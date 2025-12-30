@@ -166,7 +166,7 @@
                 <td class="ps-4">
                   <div class="d-flex align-items-center gap-3">
                     <img
-                      :src="req.userAvt || '../../../assets/default-avatar.png'"
+                      :src="req.userAvt || defaultAvatar"
                       class="rounded-circle border"
                       width="40"
                       height="40"
@@ -253,7 +253,7 @@
                     </h6>
                     <div class="text-center mb-4">
                       <img
-                        :src="selectedRequest.userAvt || '../../../assets/default-avatar.png'"
+                        :src="selectedRequest.userAvt || defaultAvatar"
                         class="rounded-circle border mb-2"
                         width="100"
                         height="100"
@@ -466,6 +466,7 @@
 <script>
 import axios from "axios";
 import * as bootstrap from "bootstrap";
+import defaultAvatar from "../../../assets/img/avt.png";
 
 export default {
   data() {
@@ -547,13 +548,15 @@ export default {
             id: item.id,
             userId: item.userId,
             userName: item.userId, // Hoặc item.userName nếu backend có
-            userAvt: item.userAvt || "../../../assets/default-avatar.png",
+            userAvt: item.userAvt || defaultAvatar,
             reason: item.description,
             status: item.status,
             adminNote: item.adminNote,
             createdAt: item.updatedAt || item.createdAt,
             images: item.verificationImageUrl ? [item.verificationImageUrl] : [],
           }));
+          console.log('📦 Raw API response:', this.requests);
+
         })
         .catch((err) => {
           console.error("Error fetching data:", err);

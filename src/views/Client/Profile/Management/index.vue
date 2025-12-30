@@ -14,7 +14,8 @@
                   <input type="date" class="form-control" v-model="searchForm.dateTo" placeholder="To date"
                     @change="onDateChange">
                 </div>
-                <button class="btn btn-outline-secondary" @click="resetSearch" :disabled="isSearching" title="Reset search">
+                <button class="btn btn-outline-secondary" @click="resetSearch" :disabled="isSearching"
+                  title="Reset search">
                   <i class="fa-solid fa-rotate-left"></i>
                 </button>
               </div>
@@ -26,7 +27,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-lg-12 mb-3">
+    <!-- <div class="col-lg-12 mb-3">
       <div class=" card">
         <div class="card-body">
           <div class="row">
@@ -40,7 +41,6 @@
                     <h5 class="m-0 fw-bold">Starry Night Over the Rhône</h5>
                     <div class="m-0 alert alert-accent2 border-start border-0 border-3 border-success fw-bold px-5 py-1"
                       role="alert">Won</div>
-                    <!-- <div class="m-0 alert alert-danger border-start border-0 border-3 border-danger fw-bold px-5 py-1" role="alert">Lost</div> -->
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
                     <p class="m-0 ">Vincent van Gogh</p>
@@ -79,7 +79,7 @@
 
       </div>
 
-    </div>
+    </div> -->
 
     <!-- Hiển thị thông báo khi không tìm thấy kết quả -->
     <div v-if="isSearchMode && displayedArtworks.length === 0" class="col-12">
@@ -95,62 +95,65 @@
 
     <!-- Danh sách artwork -->
     <template v-else v-for="(v, k) in displayedArtworks" :key="k">
-      <div class="col-lg-12 mb-3">
-        <div class=" card p-0">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-lg-4 col-md-12 col-sm-12 d-flex align-items-center">
-                <img :src="v.avtArtwork" class="img-thumbnail img-square" alt="...">
-                <!-- <img src="https://picsum.photos/200/300" class="img-thumbnail img-square" alt="..."> -->
+      <div class="col-lg-4 mb-3">
+        <div class="card p-0 h-100">
+          <img :src="v.avtArtwork" class="card-img-top img-square" alt="Artwork image"
+            style="height: 300px; object-fit: cover;">
+
+          <div class="card-body d-flex flex-column">
+            <div class="mb-2">
+              <h5 class="m-0 fw-bold mb-1">{{ v.title }}</h5>
+              <p class="m-0 text-muted small">Owner: {{ v.ownerName }}</p>
+            </div>
+
+            <div class="mb-2">
+              <p class="m-0 text-muted small mb-1 description-clamp">{{ v.description || 'No description' }}</p>
+            </div>
+            <div class="">
+              <hr class="my-2">
+              <div class="row g-2 mb-2">
+                <div class="col-6">
+                  <p class="m-0 small text-muted">Genre</p>
+                  <p class="m-0 fw-semibold">{{ formatGenre(v.paintingGenre) }}</p>
+                </div>
+                <div class="col-6">
+                  <p class="m-0 small text-muted">Year</p>
+                  <p class="m-0 fw-semibold">{{ v.yearOfCreation }}</p>
+                </div>
+                <div class="col-6">
+                  <p class="m-0 small text-muted">Material</p>
+                  <p class="m-0 fw-semibold">{{ v.material }}</p>
+                </div>
+                <div class="col-6">
+                  <p class="m-0 small text-muted">Size</p>
+                  <p class="m-0 fw-semibold">{{ v.size }}</p>
+                </div>
               </div>
-              <div class="col-lg-8">
-                <div class="row mt-3">
-                  <div class="col-lg-12 col-md-12 col-sm-12 d-flex flex-column gap-2 ">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <h5 class="m-0 fw-bold">{{ v.title }}</h5>
-                      <p class="m-0 text-success fw-bold">My Bid:
-                        <span class="ps-3 fw-bold">{{ v.myLatestBidAmount }}</span>
-                      </p>
-                      <!-- <div
-                        class="m-0 alert alert-accent2 border-start border-0 border-3 border-success fw-bold px-5 py-1"
-                        role="alert">Won</div> -->
-                      <!-- <div class="m-0 alert alert-danger border-start border-0 border-3 border-danger fw-bold px-5 py-1" role="alert">Lost</div> -->
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <p class="m-0 ">
-                        {{ v.ownerName }}
-                      </p>
 
-                    </div>
-                    <hr class="my-2">
-                  </div>
-
-                  <div
-                    class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between justify-content-sm-between gap-2 mb-lg-0 mb-3">
-                    <p class="m-0 fw-bold">Participants</p>
-                    <p class="m-0 ">15</p>
-                  </div>
-                  <div
-                    class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between justify-content-sm-between gap-2 mb-lg-0 mb-3">
-                    <p class="m-0 fw-bold">Total Bids</p>
-                    <p class="m-0 ">24</p>
-                  </div>
-                  <div
-                    class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between justify-content-sm-between gap-2 mb-lg-0 mb-3">
-                    <p class="m-0 fw-bold">Starting Price</p>
-                    <p class="m-0 ">$ {{ v.startedPrice }}</p>
-                  </div>
-                  <div
-                    class="col-lg-3 col-md-6 col-sm-12 d-flex flex-md-column justify-content-xs-between justify-content-sm-between gap-2 mb-lg-0 mb-3">
-                    <p class="m-0 fw-bold">Final Price</p>
-                    <!-- <p class="m-0 ">$ {{ v.currentPrice }}</p> -->
-                  </div>
-
+              <hr class="my-2">
+              <div class="row g-2 d-flex flex-column">
+                <div class="col-12 d-flex justify-content-between align-items-center" v-if="v.myLatestBidAmount">
+                  <p class="m-0 small text-muted">My Latest Bid</p>
+                  <p class="m-0 fw-bold text-primary">{{ formatCurrency(v.myLatestBidAmount) }}</p>
                 </div>
 
+                <div class="col-12 d-flex justify-content-between align-items-center">
+                  <p class="m-0 small text-muted">Updated</p>
+                  <p class="m-0 small">{{ formatDate(v.updatedAt) }}</p>
+                </div>
+                <div class="col-12 d-flex justify-content-between align-items-center">
+                  <p class="m-0 small text-muted">Starting Price</p>
+                  <p class="m-0 fw-bold text-success fs-5">{{ formatCurrency(v.startedPrice) }}</p>
+                </div>
 
               </div>
+
             </div>
+            <div class="alert p-2 text-center justify-content-center mt-auto"
+                :class="v.aiVerified === true || v.aiVerified === 'true' ? 'alert-success' : 'alert-danger'">
+                <span v-if="v.aiVerified === true || v.aiVerified === 'true'">AI Verified</span>
+                <span v-else>AI Rejected</span>
+              </div>
           </div>
 
         </div>
@@ -193,6 +196,30 @@ export default {
     this.loadData();
   },
   methods: {
+    formatCurrency(value) {
+      const num = Number(value || 0);
+      return num.toLocaleString('vi-VN') + ' ₫';
+    },
+    formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } catch (e) {
+        return dateString;
+      }
+    },
+    formatGenre(genre) {
+      if (!genre) return 'N/A';
+      // Replace underscores with spaces and capitalize
+      return genre.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    },
     loadData() {
       axios
         .get('http://localhost:8081/api/artwork/my-artworks', {

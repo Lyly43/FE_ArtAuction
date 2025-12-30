@@ -593,11 +593,15 @@ export default {
           this.kycStatus = res.data?.kycStatus ?? res.data?.status ?? 0;
           this.kycMessage = res.data?.note || res.data?.message || "Your documents are under review.";
 
+          if (this.kycStatus === 0) {
+            this.$toast.error(res.data?.message);
+          }
           // Chỉ lưu role vào localStorage khi kycStatus === 1 (Verified)
           if (this.kycStatus === 1 && res.data?.role !== undefined && res.data?.role !== null) {
             this.userRole = res.data.role;
             localStorage.setItem("role_kh", res.data.role.toString());
           }
+
 
           // Reload user info để cập nhật toàn bộ
           this.loadUserData();

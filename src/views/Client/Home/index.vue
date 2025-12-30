@@ -352,17 +352,16 @@
   </div>
 
   <!-- ========== Các cuộc đấu giá sắp tới ========== -->
-  <div class="row">
+  <!-- <div class="row">
     <div class="col-12">
       <div class="container">
         <div class="row pt-4 mb-5">
-          <!-- Upcoming Auctions -->
+
           <div class="col-12 text-center mb-4" data-aos="fade-up" data-aos-duration="800">
             <h3 class="fw-bold mb-2 text-success">Upcoming Auctions</h3>
             <p>Mark your calendar for these exciting events</p>
           </div>
           <template v-for="(auction, index) in upcomingAuctions" :key="auction.id">
-            <!-- Card đấu giá -->
             <div class="col-lg-3 col-md-6 col-12 mb-4 d-flex" data-aos="fade-up" :data-aos-delay="index * 100" data-aos-duration="600">
               <div class="card p-0 overflow-hidden auction-card">
                 <div class="p-0 position-relative">
@@ -371,7 +370,6 @@
                     <span class="badge position-absolute top-0 start-0 m-3 bg-warning px-3 text-dark">Upcoming</span>
                   </div>
                 </div>
-                <!-- Nội dung card -->
                 <div class="card-body d-flex flex-column gap-3">
                   <div class="d-flex flex-column gap-2">
                     <p class="fw-bold m-0 text-success fs-5"> {{ auction.roomName }} </p>
@@ -399,7 +397,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
