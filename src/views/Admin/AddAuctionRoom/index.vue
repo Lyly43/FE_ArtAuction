@@ -313,15 +313,14 @@
                             >₫</span
                           >
                           <input
-                            type="number"
+                            type="text"
                             class="form-control form-control-sm border-start-0 shadow-none ps-0"
                             v-model="item.stepPrice"
                             @blur="validateAndFormatBidStep(item)"
                             @focus="unformatCurrency(item, 'stepPrice')"
+                            @input="handleStepPriceInput(item, $event)"
                             placeholder="Min: 1.000"
                             required
-                            step="1000"
-                            min="1000"
                           />
                         </div>
                         <div class="mt-1">
@@ -950,13 +949,18 @@ export default {
       // 4. Load lại danh sách tranh gốc (nếu đang bị filter bởi search)
       this.loadAddRoomArt();
     },
+    handleStepPriceInput(item, event) {
+      // Chỉ cho phép nhập số, loại bỏ các ký tự không phải số
+      let value = event.target.value.replace(/[^0-9]/g, "");
+      item.stepPrice = value;
+    },
     validateAndFormatBidStep(item) {
       if (!item.stepPrice) return;
 
-      // Lấy giá trị số (bỏ dấu chấm)
-      let val = parseInt(String(item.stepPrice).replace(/\./g, ""));
+      // Lấy giá trị số (bỏ dấu chấm và các ký tự không phải số)
+      let val = parseInt(String(item.stepPrice).replace(/[^0-9]/g, ""));
 
-      if (isNaN(val)) {
+      if (isNaN(val) || val === 0) {
         item.stepPrice = "";
         return;
       }

@@ -327,7 +327,7 @@
               <button type="button" class="btn btn-secondary" @click="resetForm" :disabled="isSubmitting">
                 <i class="fas fa-redo me-2"></i>Reset
               </button>
-              <button type="button" class="btn btn-success btn-lg px-5" :disabled="isSubmitting" @click="submitArtwork">
+              <button type="button" class="btn btn-success btn-lg px-5" :disabled="isSubmitting || !formData.agreedToTerms" @click="submitArtwork">
                 <i v-if="isSubmitting" class="fas fa-spinner fa-spin me-2"></i>
                 <i v-else class="fas fa-paper-plane me-2"></i>
                 {{ isSubmitting ? 'Submitting...' : 'Register Artwork' }}
@@ -617,8 +617,61 @@
             </div>
           </div>
         </div>
-        <div class="row ">
+        <div class="row mt-4">
           <div class="col-lg-12">
+            <div class="card border-top border-4 border-success">
+              <div class="card-body">
+                <div class="form-check">
+                  <input v-model="formData.agreedToTerms" class="form-check-input" type="checkbox" id="termsCheck"
+                    @change="onOuterTermsChange" required>
+                  <label class="form-check-label" for="termsCheck">
+                    I have read and agree to the
+                    <a href="#" class="text-success fw-semibold" @click.prevent="openTermsModal">
+                      Service Contract
+                    </a>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terms & Conditions Modal -->
+        <div v-if="showTermsModal">
+          <div class="modal-backdrop fade show"></div>
+          <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" @click.self="closeTermsModal">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Service Contract</h5>
+                  <button type="button" class="btn-close" @click="closeTermsModal"></button>
+                </div>
+                <div class="modal-body p-0">
+                  <div class="px-3 py-3" style="height: 70vh; overflow-y: auto;" @scroll="handleTermsScroll"
+                    ref="termsScroll">
+                    <div v-if="termsHtml" v-html="termsHtml"></div>
+                    <p v-else class="text-center text-muted my-4">
+                      Loading contract...
+                    </p>
+                  </div>
+                </div>
+                <div class="modal-footer flex-column align-items-start align-items-md-center">
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="modalAgreeCheck" v-model="modalAgree"
+                      :disabled="!canAgreeInModal" @change="onModalAgreeChange">
+                    <label class="form-check-label" for="modalAgreeCheck">
+                      I have read and agree to the Service Contract
+                      <span v-if="!canAgreeInModal" class="text-muted small ms-1">
+                        (Scroll to the bottom to enable)
+                      </span>
+                    </label>
+                  </div>
+                  <button type="button" class="btn btn-secondary ms-md-auto" @click="closeTermsModal">
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -710,7 +763,8 @@ export default {
         material: '',
         size: '',
         certificateId: '',
-        status: 0 // 0 = Pending approval
+        status: 0, // 0 = Pending approval
+        agreedToTerms: false
       },
       errors: {},
       isSubmitting: false,
@@ -729,6 +783,11 @@ export default {
       // Report AI modal
       showReportModal: false,
       reportSubmitting: false,
+      // Terms & Conditions modal
+      showTermsModal: false,
+      termsHtml: '',
+      canAgreeInModal: false,
+      modalAgree: false,
       reportForm: {
         reportType: 'Inaccurate AI Result',
         reason: ''
@@ -1175,6 +1234,47 @@ export default {
       return Number(value).toFixed(2);
     },
 
+    // Terms & Conditions methods
+    openTermsModal() {
+      this.showTermsModal = true;
+      this.canAgreeInModal = false;
+      this.modalAgree = false;
+
+      if (!this.termsHtml) {
+        // Load contract content once from public HTML
+        fetch('/HopDong_ArtAuction.html')
+          .then((res) => res.text())
+          .then((html) => {
+            this.termsHtml = html;
+          })
+          .catch((err) => {
+            console.error('Failed to load contract:', err);
+          });
+      }
+    },
+    closeTermsModal() {
+      this.showTermsModal = false;
+    },
+    handleTermsScroll(event) {
+      const el = event.target;
+      if (!el) return;
+      const bottomReached = el.scrollTop + el.clientHeight >= el.scrollHeight - 10;
+      if (bottomReached) {
+        this.canAgreeInModal = true;
+      }
+    },
+    onModalAgreeChange() {
+      // Khi tick trong modal -> tự tick checkbox bên ngoài
+      this.formData.agreedToTerms = !!this.modalAgree;
+    },
+    onOuterTermsChange() {
+      // Nếu user cố tick khi chưa scroll hết trong modal thì không cho
+      if (this.formData.agreedToTerms && !this.canAgreeInModal) {
+        this.formData.agreedToTerms = false;
+        this.openTermsModal();
+      }
+    },
+
     // Submit form
     submitArtwork() {
       console.log('Register Artwork');
@@ -1187,6 +1287,12 @@ export default {
       // Check if image is required
       if (!this.imageFile) {
         this.$toast?.error?.('Please select an artwork image');
+        return;
+      }
+
+      // Check Terms & Conditions
+      if (!this.formData.agreedToTerms) {
+        this.$toast?.error?.('Please agree to the Service Contract');
         return;
       }
 

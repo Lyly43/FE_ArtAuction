@@ -73,7 +73,7 @@
                   <input class="form-check-input border border-success" type="checkbox" id="terms" v-model="acceptTerms"
                     required>
                   <label class="form-check-label text-muted" for="terms">
-                    I agree to the <a href="#" class="text-success text-decoration-none">Terms &
+                    I agree to the <a href="#" class="text-success text-decoration-none" @click.prevent="openTermsModal">Terms &
                       Conditions</a>
                   </label>
                 </div>
@@ -102,6 +102,35 @@
           </div>
         </div>
       </div>
+      <!-- Terms & Conditions Modal -->
+      <div v-if="showTermsModal">
+        <div class="modal-backdrop fade show"></div>
+        <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" @click.self="closeTermsModal">
+          <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Terms &amp; Conditions</h5>
+                <button type="button" class="btn-close" @click="closeTermsModal"></button>
+              </div>
+              <div class="modal-body p-0">
+                <div class="px-3 py-3" style="height: 70vh; overflow-y: auto;" @scroll="handleTermsScroll"
+                  ref="termsScroll">
+                  <div v-if="termsHtml" v-html="termsHtml"></div>
+                  <p v-else class="text-center text-muted my-4">
+                    Loading terms &amp; conditions...
+                  </p>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="closeTermsModal">
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- OTP Modal -->
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -163,6 +192,8 @@ export default {
       otp: ['', '', '', '', '', ''],
       otpInputs: [],
       verifyingOtp: false,
+      showTermsModal: false,
+      termsHtml: '',
     }
   },
   methods: {
@@ -540,6 +571,29 @@ export default {
       this.$nextTick(() => {
         this.otpInputs[0]?.focus();
       });
+    },
+
+    openTermsModal() {
+      this.showTermsModal = true;
+      if (!this.termsHtml) {
+        // Load terms content once from public HTML
+        fetch('/terms-of-service.html')
+          .then((res) => res.text())
+          .then((html) => {
+            this.termsHtml = html;
+          })
+          .catch((err) => {
+            console.error('Failed to load terms:', err);
+          });
+      }
+    },
+
+    closeTermsModal() {
+      this.showTermsModal = false;
+    },
+
+    handleTermsScroll(event) {
+      // Optional: Add scroll tracking logic if needed
     },
   },
   computed: {

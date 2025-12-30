@@ -6,7 +6,7 @@
         <div class="card">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
-              <h6 class="card-subtitle text-secondary">Số dư khả dụng</h6>
+              <h6 class="card-subtitle text-secondary">Available Balance</h6>
               <i @click="toggleHidden"
                 :class="isHidden ? 'fa-solid fa-eye-slash text-body-secondary' : 'fa-solid fa-eye text-body-secondary'"></i>
             </div>
@@ -24,7 +24,7 @@
               class="btn btn-light btn-transaction border border-success w-100 d-flex flex-column align-items-center justify-content-center"
               data-bs-toggle="modal" data-bs-target="#NapModal">
               <i class="fa-solid fa-plus"></i>
-              <p class="mb-0">Nạp tiền</p>
+              <p class="mb-0">Deposit</p>
             </button>
           </div>
         </div>
@@ -34,9 +34,9 @@
     <!-- hành động -->
 
     <!-- history (demo) -->
-    <div class="card mt-3">
+    <div class="card mt-3 mb-5">
       <div class="card-body">
-        <h6>Lịch sử giao dịch</h6>
+        <h6>Transaction History</h6>
         <template v-if="loadWallet && loadWallet.length > 0">
           <div v-for="(v,i) in loadWallet" :key="i" class="d-flex justify-content-between align-items-center border rounded p-3 mb-2">
             <div class="d-flex align-items-center">
@@ -45,21 +45,21 @@
                 <i class="bi bi-arrow-up-right text-success"></i>
               </div>
               <div>
-                <div class="fw-bold">Nạp tiền từ VietQR</div>
+                <div class="fw-bold">Deposit from VietQR</div>
                 <small class="text-muted d-block">{{ v.id }}</small>
                 <small class="text-muted">{{ formatDate(v.updatedAt) }}</small>
               </div>
             </div>
             <div class="text-end">
               <div class="fw-bold text-success">+{{ formatCurrency(v.balance) }}</div>
-              <span v-if="v.status === 1" class="badge bg-light text-success border border-success">Thành công</span>
-              <span v-else class="badge bg-light text-warning border border-warning">Chờ xử lý</span>
+              <span v-if="v.status === 1" class="badge bg-light text-success border border-success">Success</span>
+              <span v-else class="badge bg-light text-warning border border-warning">Pending</span>
             </div>
           </div>
         </template>
         <template v-else>
           <div class="text-center text-muted py-4">
-            <p class="mb-0">Chưa có giao dịch nào</p>
+            <p class="mb-0">No transactions yet</p>
           </div>
         </template>
 
@@ -70,22 +70,22 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="NapModalLabel">Nhập số tiền cần nạp</h1>
+            <h1 class="modal-title fs-5" id="NapModalLabel">Enter Deposit Amount</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div class="row">
               <div class="col-lg-7">
                 <div class="mb-3">
-                  <label class="form-label">Số tiền</label>
-                  <input v-model="nap.amount" type="" class="form-control" placeholder="Ví dụ: 200000" />
-                  <small class="text-muted">Tối thiểu 10.000 ₫</small>
+                  <label class="form-label">Amount</label>
+                  <input v-model="nap.amount" type="" class="form-control" placeholder="Example: 200000" />
+                  <small class="text-muted">Minimum 10,000 ₫</small>
                 </div>
 
                 <div class="mb-3">
-                  <label class="form-label">Nội dung chuyển khoản (tùy chọn)</label>
+                  <label class="form-label">Transfer Content (Optional)</label>
                   <input v-model="nap.note" type="text" class="form-control"
-                    placeholder="Nếu để trống, hệ thống sẽ sinh tự động" />
+                    placeholder="If left empty, system will generate automatically" />
                 </div>
               </div>
               <div class="col-lg-5">
@@ -97,7 +97,7 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-success" @click="NapAndOpenQr" :disabled="isCreatingQR">
               <span v-if="isCreatingQR" class="spinner-border spinner-border-sm me-2"></span>
-              {{ isCreatingQR ? 'Đang tạo QR...' : 'Xác nhận' }}
+              {{ isCreatingQR ? 'Generating QR...' : 'Confirm' }}
             </button>
           </div>
         </div>
@@ -108,23 +108,23 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-6" id="QRModalLabel">Quét mã để nạp tiền</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            <h1 class="modal-title fs-6" id="QRModalLabel">Scan QR Code to Deposit</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body text-center">
             <template v-if="nap.qrUrl">
               <img :src="nap.qrUrl" alt="QR Code" class="img-fluid rounded mb-3" style="max-width:320px;" />
-              <div class="small text-muted">Mã giao dịch: {{ nap.transactionId || '—' }}</div>
+              <div class="small text-muted">Transaction ID: {{ nap.transactionId || '—' }}</div>
             </template>
             <template v-else>
               <div class="d-flex justify-content-center py-5">
                 <div class="spinner-border" role="status"></div>
               </div>
-              <div class="small text-muted">Đang tạo QR…</div>
+              <div class="small text-muted">Generating QR…</div>
             </template>
             <p v-if="statusMessage?.status === 0" class="mb-0 text-warning mt-3">
               <i class="bi bi-exclamation-triangle me-2"></i>
-              {{ statusMessage?.message || "Giao dịch chưa được xác nhận" }}
+              {{ statusMessage?.message || "Transaction not confirmed" }}
             </p>
 
 
@@ -133,7 +133,7 @@
             <!-- <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button> -->
             <button type="button" class="btn btn-success w-100 fs-6" @click="checkTransaction" :disabled="checking">
               <span v-if="checking" class="spinner-border spinner-border-sm me-2"></span>
-              {{ checking ? 'Đang kiểm tra...' : 'check' }}
+              {{ checking ? 'Checking...' : 'Check' }}
             </button>
           </div>
         </div>
@@ -282,7 +282,7 @@ export default {
       const raw = (this.nap.amount || "").toString().replace(/[^\d]/g, "");
       const amount = Number(raw);
       if (!amount || amount < 10000) {
-        this.$toast.error("Vui lòng nhập số tiền hợp lệ (≥ 10.000₫)");
+        this.$toast.error("Please enter a valid amount (≥ 10,000₫)");
         return false;
       }
 
@@ -314,7 +314,7 @@ export default {
         return true;
       } catch (error) {
         console.error("❌ Error creating QR:", error);
-        this.$toast.error("Không thể tạo mã QR. Vui lòng thử lại.");
+        this.$toast.error("Unable to generate QR code. Please try again.");
         return false;
       }
     },
@@ -438,10 +438,10 @@ export default {
         .then((res) => {
           const data = res && res.data ? res.data : {};
 
-          // Kiểm tra status (API trả về status là number: 0 hoặc 1)
+          // Check status (API returns status as number: 0 or 1)
           if (data.status === 1) {
-            // Status = 1: Đóng modal và hiện toast
-            this.$toast.success(data.message || "Nạp tiền thành công");
+            // Status = 1: Close modal and show toast
+            this.$toast.success(data.message || "Deposit successful");
             console.log("data", data);
 
             this.getWallet();
@@ -463,15 +463,15 @@ export default {
             });
 
             this.fetchWallet();
-            // Reset statusMessage sau khi đóng modal
+            // Reset statusMessage after closing modal
             this.statusMessage = null;
           } else if (data.status === 0) {
-            // Status = 0: Hiển thị message trong QRModal
+            // Status = 0: Display message in QRModal
             this.statusMessage = data;
           }
         })
         .catch((error) => {
-          const errorMessage = error.response?.data?.message || "Không thể kiểm tra giao dịch. Vui lòng thử lại.";
+          const errorMessage = error.response?.data?.message || "Unable to check transaction. Please try again.";
           this.$toast.error(errorMessage);
         })
         .finally(() => {
