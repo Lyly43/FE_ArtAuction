@@ -105,7 +105,6 @@
               <h5 class="m-0 fw-bold mb-1">{{ v.title }}</h5>
               <p class="m-0 text-muted small">Owner: {{ v.ownerName }}</p>
             </div>
-
             <div class="mb-2">
               <p class="m-0 text-muted small mb-1 description-clamp">{{ v.description || 'No description' }}</p>
             </div>
