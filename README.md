@@ -1,5 +1,4 @@
-                    ART AUCTION FRONTEND - INSTALLATION GUIDE
-================================================================================
+ART AUCTION FRONTEND - INSTALLATION GUIDE
 
 PROJECT INFORMATION
 ------------------
@@ -18,7 +17,6 @@ SYSTEM REQUIREMENTS
 - Git: For version control (if cloning from repository)
   Download from: https://git-scm.com/
 
-================================================================================
 INSTALLATION STEPS
 
 STEP 1: Install Node.js
@@ -110,7 +108,6 @@ You should see output like:
 Open your browser and navigate to the displayed URL.
 The page will automatically reload when you make changes to the code.
 
-================================================================================
 AVAILABLE SCRIPTS
 
 npm run dev
@@ -135,14 +132,12 @@ npm run lint
 Runs ESLint to check and fix code quality issues.
 Automatically fixes auto-fixable problems.
 
-================================================================================
 TOOLS AND DEPENDENCIES - DETAILED INSTALLATION GUIDE
 
 NOTE: All packages are already listed in package.json. 
       Run "npm install" to install all at once.
       Or install individually using the commands below.
 
-================================================================================
 CORE FRAMEWORK & BUILD TOOLS
 
 1. Vue 3.5.18
@@ -436,7 +431,6 @@ CHECK INSTALLED PACKAGES:
    # Check package information
    npm info axios
 
-================================================================================
 PROJECT STRUCTURE
 
 FE_ArtAuction/
@@ -462,7 +456,6 @@ FE_ArtAuction/
 ├── vite.config.js        # Vite configuration
 └── README.txt           # This file
 
-================================================================================
 TROUBLESHOOTING
 
 ISSUE: "node: command not found" or "npm: command not found"
@@ -537,7 +530,6 @@ SOLUTION:
 - Check if the backend WebSocket server is running
 - Verify firewall/network settings
 
-================================================================================
 ADDITIONAL NOTES
 
 - The application uses Vue 3 Composition API
@@ -546,8 +538,7 @@ ADDITIONAL NOTES
 - API Base URL: Configure in axios instance or environment variables
 - WebSocket: Configured in socket.js for real-time features
 - Styling: Uses Bootstrap 5 with custom CSS overrides
-- 
-================================================================================
+  
 SUPPORT & CONTACT
 
 For issues or questions:
@@ -555,11 +546,9 @@ For issues or questions:
 - Contact the development team
 - Review the code comments for implementation details
   
-================================================================================
 LICENSE
 
 [Add license information here if applicable]
 
-================================================================================
 END OF DOCUMENT
 
