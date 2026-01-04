@@ -1,6 +1,4 @@
-================================================================================
                     ART AUCTION FRONTEND - INSTALLATION GUIDE
-================================================================================
 
 PROJECT INFORMATION
 ------------------
@@ -9,9 +7,7 @@ Version: 0.0.0
 Framework: Vue 3 with Vite
 Type: Frontend Application for Online Art Auction Platform
 
-================================================================================
 SYSTEM REQUIREMENTS
-================================================================================
 
 - Node.js: Version ^20.19.0 or >=22.12.0
   Download from: https://nodejs.org/
@@ -21,9 +17,7 @@ SYSTEM REQUIREMENTS
 - Git: For version control (if cloning from repository)
   Download from: https://git-scm.com/
 
-================================================================================
 INSTALLATION STEPS
-================================================================================
 
 STEP 1: Install Node.js
 ------------------------
@@ -114,9 +108,7 @@ You should see output like:
 Open your browser and navigate to the displayed URL.
 The page will automatically reload when you make changes to the code.
 
-================================================================================
 AVAILABLE SCRIPTS
-================================================================================
 
 npm run dev
 -----------
@@ -140,17 +132,13 @@ npm run lint
 Runs ESLint to check and fix code quality issues.
 Automatically fixes auto-fixable problems.
 
-================================================================================
 TOOLS AND DEPENDENCIES - DETAILED INSTALLATION GUIDE
-================================================================================
 
 NOTE: All packages are already listed in package.json. 
       Run "npm install" to install all at once.
       Or install individually using the commands below.
 
-================================================================================
 CORE FRAMEWORK & BUILD TOOLS
-================================================================================
 
 1. Vue 3.5.18
    Description: Progressive JavaScript framework for building user interfaces
@@ -179,9 +167,7 @@ CORE FRAMEWORK & BUILD TOOLS
    Documentation: https://router.vuejs.org/guide/
 
 
-================================================================================
 UI FRAMEWORK & STYLING
-================================================================================
 
 4. Bootstrap 5.3.8
    Description: Popular CSS framework for responsive design
@@ -219,9 +205,7 @@ UI FRAMEWORK & STYLING
    Documentation: https://michalsnik.github.io/aos/
 
 
-================================================================================
 HTTP CLIENT & API
-================================================================================
 
 8. Axios 1.12.2
    Description: Promise-based HTTP client for making API requests
@@ -236,9 +220,7 @@ HTTP CLIENT & API
    Documentation: https://axios-http.com/docs/intro
 
 
-================================================================================
 REAL-TIME COMMUNICATION
-================================================================================
 
 9. @stomp/stompjs 7.2.1
    Description: STOMP client for WebSocket communication
@@ -263,9 +245,7 @@ REAL-TIME COMMUNICATION
     Documentation: https://github.com/sockjs/sockjs-client
 
 
-================================================================================
 LIVE STREAMING
-================================================================================
 
 11. @zegocloud/zego-uikit-prebuilt 2.17.0
     Description: Pre-built UI kit for ZegoCloud live streaming
@@ -277,9 +257,7 @@ LIVE STREAMING
     Documentation: https://docs.zegocloud.com/article/14746
 
 
-================================================================================
 NOTIFICATIONS
-================================================================================
 
 12. @meforma/vue-toaster 1.3.0
     Description: Toast notification component for Vue 3
@@ -296,9 +274,7 @@ NOTIFICATIONS
     Documentation: https://github.com/meforma/vue-toaster
 
 
-================================================================================
 CHARTS & DATA VISUALIZATION
-================================================================================
 
 13. Chart.js 4.5.1
     Description: JavaScript charting library
@@ -313,9 +289,7 @@ CHARTS & DATA VISUALIZATION
     Documentation: https://www.chartjs.org/docs/latest/
 
 
-================================================================================
 UTILITIES
-================================================================================
 
 14. jQuery 3.7.1
     Description: JavaScript library for DOM manipulation
@@ -326,9 +300,7 @@ UTILITIES
     Documentation: https://api.jquery.com/
 
 
-================================================================================
 DEVELOPMENT TOOLS (DevDependencies)
-================================================================================
 
 15. ESLint 9.31.0
     Description: JavaScript linter for code quality
@@ -375,9 +347,7 @@ DEVELOPMENT TOOLS (DevDependencies)
     Documentation: https://sass-lang.com/documentation/
 
 
-================================================================================
 INSTALLATION COMMANDS SUMMARY
-================================================================================
 
 INSTALL ALL DEPENDENCIES AT ONCE:
 ---------------------------------
@@ -462,9 +432,7 @@ CHECK INSTALLED PACKAGES:
    npm info axios
 
 
-================================================================================
 PROJECT STRUCTURE
-================================================================================
 
 FE_ArtAuction/
 ├── public/                 # Static assets served as-is
@@ -489,9 +457,7 @@ FE_ArtAuction/
 ├── vite.config.js        # Vite configuration
 └── README.txt           # This file
 
-================================================================================
 TROUBLESHOOTING
-================================================================================
 
 ISSUE: "node: command not found" or "npm: command not found"
 SOLUTION: Make sure Node.js is installed and added to your system PATH.
@@ -565,9 +531,7 @@ SOLUTION:
 - Check if the backend WebSocket server is running
 - Verify firewall/network settings
 
-================================================================================
 ADDITIONAL NOTES
-================================================================================
 
 - The application uses Vue 3 Composition API
 - State management: Currently using component-level state (consider Vuex/Pinia for complex state)
@@ -576,22 +540,16 @@ ADDITIONAL NOTES
 - WebSocket: Configured in socket.js for real-time features
 - Styling: Uses Bootstrap 5 with custom CSS overrides
 
-================================================================================
 SUPPORT & CONTACT
-================================================================================
 
 For issues or questions:
 - Check the project documentation
 - Contact the development team
 - Review the code comments for implementation details
 
-================================================================================
 LICENSE
-================================================================================
 
 [Add license information here if applicable]
 
-================================================================================
 END OF DOCUMENT
-================================================================================
 
